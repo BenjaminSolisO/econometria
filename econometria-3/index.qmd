@@ -1,0 +1,25 @@
+---
+title: "Econometría 3"
+subtitle: "Temas avanzados"
+description: "Temario tentativo de Econometría 3. En preparación."
+toc: false
+---
+
+::: {.callout-caution title="En preparación"}
+Este curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1.
+:::
+
+## Temario tentativo
+
+1. **Resultados potenciales:** efectos causales, aleatorización y el efecto promedio del tratamiento.
+2. **Selección en observables:** *matching*, *propensity score* y doble robustez.
+3. **VI con efectos heterogéneos:** el LATE de Imbens y Angrist.
+4. **Diferencias en diferencias:** el caso canónico y la literatura reciente con adopción escalonada.
+5. **Regresión discontinua:** diseños nítidos y difusos.
+6. **Econometría no paramétrica:** estimación kernel, series y la maldición de la dimensionalidad.
+7. **Alta dimensión:** LASSO, selección de variables e inferencia post-selección.
+8. **Aprendizaje automático para inferencia causal:** *double/debiased machine learning*.
+9. **Bootstrap:** validez, refinamientos asintóticos y bootstrap salvaje.
+10. **Inferencia robusta:** errores agrupados, pocos clusters e inferencia con instrumentos débiles.
+
+Mientras tanto, puedes empezar (o repasar) con [Econometría 1](../econometria-1/index.qmd).

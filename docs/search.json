@@ -1,0 +1,645 @@
+[
+  {
+    "objectID": "econometria-3/index.html",
+    "href": "econometria-3/index.html",
+    "title": "Econometría 3",
+    "section": "",
+    "text": "PrecauciónEn preparación\n\n\n\nEste curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1."
+  },
+  {
+    "objectID": "econometria-3/index.html#temario-tentativo",
+    "href": "econometria-3/index.html#temario-tentativo",
+    "title": "Econometría 3",
+    "section": "Temario tentativo",
+    "text": "Temario tentativo\n\nResultados potenciales: efectos causales, aleatorización y el efecto promedio del tratamiento.\nSelección en observables: matching, propensity score y doble robustez.\nVI con efectos heterogéneos: el LATE de Imbens y Angrist.\nDiferencias en diferencias: el caso canónico y la literatura reciente con adopción escalonada.\nRegresión discontinua: diseños nítidos y difusos.\nEconometría no paramétrica: estimación kernel, series y la maldición de la dimensionalidad.\nAlta dimensión: LASSO, selección de variables e inferencia post-selección.\nAprendizaje automático para inferencia causal: double/debiased machine learning.\nBootstrap: validez, refinamientos asintóticos y bootstrap salvaje.\nInferencia robusta: errores agrupados, pocos clusters e inferencia con instrumentos débiles.\n\nMientras tanto, puedes empezar (o repasar) con Econometría 1."
+  },
+  {
+    "objectID": "econometria-1/index.html",
+    "href": "econometria-1/index.html",
+    "title": "Econometría 1",
+    "section": "",
+    "text": "Este curso construye la teoría del modelo de regresión lineal desde cero. No hay atajos: cada resultado que se usa está demostrado en el curso o marcado explícitamente como un hecho que se toma prestado (el teorema espectral, el teorema de continuidad de Lévy y pocos más). La idea es que, al terminar, puedas reconstruir por tu cuenta cualquier fórmula de un libro de econometría y, sobre todo, saber por qué es cierta.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 1"
+    ]
+  },
+  {
+    "objectID": "econometria-1/index.html#clases",
+    "href": "econometria-1/index.html#clases",
+    "title": "Econometría 1",
+    "section": "Clases",
+    "text": "Clases\n\n\n01La caja de herramientasRango, formas cuadráticas, traza, matrices idempotentes, las proyecciones P y M, derivadas matriciales y momentos de vectores aleatorios.\n\n\n02La esperanza condicionalLa CEF como mejor predictor, ley de esperanzas iteradas, varianza total y el mejor predictor lineal. ★ La CEF como proyección en L².\n\n\n03Mínimos cuadrados ordinariosDerivación, ecuaciones normales, geometría, R² y el teorema de Frisch–Waugh–Lovell. ★ Leverage e influencia.\n\n\n04MCO en muestras finitasSupuestos clásicos, insesgamiento, varianza, la fórmula del VIF, Gauss–Markov y el estimador insesgado de σ². ★ Ridge le gana a MCO.\n\n\n05Inferencia exacta bajo normalidadNormal multivariada, formas cuadráticas χ², tests t y F, intervalos de confianza. ★ Mínimos cuadrados restringidos.\n\n\n06Teoría asintóticaConvergencia en probabilidad y distribución, LGN, TCL, función continua, Slutsky y método delta. ★ Op y demostración del TCL.\n\n\n07MCO en muestras grandesConsistencia, normalidad asintótica, varianza sándwich, errores estándar de White, tests de Wald. ★ Consistencia de White.\n\n\n08Errores de especificaciónSesgo por variable omitida, variables irrelevantes, multicolinealidad y sesgo de atenuación. ★ Error de medida con controles, RESET.\n\n\n09Mínimos cuadrados generalizadosTeorema de Aitken, MCP, errores AR(1) y Prais–Winsten, MCGF, Breusch–Pagan y Durbin–Watson. ★ Teorema de Kruskal.\n\n\n10Endogeneidad y variables instrumentalesFuentes de endogeneidad, VI, MC2E, identificación, distribución asintótica e instrumentos débiles. ★ Optimalidad de MC2E, Hausman, Sargan.\n\n\nCada clase se puede leer en la web o descargar en PDF (enlace “PDF” a la derecha de cada página).",
+    "crumbs": [
+      "Inicio",
+      "Econometría 1"
+    ]
+  },
+  {
+    "objectID": "econometria-1/index.html#requisitos",
+    "href": "econometria-1/index.html#requisitos",
+    "title": "Econometría 1",
+    "section": "Requisitos",
+    "text": "Requisitos\n\nPregrado: cálculo en varias variables, álgebra lineal básica (matrices, inversas, determinantes) y un curso de probabilidad y estadística (esperanza, varianza, distribuciones normal, \\(t\\) y \\(\\chi^2\\), tests de hipótesis).\nPostgrado: lo anterior más algo de análisis real (sucesiones, límites, argumentos \\(\\varepsilon\\)–\\(\\delta\\)). Las secciones ★ usan ocasionalmente ideas de teoría de la medida, siempre explicadas en el camino.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 1"
+    ]
+  },
+  {
+    "objectID": "econometria-1/index.html#notación",
+    "href": "econometria-1/index.html#notación",
+    "title": "Econometría 1",
+    "section": "Notación",
+    "text": "Notación\nA lo largo del curso: \\(n\\) observaciones, \\(k\\) regresores; \\(y\\) es \\(n\\times1\\), \\(X\\) es \\(n\\times k\\) con filas \\(x_i'\\); el modelo es \\(y = X\\beta + u\\). El estimador de MCO es \\(\\hat\\beta = (X'X)^{-1}X'y\\), con \\(P = X(X'X)^{-1}X'\\), \\(M = I - P\\), \\(\\hat y = Py\\) y \\(\\hat u = My\\). Vectores siempre columna; \\('\\) es la transpuesta; \\(A\\succeq B\\) significa que \\(A - B\\) es semidefinida positiva.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 1"
+    ]
+  },
+  {
+    "objectID": "econometria-1/index.html#bibliografía",
+    "href": "econometria-1/index.html#bibliografía",
+    "title": "Econometría 1",
+    "section": "Bibliografía",
+    "text": "Bibliografía\nEl curso no sigue un solo libro. Las fuentes principales, de menor a mayor nivel:\n\nWooldridge, J. (2019). Introductory Econometrics: A Modern Approach, 7.ª ed. Cengage. (Pregrado; la referencia para la intuición.)\nAngrist, J. y Pischke, J.-S. (2009). Mostly Harmless Econometrics. Princeton University Press. (La CEF, variables instrumentales y la mirada causal.)\nGoldberger, A. (1991). A Course in Econometrics. Harvard University Press. (El principio de analogía y la “micronumerosidad”.)\nGreene, W. (2018). Econometric Analysis, 8.ª ed. Pearson. (La enciclopedia.)\nHayashi, F. (2000). Econometrics. Princeton University Press. (Postgrado; muestras finitas y asintótica con mucho rigor.)\nHansen, B. (2022). Econometrics. Princeton University Press. (Postgrado; la referencia moderna, con la proyección lineal como objeto central.)\nCummings, J. (2019). Real Analysis: A Long-Form Mathematics Textbook. (No es de econometría, pero es el modelo de cómo se explican las demostraciones en este curso.)",
+    "crumbs": [
+      "Inicio",
+      "Econometría 1"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-09.html",
+    "href": "econometria-1/clase-09.html",
+    "title": "Clase 9 · Mínimos cuadrados generalizados",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Mínimos cuadrados generalizados"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-09.html#la-transformación-de-praiswinsten",
+    "href": "econometria-1/clase-09.html#la-transformación-de-praiswinsten",
+    "title": "Clase 9 · Mínimos cuadrados generalizados",
+    "section": "5.1 La transformación de Prais–Winsten",
+    "text": "5.1 La transformación de Prais–Winsten\nCalcular \\(\\Omega^{-1/2}\\) para una matriz \\(T\\times T\\) no es necesario. Basta con cualquier \\(P\\) tal que \\(\\operatorname{Var}(Pu) = \\sigma_\\varepsilon^2I\\) (entonces \\(P\\Omega P' = I\\), luego \\(P'P = \\Omega^{-1}\\) y el estimador es el mismo). Para el AR(1) hay una \\(P\\) muy natural: \\[\n(Pu)_1 = \\sqrt{1 - \\rho^2}\\,u_1, \\qquad (Pu)_t = u_t - \\rho u_{t-1}\\quad(t\\ge2).\n\\]\n\nTeorema 3 (Prais–Winsten) Con la \\(P\\) anterior, \\(\\operatorname{Var}(Pu) = \\sigma_\\varepsilon^2I_T\\). Por lo tanto, MCG en el modelo AR(1) es MCO en el modelo transformado \\[\n\\sqrt{1 - \\rho^2}\\,y_1 = \\sqrt{1 - \\rho^2}\\,x_1'\\beta + \\text{error}, \\qquad y_t - \\rho y_{t-1} = (x_t - \\rho x_{t-1})'\\beta + \\varepsilon_t\\quad(t\\ge2).\n\\]\n\n\nDemostración. Para \\(t\\ge2\\), \\((Pu)_t = u_t - \\rho u_{t-1} = \\varepsilon_t\\), con varianza \\(\\sigma_\\varepsilon^2\\). Para \\(t = 1\\), \\(\\operatorname{Var}(\\sqrt{1 - \\rho^2}u_1) = (1 - \\rho^2)\\gamma_0 = \\sigma_\\varepsilon^2\\) por Lema 1. Covarianzas: para \\(2\\le s&lt;t\\), \\(\\operatorname{Cov}(\\varepsilon_t, \\varepsilon_s) = 0\\) por supuesto. Para \\(t\\ge2\\), \\(\\operatorname{Cov}(\\varepsilon_t, u_1) = 0\\) porque \\(\\varepsilon_t\\) no está correlacionado con los errores pasados \\(u_{t-1}, u_{t-2},\\dots\\), entre los que está \\(u_1\\). Luego \\(\\operatorname{Var}(Pu) = \\sigma_\\varepsilon^2I\\). Como \\(P\\) es invertible (es triangular inferior con diagonal no nula), \\(P\\Omega P' = I\\) implica \\(\\Omega^{-1} = P'P\\), y MCO sobre \\((Py, PX)\\) es \\((X'P'PX)^{-1}X'P'Py = (X'\\Omega^{-1}X)^{-1}X'\\Omega^{-1}y\\).\n\nLa versión que descarta la primera observación se llama Cochrane–Orcutt. Es más simple, pero pierde eficiencia (a veces bastante, si \\(T\\) es chico o los regresores tienen tendencia).",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Mínimos cuadrados generalizados"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-09.html#heterocedasticidad-breuschpagan-y-white",
+    "href": "econometria-1/clase-09.html#heterocedasticidad-breuschpagan-y-white",
+    "title": "Clase 9 · Mínimos cuadrados generalizados",
+    "section": "7.1 Heterocedasticidad: Breusch–Pagan y White",
+    "text": "7.1 Heterocedasticidad: Breusch–Pagan y White\nSi \\(\\operatorname{Var}(u_i\\mid x_i) = \\sigma^2h(\\alpha_0 + z_i'\\alpha)\\) para alguna función \\(h\\) y variables \\(z_i\\) (de dimensión \\(p\\)), la hipótesis de homocedasticidad es \\(H_0:\\alpha = 0\\). El test de Breusch–Pagan (en la versión de Koenker, robusta a no normalidad) es:\n\nEstimar por MCO y obtener \\(\\hat u_i\\).\nRegresar \\(\\hat u_i^2\\) sobre \\((1, z_i)\\) y obtener el \\(R^2\\) de esa regresión auxiliar.\nRechazar si \\(\\text{LM} = nR^2\\) supera el cuantil de la \\(\\chi^2_p\\).\n\nLa lógica: bajo \\(H_0\\), \\(\\mathbb{E}[u_i^2\\mid z_i]\\) no depende de \\(z_i\\), así que \\(z_i\\) no debería predecir \\(\\hat u_i^2\\). El test de White es el caso particular en que \\(z_i\\) contiene los regresores, sus cuadrados y sus productos cruzados, y así detecta cualquier heterocedasticidad correlacionada con los segundos momentos de \\(x_i\\), que es justamente la que invalida los errores estándar clásicos (Clase 7).",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Mínimos cuadrados generalizados"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-09.html#autocorrelación-durbinwatson",
+    "href": "econometria-1/clase-09.html#autocorrelación-durbinwatson",
+    "title": "Clase 9 · Mínimos cuadrados generalizados",
+    "section": "7.2 Autocorrelación: Durbin–Watson",
+    "text": "7.2 Autocorrelación: Durbin–Watson\nEl estadístico clásico de Durbin–Watson es \\[\nd = \\frac{\\sum_{t=2}^T(\\hat u_t - \\hat u_{t-1})^2}{\\sum_{t=1}^T\\hat u_t^2}.\n\\] Expandiendo el numerador, \\[\nd = \\frac{\\sum_{t=2}^T\\hat u_t^2 + \\sum_{t=2}^T\\hat u_{t-1}^2 - 2\\sum_{t=2}^T\\hat u_t\\hat u_{t-1}}{\\sum_{t=1}^T\\hat u_t^2}\\approx 2 - 2\\hat\\rho = 2(1 - \\hat\\rho),\n\\] donde \\(\\hat\\rho = \\sum_{t\\ge2}\\hat u_t\\hat u_{t-1}/\\sum_t\\hat u_t^2\\) y la aproximación es que las dos primeras sumas del numerador difieren del denominador en un solo término cada una (\\(\\hat u_1^2\\) y \\(\\hat u_T^2\\)), despreciable con \\(T\\) grande. Así, \\(d\\approx2\\) indica ausencia de autocorrelación de primer orden, \\(d\\approx0\\) autocorrelación positiva fuerte y \\(d\\approx4\\) negativa fuerte. Su distribución exacta depende de \\(X\\) (por eso las tablas de Durbin–Watson traen cotas inferior y superior), y no es válido si hay variables dependientes rezagadas entre los regresores. Hoy suele preferirse el test de Breusch–Godfrey: regresar \\(\\hat u_t\\) sobre \\(x_t\\) y \\(\\hat u_{t-1},\\dots,\\hat u_{t-p}\\), y usar \\(nR^2\\sim\\chi^2_p\\) asintóticamente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Mínimos cuadrados generalizados"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-07.html",
+    "href": "econometria-1/clase-07.html",
+    "title": "Clase 7 · MCO en muestras grandes",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · MCO en muestras grandes"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-07.html#el-caso-homocedástico",
+    "href": "econometria-1/clase-07.html#el-caso-homocedástico",
+    "title": "Clase 7 · MCO en muestras grandes",
+    "section": "4.1 El caso homocedástico",
+    "text": "4.1 El caso homocedástico\n\nCorolario 1 (Varianza bajo homocedasticidad) Si además \\(\\mathbb{E}[u_i^2\\mid x_i] = \\sigma^2\\) (homocedasticidad condicional), entonces \\(\\Omega = \\sigma^2Q\\) y \\[\nV = \\sigma^2Q^{-1}.\n\\]\n\n\nDemostración. Por la LEI y “lo conocido sale” (Clase 2), \\[\n\\Omega = \\mathbb{E}[u_i^2x_ix_i'] = \\mathbb{E}\\big[\\mathbb{E}[u_i^2\\mid x_i]\\,x_ix_i'\\big] = \\mathbb{E}[\\sigma^2x_ix_i'] = \\sigma^2Q.\n\\] Entonces \\(V = Q^{-1}\\sigma^2QQ^{-1} = \\sigma^2Q^{-1}\\).\n\nEsta es la versión asintótica de \\(\\sigma^2(X'X)^{-1}\\): en efecto, \\(\\frac1n\\cdot\\sigma^2\\hat Q^{-1} = \\sigma^2(X'X)^{-1}\\). Bajo homocedasticidad, la fórmula clásica sigue siendo correcta en muestras grandes aunque los errores no sean normales. Sin homocedasticidad, no.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · MCO en muestras grandes"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-07.html#hipótesis-no-lineales",
+    "href": "econometria-1/clase-07.html#hipótesis-no-lineales",
+    "title": "Clase 7 · MCO en muestras grandes",
+    "section": "6.1 Hipótesis no lineales",
+    "text": "6.1 Hipótesis no lineales\nPara \\(H_0: h(\\beta) = 0\\) con \\(h:\\mathbb{R}^k\\to\\mathbb{R}^q\\) diferenciable y jacobiano \\(H = \\partial h/\\partial\\beta'\\) de rango \\(q\\), el método delta (Clase 6) da \\(\\sqrt n\\,h(\\hat\\beta)\\xrightarrow{d}N(0, HVH')\\) bajo \\(H_0\\), y el mismo argumento de Teorema 6 muestra que \\[\nW = n\\,h(\\hat\\beta)'\\big(\\hat H\\hat V\\hat H'\\big)^{-1}h(\\hat\\beta)\\xrightarrow{d}\\chi^2_q, \\qquad \\hat H = \\frac{\\partial h}{\\partial\\beta'}(\\hat\\beta).\n\\]",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · MCO en muestras grandes"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-07.html#correcciones-de-muestra-finita",
+    "href": "econometria-1/clase-07.html#correcciones-de-muestra-finita",
+    "title": "Clase 7 · MCO en muestras grandes",
+    "section": "6.2 Correcciones de muestra finita",
+    "text": "6.2 Correcciones de muestra finita\nHC0 tiende a subestimar la varianza en muestras chicas, por la misma razón que \\(\\hat\\sigma^2\\) subestima \\(\\sigma^2\\): los residuos son más chicos que los errores. Las variantes usuales, que usan el leverage \\(h_{ii}\\) de la Clase 3, son:\n\n\n\n\n\n\n\n\nNombre\nPeso de \\(x_ix_i'\\) en \\(\\hat\\Omega\\)\nComentario\n\n\n\n\nHC0\n\\(\\hat u_i^2\\)\nWhite (1980)\n\n\nHC1\n\\(\\frac{n}{n-k}\\hat u_i^2\\)\nPor defecto en Stata con robust\n\n\nHC2\n\\(\\hat u_i^2/(1 - h_{ii})\\)\nInsesgado bajo homocedasticidad\n\n\nHC3\n\\(\\hat u_i^2/(1 - h_{ii})^2\\)\nAproxima el jackknife; recomendado con \\(n\\) chico\n\n\n\nTodas son asintóticamente equivalentes (porque \\(\\max_ih_{ii}\\to0\\) bajo condiciones regulares), así que Teorema 3 vale para todas.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · MCO en muestras grandes"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-05.html",
+    "href": "econometria-1/clase-05.html",
+    "title": "Clase 5 · Inferencia exacta bajo normalidad",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Inferencia exacta bajo normalidad"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-05.html#tests-e-intervalos",
+    "href": "econometria-1/clase-05.html#tests-e-intervalos",
+    "title": "Clase 5 · Inferencia exacta bajo normalidad",
+    "section": "5.1 Tests e intervalos",
+    "text": "5.1 Tests e intervalos\nSea \\(c_{\\alpha/2}\\) el cuantil \\(1 - \\alpha/2\\) de la \\(t_{n-k}\\). Entonces:\n\nTest bilateral de nivel \\(\\alpha\\): rechazar \\(H_0:\\beta_j = \\beta_j^0\\) si \\(|t_j| &gt; c_{\\alpha/2}\\). Bajo \\(H_0\\), la probabilidad de rechazar es exactamente \\(\\alpha\\).\nIntervalo de confianza de nivel \\(1-\\alpha\\): \\(\\hat\\beta_j\\pm c_{\\alpha/2}\\operatorname{ee}(\\hat\\beta_j)\\). Contiene a \\(\\beta_j\\) con probabilidad exactamente \\(1-\\alpha\\), porque \\[\nP\\big(\\beta_j\\in\\hat\\beta_j\\pm c_{\\alpha/2}\\operatorname{ee}(\\hat\\beta_j)\\big) = P\\Big(\\Big|\\frac{\\hat\\beta_j - \\beta_j}{\\operatorname{ee}(\\hat\\beta_j)}\\Big|\\le c_{\\alpha/2}\\Big) = 1 - \\alpha.\n\\]\nValor \\(p\\): \\(p = P(|T|\\ge|t_j^{\\text{obs}}|)\\) con \\(T\\sim t_{n-k}\\). Es el menor nivel \\(\\alpha\\) al que se rechazaría.\n\n\n\n\n\n\n\nPrecauciónQué es (y qué no es) un intervalo de confianza\n\n\n\n“Tengo 95 % de confianza en que \\(\\beta_j\\in[0{,}3;\\,0{,}9]\\)” no significa que \\(P(\\beta_j\\in[0{,}3;0{,}9]) = 0{,}95\\). El parámetro \\(\\beta_j\\) es un número fijo: o está en el intervalo o no está. Lo aleatorio es el intervalo. El 95 % es una propiedad del procedimiento: si repites el muestreo muchas veces, el 95 % de los intervalos que construyas contendrá a \\(\\beta_j\\).2\n\n\n2 Si quieres decir “la probabilidad de que \\(\\beta_j\\) esté en el intervalo es 95 %”, tienes que volverte bayesiano, poner una distribución a priori sobre \\(\\beta_j\\) y calcular un intervalo de credibilidad. Con una a priori plana y errores normales, el intervalo resultante es numéricamente el mismo. La filosofía, no.\nEjemplo 1 (Un test \\(t\\)) En una regresión de \\(\\log(\\text{salario})\\) sobre una constante, años de educación y experiencia con \\(n = 53\\) observaciones, se obtiene \\(\\hat\\beta_{\\text{educ}} = 0{,}082\\) con \\(\\operatorname{ee} = 0{,}021\\). Con \\(n - k = 50\\) grados de libertad, \\(c_{0{,}025}\\approx2{,}009\\). El estadístico para \\(H_0:\\beta_{\\text{educ}} = 0\\) es \\(t = 0{,}082/0{,}021\\approx3{,}90 &gt; 2{,}009\\): se rechaza al 5 %. El intervalo al 95 % es \\(0{,}082\\pm2{,}009\\cdot0{,}021 = [0{,}040;\\,0{,}124]\\): cada año de educación se asocia con un salario entre 4 % y 12 % mayor, aproximadamente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Inferencia exacta bajo normalidad"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-05.html#la-forma-restringido-versus-no-restringido",
+    "href": "econometria-1/clase-05.html#la-forma-restringido-versus-no-restringido",
+    "title": "Clase 5 · Inferencia exacta bajo normalidad",
+    "section": "6.1 La forma “restringido versus no restringido”",
+    "text": "6.1 La forma “restringido versus no restringido”\nHay una forma equivalente del estadístico \\(F\\) que es mucho más fácil de calcular y de recordar. Sea \\(\\tilde\\beta\\) el estimador de mínimos cuadrados restringidos: el que minimiza \\(S(b) = (y - Xb)'(y - Xb)\\) sujeto a \\(Rb = r\\). Sea \\(\\text{SCR}_R = S(\\tilde\\beta)\\) su suma de residuos, y \\(\\text{SCR}_{NR} = S(\\hat\\beta) = (n-k)s^2\\) la del modelo sin restringir.\n\nTeorema 6 (\\(F\\) con sumas de residuos) \\[\nF = \\frac{(\\text{SCR}_R - \\text{SCR}_{NR})/q}{\\text{SCR}_{NR}/(n-k)}.\n\\]\n\nLa intuición es inmejorable: imponer restricciones empeora el ajuste; el test \\(F\\) pregunta si lo empeora “demasiado”. Si \\(H_0\\) es cierta, imponerla debería costar poco. La demostración está en la sección ★.\nUn caso particular importantísimo es el test de significancia global, \\(H_0:\\beta_2 = \\dots = \\beta_k = 0\\) (todos menos la constante). El modelo restringido solo tiene constante, así que \\(\\text{SCR}_R = \\text{SCT}\\), y dividiendo numerador y denominador por \\(\\text{SCT}\\), \\[\nF = \\frac{R^2/(k-1)}{(1 - R^2)/(n-k)}.\n\\]",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Inferencia exacta bajo normalidad"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-03.html",
+    "href": "econometria-1/clase-03.html",
+    "title": "Clase 3 · Mínimos cuadrados ordinarios",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Mínimos cuadrados ordinarios"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-03.html#el-caso-de-regresión-simple",
+    "href": "econometria-1/clase-03.html#el-caso-de-regresión-simple",
+    "title": "Clase 3 · Mínimos cuadrados ordinarios",
+    "section": "2.1 El caso de regresión simple",
+    "text": "2.1 El caso de regresión simple\nCon \\(x_i = (1, z_i)'\\), las dos ecuaciones normales son \\[\n\\sum_{i=1}^n (y_i - \\hat\\alpha - \\hat\\gamma z_i) = 0, \\qquad \\sum_{i=1}^n z_i(y_i - \\hat\\alpha - \\hat\\gamma z_i) = 0.\n\\] Dividiendo la primera por \\(n\\): \\(\\hat\\alpha = \\bar y - \\hat\\gamma\\bar z\\). Sustituyendo en la segunda y usando que \\(\\sum_i z_i(y_i - \\bar y) = \\sum_i (z_i - \\bar z)(y_i - \\bar y)\\) (porque \\(\\sum_i \\bar z(y_i - \\bar y) = 0\\)), y lo mismo para \\(z\\), \\[\n\\hat\\gamma = \\frac{\\sum_{i=1}^n (z_i - \\bar z)(y_i - \\bar y)}{\\sum_{i=1}^n (z_i - \\bar z)^2} = \\frac{\\widehat{\\operatorname{Cov}}(z,y)}{\\widehat{\\operatorname{Var}}(z)}.\n\\] Es la fórmula poblacional “covarianza sobre varianza” de la Clase 2, con momentos muestrales. El principio de analogía funciona.",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Mínimos cuadrados ordinarios"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-03.html#el-r2-nunca-baja",
+    "href": "econometria-1/clase-03.html#el-r2-nunca-baja",
+    "title": "Clase 3 · Mínimos cuadrados ordinarios",
+    "section": "4.1 El \\(R^2\\) nunca baja",
+    "text": "4.1 El \\(R^2\\) nunca baja\n\nTeorema 4 (Agregar regresores no reduce el \\(R^2\\)) Sean \\(X_1\\) (\\(n\\times k_1\\)) y \\(X = [X_1\\;X_2]\\) (\\(n\\times k\\)), ambas con la constante. Sean \\(\\text{SCR}_1\\) y \\(\\text{SCR}\\) las sumas de residuos de regresar \\(y\\) sobre \\(X_1\\) y sobre \\(X\\). Entonces \\(\\text{SCR}\\le\\text{SCR}_1\\), y por lo tanto \\(R^2\\ge R_1^2\\).\n\n\nDemostración. \\(\\text{SCR} = \\min_{b\\in\\mathbb{R}^k}\\|y - Xb\\|^2\\). El candidato particular \\(b = (\\hat\\beta_1', 0')'\\), donde \\(\\hat\\beta_1\\) es el MCO de la regresión corta, da \\(Xb = X_1\\hat\\beta_1\\). Luego \\[\n\\text{SCR} = \\min_b\\|y - Xb\\|^2 \\le \\|y - X_1\\hat\\beta_1\\|^2 = \\text{SCR}_1.\n\\] Como \\(\\text{SCT}\\) no depende de los regresores, \\(R^2 = 1 - \\text{SCR}/\\text{SCT}\\ge 1 - \\text{SCR}_1/\\text{SCT} = R_1^2\\).\n\nLa demostración es de una línea y la moraleja es importante: el \\(R^2\\) premia agregar basura. Agrega a tu regresión de salarios el número de letras del apellido de cada persona y el \\(R^2\\) subirá (o, con suerte, quedará igual).4 Por eso existe el \\(R^2\\) ajustado, \\[\n\\bar R^2 = 1 - \\frac{\\text{SCR}/(n-k)}{\\text{SCT}/(n-1)},\n\\] que penaliza con los grados de libertad y puede bajar al agregar regresores. La razón de dividir por \\(n - k\\) y \\(n-1\\) se verá en la Clase 4 (son los divisores que hacen insesgadas a las varianzas estimadas).\n4 Esto no es un chiste: con \\(k = n\\) regresores linealmente independientes, \\(\\operatorname{col}(X) = \\mathbb{R}^n\\), \\(\\hat y = y\\) y \\(R^2 = 1\\). Ajuste perfecto, poder predictivo nulo.",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Mínimos cuadrados ordinarios"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-03.html#tres-corolarios-que-usarás-siempre",
+    "href": "econometria-1/clase-03.html#tres-corolarios-que-usarás-siempre",
+    "title": "Clase 3 · Mínimos cuadrados ordinarios",
+    "section": "5.1 Tres corolarios que usarás siempre",
+    "text": "5.1 Tres corolarios que usarás siempre\n\nCorolario 1 (Incluir una constante es restar medias) En la regresión de \\(y\\) sobre \\([\\,\\iota\\;\\; Z\\,]\\), el coeficiente de \\(Z\\) es el MCO de \\((y - \\bar y)\\) sobre las columnas de \\(Z\\) en desvíos respecto de sus medias.\n\n\nDemostración. Aplica FWL con \\(X_2 = \\iota\\) y \\(X_1 = Z\\). Como vimos en la Clase 1, \\(M_2 = M^0\\), que resta la media.\n\n\nCorolario 2 (Coeficiente individual como regresión simple) En la regresión de \\(y\\) sobre \\([x_j\\;\\;X_{-j}]\\) (donde \\(X_{-j}\\) son los demás regresores, incluida la constante), \\[\n\\hat\\beta_j = \\frac{\\sum_i \\tilde x_{ij}\\,y_i}{\\sum_i\\tilde x_{ij}^2},\n\\] donde \\(\\tilde x_{ij}\\) son los residuos de regresar \\(x_j\\) sobre \\(X_{-j}\\).\n\n\nDemostración. Por FWL con \\(X_1 = x_j\\) (una columna), \\(\\hat\\beta_j = (\\tilde x_j'\\tilde x_j)^{-1}\\tilde x_j'\\tilde y\\). Y \\(\\tilde x_j'\\tilde y = x_j'M_{-j}M_{-j}y = \\tilde x_j'y\\), porque \\(M_{-j}\\) es simétrica e idempotente.\n\nNota que no hace falta purgar a \\(y\\): basta con purgar al regresor. Esto se usa en la Clase 4 para calcular la varianza de \\(\\hat\\beta_j\\) y en la Clase 8 para entender la multicolinealidad.\n\nCorolario 3 (Regresores ortogonales) Si \\(X_1'X_2 = 0\\), entonces \\(\\hat\\beta_1 = (X_1'X_1)^{-1}X_1'y\\): el coeficiente de \\(X_1\\) es el mismo en la regresión larga y en la corta (sin \\(X_2\\)).\n\n\nDemostración. Si \\(X_2'X_1 = 0\\), entonces \\(P_2X_1 = X_2(X_2'X_2)^{-1}X_2'X_1 = 0\\) y \\(M_2X_1 = X_1\\). FWL da \\(\\hat\\beta_1 = (X_1'X_1)^{-1}X_1'y\\).\n\nEste último corolario es el germen del sesgo por variable omitida (Clase 8): omitir \\(X_2\\) no cambia el coeficiente de \\(X_1\\) solo si son ortogonales en la muestra. Si no lo son, omitir \\(X_2\\) contamina \\(\\hat\\beta_1\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Mínimos cuadrados ordinarios"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-01.html",
+    "href": "econometria-1/clase-01.html",
+    "title": "Clase 1 · La caja de herramientas",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · La caja de herramientas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-01.html#raíz-cuadrada-de-una-matriz-definida-positiva",
+    "href": "econometria-1/clase-01.html#raíz-cuadrada-de-una-matriz-definida-positiva",
+    "title": "Clase 1 · La caja de herramientas",
+    "section": "10.1 Raíz cuadrada de una matriz definida positiva",
+    "text": "10.1 Raíz cuadrada de una matriz definida positiva\nSi \\(A\\succ 0\\), por el teorema espectral \\(A = Q\\Lambda Q'\\) con \\(\\lambda_j &gt; 0\\) (¿por qué? si \\(v\\) es vector propio unitario, \\(\\lambda_j = v'Av &gt; 0\\)). Definimos \\[\nA^{1/2} = Q\\Lambda^{1/2}Q', \\qquad A^{-1/2} = Q\\Lambda^{-1/2}Q',\n\\] con \\(\\Lambda^{\\pm1/2} = \\operatorname{diag}(\\lambda_1^{\\pm1/2},\\dots,\\lambda_m^{\\pm1/2})\\). Ambas son simétricas, \\(A^{1/2}A^{1/2} = Q\\Lambda^{1/2}Q'Q\\Lambda^{1/2}Q' = Q\\Lambda Q' = A\\) y, por el mismo cálculo, \\(A^{-1/2}AA^{-1/2} = I\\) y \\(A^{-1/2}A^{-1/2} = A^{-1}\\). Esta es la matriz que “estandariza” un vector: si \\(\\operatorname{Var}(z) = \\Sigma \\succ 0\\), entonces \\(\\operatorname{Var}(\\Sigma^{-1/2}z) = \\Sigma^{-1/2}\\Sigma\\Sigma^{-1/2} = I\\). En la Clase 9 esto es exactamente lo que hace mínimos cuadrados generalizados.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · La caja de herramientas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-01.html#el-orden-de-las-inversas",
+    "href": "econometria-1/clase-01.html#el-orden-de-las-inversas",
+    "title": "Clase 1 · La caja de herramientas",
+    "section": "10.2 El orden de las inversas",
+    "text": "10.2 El orden de las inversas\n\nTeorema 11 (Invertir da vuelta la desigualdad) Si \\(A \\succeq B \\succ 0\\), entonces \\(B^{-1} \\succeq A^{-1}\\).\n\nEs el análogo de “\\(a \\ge b &gt; 0 \\Rightarrow 1/b \\ge 1/a\\)”. Lo usaremos en la Clase 8 (agregar regresores irrelevantes aumenta la varianza) y en la Clase 9 (MCG es más eficiente que MCO).\n\n\n\n\n\n\nNotaBorrador\n\n\n\nCon escalares es trivial. Con matrices, la idea es “reducir al caso \\(B = I\\)”. Si \\(B = I\\) y \\(A \\succeq I\\), todos los valores propios de \\(A\\) son \\(\\ge 1\\), así que los de \\(A^{-1}\\) son \\(\\le 1\\), es decir, \\(A^{-1} \\preceq I\\). Para el caso general, “divido por \\(B\\)” de forma simétrica: \\(C = B^{-1/2}AB^{-1/2}\\). Entonces \\(A \\succeq B\\) se vuelve \\(C \\succeq I\\), aplico el caso fácil y deshago el cambio.\n\n\n\nDemostración. Sea \\(C = B^{-1/2}AB^{-1/2}\\), que es simétrica. Por Lema 2 (3) con la matriz \\(B^{-1/2}\\), \\[\nC - I = B^{-1/2}AB^{-1/2} - B^{-1/2}BB^{-1/2} = B^{-1/2}(A - B)B^{-1/2} \\succeq 0.\n\\] Si \\(v\\) es un vector propio unitario de \\(C\\) con valor propio \\(\\gamma\\), entonces \\(\\gamma - 1 = v'(C - I)v \\ge 0\\). Luego todos los valores propios de \\(C\\) son \\(\\ge 1 &gt; 0\\). Escribiendo \\(C = Q\\Gamma Q'\\) (teorema espectral), \\(C\\) es invertible, \\(C^{-1} = Q\\Gamma^{-1}Q'\\) y \\[\nI - C^{-1} = Q(I - \\Gamma^{-1})Q' \\succeq 0,\n\\] porque \\(I - \\Gamma^{-1}\\) es diagonal con entradas \\(1 - 1/\\gamma_j \\ge 0\\). Ahora bien, \\(C^{-1} = B^{1/2}A^{-1}B^{1/2}\\) (verifícalo multiplicando por \\(C\\)). Así, \\[\nB^{-1} - A^{-1} = B^{-1/2}\\big(I - B^{1/2}A^{-1}B^{1/2}\\big)B^{-1/2} = B^{-1/2}(I - C^{-1})B^{-1/2} \\succeq 0,\n\\] otra vez por Lema 2 (3).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · La caja de herramientas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-01.html#inversa-particionada",
+    "href": "econometria-1/clase-01.html#inversa-particionada",
+    "title": "Clase 1 · La caja de herramientas",
+    "section": "10.3 Inversa particionada",
+    "text": "10.3 Inversa particionada\n\nTeorema 12 (Inversa de una matriz por bloques) Sea \\[\nA = \\begin{pmatrix} A_{11} & A_{12}\\\\ A_{21} & A_{22}\\end{pmatrix}\n\\] invertible, con \\(A_{11}\\) y \\(A_{22}\\) cuadradas, \\(A_{22}\\) invertible, y sea \\(F = A_{11} - A_{12}A_{22}^{-1}A_{21}\\) (el complemento de Schur de \\(A_{22}\\)), también invertible. Entonces el bloque \\((1,1)\\) de \\(A^{-1}\\) es \\(F^{-1}\\): \\[\nA^{-1} = \\begin{pmatrix} F^{-1} & -F^{-1}A_{12}A_{22}^{-1}\\\\ -A_{22}^{-1}A_{21}F^{-1} & A_{22}^{-1} + A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}\\end{pmatrix}.\n\\]\n\n\nDemostración. Basta multiplicar \\(A\\) por la matriz propuesta, llamémosla \\(B\\), y verificar que da la identidad. Bloque \\((1,1)\\) de \\(AB\\): \\[\nA_{11}F^{-1} - A_{12}A_{22}^{-1}A_{21}F^{-1} = (A_{11} - A_{12}A_{22}^{-1}A_{21})F^{-1} = FF^{-1} = I.\n\\] Bloque \\((1,2)\\): \\[\n-A_{11}F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}\n= -\\big(A_{11} - A_{12}A_{22}^{-1}A_{21}\\big)F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} = 0.\n\\] Bloque \\((2,1)\\): \\(A_{21}F^{-1} - A_{22}A_{22}^{-1}A_{21}F^{-1} = 0\\). Bloque \\((2,2)\\): \\[\n-A_{21}F^{-1}A_{12}A_{22}^{-1} + I + A_{21}F^{-1}A_{12}A_{22}^{-1} = I.\n\\] Luego \\(AB = I\\) y, como \\(A\\) es cuadrada, \\(B = A^{-1}\\).\n\nAplicado a \\(A = X'X\\) con \\(X = [X_1 \\; X_2]\\), el complemento de Schur es \\(F = X_1'X_1 - X_1'X_2(X_2'X_2)^{-1}X_2'X_1 = X_1'M_2X_1\\), donde \\(M_2 = I - X_2(X_2'X_2)^{-1}X_2'\\). Es decir, \\[\n\\big[(X'X)^{-1}\\big]_{11} = (X_1'M_2X_1)^{-1}.\n\\tag{3}\\] Guarda esta fórmula: en la Clase 3 la redescubriremos con el teorema de Frisch–Waugh–Lovell, y en la Clase 4 nos dará la fórmula de la varianza de un coeficiente individual.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · La caja de herramientas"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Econometría",
+    "section": "",
+    "text": "Tres cursos · teoría y demostraciones\n\n\n\nUn recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender por qué funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.\n\n\n\\[\\hat\\beta \\;=\\; (X'X)^{-1}X'y \\;=\\; \\beta + \\Big(\\tfrac{1}{n}\\textstyle\\sum_i x_ix_i'\\Big)^{-1}\\tfrac{1}{n}\\textstyle\\sum_i x_iu_i\\]"
+  },
+  {
+    "objectID": "index.html#cómo-están-escritos",
+    "href": "index.html#cómo-están-escritos",
+    "title": "Econometría",
+    "section": "Cómo están escritos",
+    "text": "Cómo están escritos\n\n\n\nBorrador antes que demostración\n\n\nAntes de cada demostración hay un recuadro donde se piensa en voz alta: qué se sabe, qué se quiere, qué truco podría servir. La demostración formal viene después, limpia y con cada paso justificado.\n\n\n\n\nNotas al margen\n\n\nContexto histórico, advertencias, conexiones con otras clases y alguna que otra broma. Leerlas es opcional; saltárselas, también.\n\n\n\n\nDos niveles en un mismo texto\n\n\nEl núcleo de cada clase es de pregrado. Las secciones marcadas con ★ llevan el mismo tema a nivel de postgrado, sin cambiar de notación ni de libro.\n\n\n\n\nEjercicios con solución\n\n\nCada clase termina con ejercicios de ambos niveles. Las soluciones están plegadas: primero se intenta, después se mira."
+  },
+  {
+    "objectID": "index.html#un-ejemplo-del-estilo",
+    "href": "index.html#un-ejemplo-del-estilo",
+    "title": "Econometría",
+    "section": "Un ejemplo del estilo",
+    "text": "Un ejemplo del estilo\n\n\n\n\n\n\nNotaBorrador\n\n\n\nQuiero mostrar que \\(X'Xb = 0\\) implica \\(Xb = 0\\). No puedo “cancelar” \\(X'\\) porque no tiene inversa. ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y \\(\\|Xb\\|^2 = b'X'Xb\\)… ¡que tiene un \\(X'Xb\\) adentro! Es el truco de multiplicar por \\(b'\\) a la izquierda.\n\n\n\nDemostración. Si \\(X'Xb = 0\\), entonces \\(0 = b'X'Xb = (Xb)'(Xb) = \\|Xb\\|^2 = \\sum_i (Xb)_i^2\\). Una suma de cuadrados es cero solo si cada término lo es, luego \\(Xb = 0\\).\n\n\nEste es un fragmento de la Clase 1, donde se usa para demostrar que \\(X'X\\) es invertible exactamente cuando \\(X\\) tiene rango columna completo."
+  },
+  {
+    "objectID": "econometria-1/clase-02.html",
+    "href": "econometria-1/clase-02.html",
+    "title": "Clase 2 · La esperanza condicional",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · La esperanza condicional"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-02.html#el-caso-de-un-regresor",
+    "href": "econometria-1/clase-02.html#el-caso-de-un-regresor",
+    "title": "Clase 2 · La esperanza condicional",
+    "section": "6.1 El caso de un regresor",
+    "text": "6.1 El caso de un regresor\nCon \\(x = (1, z)'\\) la fórmula matricial se convierte en algo familiar. Escribiendo \\(\\beta = (\\alpha, \\gamma)'\\), las dos ecuaciones de \\(\\mathbb{E}[xu] = 0\\) son \\[\n\\mathbb{E}[y - \\alpha - \\gamma z] = 0, \\qquad \\mathbb{E}[z(y - \\alpha - \\gamma z)] = 0.\n\\] De la primera, \\(\\alpha = \\mathbb{E}[y] - \\gamma\\mathbb{E}[z]\\). Reemplazando en la segunda, \\[\n\\mathbb{E}[zy] - \\mathbb{E}[z]\\mathbb{E}[y] - \\gamma\\big(\\mathbb{E}[z^2] - (\\mathbb{E}z)^2\\big) = 0\n\\quad\\Longrightarrow\\quad\n\\gamma = \\frac{\\operatorname{Cov}(z,y)}{\\operatorname{Var}(z)}.\n\\] La pendiente de la mejor recta es covarianza sobre varianza. Esta fórmula vale siempre (si \\(\\operatorname{Var}(z) &gt; 0\\)), sea cual sea la forma de la CEF.",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · La esperanza condicional"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-04.html",
+    "href": "econometria-1/clase-04.html",
+    "title": "Clase 4 · MCO en muestras finitas",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · MCO en muestras finitas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-04.html#la-varianza-de-un-coeficiente-individual",
+    "href": "econometria-1/clase-04.html#la-varianza-de-un-coeficiente-individual",
+    "title": "Clase 4 · MCO en muestras finitas",
+    "section": "4.1 La varianza de un coeficiente individual",
+    "text": "4.1 La varianza de un coeficiente individual\nLa matriz \\(\\sigma^2(X'X)^{-1}\\) es compacta pero opaca. ¿De qué depende la precisión de un coeficiente, \\(\\hat\\beta_j\\)? FWL da una respuesta muy iluminadora.\n\nTeorema 3 (Varianza de \\(\\hat\\beta_j\\)) Supongamos RL1–RL4 y que \\(X\\) contiene una constante. Para un regresor no constante \\(x_j\\), sean \\(\\text{SCT}_j = \\sum_i(x_{ij} - \\bar x_j)^2\\) y \\(R_j^2\\) el \\(R^2\\) de la regresión de \\(x_j\\) sobre los demás regresores (incluida la constante). Entonces \\[\n\\operatorname{Var}(\\hat\\beta_j\\mid X) = \\frac{\\sigma^2}{\\text{SCT}_j\\,(1 - R_j^2)}.\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nFWL (Clase 3) dice que \\(\\hat\\beta_j = \\tilde x_j'y/\\tilde x_j'\\tilde x_j\\), donde \\(\\tilde x_j\\) son los residuos de regresar \\(x_j\\) sobre los demás. Esto es una combinación lineal de \\(y\\) con pesos \\(w = \\tilde x_j/(\\tilde x_j'\\tilde x_j)\\), así que su varianza es \\(\\sigma^2 w'w = \\sigma^2/(\\tilde x_j'\\tilde x_j)\\). Y \\(\\tilde x_j'\\tilde x_j\\) es la suma de residuos al cuadrado de esa regresión auxiliar, que por definición de \\(R^2\\) es \\(\\text{SCT}_j(1-R_j^2)\\).\n\n\n\nDemostración. Sea \\(X_{-j}\\) la matriz de los demás regresores (que contiene la constante) y \\(\\tilde x_j = M_{-j}x_j\\). Por FWL (Clase 3, corolario del coeficiente individual), \\(\\hat\\beta_j = w'y\\) con \\(w = \\tilde x_j/(\\tilde x_j'\\tilde x_j)\\), un vector que depende solo de \\(X\\). Por RL4, \\[\n\\operatorname{Var}(\\hat\\beta_j\\mid X) = w'\\operatorname{Var}(y\\mid X)w = w'\\operatorname{Var}(u\\mid X)w = \\sigma^2w'w = \\sigma^2\\frac{\\tilde x_j'\\tilde x_j}{(\\tilde x_j'\\tilde x_j)^2} = \\frac{\\sigma^2}{\\tilde x_j'\\tilde x_j}.\n\\] Ahora, \\(\\tilde x_j'\\tilde x_j\\) es la \\(\\text{SCR}\\) de la regresión auxiliar de \\(x_j\\) sobre \\(X_{-j}\\), que tiene constante, así que su \\(\\text{SCT}\\) es \\(\\text{SCT}_j\\) y \\(\\text{SCR} = \\text{SCT}_j(1-R_j^2)\\) por definición de \\(R_j^2\\).\n\nEsta fórmula es una joya pedagógica. La precisión de \\(\\hat\\beta_j\\) depende de tres cosas, y solo de tres:\n\n\\(\\sigma^2\\): más ruido en \\(y\\), menos precisión.\n\\(\\text{SCT}_j\\): más variación en \\(x_j\\), más precisión. (Crece con \\(n\\), típicamente al ritmo de \\(n\\).)\n\\(1 - R_j^2\\): si \\(x_j\\) es casi explicable por los demás regresores (\\(R_j^2\\approx1\\)), casi no queda variación “propia” de \\(x_j\\) para identificar su efecto. Esto es la multicolinealidad, y \\(1/(1 - R_j^2)\\) se llama factor de inflación de varianza (VIF). Volveremos a esto en la Clase 8.\n\nPara el caso de regresión simple (\\(R_j^2 = 0\\), pues el único otro regresor es la constante), \\(\\operatorname{Var}(\\hat\\gamma\\mid X) = \\sigma^2/\\sum_i(z_i - \\bar z)^2\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · MCO en muestras finitas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-04.html#varianza-incondicional",
+    "href": "econometria-1/clase-04.html#varianza-incondicional",
+    "title": "Clase 4 · MCO en muestras finitas",
+    "section": "7.1 Varianza incondicional",
+    "text": "7.1 Varianza incondicional\nPor la ley de varianza total en su versión matricial (misma demostración que en la Clase 2), \\[\n\\operatorname{Var}(\\hat\\beta) = \\mathbb{E}\\big[\\operatorname{Var}(\\hat\\beta\\mid X)\\big] + \\operatorname{Var}\\big(\\mathbb{E}[\\hat\\beta\\mid X]\\big) = \\sigma^2\\,\\mathbb{E}\\big[(X'X)^{-1}\\big] + \\operatorname{Var}(\\beta) = \\sigma^2\\,\\mathbb{E}\\big[(X'X)^{-1}\\big].\n\\] Y si \\(\\tilde\\beta\\) es lineal e insesgado condicional en \\(X\\), lo mismo da \\(\\operatorname{Var}(\\tilde\\beta) = \\mathbb{E}[\\operatorname{Var}(\\tilde\\beta\\mid X)]\\), así que \\[\n\\operatorname{Var}(\\tilde\\beta) - \\operatorname{Var}(\\hat\\beta) = \\sigma^2\\,\\mathbb{E}[CC']\\succeq0.\n\\] Gauss–Markov vale también incondicionalmente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · MCO en muestras finitas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-04.html#un-estimador-sesgado-que-le-gana-a-mco",
+    "href": "econometria-1/clase-04.html#un-estimador-sesgado-que-le-gana-a-mco",
+    "title": "Clase 4 · MCO en muestras finitas",
+    "section": "7.2 Un estimador sesgado que le gana a MCO",
+    "text": "7.2 Un estimador sesgado que le gana a MCO\nConsideremos el caso más simple: un único regresor sin constante, \\(y_i = \\beta x_i + u_i\\), bajo RL1–RL4. Sea \\(a = \\sum_ix_i^2 = x'x\\). El estimador ridge con parámetro \\(\\lambda\\ge0\\) es \\[\n\\hat\\beta_\\lambda = \\frac{x'y}{a + \\lambda}.\n\\] Con \\(\\lambda = 0\\) es MCO. Para \\(\\lambda &gt; 0\\) “encoge” la estimación hacia cero.\n\nTeorema 6 (Ridge mejora a MCO en error cuadrático medio) Si \\(\\beta\\ne0\\), el error cuadrático medio condicional \\(\\text{ECM}(\\lambda) = \\mathbb{E}[(\\hat\\beta_\\lambda - \\beta)^2\\mid X]\\) es estrictamente decreciente en \\([0, \\sigma^2/\\beta^2]\\). En particular, existe \\(\\lambda &gt; 0\\) con \\(\\text{ECM}(\\lambda) &lt; \\text{ECM}(0) = \\operatorname{Var}(\\hat\\beta\\mid X)\\).\n\n\nDemostración. Como \\(x'y = a\\beta + x'u\\), se tiene \\(\\mathbb{E}[\\hat\\beta_\\lambda\\mid X] = \\frac{a\\beta}{a + \\lambda}\\) y \\(\\operatorname{Var}(\\hat\\beta_\\lambda\\mid X) = \\frac{\\sigma^2a}{(a + \\lambda)^2}\\). El sesgo es \\(\\frac{a\\beta}{a+\\lambda} - \\beta = -\\frac{\\lambda\\beta}{a + \\lambda}\\). Luego \\[\n\\text{ECM}(\\lambda) = \\text{varianza} + \\text{sesgo}^2 = \\frac{\\sigma^2a + \\lambda^2\\beta^2}{(a + \\lambda)^2}.\n\\] Derivando con la regla del cociente, \\[\n\\text{ECM}'(\\lambda) = \\frac{2\\lambda\\beta^2(a+\\lambda)^2 - 2(a+\\lambda)(\\sigma^2a + \\lambda^2\\beta^2)}{(a+\\lambda)^4}\n= \\frac{2\\big[\\lambda\\beta^2(a + \\lambda) - \\sigma^2a - \\lambda^2\\beta^2\\big]}{(a+\\lambda)^3}\n= \\frac{2a(\\lambda\\beta^2 - \\sigma^2)}{(a + \\lambda)^3}.\n\\] Para \\(0\\le\\lambda&lt;\\sigma^2/\\beta^2\\) el numerador es negativo, así que ECM es estrictamente decreciente ahí.\n\nEl mínimo se alcanza en \\(\\lambda^* = \\sigma^2/\\beta^2\\) y vale \\(\\text{ECM}(\\lambda^*) = \\sigma^2/(a + \\sigma^2/\\beta^2) &lt; \\sigma^2/a\\). Claro, \\(\\lambda^*\\) depende de \\(\\beta\\) y \\(\\sigma^2\\), que no conocemos. En la práctica \\(\\lambda\\) se elige por validación cruzada, y en dimensión \\(k\\ge3\\) el estimador de James–Stein (1961) logra dominar a MCO uniformemente en \\(\\beta\\) (bajo normalidad), un resultado que todavía hoy le parece a mucha gente un truco de magia.3\n3 El “fenómeno de Stein” dice que para estimar tres o más medias normales independientes, conviene encogerlas todas hacia un punto común, aunque no tengan nada que ver entre sí. Estimar juntos el precio del té en China, la estatura media de los chilenos y el número de goles de un equipo mejora (en ECM total) si los encoges hacia un punto común. Efron y Morris escribieron un artículo precioso sobre esto en Scientific American (1977).",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · MCO en muestras finitas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-04.html#hace-falta-lineal",
+    "href": "econometria-1/clase-04.html#hace-falta-lineal",
+    "title": "Clase 4 · MCO en muestras finitas",
+    "section": "7.3 ¿Hace falta “lineal”?",
+    "text": "7.3 ¿Hace falta “lineal”?\nHansen (2022, Econometrica) presentó una versión de Gauss–Markov en la que se elimina la restricción de linealidad: bajo \\(\\mathbb{E}[y\\mid X] = X\\beta\\) y \\(\\operatorname{Var}(y\\mid X) = \\sigma^2 I\\) para una clase amplia de distribuciones, MCO tiene varianza mínima entre todos los estimadores insesgados. Pötscher y Preinerstorfer (2022) respondieron que, en esa clase tan amplia de distribuciones, los estimadores insesgados resultan ser esencialmente lineales, de modo que el resultado “nuevo” es cercano al clásico. El debate es un buen recordatorio de que en optimalidad la clase de modelos contra la que exiges insesgamiento es tan importante como la clase de estimadores.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · MCO en muestras finitas"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html",
+    "href": "econometria-1/clase-06.html",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#dos-desigualdades",
+    "href": "econometria-1/clase-06.html#dos-desigualdades",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "2.1 Dos desigualdades",
+    "text": "2.1 Dos desigualdades\nPara probar convergencia en probabilidad hay que acotar probabilidades de colas. La herramienta básica es sorprendentemente simple.\n\nLema 1 (Desigualdad de Markov) Si \\(W\\ge0\\) y \\(a&gt;0\\), entonces \\(P(W\\ge a)\\le\\dfrac{\\mathbb{E}[W]}{a}\\).\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nSi \\(W\\) es no negativa y tiene media \\(\\mathbb{E}W\\), no puede ser “muy grande con mucha probabilidad”, porque eso subiría la media. ¿Cómo lo formalizo? Comparo \\(W\\) con una variable más chica cuya esperanza sea fácil: la función que vale \\(a\\) cuando \\(W\\ge a\\) y \\(0\\) si no. Es decir, \\(a\\cdot\\mathbb{1}\\{W\\ge a\\}\\). Siempre es \\(\\le W\\) (dibújalo), y su esperanza es \\(a\\,P(W\\ge a)\\).\n\n\n\nDemostración. Para todo resultado posible, \\(a\\,\\mathbb{1}\\{W\\ge a\\}\\le W\\): si \\(W\\ge a\\), el lado izquierdo es \\(a\\le W\\); si \\(W&lt;a\\), el lado izquierdo es \\(0\\le W\\). Tomando esperanza (que preserva desigualdades), \\[\na\\,P(W\\ge a) = \\mathbb{E}\\big[a\\,\\mathbb{1}\\{W\\ge a\\}\\big]\\le\\mathbb{E}[W].\n\\] Dividiendo por \\(a&gt;0\\) se obtiene el resultado.\n\n\nLema 2 (Desigualdad de Chebyshev) Si \\(\\mathbb{E}[Z^2]&lt;\\infty\\) y \\(\\varepsilon &gt; 0\\), entonces \\(P(|Z - c|&gt;\\varepsilon)\\le\\dfrac{\\mathbb{E}[(Z - c)^2]}{\\varepsilon^2}\\) para toda constante \\(c\\). En particular, \\(P(|Z - \\mathbb{E}Z| &gt; \\varepsilon)\\le\\operatorname{Var}(Z)/\\varepsilon^2\\).\n\n\nDemostración. \\(|Z - c|&gt;\\varepsilon\\) implica \\((Z - c)^2 \\ge \\varepsilon^2\\). Por Markov con \\(W = (Z - c)^2\\) y \\(a = \\varepsilon^2\\), \\[\nP(|Z - c|&gt;\\varepsilon)\\le P\\big((Z-c)^2\\ge\\varepsilon^2\\big)\\le\\frac{\\mathbb{E}[(Z - c)^2]}{\\varepsilon^2}.\n\\]",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#la-ley-de-los-grandes-números",
+    "href": "econometria-1/clase-06.html#la-ley-de-los-grandes-números",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "2.2 La ley de los grandes números",
+    "text": "2.2 La ley de los grandes números\n\nTeorema 1 (Ley débil de los grandes números) Sean \\(Z_1, Z_2,\\dots\\) i.i.d. con \\(\\mathbb{E}[Z_i] = \\mu\\) y \\(\\operatorname{Var}(Z_i) = \\sigma^2&lt;\\infty\\). Entonces \\[\n\\bar Z_n = \\frac1n\\sum_{i=1}^nZ_i\\xrightarrow{p}\\mu.\n\\]\n\n\nDemostración. Por linealidad, \\(\\mathbb{E}[\\bar Z_n] = \\mu\\). Por independencia (las covarianzas cruzadas son cero), \\[\n\\operatorname{Var}(\\bar Z_n) = \\frac{1}{n^2}\\sum_{i=1}^n\\operatorname{Var}(Z_i) = \\frac{n\\sigma^2}{n^2} = \\frac{\\sigma^2}{n}.\n\\] Sea \\(\\varepsilon&gt;0\\). Por Chebyshev, \\[\nP(|\\bar Z_n - \\mu|&gt;\\varepsilon)\\le\\frac{\\sigma^2}{n\\varepsilon^2}\\xrightarrow[n\\to\\infty]{}0.\n\\]\n\nLa demostración es tan corta que parece trampa. La clave es que la varianza del promedio es \\(\\sigma^2/n\\): promediar reduce la varianza al ritmo \\(1/n\\). El supuesto de varianza finita se puede debilitar: la LGN de Khinchine solo pide \\(\\mathbb{E}|Z_i|&lt;\\infty\\), pero su demostración requiere un argumento de truncamiento que omitimos.2 También se pueden relajar “idénticamente distribuidas” e incluso “independientes”: en la demostración solo usamos que la varianza del promedio tiende a cero.\n2 Esa versión es la que realmente usa la econometría, porque en la Clase 7 querremos aplicar la LGN a \\(x_ix_i'u_i^2\\), y pedirle segundo momento a eso sería pedir cuartos momentos de los datos. El truncamiento es una idea preciosa: se corta la variable en un nivel que crece con \\(n\\) y se controla por separado el pedazo cortado.La demostración anterior en realidad prueba algo más fuerte, que merece nombre propio.\n\nTeorema 2 (Convergencia en media cuadrática implica convergencia en probabilidad) Si \\(\\mathbb{E}[(Z_n - c)^2]\\to0\\), entonces \\(Z_n\\xrightarrow{p}c\\). En particular, si \\(\\mathbb{E}[Z_n]\\to c\\) y \\(\\operatorname{Var}(Z_n)\\to0\\), entonces \\(Z_n\\xrightarrow{p}c\\).\n\n\nDemostración. La primera afirmación es Chebyshev: \\(P(|Z_n - c|&gt;\\varepsilon)\\le\\mathbb{E}[(Z_n - c)^2]/\\varepsilon^2\\to0\\). Para la segunda, \\(\\mathbb{E}[(Z_n - c)^2] = \\operatorname{Var}(Z_n) + (\\mathbb{E}Z_n - c)^2\\to0 + 0\\).\n\nEsta es la herramienta más práctica para probar consistencia: si un estimador es asintóticamente insesgado y su varianza tiende a cero, es consistente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#el-teorema-de-la-función-continua",
+    "href": "econometria-1/clase-06.html#el-teorema-de-la-función-continua",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "2.3 El teorema de la función continua",
+    "text": "2.3 El teorema de la función continua\nLa LGN nos da la convergencia de promedios. Pero los estimadores no son promedios: \\(\\hat\\beta\\) es una inversa de un promedio por otro promedio. Necesitamos saber que la convergencia se preserva al aplicar funciones.\n\nTeorema 3 (Teorema de la función continua (en probabilidad)) Si \\(Z_n\\xrightarrow{p}c\\) (vectores en \\(\\mathbb{R}^m\\)) y \\(g:\\mathbb{R}^m\\to\\mathbb{R}^p\\) es continua en \\(c\\), entonces \\(g(Z_n)\\xrightarrow{p}g(c)\\).\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nContinuidad en \\(c\\) dice: para cada \\(\\varepsilon\\) existe \\(\\delta\\) tal que “\\(\\|z - c\\|\\le\\delta\\Rightarrow\\|g(z) - g(c)\\|\\le\\varepsilon\\)”. Tomando contrapositiva: “\\(\\|g(z) - g(c)\\|&gt;\\varepsilon\\Rightarrow\\|z - c\\|&gt;\\delta\\)”. Es decir, el evento malo para \\(g(Z_n)\\) está contenido en un evento malo para \\(Z_n\\). Y la probabilidad del evento malo para \\(Z_n\\) tiende a cero. ¡Es literalmente la definición de continuidad escrita en eventos!\n\n\n\nDemostración. Sea \\(\\varepsilon&gt;0\\). Por continuidad de \\(g\\) en \\(c\\), existe \\(\\delta&gt;0\\) tal que \\(\\|z - c\\|\\le\\delta\\) implica \\(\\|g(z) - g(c)\\|\\le\\varepsilon\\). Por contrapositiva, \\(\\|g(Z_n) - g(c)\\|&gt;\\varepsilon\\) implica \\(\\|Z_n - c\\|&gt;\\delta\\), es decir, \\[\n\\big\\{\\|g(Z_n) - g(c)\\|&gt;\\varepsilon\\big\\}\\subseteq\\big\\{\\|Z_n - c\\|&gt;\\delta\\big\\}.\n\\] Por monotonía de la probabilidad y porque \\(Z_n\\xrightarrow{p}c\\), \\[\nP\\big(\\|g(Z_n) - g(c)\\|&gt;\\varepsilon\\big)\\le P\\big(\\|Z_n - c\\|&gt;\\delta\\big)\\xrightarrow[n\\to\\infty]{}0.\n\\]\n\nConsecuencias inmediatas: si \\(A_n\\xrightarrow{p}A\\) y \\(b_n\\xrightarrow{p}b\\), entonces \\(A_n + b_n\\xrightarrow{p}A + b\\), \\(A_nb_n\\xrightarrow{p}Ab\\) y, si \\(A\\) es invertible, \\(A_n^{-1}\\xrightarrow{p}A^{-1}\\) (la inversión de matrices es continua en las matrices invertibles, porque las entradas de la inversa son cocientes de polinomios con denominador \\(\\det A\\ne0\\)). Esto es lo que hará funcionar la consistencia de MCO en la Clase 7.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#el-teorema-central-del-límite",
+    "href": "econometria-1/clase-06.html#el-teorema-central-del-límite",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "3.1 El teorema central del límite",
+    "text": "3.1 El teorema central del límite\n\nTeorema 4 (Teorema central del límite (Lindeberg–Lévy)) Sean \\(Z_1, Z_2, \\dots\\) i.i.d. con \\(\\mathbb{E}[Z_i] = \\mu\\) y \\(0 &lt; \\operatorname{Var}(Z_i) = \\sigma^2&lt;\\infty\\). Entonces \\[\n\\sqrt n\\,(\\bar Z_n - \\mu)\\xrightarrow{d}N(0,\\sigma^2).\n\\] Versión multivariada: si los \\(Z_i\\in\\mathbb{R}^m\\) son i.i.d. con media \\(\\mu\\) y varianza \\(\\Sigma\\) finita, entonces \\(\\sqrt n(\\bar Z_n - \\mu)\\xrightarrow{d}N(0,\\Sigma)\\).\n\n\n\n\n\n\n\nFigura 1: Densidad de \\(\\sqrt n(\\bar X_n - \\mu)/\\sigma\\) para datos exponenciales (muy asimétricos), estimada por simulación. Con \\(n = 50\\) ya es difícil distinguirla de la normal.\n\n\n\nLa normalización \\(\\sqrt n\\) es la correcta: \\(\\operatorname{Var}(\\bar Z_n - \\mu) = \\sigma^2/n\\), así que \\(\\operatorname{Var}(\\sqrt n(\\bar Z_n - \\mu)) = \\sigma^2\\), que ni explota ni colapsa. La LGN dice que \\(\\bar Z_n - \\mu\\) tiende a cero; el TCL dice a qué velocidad (\\(1/\\sqrt n\\)) y con qué forma (normal). La demostración está en la sección ★. La versión multivariada se deduce de la escalar con el siguiente truco.\n\nTeorema 5 (Cramér–Wold) \\(Z_n\\xrightarrow{d}Z\\) en \\(\\mathbb{R}^m\\) si y solo si \\(a'Z_n\\xrightarrow{d}a'Z\\) para todo \\(a\\in\\mathbb{R}^m\\).\n\n(Lo aceptamos sin demostración: requiere funciones características.) Con él, el TCL multivariado es inmediato: para \\(a\\) fijo, los \\(a'Z_i\\) son i.i.d. escalares con media \\(a'\\mu\\) y varianza \\(a'\\Sigma a\\), así que \\(a'\\sqrt n(\\bar Z_n - \\mu)\\xrightarrow{d}N(0, a'\\Sigma a)\\), que es la distribución de \\(a'W\\) con \\(W\\sim N(0,\\Sigma)\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#slutsky-y-la-función-continua-en-distribución",
+    "href": "econometria-1/clase-06.html#slutsky-y-la-función-continua-en-distribución",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "3.2 Slutsky y la función continua (en distribución)",
+    "text": "3.2 Slutsky y la función continua (en distribución)\n\nTeorema 6 (Teorema de la función continua (en distribución)) Si \\(Z_n\\xrightarrow{d}Z\\) y \\(g\\) es continua, entonces \\(g(Z_n)\\xrightarrow{d}g(Z)\\).\n\n\nTeorema 7 (Slutsky) Si \\(Z_n\\xrightarrow{d}Z\\) y \\(W_n\\xrightarrow{p}c\\) (constante), entonces:\n\n\\(Z_n + W_n\\xrightarrow{d}Z + c\\);\n\\(W_nZ_n\\xrightarrow{d}cZ\\);\n\\(Z_n/W_n\\xrightarrow{d}Z/c\\) si \\(c\\ne0\\).\n\nLo mismo vale con vectores y matrices de dimensiones compatibles (por ejemplo, \\(W_n^{-1}Z_n\\xrightarrow{d}C^{-1}Z\\) si \\(W_n\\xrightarrow{p}C\\) invertible).\n\nSlutsky es el caballo de batalla de la econometría asintótica. Dice que las piezas que convergen en probabilidad a constantes se pueden reemplazar por sus límites. Demostramos la parte (1) en la sección ★ para ver cómo funcionan estos argumentos.\n\nEjemplo 1 (El estadístico \\(t\\) sin normalidad) Sean \\(x_1,\\dots,x_n\\) i.i.d. con media \\(\\mu\\) y varianza \\(0&lt;\\sigma^2&lt;\\infty\\), sin suponer normalidad. Sea \\(S^2 = \\frac{1}{n-1}\\sum_i(x_i - \\bar x)^2\\). Entonces \\[\nT_n = \\frac{\\sqrt n(\\bar x - \\mu)}{S}\\xrightarrow{d}N(0,1).\n\\] Demostración. Por el TCL, \\(\\sqrt n(\\bar x - \\mu)\\xrightarrow{d}N(0,\\sigma^2)\\). Para el denominador, escribimos \\[\nS^2 = \\frac{n}{n-1}\\Big(\\frac1n\\sum_ix_i^2 - \\bar x^2\\Big).\n\\] Por la LGN (aplicada a \\(x_i^2\\), que tiene media \\(\\sigma^2 + \\mu^2\\); si solo suponemos segundos momentos finitos, se usa la LGN de Khinchine) y a \\(x_i\\), \\(\\frac1n\\sum x_i^2\\xrightarrow{p}\\sigma^2 + \\mu^2\\) y \\(\\bar x\\xrightarrow{p}\\mu\\). Por el teorema de la función continua, \\(S^2\\xrightarrow{p}1\\cdot(\\sigma^2 + \\mu^2 - \\mu^2) = \\sigma^2\\), y de nuevo por continuidad (la raíz), \\(S\\xrightarrow{p}\\sigma&gt;0\\). Por Slutsky (3), \\(T_n\\xrightarrow{d}N(0,\\sigma^2)/\\sigma = N(0,1)\\). \\(\\square\\)\nMoraleja: el test \\(t\\) de la Clase 5 es asintóticamente válido sin normalidad. Con \\(n\\) grande, usar cuantiles de la \\(t\\) o de la \\(N(0,1)\\) da prácticamente lo mismo, y ambos son correctos en el límite.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#órdenes-estocásticos",
+    "href": "econometria-1/clase-06.html#órdenes-estocásticos",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "5.1 Órdenes estocásticos",
+    "text": "5.1 Órdenes estocásticos\n\nDefinición 3 (\\(O_p\\) y \\(o_p\\)) Sea \\(\\{a_n\\}\\) una sucesión positiva. Escribimos\n\n\\(Z_n = o_p(a_n)\\) si \\(Z_n/a_n\\xrightarrow{p}0\\);\n\\(Z_n = O_p(a_n)\\) si \\(Z_n/a_n\\) está acotada en probabilidad: para todo \\(\\varepsilon&gt;0\\) existen \\(B&lt;\\infty\\) y \\(N\\) tales que \\(P(|Z_n/a_n|&gt;B)&lt;\\varepsilon\\) para todo \\(n\\ge N\\).\n\n\nAsí, la LGN dice \\(\\bar Z_n - \\mu = o_p(1)\\) y el TCL (vía el lema siguiente) dice \\(\\bar Z_n - \\mu = O_p(n^{-1/2})\\): el error de estimación es “del orden de \\(1/\\sqrt n\\)”.\n\nLema 3 (Convergencia en distribución implica \\(O_p(1)\\)) Si \\(Z_n\\xrightarrow{d}Z\\), entonces \\(Z_n = O_p(1)\\).\n\n\nDemostración. Sea \\(\\varepsilon&gt;0\\). Como \\(F_Z(z)\\to1\\) cuando \\(z\\to\\infty\\) y \\(F_Z(z)\\to0\\) cuando \\(z\\to-\\infty\\), y \\(F_Z\\) tiene a lo más una cantidad numerable de discontinuidades, podemos elegir \\(B&gt;0\\) tal que \\(\\pm B\\) son puntos de continuidad de \\(F_Z\\) y \\(F_Z(-B) + 1 - F_Z(B)&lt;\\varepsilon/2\\). Por convergencia en distribución, \\(P(Z_n\\le -B) + 1 - P(Z_n\\le B)\\to F_Z(-B) + 1 - F_Z(B)\\), así que para \\(n\\) grande esa suma es \\(&lt;\\varepsilon\\). Y \\(P(|Z_n|&gt;B)\\le P(Z_n\\le-B) + P(Z_n&gt;B)\\), que es esa suma.\n\nLas reglas de cálculo son las que esperarías: \\(o_p(1) + o_p(1) = o_p(1)\\), \\(O_p(1)\\cdot o_p(1) = o_p(1)\\), \\(O_p(1) + O_p(1) = O_p(1)\\). Demostremos la segunda, que es la más usada: si \\(X_n = O_p(1)\\) e \\(Y_n = o_p(1)\\), dado \\(\\varepsilon,\\eta&gt;0\\) elige \\(B\\) con \\(P(|X_n|&gt;B)&lt;\\varepsilon/2\\) para \\(n\\) grande; entonces \\[\nP(|X_nY_n|&gt;\\eta)\\le P(|X_n|&gt;B) + P(|Y_n|&gt;\\eta/B)&lt;\\varepsilon/2 + \\varepsilon/2\n\\] para \\(n\\) grande, porque \\(\\{|X_nY_n|&gt;\\eta\\}\\subseteq\\{|X_n|&gt;B\\}\\cup\\{|Y_n|&gt;\\eta/B\\}\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#una-parte-de-slutsky",
+    "href": "econometria-1/clase-06.html#una-parte-de-slutsky",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "5.2 Una parte de Slutsky",
+    "text": "5.2 Una parte de Slutsky\n\nDemostración. (de Teorema 7, parte 1, caso \\(c = 0\\)). Sea \\(Z_n\\xrightarrow{d}Z\\) y \\(W_n\\xrightarrow{p}0\\). Sea \\(z\\) un punto de continuidad de \\(F_Z\\) y \\(\\varepsilon&gt;0\\) tal que \\(z\\pm\\varepsilon\\) también son puntos de continuidad (posible porque las discontinuidades son numerables). Como \\(\\{Z_n + W_n\\le z\\}\\subseteq\\{Z_n\\le z + \\varepsilon\\}\\cup\\{|W_n|&gt;\\varepsilon\\}\\), \\[\nP(Z_n + W_n\\le z)\\le P(Z_n\\le z + \\varepsilon) + P(|W_n|&gt;\\varepsilon)\\to F_Z(z + \\varepsilon).\n\\] Y como \\(\\{Z_n\\le z - \\varepsilon\\}\\subseteq\\{Z_n + W_n\\le z\\}\\cup\\{|W_n|&gt;\\varepsilon\\}\\), \\[\nP(Z_n + W_n\\le z)\\ge P(Z_n\\le z - \\varepsilon) - P(|W_n|&gt;\\varepsilon)\\to F_Z(z - \\varepsilon).\n\\] Luego \\(F_Z(z - \\varepsilon)\\le\\liminf P(Z_n + W_n\\le z)\\le\\limsup P(Z_n + W_n\\le z)\\le F_Z(z + \\varepsilon)\\). Haciendo \\(\\varepsilon\\downarrow0\\) (por puntos de continuidad), la continuidad de \\(F_Z\\) en \\(z\\) da \\(\\lim P(Z_n + W_n\\le z) = F_Z(z)\\). El caso \\(c\\ne0\\) se reduce a este escribiendo \\(Z_n + W_n = (Z_n + c) + (W_n - c)\\) y notando que \\(Z_n + c\\xrightarrow{d}Z + c\\) trivialmente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-06.html#demostración-del-tcl",
+    "href": "econometria-1/clase-06.html#demostración-del-tcl",
+    "title": "Clase 6 · Teoría asintótica",
+    "section": "5.3 Demostración del TCL",
+    "text": "5.3 Demostración del TCL\nUsaremos la función característica \\(\\varphi_Z(t) = \\mathbb{E}[e^{itZ}]\\) y dos hechos que aceptamos:\n\n(Lévy) \\(Z_n\\xrightarrow{d}Z\\) si y solo si \\(\\varphi_{Z_n}(t)\\to\\varphi_Z(t)\\) para todo \\(t\\in\\mathbb{R}\\).\nLa función característica de la \\(N(0,1)\\) es \\(e^{-t^2/2}\\).\n\n\nLema 4 (Diferencia de productos) Si \\(a_1,\\dots,a_n,b_1,\\dots,b_n\\) son complejos con \\(|a_j|,|b_j|\\le1\\), entonces \\(\\big|\\prod_ja_j - \\prod_jb_j\\big|\\le\\sum_j|a_j - b_j|\\).\n\n\nDemostración. Por inducción en \\(n\\). El caso \\(n = 1\\) es trivial. Para el paso inductivo, \\[\n\\Big|\\prod_{j=1}^na_j - \\prod_{j=1}^nb_j\\Big| \\le |a_n|\\,\\Big|\\prod_{j&lt;n}a_j - \\prod_{j&lt;n}b_j\\Big| + \\Big|\\prod_{j&lt;n}b_j\\Big|\\,|a_n - b_n| \\le \\sum_{j&lt;n}|a_j - b_j| + |a_n - b_n|,\n\\] sumando y restando \\(a_n\\prod_{j&lt;n}b_j\\) y usando \\(|a_n|\\le1\\), \\(|\\prod_{j&lt;n} b_j|\\le1\\) y la hipótesis inductiva.\n\n\nDemostración. (del TCL, caso escalar). Sin pérdida de generalidad \\(\\mu = 0\\) y \\(\\sigma^2 = 1\\) (si no, se aplica a \\((Z_i - \\mu)/\\sigma\\)). Sea \\(\\varphi\\) la función característica de \\(Z_1\\) y \\(S_n = \\sqrt n\\bar Z_n = n^{-1/2}\\sum_iZ_i\\). Por independencia, \\[\n\\varphi_{S_n}(t) = \\mathbb{E}\\Big[\\prod_{i=1}^ne^{itZ_i/\\sqrt n}\\Big] = \\prod_{i=1}^n\\mathbb{E}\\big[e^{itZ_i/\\sqrt n}\\big] = \\varphi(t/\\sqrt n)^n.\n\\] Expansión de \\(\\varphi\\). Para todo real \\(x\\) se cumple \\(\\big|e^{ix} - 1 - ix + \\tfrac{x^2}{2}\\big|\\le\\min\\big(|x|^3/6,\\; x^2\\big)\\) (resto de Taylor de orden 2 y de orden 3; ver Ejercicio 6.7). Tomando \\(x = sZ_1\\) y esperanza, con \\(\\mathbb{E}Z_1 = 0\\) y \\(\\mathbb{E}Z_1^2 = 1\\), \\[\n\\Big|\\varphi(s) - 1 + \\frac{s^2}{2}\\Big|\\le\\mathbb{E}\\big[\\min(|s|^3|Z_1|^3/6,\\; s^2Z_1^2)\\big] = s^2\\,\\mathbb{E}\\big[\\min(|s||Z_1|^3/6,\\;Z_1^2)\\big].\n\\] El integrando está dominado por \\(Z_1^2\\) (integrable) y tiende a cero cuando \\(s\\to0\\), así que, por convergencia dominada, \\(\\varphi(s) = 1 - \\frac{s^2}{2} + s^2\\rho(s)\\) con \\(\\rho(s)\\to0\\) cuando \\(s\\to0\\).\nComparación con el límite. Fijemos \\(t\\). Para \\(n\\) grande, \\(1 - t^2/(2n)\\in[0,1]\\). Aplicamos Lema 4 con \\(a_j = \\varphi(t/\\sqrt n)\\) y \\(b_j = 1 - \\frac{t^2}{2n}\\) (ambos de módulo \\(\\le1\\)): \\[\n\\Big|\\varphi(t/\\sqrt n)^n - \\Big(1 - \\frac{t^2}{2n}\\Big)^n\\Big|\\le n\\,\\Big|\\varphi(t/\\sqrt n) - 1 + \\frac{t^2}{2n}\\Big| = n\\cdot\\frac{t^2}{n}\\,|\\rho(t/\\sqrt n)| = t^2|\\rho(t/\\sqrt n)|\\to0.\n\\] Finalmente, \\(\\big(1 - \\frac{t^2}{2n}\\big)^n\\to e^{-t^2/2}\\) (el límite clásico \\((1 + x/n)^n\\to e^x\\)). Luego \\(\\varphi_{S_n}(t)\\to e^{-t^2/2}\\) para todo \\(t\\) y, por Lévy, \\(S_n\\xrightarrow{d}N(0,1)\\).\n\nNota dónde se usó cada supuesto: la independencia para factorizar \\(\\varphi_{S_n}\\), la distribución idéntica para que todos los factores sean iguales, y el segundo momento finito para la expansión de Taylor. Sin segundo momento el TCL falla: la media de \\(n\\) variables Cauchy i.i.d. vuelve a ser Cauchy, para todo \\(n\\).3\n3 La Cauchy es el villano favorito de los cursos de probabilidad: no tiene media, así que promediar no ayuda en absoluto. Promediar un millón de observaciones Cauchy da exactamente la misma precisión que una sola. Por suerte, en econometría casi nunca aparece… excepto como cociente de dos normales, que es justamente lo que aparece en el Ejercicio 10.6 con instrumentos irrelevantes.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Teoría asintótica"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html",
+    "href": "econometria-1/clase-08.html",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#el-caso-de-un-regresor",
+    "href": "econometria-1/clase-08.html#el-caso-de-un-regresor",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "2.1 El caso de un regresor",
+    "text": "2.1 El caso de un regresor\nCon un regresor de interés \\(x\\), una constante y una variable omitida \\(w\\), el modelo verdadero es \\(y = \\alpha + \\beta x + \\gamma w + u\\) y el sesgo del coeficiente de la regresión corta es \\[\n\\mathbb{E}[\\tilde\\beta\\mid X] - \\beta = \\gamma\\,\\hat\\delta, \\qquad \\hat\\delta = \\frac{\\sum_i(x_i - \\bar x)(w_i - \\bar w)}{\\sum_i(x_i - \\bar x)^2},\n\\] donde \\(\\hat\\delta\\) es la pendiente de regresar \\(w\\) sobre \\(x\\). Su signo sigue una tabla que vale la pena memorizar:\n\n\n\n\n\\(\\operatorname{Corr}(x,w)&gt;0\\)\n\\(\\operatorname{Corr}(x,w)&lt;0\\)\n\n\n\n\n\\(\\gamma &gt; 0\\)\nsesgo positivo\nsesgo negativo\n\n\n\\(\\gamma &lt; 0\\)\nsesgo negativo\nsesgo positivo\n\n\n\n\nEjemplo 1 (El retorno a la educación y la habilidad) En \\(\\log(\\text{salario}) = \\alpha + \\beta\\,\\text{educ} + \\gamma\\,\\text{habilidad} + u\\), la habilidad no se observa. Es razonable pensar que \\(\\gamma&gt;0\\) (la habilidad sube el salario) y que habilidad y educación están positivamente correlacionadas (a quien le va bien estudiando, estudia más). La tabla dice: el MCO corto sobreestima el retorno a la educación. Parte de lo que atribuimos a la educación es en realidad habilidad. Esta es probablemente la discusión más famosa de la economía laboral, y la motivación de la Clase 10.2\n2 Lo curioso es que cuando se usan variables instrumentales (Clase 10), las estimaciones del retorno a la educación suelen salir mayores que las de MCO, no menores. Card (1999) discute por qué. Resulta que el sesgo por habilidad no es el único en juego: también hay error de medida en la educación, que sesga hacia abajo (lo vemos más adelante en esta clase).",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#versión-asintótica",
+    "href": "econometria-1/clase-08.html#versión-asintótica",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "2.2 Versión asintótica",
+    "text": "2.2 Versión asintótica\nCon muestreo i.i.d. (Clase 7), el sesgo no desaparece con \\(n\\). Si \\(y_i = x_{1i}'\\beta_1 + x_{2i}'\\beta_2 + u_i\\) con \\(\\mathbb{E}[x_iu_i] = 0\\), entonces \\[\n\\tilde\\beta_1\\xrightarrow{p}\\beta_1 + \\mathbb{E}[x_{1i}x_{1i}']^{-1}\\mathbb{E}[x_{1i}x_{2i}']\\,\\beta_2 = \\beta_1 + \\Pi\\beta_2,\n\\] por la LGN y la función continua aplicadas a \\(\\tilde\\beta_1 = \\beta_1 + \\hat Q_{11}^{-1}\\hat Q_{12}\\beta_2 + \\hat Q_{11}^{-1}\\frac1n\\sum_i x_{1i}u_i\\). El estimador corto es inconsistente para \\(\\beta_1\\): converge, con toda seguridad, al número equivocado. (Lo que sí estima consistentemente es el coeficiente de la proyección corta, que es un objeto distinto; ver el Ejercicio 2.6.)",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#el-dilema-sesgovarianza",
+    "href": "econometria-1/clase-08.html#el-dilema-sesgovarianza",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "3.1 El dilema sesgo–varianza",
+    "text": "3.1 El dilema sesgo–varianza\nJuntando Teorema 1 y Teorema 2: si dudas de si incluir \\(X_2\\),\n\nSi la incluyes y era irrelevante: pagas varianza.\nSi la omites y era relevante: pagas sesgo.\n\nCon una sola variable de interés, el error cuadrático medio del estimador corto es \\(\\text{ECM}(\\tilde\\beta_1) = \\operatorname{Var}(\\tilde\\beta_1) + (\\text{sesgo})^2\\), y puede ser menor que el del largo si \\(\\beta_2\\) es chico. Pero como el sesgo no desaparece con \\(n\\) y la varianza sí, en muestras grandes siempre gana incluir. Esto justifica la regla práctica de ser generoso con los controles, con una excepción importante: los malos controles, variables que son ellas mismas resultado del regresor de interés (Ejercicio 8.5).",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#en-la-variable-dependiente",
+    "href": "econometria-1/clase-08.html#en-la-variable-dependiente",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "5.1 En la variable dependiente",
+    "text": "5.1 En la variable dependiente\nSi observamos \\(y = y^* + v\\) en lugar de \\(y^*\\), con \\(v\\) un error de medida con media cero no correlacionado con \\(x\\), entonces \\(y = x'\\beta + (u + v)\\). El error compuesto \\(u + v\\) sigue cumpliendo \\(\\mathbb{E}[x(u + v)] = 0\\), así que MCO sigue siendo consistente. El único costo es más varianza (\\(\\operatorname{Var}(u + v)&gt;\\operatorname{Var}(u)\\) si \\(u\\) y \\(v\\) no están correlacionados). El error de medida en \\(y\\) es inocuo (salvo por precisión).",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#en-un-regresor-el-sesgo-de-atenuación",
+    "href": "econometria-1/clase-08.html#en-un-regresor-el-sesgo-de-atenuación",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "5.2 En un regresor: el sesgo de atenuación",
+    "text": "5.2 En un regresor: el sesgo de atenuación\nEl caso interesante es cuando el regresor está mal medido. Consideremos el modelo con un regresor: \\[\ny_i = \\alpha + \\beta x_i^* + u_i,\n\\] pero no observamos \\(x_i^*\\) sino \\(x_i = x_i^* + v_i\\), donde \\(v_i\\) es el error de medida.\n\n\n\n\n\n\nPrecauciónSupuestos del error de medida clásico\n\n\n\n\\((x_i^*, u_i, v_i)\\) i.i.d., con \\(\\mathbb{E}[u_i] = \\mathbb{E}[v_i] = 0\\), \\(\\operatorname{Var}(x_i^*) = \\sigma_*^2&gt;0\\), \\(\\operatorname{Var}(v_i) = \\sigma_v^2\\), y \\(u_i\\), \\(v_i\\), \\(x_i^*\\) mutuamente no correlacionados.\n\n\n\nTeorema 3 (Sesgo de atenuación) Bajo los supuestos anteriores, la pendiente de MCO de \\(y\\) sobre \\((1, x)\\) satisface \\[\n\\hat\\beta\\xrightarrow{p}\\lambda\\beta, \\qquad \\lambda = \\frac{\\sigma_*^2}{\\sigma_*^2 + \\sigma_v^2}\\in(0, 1].\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nSustituyo \\(x^* = x - v\\) en el modelo: \\(y = \\alpha + \\beta x + (u - \\beta v)\\). El nuevo “error” es \\(u - \\beta v\\), y ahí está el problema: \\(v\\) está dentro de \\(x\\) y dentro del error. Así que el regresor está correlacionado con el error: \\(\\operatorname{Cov}(x, u - \\beta v) = \\operatorname{Cov}(x^* + v, u - \\beta v) = -\\beta\\sigma_v^2\\).\nPara el límite, uso que la pendiente converge a \\(\\operatorname{Cov}(x,y)/\\operatorname{Var}(x)\\) (la pendiente de la proyección lineal, Clases 2 y 7). \\(\\operatorname{Cov}(x,y) = \\operatorname{Cov}(x^* + v, \\alpha + \\beta x^* + u) = \\beta\\sigma_*^2\\) y \\(\\operatorname{Var}(x) = \\sigma_*^2 + \\sigma_v^2\\).\n\n\n\nDemostración. La pendiente de MCO es \\(\\hat\\beta = \\widehat{\\operatorname{Cov}}(x,y)/\\widehat{\\operatorname{Var}}(x)\\) (Clase 3). Por la LGN y la función continua (como en la Clase 7), \\(\\hat\\beta\\xrightarrow{p}\\operatorname{Cov}(x_i,y_i)/\\operatorname{Var}(x_i)\\), siempre que \\(\\operatorname{Var}(x_i)&gt;0\\). Calculamos, usando bilinealidad de la covarianza y los supuestos de no correlación: \\[\n\\operatorname{Cov}(x_i,y_i) = \\operatorname{Cov}(x_i^* + v_i,\\;\\alpha + \\beta x_i^* + u_i) = \\beta\\operatorname{Var}(x_i^*) + \\operatorname{Cov}(x_i^*,u_i) + \\beta\\operatorname{Cov}(v_i,x_i^*) + \\operatorname{Cov}(v_i,u_i) = \\beta\\sigma_*^2,\n\\] \\[\n\\operatorname{Var}(x_i) = \\operatorname{Var}(x_i^*) + \\operatorname{Var}(v_i) + 2\\operatorname{Cov}(x_i^*,v_i) = \\sigma_*^2 + \\sigma_v^2.\n\\] Luego \\(\\hat\\beta\\xrightarrow{p}\\beta\\sigma_*^2/(\\sigma_*^2 + \\sigma_v^2) = \\lambda\\beta\\).\n\n\n\n\n\n\n\nFigura 1: Con error de medida clásico en el regresor, la pendiente estimada se aplana. Aquí \\(\\sigma_v^2 = \\sigma_*^2\\), así que \\(\\lambda = 1/2\\).\n\n\n\nEl factor \\(\\lambda\\) es la razón señal-ruido (o fiabilidad) de \\(x\\): la fracción de la varianza de \\(x\\) que es señal. Como \\(0&lt;\\lambda\\le1\\), el estimador está sesgado hacia cero: tiene el signo correcto, pero es más chico en valor absoluto. Por eso se llama sesgo de atenuación. La intuición visual de la figura: el ruido esparce los puntos horizontalmente, y una nube más ancha con la misma variación vertical tiene una pendiente más plana.\nUn comentario sobre el contraste con el error en \\(y\\): el error de medida es inocuo en \\(y\\) y dañino en \\(x\\) porque MCO trata asimétricamente a \\(y\\) y a \\(x\\). Minimiza distancias verticales; el ruido vertical se promedia, el horizontal no.",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#error-de-medida-en-regresión-múltiple",
+    "href": "econometria-1/clase-08.html#error-de-medida-en-regresión-múltiple",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "6.1 Error de medida en regresión múltiple",
+    "text": "6.1 Error de medida en regresión múltiple\nSupongamos \\(y_i = \\beta x_i^* + w_i'\\gamma + u_i\\), con \\(w_i\\) (que incluye la constante) bien medido y \\(x_i = x_i^* + v_i\\) con error de medida clásico (\\(v_i\\) no correlacionado con \\(x_i^*\\), \\(w_i\\), \\(u_i\\)). Por FWL, el coeficiente de \\(x\\) en la regresión de \\(y\\) sobre \\((x, w)\\) converge a \\(\\operatorname{Cov}(\\tilde x_i, y_i)/\\operatorname{Var}(\\tilde x_i)\\), donde \\(\\tilde x_i\\) es el residuo de la proyección lineal de \\(x_i\\) sobre \\(w_i\\). Sea \\(\\tilde x_i^*\\) el residuo de proyectar \\(x_i^*\\) sobre \\(w_i\\). Como \\(v_i\\) no está correlacionado con \\(w_i\\), la proyección de \\(x_i = x_i^* + v_i\\) sobre \\(w_i\\) es la de \\(x_i^*\\), y \\(\\tilde x_i = \\tilde x_i^* + v_i\\). Entonces \\[\n\\hat\\beta\\xrightarrow{p}\\beta\\,\\frac{\\operatorname{Var}(\\tilde x_i^*)}{\\operatorname{Var}(\\tilde x_i^*) + \\sigma_v^2} = \\beta\\,\\lambda_w,\n\\qquad \\lambda_w = \\frac{\\sigma_*^2(1 - \\rho^2)}{\\sigma_*^2(1 - \\rho^2) + \\sigma_v^2}\\le\\lambda,\n\\] donde \\(\\rho^2\\) es el \\(R^2\\) poblacional de proyectar \\(x^*\\) sobre \\(w\\). (Para el numerador: \\(\\operatorname{Cov}(\\tilde x_i, y_i) = \\operatorname{Cov}(\\tilde x_i^* + v_i,\\;\\beta x_i^* + w_i'\\gamma + u_i) = \\beta\\operatorname{Var}(\\tilde x_i^*)\\), porque \\(\\tilde x_i^*\\) es ortogonal a \\(w_i\\) y \\(\\operatorname{Cov}(\\tilde x_i^*, x_i^*) = \\operatorname{Var}(\\tilde x_i^*)\\).) Dos lecciones:\n\nAgregar controles empeora la atenuación. Los controles se llevan parte de la señal de \\(x^*\\) (la parte predecible por \\(w\\)), pero nada del ruido. La razón señal-ruido del residuo es menor. Esto es especialmente grave en regresiones con efectos fijos (Econometría 2): al restar medias por individuo se elimina mucha señal y poco ruido.\nEl sesgo se contagia. Los coeficientes de \\(w\\) también quedan sesgados: parte del efecto de \\(x^*\\) que \\(x\\) no logra capturar es absorbida por las variables de \\(w\\) correlacionadas con \\(x^*\\) (Ejercicio 8.7).",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-08.html#el-test-reset",
+    "href": "econometria-1/clase-08.html#el-test-reset",
+    "title": "Clase 8 · Errores de especificación",
+    "section": "6.2 El test RESET",
+    "text": "6.2 El test RESET\nSi la CEF no es lineal, la regresión lineal es solo una aproximación (Clase 2). Ramsey (1969) propuso un test simple de mala especificación de forma funcional: agregar potencias de los valores ajustados y testear si importan. Se estima \\[\ny_i = x_i'\\beta + \\delta_1\\hat y_i^2 + \\delta_2\\hat y_i^3 + \\text{error}\n\\] y se testea \\(H_0:\\delta_1 = \\delta_2 = 0\\) con un test \\(F\\) (o de Wald robusto, Clase 7). La lógica: si la CEF fuera \\(x'\\beta\\), ninguna función no lineal de \\(x\\) debería ayudar a predecir \\(y\\) (por la descomposición de la CEF de la Clase 2, el error de la CEF no está correlacionado con ninguna función de \\(x\\)). El test tiene poder contra muchas alternativas, pero no dice cuál es la forma correcta: detecta el problema, no lo arregla.",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Errores de especificación"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html",
+    "href": "econometria-1/clase-10.html",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html#el-caso-simple",
+    "href": "econometria-1/clase-10.html#el-caso-simple",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "3.1 El caso simple",
+    "text": "3.1 El caso simple\nEmpecemos con un regresor endógeno y una constante: \\(y_i = \\alpha + \\beta x_i + u_i\\) con \\(\\mathbb{E}[u_i] = 0\\) y \\(\\operatorname{Cov}(x_i,u_i)\\ne0\\). Supongamos que tenemos una variable \\(z_i\\) que cumple:\n\n\n\n\n\n\nPrecauciónCondiciones de un instrumento válido\n\n\n\n\nExogeneidad (o exclusión): \\(\\operatorname{Cov}(z_i, u_i) = 0\\). El instrumento no está relacionado con los determinantes no observados de \\(y\\); solo afecta a \\(y\\) a través de \\(x\\).\nRelevancia: \\(\\operatorname{Cov}(z_i, x_i)\\ne0\\). El instrumento efectivamente mueve al regresor.\n\n\n\nCon esto, \\(\\beta\\) queda determinado por los momentos poblacionales. Tomando covarianza con \\(z_i\\) en ambos lados del modelo, \\[\n\\operatorname{Cov}(z_i, y_i) = \\beta\\operatorname{Cov}(z_i, x_i) + \\operatorname{Cov}(z_i,u_i) = \\beta\\operatorname{Cov}(z_i,x_i),\n\\] y, por relevancia, \\[\n\\beta = \\frac{\\operatorname{Cov}(z_i,y_i)}{\\operatorname{Cov}(z_i,x_i)}.\n\\tag{1}\\] Esta es una fórmula de identificación: escribe el parámetro causal en términos de momentos de variables observables. El principio de analogía hace el resto: \\[\n\\hat\\beta_{\\text{VI}} = \\frac{\\sum_i(z_i - \\bar z)(y_i - \\bar y)}{\\sum_i(z_i - \\bar z)(x_i - \\bar x)}.\n\\]\nCompara con MCO, que es \\(\\widehat{\\operatorname{Cov}}(x,y)/\\widehat{\\operatorname{Var}}(x)\\): VI reemplaza “\\(x\\) consigo mismo” por “\\(x\\) con \\(z\\)” en el denominador, y “\\(x\\) con \\(y\\)” por “\\(z\\) con \\(y\\)” en el numerador. Solo usa la variación de \\(x\\) que viene de \\(z\\), que por exogeneidad está “limpia” de \\(u\\).\nHay otra forma de escribir Ecuación 1 que da mucha intuición. Dividiendo numerador y denominador por \\(\\operatorname{Var}(z)\\), \\[\n\\beta = \\frac{\\operatorname{Cov}(z,y)/\\operatorname{Var}(z)}{\\operatorname{Cov}(z,x)/\\operatorname{Var}(z)} = \\frac{\\text{efecto de } z \\text{ en } y \\text{ (forma reducida)}}{\\text{efecto de } z \\text{ en } x \\text{ (primera etapa)}}.\n\\] Si el instrumento sube \\(x\\) en 2 unidades y sube \\(y\\) en 1 unidad, y solo afecta a \\(y\\) a través de \\(x\\), entonces cada unidad de \\(x\\) sube \\(y\\) en \\(1/2\\). Es una regla de tres.\n\nEjemplo 1 (El estimador de Wald) Si \\(z_i\\in\\{0,1\\}\\) es binario (por ejemplo, haber sido sorteado para recibir un voucher escolar), entonces (Ejercicio 10.3) \\[\n\\beta = \\frac{\\mathbb{E}[y\\mid z = 1] - \\mathbb{E}[y\\mid z = 0]}{\\mathbb{E}[x\\mid z = 1] - \\mathbb{E}[x\\mid z = 0]}.\n\\] Angrist (1990) usó el sorteo de reclutamiento para Vietnam como instrumento del servicio militar: los números de sorteo bajos aumentaban la probabilidad de ir a la guerra, y el sorteo era literalmente aleatorio. El cociente entre la diferencia de ingresos y la diferencia en la probabilidad de haber servido estima el efecto del servicio militar sobre los ingresos.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html#el-caso-general-exactamente-identificado",
+    "href": "econometria-1/clase-10.html#el-caso-general-exactamente-identificado",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "3.2 El caso general: exactamente identificado",
+    "text": "3.2 El caso general: exactamente identificado\nCon \\(k\\) regresores en \\(x_i\\) (algunos exógenos, que sirven como sus propios instrumentos, y algunos endógenos) y \\(k\\) instrumentos en \\(z_i\\), las condiciones son:\n\n\n\n\n\n\nPrecauciónSupuestos de VI (exactamente identificado)\n\n\n\n\nVI1: \\((y_i, x_i, z_i)\\) i.i.d. y \\(y_i = x_i'\\beta + u_i\\).\nVI2 (exogeneidad): \\(\\mathbb{E}[z_iu_i] = 0\\).\nVI3 (relevancia): \\(Q_{zx} = \\mathbb{E}[z_ix_i']\\) (\\(k\\times k\\)) es invertible.\n\n\n\nDe VI2, \\(\\mathbb{E}[z_i(y_i - x_i'\\beta)] = 0\\), es decir, \\(\\mathbb{E}[z_iy_i] = Q_{zx}\\beta\\), y por VI3, \\[\n\\beta = Q_{zx}^{-1}\\mathbb{E}[z_iy_i], \\qquad \\hat\\beta_{\\text{VI}} = \\Big(\\sum_iz_ix_i'\\Big)^{-1}\\sum_iz_iy_i = (Z'X)^{-1}Z'y.\n\\] Con \\(z_i = x_i\\) (todos los regresores exógenos), esto es MCO. MCO es el caso particular de VI en que cada regresor es su propio instrumento.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html#mc2e-es-el-mejor-uso-lineal-de-los-instrumentos",
+    "href": "econometria-1/clase-10.html#mc2e-es-el-mejor-uso-lineal-de-los-instrumentos",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "7.1 MC2E es el mejor uso lineal de los instrumentos",
+    "text": "7.1 MC2E es el mejor uso lineal de los instrumentos\nCon \\(\\ell&gt;k\\) instrumentos, cualquier combinación lineal \\(W'z_i\\) (con \\(W\\) fija de \\(\\ell\\times k\\) y \\(W'Q_{zx}\\) invertible) da un instrumento válido de dimensión \\(k\\). El estimador de VI correspondiente, \\(\\hat\\beta_W = (W'Z'X)^{-1}W'Z'y\\), es consistente y, bajo homocedasticidad, su varianza asintótica es (mismo argumento que Teorema 4) \\[\nV_W = \\sigma^2(W'Q_{zx})^{-1}W'Q_{zz}W(Q_{xz}W)^{-1}.\n\\]\n\nTeorema 5 (Optimalidad de MC2E) Bajo homocedasticidad, \\(V_W\\succeq\\sigma^2(Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}\\) para toda \\(W\\) admisible, con igualdad si \\(W = Q_{zz}^{-1}Q_{zx}\\) (que es la \\(W\\) implícita en MC2E).\n\n\nDemostración. Sea \\(G = Q_{zz}^{1/2}W(Q_{xz}W)^{-1}\\) (\\(\\ell\\times k\\)) y \\(F = Q_{zz}^{-1/2}Q_{zx}\\) (\\(\\ell\\times k\\)). Entonces \\(V_W/\\sigma^2 = G'G\\) (usando que \\((W'Q_{zx})^{-1} = ((Q_{xz}W)^{-1})'\\)), \\(F'F = Q_{xz}Q_{zz}^{-1}Q_{zx}\\) y \\[\nF'G = Q_{xz}Q_{zz}^{-1/2}Q_{zz}^{1/2}W(Q_{xz}W)^{-1} = I_k.\n\\] Sea \\(P_F = F(F'F)^{-1}F'\\), la proyección sobre \\(\\operatorname{col}(F)\\). Como \\(I - P_F\\) es simétrica e idempotente, \\[\n0\\preceq G'(I - P_F)G = G'G - G'F(F'F)^{-1}F'G = G'G - (F'F)^{-1},\n\\] usando \\(G'F = (F'G)' = I\\). Luego \\(V_W/\\sigma^2 = G'G\\succeq(F'F)^{-1} = (Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}\\). Si \\(W = Q_{zz}^{-1}Q_{zx}\\), entonces \\(G = Q_{zz}^{-1/2}Q_{zx}(F'F)^{-1} = F(F'F)^{-1}\\in\\operatorname{col}(F)\\) y la desigualdad es igualdad.\n\nEs, una vez más, la estructura de Gauss–Markov: una proyección ortogonal y un término semidefinido positivo que sobra.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html#el-test-de-hausman",
+    "href": "econometria-1/clase-10.html#el-test-de-hausman",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "7.2 El test de Hausman",
+    "text": "7.2 El test de Hausman\n¿Cómo sabemos si \\(x\\) es endógeno? Si es exógeno, MCO y MC2E son ambos consistentes, y MCO es más eficiente (bajo homocedasticidad, MCO es el caso de MC2E con los instrumentos “óptimos” \\(x\\)). Si es endógeno, solo MC2E es consistente. Hausman (1978) propuso comparar ambos: \\[\nH = n(\\hat\\beta_{\\text{MC2E}} - \\hat\\beta_{\\text{MCO}})'\\big(\\hat V_{\\text{MC2E}} - \\hat V_{\\text{MCO}}\\big)^{-}(\\hat\\beta_{\\text{MC2E}} - \\hat\\beta_{\\text{MCO}})\\xrightarrow{d}\\chi^2_{r}\n\\] bajo \\(H_0\\) (exogeneidad), donde \\((\\cdot)^-\\) es una inversa generalizada y \\(r\\) el número de regresores endógenos sospechosos. La razón de que la varianza de la diferencia sea la diferencia de varianzas es un resultado general, el “lema de Hausman”: si \\(\\hat\\theta_e\\) es asintóticamente eficiente y \\(\\hat\\theta_c\\) es otro estimador consistente, entonces \\(\\operatorname{Cov}_a(\\hat\\theta_e, \\hat\\theta_c - \\hat\\theta_e) = 0\\); si no lo fuera, alguna combinación de ambos le ganaría a \\(\\hat\\theta_e\\) (Ejercicio 10.7). Así, \\(\\operatorname{Var}_a(\\hat\\theta_c - \\hat\\theta_e) = \\operatorname{Var}_a(\\hat\\theta_c) - \\operatorname{Var}_a(\\hat\\theta_e)\\).\nUna versión equivalente y más práctica (el test de regresión aumentada de Durbin–Wu–Hausman): estimar la primera etapa, guardar sus residuos \\(\\hat v\\), agregarlos como regresor en la ecuación estructural estimada por MCO, y testear (con errores robustos) si su coeficiente es cero. La lógica: \\(\\hat v\\) es la parte de \\(x\\) no explicada por los instrumentos, que es la parte potencialmente endógena.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-1/clase-10.html#restricciones-de-sobreidentificación",
+    "href": "econometria-1/clase-10.html#restricciones-de-sobreidentificación",
+    "title": "Clase 10 · Endogeneidad y variables instrumentales",
+    "section": "7.3 Restricciones de sobreidentificación",
+    "text": "7.3 Restricciones de sobreidentificación\nCon \\(\\ell&gt;k\\), tenemos \\(\\ell - k\\) condiciones de momentos “de sobra”, y podemos testear si son compatibles entre sí. El test de Sargan (homocedástico) es: regresar los residuos de MC2E \\(\\hat u\\) sobre todos los instrumentos \\(Z\\) y calcular \\[\nS = nR^2\\xrightarrow{d}\\chi^2_{\\ell - k}\n\\] bajo \\(H_0:\\mathbb{E}[z_iu_i] = 0\\). (La versión robusta es el test \\(J\\) de Hansen, que veremos en Econometría 2 con el método generalizado de momentos.) Advertencia importante: el test solo tiene poder si algunos instrumentos son válidos y otros no, y supone que al menos \\(k\\) son válidos. Si todos los instrumentos son inválidos de la misma manera, el test no lo detecta. No reemplaza al argumento económico sobre la exogeneidad, que es, al final del día, lo que hace creíble a un instrumento.2\n2 Esta es la lección más importante de la clase y quizás del curso. La exogeneidad de un instrumento no se puede testear con los datos (con \\(\\ell = k\\) es literalmente imposible: el estimador fuerza \\(\\frac1n\\sum z_i\\hat u_i = 0\\)). Se defiende con conocimiento del problema: por qué el sorteo es aleatorio, por qué la distancia a la universidad no afecta el salario por otras vías, por qué la lluvia afecta la oferta de café pero no su demanda. La econometría te da la matemática; la credibilidad la pones tú.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Endogeneidad y variables instrumentales"
+    ]
+  },
+  {
+    "objectID": "econometria-2/index.html",
+    "href": "econometria-2/index.html",
+    "title": "Econometría 2",
+    "section": "",
+    "text": "PrecauciónEn preparación\n\n\n\nEste curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1 (borradores, demostraciones paso a paso, secciones ★ y ejercicios resueltos)."
+  },
+  {
+    "objectID": "econometria-2/index.html#temario-tentativo",
+    "href": "econometria-2/index.html#temario-tentativo",
+    "title": "Econometría 2",
+    "section": "Temario tentativo",
+    "text": "Temario tentativo\n\nEstimación por extremos: consistencia y normalidad asintótica de M-estimadores.\nMáxima verosimilitud: identificación, información de Fisher, cota de Cramér–Rao, eficiencia asintótica.\nTests de la trinidad: Wald, razón de verosimilitud y multiplicador de Lagrange.\nMétodo generalizado de momentos: matriz de pesos óptima, test \\(J\\) de Hansen.\nElección discreta: probit, logit y efectos marginales.\nDatos censurados y selección: tobit y el modelo de Heckman.\nDatos de panel I: efectos fijos, efectos aleatorios y el test de Hausman.\nDatos de panel II: paneles dinámicos, Arellano–Bond.\nSeries de tiempo I: estacionariedad, ARMA, ergodicidad y LGN/TCL con dependencia.\nSeries de tiempo II: raíces unitarias, cointegración y VAR.\n\nMientras tanto, puedes empezar (o repasar) con Econometría 1."
+  }
+]

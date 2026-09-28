@@ -1,0 +1,52 @@
+---
+title: "Econometría 1"
+subtitle: "El modelo de regresión lineal, demostrado paso a paso"
+description: "Diez clases teóricas: de las matrices de proyección a las variables instrumentales, con cada demostración escrita completa."
+format: html
+number-sections: false
+toc: false
+---
+
+Este curso construye la teoría del modelo de regresión lineal desde cero. No hay atajos: cada resultado que se usa está demostrado en el curso o marcado explícitamente como un hecho que se toma prestado (el teorema espectral, el teorema de continuidad de Lévy y pocos más). La idea es que, al terminar, puedas reconstruir por tu cuenta cualquier fórmula de un libro de econometría y, sobre todo, saber **por qué** es cierta.
+
+::: {.callout-caution title="Cómo están escritas las clases"}
+Las clases siguen el estilo de los libros de Jay Cummings: tono conversacional, notas al margen con contexto (y alguna broma), y cada demostración precedida de un recuadro **Borrador** donde se piensa en voz alta cómo encontrarla. La demostración formal viene después, con cada paso justificado. Las secciones **★ Postgrado** profundizan en los temas y se pueden saltar en una primera lectura de pregrado. Cada clase termina con ejercicios resueltos (la solución está plegada, así que intenta resolverlos antes de abrirla).
+:::
+
+## Clases
+
+<ul class="clases">
+<li><span class="n">01</span><span><a href="clase-01.qmd">La caja de herramientas</a><span class="d">Rango, formas cuadráticas, traza, matrices idempotentes, las proyecciones P y M, derivadas matriciales y momentos de vectores aleatorios.</span></span></li>
+<li><span class="n">02</span><span><a href="clase-02.qmd">La esperanza condicional</a><span class="d">La CEF como mejor predictor, ley de esperanzas iteradas, varianza total y el mejor predictor lineal. ★ La CEF como proyección en L².</span></span></li>
+<li><span class="n">03</span><span><a href="clase-03.qmd">Mínimos cuadrados ordinarios</a><span class="d">Derivación, ecuaciones normales, geometría, R² y el teorema de Frisch–Waugh–Lovell. ★ Leverage e influencia.</span></span></li>
+<li><span class="n">04</span><span><a href="clase-04.qmd">MCO en muestras finitas</a><span class="d">Supuestos clásicos, insesgamiento, varianza, la fórmula del VIF, Gauss–Markov y el estimador insesgado de σ². ★ Ridge le gana a MCO.</span></span></li>
+<li><span class="n">05</span><span><a href="clase-05.qmd">Inferencia exacta bajo normalidad</a><span class="d">Normal multivariada, formas cuadráticas χ², tests t y F, intervalos de confianza. ★ Mínimos cuadrados restringidos.</span></span></li>
+<li><span class="n">06</span><span><a href="clase-06.qmd">Teoría asintótica</a><span class="d">Convergencia en probabilidad y distribución, LGN, TCL, función continua, Slutsky y método delta. ★ O<sub>p</sub> y demostración del TCL.</span></span></li>
+<li><span class="n">07</span><span><a href="clase-07.qmd">MCO en muestras grandes</a><span class="d">Consistencia, normalidad asintótica, varianza sándwich, errores estándar de White, tests de Wald. ★ Consistencia de White.</span></span></li>
+<li><span class="n">08</span><span><a href="clase-08.qmd">Errores de especificación</a><span class="d">Sesgo por variable omitida, variables irrelevantes, multicolinealidad y sesgo de atenuación. ★ Error de medida con controles, RESET.</span></span></li>
+<li><span class="n">09</span><span><a href="clase-09.qmd">Mínimos cuadrados generalizados</a><span class="d">Teorema de Aitken, MCP, errores AR(1) y Prais–Winsten, MCGF, Breusch–Pagan y Durbin–Watson. ★ Teorema de Kruskal.</span></span></li>
+<li><span class="n">10</span><span><a href="clase-10.qmd">Endogeneidad y variables instrumentales</a><span class="d">Fuentes de endogeneidad, VI, MC2E, identificación, distribución asintótica e instrumentos débiles. ★ Optimalidad de MC2E, Hausman, Sargan.</span></span></li>
+</ul>
+
+Cada clase se puede leer en la web o descargar en PDF (enlace "PDF" a la derecha de cada página).
+
+## Requisitos
+
+- **Pregrado:** cálculo en varias variables, álgebra lineal básica (matrices, inversas, determinantes) y un curso de probabilidad y estadística (esperanza, varianza, distribuciones normal, $t$ y $\chi^2$, tests de hipótesis).
+- **Postgrado:** lo anterior más algo de análisis real (sucesiones, límites, argumentos $\varepsilon$–$\delta$). Las secciones ★ usan ocasionalmente ideas de teoría de la medida, siempre explicadas en el camino.
+
+## Notación
+
+A lo largo del curso: $n$ observaciones, $k$ regresores; $y$ es $n\times1$, $X$ es $n\times k$ con filas $x_i'$; el modelo es $y = X\beta + u$. El estimador de MCO es $\hat\beta = (X'X)^{-1}X'y$, con $P = X(X'X)^{-1}X'$, $M = I - P$, $\hat y = Py$ y $\hat u = My$. Vectores siempre columna; $'$ es la transpuesta; $A\succeq B$ significa que $A - B$ es semidefinida positiva.
+
+## Bibliografía
+
+El curso no sigue un solo libro. Las fuentes principales, de menor a mayor nivel:
+
+- Wooldridge, J. (2019). *Introductory Econometrics: A Modern Approach*, 7.ª ed. Cengage. (Pregrado; la referencia para la intuición.)
+- Angrist, J. y Pischke, J.-S. (2009). *Mostly Harmless Econometrics*. Princeton University Press. (La CEF, variables instrumentales y la mirada causal.)
+- Goldberger, A. (1991). *A Course in Econometrics*. Harvard University Press. (El principio de analogía y la "micronumerosidad".)
+- Greene, W. (2018). *Econometric Analysis*, 8.ª ed. Pearson. (La enciclopedia.)
+- Hayashi, F. (2000). *Econometrics*. Princeton University Press. (Postgrado; muestras finitas y asintótica con mucho rigor.)
+- Hansen, B. (2022). *Econometrics*. Princeton University Press. (Postgrado; la referencia moderna, con la proyección lineal como objeto central.)
+- Cummings, J. (2019). *Real Analysis: A Long-Form Mathematics Textbook*. (No es de econometría, pero es el modelo de cómo se explican las demostraciones en este curso.)

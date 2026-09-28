@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Convergencia en probabilidad y en distribución, desigualdades de Markov y Chebyshev, LGN, TCL, teorema de la función continua, Slutsky, notación O_p y método delta.">
+
+<title>Clase 6 · Teoría asintótica – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-07.html" rel="next">
+<link href="../econometria-1/clase-05.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-06.html">Clase 6 · Teoría asintótica</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#por-qué-pensar-en-ntoinfty" id="toc-por-qué-pensar-en-ntoinfty" class="nav-link active" data-scroll-target="#por-qué-pensar-en-ntoinfty"><span class="header-section-number">1</span> ¿Por qué pensar en <span class="math inline">\(n\to\infty\)</span>?</a></li>
+  <li><a href="#convergencia-en-probabilidad" id="toc-convergencia-en-probabilidad" class="nav-link" data-scroll-target="#convergencia-en-probabilidad"><span class="header-section-number">2</span> Convergencia en probabilidad</a>
+  <ul class="collapse">
+  <li><a href="#dos-desigualdades" id="toc-dos-desigualdades" class="nav-link" data-scroll-target="#dos-desigualdades"><span class="header-section-number">2.1</span> Dos desigualdades</a></li>
+  <li><a href="#la-ley-de-los-grandes-números" id="toc-la-ley-de-los-grandes-números" class="nav-link" data-scroll-target="#la-ley-de-los-grandes-números"><span class="header-section-number">2.2</span> La ley de los grandes números</a></li>
+  <li><a href="#el-teorema-de-la-función-continua" id="toc-el-teorema-de-la-función-continua" class="nav-link" data-scroll-target="#el-teorema-de-la-función-continua"><span class="header-section-number">2.3</span> El teorema de la función continua</a></li>
+  </ul></li>
+  <li><a href="#convergencia-en-distribución" id="toc-convergencia-en-distribución" class="nav-link" data-scroll-target="#convergencia-en-distribución"><span class="header-section-number">3</span> Convergencia en distribución</a>
+  <ul class="collapse">
+  <li><a href="#el-teorema-central-del-límite" id="toc-el-teorema-central-del-límite" class="nav-link" data-scroll-target="#el-teorema-central-del-límite"><span class="header-section-number">3.1</span> El teorema central del límite</a></li>
+  <li><a href="#slutsky-y-la-función-continua-en-distribución" id="toc-slutsky-y-la-función-continua-en-distribución" class="nav-link" data-scroll-target="#slutsky-y-la-función-continua-en-distribución"><span class="header-section-number">3.2</span> Slutsky y la función continua (en distribución)</a></li>
+  </ul></li>
+  <li><a href="#el-método-delta" id="toc-el-método-delta" class="nav-link" data-scroll-target="#el-método-delta"><span class="header-section-number">4</span> El método delta</a></li>
+  <li><a href="#postgrado-notación-o_p-slutsky-y-el-tcl-demostrados" id="toc-postgrado-notación-o_p-slutsky-y-el-tcl-demostrados" class="nav-link" data-scroll-target="#postgrado-notación-o_p-slutsky-y-el-tcl-demostrados"><span class="header-section-number">5</span> ★ Postgrado: notación <span class="math inline">\(O_p\)</span>, Slutsky y el TCL demostrados</a>
+  <ul class="collapse">
+  <li><a href="#órdenes-estocásticos" id="toc-órdenes-estocásticos" class="nav-link" data-scroll-target="#órdenes-estocásticos"><span class="header-section-number">5.1</span> Órdenes estocásticos</a></li>
+  <li><a href="#una-parte-de-slutsky" id="toc-una-parte-de-slutsky" class="nav-link" data-scroll-target="#una-parte-de-slutsky"><span class="header-section-number">5.2</span> Una parte de Slutsky</a></li>
+  <li><a href="#demostración-del-tcl" id="toc-demostración-del-tcl" class="nav-link" data-scroll-target="#demostración-del-tcl"><span class="header-section-number">5.3</span> Demostración del TCL</a></li>
+  </ul></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">6</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">7</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-06.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 6 · Teoría asintótica</h1>
+<p class="subtitle lead">Convergencia, ley de los grandes números y teorema central del límite</p>
+</div>
+
+<div>
+  <div class="description">
+    Convergencia en probabilidad y en distribución, desigualdades de Markov y Chebyshev, LGN, TCL, teorema de la función continua, Slutsky, notación O_p y método delta.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a></p>
+<section id="por-qué-pensar-en-ntoinfty" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> ¿Por qué pensar en <span class="math inline">\(n\to\infty\)</span>?</h1>
+<p>La Clase 5 obtuvo distribuciones exactas, pero a un precio alto: supusimos que los errores son normales. En la práctica, casi nunca lo son. Los salarios tienen colas largas, las ventas son asimétricas, las variables binarias ni siquiera son continuas. ¿Qué hacemos?</p>
+<p>La respuesta de la econometría moderna es: <strong>aproximar</strong>. En lugar de preguntar “¿cuál es la distribución exacta de <span class="math inline">\(\hat\beta\)</span> con <span class="math inline">\(n = 500\)</span>?”, que no podemos responder sin conocer la distribución de los errores, preguntamos “¿a qué se parece la distribución de <span class="math inline">\(\hat\beta\)</span> cuando <span class="math inline">\(n\)</span> es grande?”. La sorpresa, y es de las grandes sorpresas de la matemática,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> es que la respuesta <strong>casi no depende</strong> de la distribución de los errores. Siempre se parece a una normal.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;De verdad. Tómate un segundo para apreciar lo raro que es. Suma variables que siguen <em>cualquier</em> distribución (asimétrica, discreta, con forma de camello) y el resultado siempre tiende a la misma campana. Francis Galton decía que el TCL “habría sido personificado por los griegos y deificado, si lo hubieran conocido”.</p></div></div><p>Esta clase construye las herramientas. La Clase 7 las aplica a MCO. Aviso: esta es la clase más “de análisis real” del curso, y es donde más se nota el estilo de demostraciones con <span class="math inline">\(\varepsilon\)</span>.</p>
+</section>
+<section id="convergencia-en-probabilidad" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Convergencia en probabilidad</h1>
+<div id="def-conv-prob" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Convergencia en probabilidad)</strong></span> Una sucesión de variables aleatorias <span class="math inline">\(\{Z_n\}\)</span> <strong>converge en probabilidad</strong> a una constante <span class="math inline">\(c\)</span>, y escribimos <span class="math inline">\(Z_n\xrightarrow{p}c\)</span> o <span class="math inline">\(\operatorname{plim}Z_n = c\)</span>, si para todo <span class="math inline">\(\varepsilon &gt; 0\)</span>, <span class="math display">\[
+\lim_{n\to\infty}P\big(|Z_n - c| &gt; \varepsilon\big) = 0.
+\]</span> Para vectores o matrices, se exige lo mismo para cada coordenada (equivalentemente, con la norma euclidiana). Un estimador <span class="math inline">\(\hat\theta_n\)</span> es <strong>consistente</strong> para <span class="math inline">\(\theta\)</span> si <span class="math inline">\(\hat\theta_n\xrightarrow{p}\theta\)</span>.</p>
+</div>
+<p>En palabras: para cualquier margen de error <span class="math inline">\(\varepsilon\)</span> que elijas, por pequeño que sea, la probabilidad de que <span class="math inline">\(Z_n\)</span> se aleje de <span class="math inline">\(c\)</span> más que <span class="math inline">\(\varepsilon\)</span> se hace despreciable cuando <span class="math inline">\(n\)</span> crece. Consistencia es el requisito mínimo de un estimador: con infinitos datos, debería acertar.</p>
+<section id="dos-desigualdades" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="dos-desigualdades"><span class="header-section-number">2.1</span> Dos desigualdades</h2>
+<p>Para probar convergencia en probabilidad hay que acotar probabilidades de colas. La herramienta básica es sorprendentemente simple.</p>
+<div id="lem-markov" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Desigualdad de Markov)</strong></span> Si <span class="math inline">\(W\ge0\)</span> y <span class="math inline">\(a&gt;0\)</span>, entonces <span class="math inline">\(P(W\ge a)\le\dfrac{\mathbb{E}[W]}{a}\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si <span class="math inline">\(W\)</span> es no negativa y tiene media <span class="math inline">\(\mathbb{E}W\)</span>, no puede ser “muy grande con mucha probabilidad”, porque eso subiría la media. ¿Cómo lo formalizo? Comparo <span class="math inline">\(W\)</span> con una variable más chica cuya esperanza sea fácil: la función que vale <span class="math inline">\(a\)</span> cuando <span class="math inline">\(W\ge a\)</span> y <span class="math inline">\(0\)</span> si no. Es decir, <span class="math inline">\(a\cdot\mathbb{1}\{W\ge a\}\)</span>. Siempre es <span class="math inline">\(\le W\)</span> (dibújalo), y su esperanza es <span class="math inline">\(a\,P(W\ge a)\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para todo resultado posible, <span class="math inline">\(a\,\mathbb{1}\{W\ge a\}\le W\)</span>: si <span class="math inline">\(W\ge a\)</span>, el lado izquierdo es <span class="math inline">\(a\le W\)</span>; si <span class="math inline">\(W&lt;a\)</span>, el lado izquierdo es <span class="math inline">\(0\le W\)</span>. Tomando esperanza (que preserva desigualdades), <span class="math display">\[
+a\,P(W\ge a) = \mathbb{E}\big[a\,\mathbb{1}\{W\ge a\}\big]\le\mathbb{E}[W].
+\]</span> Dividiendo por <span class="math inline">\(a&gt;0\)</span> se obtiene el resultado.</p>
+</div>
+<div id="lem-chebyshev" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 2 (Desigualdad de Chebyshev)</strong></span> Si <span class="math inline">\(\mathbb{E}[Z^2]&lt;\infty\)</span> y <span class="math inline">\(\varepsilon &gt; 0\)</span>, entonces <span class="math inline">\(P(|Z - c|&gt;\varepsilon)\le\dfrac{\mathbb{E}[(Z - c)^2]}{\varepsilon^2}\)</span> para toda constante <span class="math inline">\(c\)</span>. En particular, <span class="math inline">\(P(|Z - \mathbb{E}Z| &gt; \varepsilon)\le\operatorname{Var}(Z)/\varepsilon^2\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(|Z - c|&gt;\varepsilon\)</span> implica <span class="math inline">\((Z - c)^2 \ge \varepsilon^2\)</span>. Por Markov con <span class="math inline">\(W = (Z - c)^2\)</span> y <span class="math inline">\(a = \varepsilon^2\)</span>, <span class="math display">\[
+P(|Z - c|&gt;\varepsilon)\le P\big((Z-c)^2\ge\varepsilon^2\big)\le\frac{\mathbb{E}[(Z - c)^2]}{\varepsilon^2}.
+\]</span></p>
+</div>
+</section>
+<section id="la-ley-de-los-grandes-números" class="level2 page-columns page-full" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="la-ley-de-los-grandes-números"><span class="header-section-number">2.2</span> La ley de los grandes números</h2>
+<div id="thm-lgn" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Ley débil de los grandes números)</strong></span> Sean <span class="math inline">\(Z_1, Z_2,\dots\)</span> i.i.d. con <span class="math inline">\(\mathbb{E}[Z_i] = \mu\)</span> y <span class="math inline">\(\operatorname{Var}(Z_i) = \sigma^2&lt;\infty\)</span>. Entonces <span class="math display">\[
+\bar Z_n = \frac1n\sum_{i=1}^nZ_i\xrightarrow{p}\mu.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por linealidad, <span class="math inline">\(\mathbb{E}[\bar Z_n] = \mu\)</span>. Por independencia (las covarianzas cruzadas son cero), <span class="math display">\[
+\operatorname{Var}(\bar Z_n) = \frac{1}{n^2}\sum_{i=1}^n\operatorname{Var}(Z_i) = \frac{n\sigma^2}{n^2} = \frac{\sigma^2}{n}.
+\]</span> Sea <span class="math inline">\(\varepsilon&gt;0\)</span>. Por Chebyshev, <span class="math display">\[
+P(|\bar Z_n - \mu|&gt;\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}\xrightarrow[n\to\infty]{}0.
+\]</span></p>
+</div>
+<p>La demostración es tan corta que parece trampa. La clave es que la varianza del promedio es <span class="math inline">\(\sigma^2/n\)</span>: <strong>promediar reduce la varianza al ritmo <span class="math inline">\(1/n\)</span></strong>. El supuesto de varianza finita se puede debilitar: la LGN de Khinchine solo pide <span class="math inline">\(\mathbb{E}|Z_i|&lt;\infty\)</span>, pero su demostración requiere un argumento de truncamiento que omitimos.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> También se pueden relajar “idénticamente distribuidas” e incluso “independientes”: en la demostración solo usamos que la varianza del promedio tiende a cero.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Esa versión es la que realmente usa la econometría, porque en la Clase 7 querremos aplicar la LGN a <span class="math inline">\(x_ix_i'u_i^2\)</span>, y pedirle segundo momento a eso sería pedir cuartos momentos de los datos. El truncamiento es una idea preciosa: se corta la variable en un nivel que crece con <span class="math inline">\(n\)</span> y se controla por separado el pedazo cortado.</p></div></div><p>La demostración anterior en realidad prueba algo más fuerte, que merece nombre propio.</p>
+<div id="thm-media-cuadratica" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Convergencia en media cuadrática implica convergencia en probabilidad)</strong></span> Si <span class="math inline">\(\mathbb{E}[(Z_n - c)^2]\to0\)</span>, entonces <span class="math inline">\(Z_n\xrightarrow{p}c\)</span>. En particular, si <span class="math inline">\(\mathbb{E}[Z_n]\to c\)</span> y <span class="math inline">\(\operatorname{Var}(Z_n)\to0\)</span>, entonces <span class="math inline">\(Z_n\xrightarrow{p}c\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La primera afirmación es Chebyshev: <span class="math inline">\(P(|Z_n - c|&gt;\varepsilon)\le\mathbb{E}[(Z_n - c)^2]/\varepsilon^2\to0\)</span>. Para la segunda, <span class="math inline">\(\mathbb{E}[(Z_n - c)^2] = \operatorname{Var}(Z_n) + (\mathbb{E}Z_n - c)^2\to0 + 0\)</span>.</p>
+</div>
+<p>Esta es la herramienta más práctica para probar consistencia: <strong>si un estimador es asintóticamente insesgado y su varianza tiende a cero, es consistente.</strong></p>
+</section>
+<section id="el-teorema-de-la-función-continua" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="el-teorema-de-la-función-continua"><span class="header-section-number">2.3</span> El teorema de la función continua</h2>
+<p>La LGN nos da la convergencia de promedios. Pero los estimadores no son promedios: <span class="math inline">\(\hat\beta\)</span> es una <em>inversa</em> de un promedio por otro promedio. Necesitamos saber que la convergencia se preserva al aplicar funciones.</p>
+<div id="thm-cmt-prob" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Teorema de la función continua (en probabilidad))</strong></span> Si <span class="math inline">\(Z_n\xrightarrow{p}c\)</span> (vectores en <span class="math inline">\(\mathbb{R}^m\)</span>) y <span class="math inline">\(g:\mathbb{R}^m\to\mathbb{R}^p\)</span> es continua en <span class="math inline">\(c\)</span>, entonces <span class="math inline">\(g(Z_n)\xrightarrow{p}g(c)\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Continuidad en <span class="math inline">\(c\)</span> dice: para cada <span class="math inline">\(\varepsilon\)</span> existe <span class="math inline">\(\delta\)</span> tal que “<span class="math inline">\(\|z - c\|\le\delta\Rightarrow\|g(z) - g(c)\|\le\varepsilon\)</span>”. Tomando contrapositiva: “<span class="math inline">\(\|g(z) - g(c)\|&gt;\varepsilon\Rightarrow\|z - c\|&gt;\delta\)</span>”. Es decir, <strong>el evento malo para <span class="math inline">\(g(Z_n)\)</span> está contenido en un evento malo para <span class="math inline">\(Z_n\)</span></strong>. Y la probabilidad del evento malo para <span class="math inline">\(Z_n\)</span> tiende a cero. ¡Es literalmente la definición de continuidad escrita en eventos!</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\varepsilon&gt;0\)</span>. Por continuidad de <span class="math inline">\(g\)</span> en <span class="math inline">\(c\)</span>, existe <span class="math inline">\(\delta&gt;0\)</span> tal que <span class="math inline">\(\|z - c\|\le\delta\)</span> implica <span class="math inline">\(\|g(z) - g(c)\|\le\varepsilon\)</span>. Por contrapositiva, <span class="math inline">\(\|g(Z_n) - g(c)\|&gt;\varepsilon\)</span> implica <span class="math inline">\(\|Z_n - c\|&gt;\delta\)</span>, es decir, <span class="math display">\[
+\big\{\|g(Z_n) - g(c)\|&gt;\varepsilon\big\}\subseteq\big\{\|Z_n - c\|&gt;\delta\big\}.
+\]</span> Por monotonía de la probabilidad y porque <span class="math inline">\(Z_n\xrightarrow{p}c\)</span>, <span class="math display">\[
+P\big(\|g(Z_n) - g(c)\|&gt;\varepsilon\big)\le P\big(\|Z_n - c\|&gt;\delta\big)\xrightarrow[n\to\infty]{}0.
+\]</span></p>
+</div>
+<p>Consecuencias inmediatas: si <span class="math inline">\(A_n\xrightarrow{p}A\)</span> y <span class="math inline">\(b_n\xrightarrow{p}b\)</span>, entonces <span class="math inline">\(A_n + b_n\xrightarrow{p}A + b\)</span>, <span class="math inline">\(A_nb_n\xrightarrow{p}Ab\)</span> y, <strong>si <span class="math inline">\(A\)</span> es invertible</strong>, <span class="math inline">\(A_n^{-1}\xrightarrow{p}A^{-1}\)</span> (la inversión de matrices es continua en las matrices invertibles, porque las entradas de la inversa son cocientes de polinomios con denominador <span class="math inline">\(\det A\ne0\)</span>). Esto es lo que hará funcionar la consistencia de MCO en la Clase 7.</p>
+</section>
+</section>
+<section id="convergencia-en-distribución" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Convergencia en distribución</h1>
+<p>Consistencia dice que <span class="math inline">\(\hat\theta_n\)</span> se acerca a <span class="math inline">\(\theta\)</span>. Pero para hacer inferencia necesitamos saber <strong>cómo</strong> se acerca: la forma de la distribución de <span class="math inline">\(\hat\theta_n - \theta\)</span>, reescalada para que no colapse a cero.</p>
+<div id="def-conv-dist" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Convergencia en distribución)</strong></span> <span class="math inline">\(Z_n\)</span> <strong>converge en distribución</strong> a <span class="math inline">\(Z\)</span>, <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span>, si <span class="math inline">\(\lim_{n\to\infty}P(Z_n\le z) = P(Z\le z)\)</span> para todo <span class="math inline">\(z\)</span> en que la función de distribución <span class="math inline">\(F_Z(z) = P(Z\le z)\)</span> es continua. (Para vectores, con la desigualdad coordenada a coordenada.)</p>
+</div>
+<p>La cláusula “donde <span class="math inline">\(F_Z\)</span> es continua” es un tecnicismo necesario: sin ella, <span class="math inline">\(Z_n = 1/n\)</span> no convergería en distribución a <span class="math inline">\(Z = 0\)</span>, porque <span class="math inline">\(P(Z_n\le0) = 0\not\to1 = P(Z\le0)\)</span>. En los casos que nos interesan, el límite es normal y su <span class="math inline">\(F\)</span> es continua en todas partes, así que la cláusula no molesta.</p>
+<section id="el-teorema-central-del-límite" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="el-teorema-central-del-límite"><span class="header-section-number">3.1</span> El teorema central del límite</h2>
+<div id="thm-tcl" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Teorema central del límite (Lindeberg–Lévy))</strong></span> Sean <span class="math inline">\(Z_1, Z_2, \dots\)</span> i.i.d. con <span class="math inline">\(\mathbb{E}[Z_i] = \mu\)</span> y <span class="math inline">\(0 &lt; \operatorname{Var}(Z_i) = \sigma^2&lt;\infty\)</span>. Entonces <span class="math display">\[
+\sqrt n\,(\bar Z_n - \mu)\xrightarrow{d}N(0,\sigma^2).
+\]</span> <strong>Versión multivariada:</strong> si los <span class="math inline">\(Z_i\in\mathbb{R}^m\)</span> son i.i.d. con media <span class="math inline">\(\mu\)</span> y varianza <span class="math inline">\(\Sigma\)</span> finita, entonces <span class="math inline">\(\sqrt n(\bar Z_n - \mu)\xrightarrow{d}N(0,\Sigma)\)</span>.</p>
+</div>
+<div id="fig-tcl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tcl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/tcl.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tcl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Densidad de <span class="math inline">\(\sqrt n(\bar X_n - \mu)/\sigma\)</span> para datos exponenciales (muy asimétricos), estimada por simulación. Con <span class="math inline">\(n = 50\)</span> ya es difícil distinguirla de la normal.
+</figcaption>
+</figure>
+</div>
+<p>La normalización <span class="math inline">\(\sqrt n\)</span> es la correcta: <span class="math inline">\(\operatorname{Var}(\bar Z_n - \mu) = \sigma^2/n\)</span>, así que <span class="math inline">\(\operatorname{Var}(\sqrt n(\bar Z_n - \mu)) = \sigma^2\)</span>, que ni explota ni colapsa. La LGN dice que <span class="math inline">\(\bar Z_n - \mu\)</span> tiende a cero; el TCL dice <strong>a qué velocidad</strong> (<span class="math inline">\(1/\sqrt n\)</span>) y <strong>con qué forma</strong> (normal). La demostración está en la sección ★. La versión multivariada se deduce de la escalar con el siguiente truco.</p>
+<div id="thm-cramer-wold" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Cramér–Wold)</strong></span> <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span> en <span class="math inline">\(\mathbb{R}^m\)</span> si y solo si <span class="math inline">\(a'Z_n\xrightarrow{d}a'Z\)</span> para todo <span class="math inline">\(a\in\mathbb{R}^m\)</span>.</p>
+</div>
+<p>(Lo aceptamos sin demostración: requiere funciones características.) Con él, el TCL multivariado es inmediato: para <span class="math inline">\(a\)</span> fijo, los <span class="math inline">\(a'Z_i\)</span> son i.i.d. escalares con media <span class="math inline">\(a'\mu\)</span> y varianza <span class="math inline">\(a'\Sigma a\)</span>, así que <span class="math inline">\(a'\sqrt n(\bar Z_n - \mu)\xrightarrow{d}N(0, a'\Sigma a)\)</span>, que es la distribución de <span class="math inline">\(a'W\)</span> con <span class="math inline">\(W\sim N(0,\Sigma)\)</span>.</p>
+</section>
+<section id="slutsky-y-la-función-continua-en-distribución" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="slutsky-y-la-función-continua-en-distribución"><span class="header-section-number">3.2</span> Slutsky y la función continua (en distribución)</h2>
+<div id="thm-cmt-dist" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (Teorema de la función continua (en distribución))</strong></span> Si <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span> y <span class="math inline">\(g\)</span> es continua, entonces <span class="math inline">\(g(Z_n)\xrightarrow{d}g(Z)\)</span>.</p>
+</div>
+<div id="thm-slutsky" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (Slutsky)</strong></span> Si <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span> y <span class="math inline">\(W_n\xrightarrow{p}c\)</span> (constante), entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(Z_n + W_n\xrightarrow{d}Z + c\)</span>;</li>
+<li><span class="math inline">\(W_nZ_n\xrightarrow{d}cZ\)</span>;</li>
+<li><span class="math inline">\(Z_n/W_n\xrightarrow{d}Z/c\)</span> si <span class="math inline">\(c\ne0\)</span>.</li>
+</ol>
+<p>Lo mismo vale con vectores y matrices de dimensiones compatibles (por ejemplo, <span class="math inline">\(W_n^{-1}Z_n\xrightarrow{d}C^{-1}Z\)</span> si <span class="math inline">\(W_n\xrightarrow{p}C\)</span> invertible).</p>
+</div>
+<p>Slutsky es el caballo de batalla de la econometría asintótica. Dice que <strong>las piezas que convergen en probabilidad a constantes se pueden reemplazar por sus límites</strong>. Demostramos la parte (1) en la sección ★ para ver cómo funcionan estos argumentos.</p>
+<div id="exm-t-asintotico" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El estadístico <span class="math inline">\(t\)</span> sin normalidad)</strong></span> Sean <span class="math inline">\(x_1,\dots,x_n\)</span> i.i.d. con media <span class="math inline">\(\mu\)</span> y varianza <span class="math inline">\(0&lt;\sigma^2&lt;\infty\)</span>, <strong>sin suponer normalidad</strong>. Sea <span class="math inline">\(S^2 = \frac{1}{n-1}\sum_i(x_i - \bar x)^2\)</span>. Entonces <span class="math display">\[
+T_n = \frac{\sqrt n(\bar x - \mu)}{S}\xrightarrow{d}N(0,1).
+\]</span> <em>Demostración.</em> Por el TCL, <span class="math inline">\(\sqrt n(\bar x - \mu)\xrightarrow{d}N(0,\sigma^2)\)</span>. Para el denominador, escribimos <span class="math display">\[
+S^2 = \frac{n}{n-1}\Big(\frac1n\sum_ix_i^2 - \bar x^2\Big).
+\]</span> Por la LGN (aplicada a <span class="math inline">\(x_i^2\)</span>, que tiene media <span class="math inline">\(\sigma^2 + \mu^2\)</span>; si solo suponemos segundos momentos finitos, se usa la LGN de Khinchine) y a <span class="math inline">\(x_i\)</span>, <span class="math inline">\(\frac1n\sum x_i^2\xrightarrow{p}\sigma^2 + \mu^2\)</span> y <span class="math inline">\(\bar x\xrightarrow{p}\mu\)</span>. Por el teorema de la función continua, <span class="math inline">\(S^2\xrightarrow{p}1\cdot(\sigma^2 + \mu^2 - \mu^2) = \sigma^2\)</span>, y de nuevo por continuidad (la raíz), <span class="math inline">\(S\xrightarrow{p}\sigma&gt;0\)</span>. Por Slutsky (3), <span class="math inline">\(T_n\xrightarrow{d}N(0,\sigma^2)/\sigma = N(0,1)\)</span>. <span class="math inline">\(\square\)</span></p>
+<p>Moraleja: el test <span class="math inline">\(t\)</span> de la Clase 5 es <strong>asintóticamente válido sin normalidad</strong>. Con <span class="math inline">\(n\)</span> grande, usar cuantiles de la <span class="math inline">\(t\)</span> o de la <span class="math inline">\(N(0,1)\)</span> da prácticamente lo mismo, y ambos son correctos en el límite.</p>
+</div>
+</section>
+</section>
+<section id="el-método-delta" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> El método delta</h1>
+<p>A veces no nos interesa <span class="math inline">\(\theta\)</span> sino una función suya, <span class="math inline">\(g(\theta)\)</span>: una elasticidad, un cociente de coeficientes, el punto máximo de una parábola. Si <span class="math inline">\(\hat\theta_n\)</span> es asintóticamente normal, ¿lo es <span class="math inline">\(g(\hat\theta_n)\)</span>?</p>
+<div id="thm-delta" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 8 (Método delta)</strong></span> Si <span class="math inline">\(\sqrt n(\hat\theta_n - \theta)\xrightarrow{d}N(0,V)\)</span> en <span class="math inline">\(\mathbb{R}^m\)</span> y <span class="math inline">\(g:\mathbb{R}^m\to\mathbb{R}^p\)</span> es continuamente diferenciable en un entorno de <span class="math inline">\(\theta\)</span>, con jacobiano <span class="math inline">\(G = \frac{\partial g}{\partial\theta'}(\theta)\)</span> (<span class="math inline">\(p\times m\)</span>), entonces <span class="math display">\[
+\sqrt n\big(g(\hat\theta_n) - g(\theta)\big)\xrightarrow{d}N(0,\;GVG').
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Idea: linealizar. Cerca de <span class="math inline">\(\theta\)</span>, <span class="math inline">\(g(\hat\theta)\approx g(\theta) + G(\hat\theta - \theta)\)</span>. Multiplicando por <span class="math inline">\(\sqrt n\)</span>: <span class="math inline">\(\sqrt n(g(\hat\theta) - g(\theta))\approx G\sqrt n(\hat\theta - \theta)\to G\cdot N(0,V) = N(0, GVG')\)</span>.</p>
+<p>Para hacerlo riguroso uso el teorema del valor medio (coordenada a coordenada, en el caso vectorial): <span class="math inline">\(g(\hat\theta) - g(\theta) = G(\bar\theta)(\hat\theta - \theta)\)</span> para algún <span class="math inline">\(\bar\theta\)</span> entre <span class="math inline">\(\hat\theta\)</span> y <span class="math inline">\(\theta\)</span>. Necesito que <span class="math inline">\(G(\bar\theta)\xrightarrow{p}G(\theta)\)</span>. Como <span class="math inline">\(\bar\theta\)</span> está “entre” <span class="math inline">\(\hat\theta\)</span> y <span class="math inline">\(\theta\)</span>, y <span class="math inline">\(\hat\theta\xrightarrow{p}\theta\)</span>, también <span class="math inline">\(\bar\theta\xrightarrow{p}\theta\)</span>, y por continuidad del jacobiano, listo. Pero ¡ojo! ¿Sé que <span class="math inline">\(\hat\theta\xrightarrow{p}\theta\)</span>? Solo me dieron la convergencia en distribución de <span class="math inline">\(\sqrt n(\hat\theta - \theta)\)</span>. Necesito un lema: si <span class="math inline">\(\sqrt n(\hat\theta - \theta)\)</span> converge en distribución, entonces <span class="math inline">\(\hat\theta - \theta = \frac{1}{\sqrt n}\cdot\sqrt n(\hat\theta - \theta)\xrightarrow{p}0\)</span>. Eso es Slutsky con <span class="math inline">\(W_n = 1/\sqrt n\to0\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Caso escalar, <span class="math inline">\(m = p = 1\)</span>; el vectorial es análogo aplicando el valor medio a cada coordenada de <span class="math inline">\(g\)</span>.) Sea <span class="math inline">\(Z_n = \sqrt n(\hat\theta_n - \theta)\xrightarrow{d}Z\sim N(0,V)\)</span>.</p>
+<p><em>Paso 1: consistencia.</em> <span class="math inline">\(\hat\theta_n - \theta = n^{-1/2}Z_n\)</span>. Como <span class="math inline">\(n^{-1/2}\to0\)</span> (una sucesión determinista que converge es, en particular, una sucesión que converge en probabilidad), Slutsky (2) da <span class="math inline">\(\hat\theta_n - \theta\xrightarrow{d}0\cdot Z = 0\)</span>. La convergencia en distribución a una constante implica convergencia en probabilidad a ella (Ejercicio 6.5), así que <span class="math inline">\(\hat\theta_n\xrightarrow{p}\theta\)</span>.</p>
+<p><em>Paso 2: valor medio.</em> Por el teorema del valor medio, existe <span class="math inline">\(\bar\theta_n\)</span> entre <span class="math inline">\(\hat\theta_n\)</span> y <span class="math inline">\(\theta\)</span> tal que <span class="math inline">\(g(\hat\theta_n) - g(\theta) = g'(\bar\theta_n)(\hat\theta_n - \theta)\)</span>. Multiplicando por <span class="math inline">\(\sqrt n\)</span>, <span class="math display">\[
+\sqrt n\big(g(\hat\theta_n) - g(\theta)\big) = g'(\bar\theta_n)\,Z_n.
+\]</span></p>
+<p><em>Paso 3: el jacobiano converge.</em> Como <span class="math inline">\(|\bar\theta_n - \theta|\le|\hat\theta_n - \theta|\)</span>, el Paso 1 da <span class="math inline">\(\bar\theta_n\xrightarrow{p}\theta\)</span>. Como <span class="math inline">\(g'\)</span> es continua en <span class="math inline">\(\theta\)</span>, el teorema de la función continua da <span class="math inline">\(g'(\bar\theta_n)\xrightarrow{p}g'(\theta) = G\)</span>.</p>
+<p><em>Paso 4: Slutsky.</em> Por Slutsky (2), <span class="math inline">\(g'(\bar\theta_n)Z_n\xrightarrow{d}GZ\sim N(0, G^2V)\)</span>.</p>
+</div>
+<div id="exm-delta" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Elasticidad en el punto medio)</strong></span> Si <span class="math inline">\(\sqrt n(\hat\theta - \theta)\xrightarrow{d}N(0, V)\)</span> con <span class="math inline">\(\theta = (\beta_1,\beta_2)'\)</span> y nos interesa <span class="math inline">\(g(\theta) = \beta_1/\beta_2\)</span> (con <span class="math inline">\(\beta_2\ne0\)</span>), entonces <span class="math inline">\(G = (1/\beta_2,\; -\beta_1/\beta_2^2)\)</span> y la varianza asintótica de <span class="math inline">\(\sqrt n(\hat\beta_1/\hat\beta_2 - \beta_1/\beta_2)\)</span> es <span class="math inline">\(GVG'\)</span>. En la práctica se reemplaza <span class="math inline">\(\theta\)</span> por <span class="math inline">\(\hat\theta\)</span> en <span class="math inline">\(G\)</span> y <span class="math inline">\(V\)</span> por un estimador consistente (Slutsky garantiza que eso no cambia el límite).</p>
+</div>
+</section>
+<section id="postgrado-notación-o_p-slutsky-y-el-tcl-demostrados" class="level1 page-columns page-full" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> ★ Postgrado: notación <span class="math inline">\(O_p\)</span>, Slutsky y el TCL demostrados</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Introducimos la notación de órdenes estocásticos, demostramos una parte de Slutsky y damos una demostración completa del TCL vía funciones características (tomando el teorema de continuidad de Lévy como dado).</p>
+</div>
+</div>
+<section id="órdenes-estocásticos" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="órdenes-estocásticos"><span class="header-section-number">5.1</span> Órdenes estocásticos</h2>
+<div id="def-op" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 3 (<span class="math inline">\(O_p\)</span> y <span class="math inline">\(o_p\)</span>)</strong></span> Sea <span class="math inline">\(\{a_n\}\)</span> una sucesión positiva. Escribimos</p>
+<ul>
+<li><span class="math inline">\(Z_n = o_p(a_n)\)</span> si <span class="math inline">\(Z_n/a_n\xrightarrow{p}0\)</span>;</li>
+<li><span class="math inline">\(Z_n = O_p(a_n)\)</span> si <span class="math inline">\(Z_n/a_n\)</span> está <strong>acotada en probabilidad</strong>: para todo <span class="math inline">\(\varepsilon&gt;0\)</span> existen <span class="math inline">\(B&lt;\infty\)</span> y <span class="math inline">\(N\)</span> tales que <span class="math inline">\(P(|Z_n/a_n|&gt;B)&lt;\varepsilon\)</span> para todo <span class="math inline">\(n\ge N\)</span>.</li>
+</ul>
+</div>
+<p>Así, la LGN dice <span class="math inline">\(\bar Z_n - \mu = o_p(1)\)</span> y el TCL (vía el lema siguiente) dice <span class="math inline">\(\bar Z_n - \mu = O_p(n^{-1/2})\)</span>: el error de estimación es “del orden de <span class="math inline">\(1/\sqrt n\)</span>”.</p>
+<div id="lem-dist-op" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 3 (Convergencia en distribución implica <span class="math inline">\(O_p(1)\)</span>)</strong></span> Si <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span>, entonces <span class="math inline">\(Z_n = O_p(1)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\varepsilon&gt;0\)</span>. Como <span class="math inline">\(F_Z(z)\to1\)</span> cuando <span class="math inline">\(z\to\infty\)</span> y <span class="math inline">\(F_Z(z)\to0\)</span> cuando <span class="math inline">\(z\to-\infty\)</span>, y <span class="math inline">\(F_Z\)</span> tiene a lo más una cantidad numerable de discontinuidades, podemos elegir <span class="math inline">\(B&gt;0\)</span> tal que <span class="math inline">\(\pm B\)</span> son puntos de continuidad de <span class="math inline">\(F_Z\)</span> y <span class="math inline">\(F_Z(-B) + 1 - F_Z(B)&lt;\varepsilon/2\)</span>. Por convergencia en distribución, <span class="math inline">\(P(Z_n\le -B) + 1 - P(Z_n\le B)\to F_Z(-B) + 1 - F_Z(B)\)</span>, así que para <span class="math inline">\(n\)</span> grande esa suma es <span class="math inline">\(&lt;\varepsilon\)</span>. Y <span class="math inline">\(P(|Z_n|&gt;B)\le P(Z_n\le-B) + P(Z_n&gt;B)\)</span>, que es esa suma.</p>
+</div>
+<p>Las reglas de cálculo son las que esperarías: <span class="math inline">\(o_p(1) + o_p(1) = o_p(1)\)</span>, <span class="math inline">\(O_p(1)\cdot o_p(1) = o_p(1)\)</span>, <span class="math inline">\(O_p(1) + O_p(1) = O_p(1)\)</span>. Demostremos la segunda, que es la más usada: si <span class="math inline">\(X_n = O_p(1)\)</span> e <span class="math inline">\(Y_n = o_p(1)\)</span>, dado <span class="math inline">\(\varepsilon,\eta&gt;0\)</span> elige <span class="math inline">\(B\)</span> con <span class="math inline">\(P(|X_n|&gt;B)&lt;\varepsilon/2\)</span> para <span class="math inline">\(n\)</span> grande; entonces <span class="math display">\[
+P(|X_nY_n|&gt;\eta)\le P(|X_n|&gt;B) + P(|Y_n|&gt;\eta/B)&lt;\varepsilon/2 + \varepsilon/2
+\]</span> para <span class="math inline">\(n\)</span> grande, porque <span class="math inline">\(\{|X_nY_n|&gt;\eta\}\subseteq\{|X_n|&gt;B\}\cup\{|Y_n|&gt;\eta/B\}\)</span>.</p>
+</section>
+<section id="una-parte-de-slutsky" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="una-parte-de-slutsky"><span class="header-section-number">5.2</span> Una parte de Slutsky</h2>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><strong>(de <a href="#thm-slutsky" class="quarto-xref">Teorema&nbsp;7</a>, parte 1, caso <span class="math inline">\(c = 0\)</span>).</strong> Sea <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span> y <span class="math inline">\(W_n\xrightarrow{p}0\)</span>. Sea <span class="math inline">\(z\)</span> un punto de continuidad de <span class="math inline">\(F_Z\)</span> y <span class="math inline">\(\varepsilon&gt;0\)</span> tal que <span class="math inline">\(z\pm\varepsilon\)</span> también son puntos de continuidad (posible porque las discontinuidades son numerables). Como <span class="math inline">\(\{Z_n + W_n\le z\}\subseteq\{Z_n\le z + \varepsilon\}\cup\{|W_n|&gt;\varepsilon\}\)</span>, <span class="math display">\[
+P(Z_n + W_n\le z)\le P(Z_n\le z + \varepsilon) + P(|W_n|&gt;\varepsilon)\to F_Z(z + \varepsilon).
+\]</span> Y como <span class="math inline">\(\{Z_n\le z - \varepsilon\}\subseteq\{Z_n + W_n\le z\}\cup\{|W_n|&gt;\varepsilon\}\)</span>, <span class="math display">\[
+P(Z_n + W_n\le z)\ge P(Z_n\le z - \varepsilon) - P(|W_n|&gt;\varepsilon)\to F_Z(z - \varepsilon).
+\]</span> Luego <span class="math inline">\(F_Z(z - \varepsilon)\le\liminf P(Z_n + W_n\le z)\le\limsup P(Z_n + W_n\le z)\le F_Z(z + \varepsilon)\)</span>. Haciendo <span class="math inline">\(\varepsilon\downarrow0\)</span> (por puntos de continuidad), la continuidad de <span class="math inline">\(F_Z\)</span> en <span class="math inline">\(z\)</span> da <span class="math inline">\(\lim P(Z_n + W_n\le z) = F_Z(z)\)</span>. El caso <span class="math inline">\(c\ne0\)</span> se reduce a este escribiendo <span class="math inline">\(Z_n + W_n = (Z_n + c) + (W_n - c)\)</span> y notando que <span class="math inline">\(Z_n + c\xrightarrow{d}Z + c\)</span> trivialmente.</p>
+</div>
+</section>
+<section id="demostración-del-tcl" class="level2 page-columns page-full" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="demostración-del-tcl"><span class="header-section-number">5.3</span> Demostración del TCL</h2>
+<p>Usaremos la <strong>función característica</strong> <span class="math inline">\(\varphi_Z(t) = \mathbb{E}[e^{itZ}]\)</span> y dos hechos que aceptamos:</p>
+<ul>
+<li><strong>(Lévy)</strong> <span class="math inline">\(Z_n\xrightarrow{d}Z\)</span> si y solo si <span class="math inline">\(\varphi_{Z_n}(t)\to\varphi_Z(t)\)</span> para todo <span class="math inline">\(t\in\mathbb{R}\)</span>.</li>
+<li>La función característica de la <span class="math inline">\(N(0,1)\)</span> es <span class="math inline">\(e^{-t^2/2}\)</span>.</li>
+</ul>
+<div id="lem-producto" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 4 (Diferencia de productos)</strong></span> Si <span class="math inline">\(a_1,\dots,a_n,b_1,\dots,b_n\)</span> son complejos con <span class="math inline">\(|a_j|,|b_j|\le1\)</span>, entonces <span class="math inline">\(\big|\prod_ja_j - \prod_jb_j\big|\le\sum_j|a_j - b_j|\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por inducción en <span class="math inline">\(n\)</span>. El caso <span class="math inline">\(n = 1\)</span> es trivial. Para el paso inductivo, <span class="math display">\[
+\Big|\prod_{j=1}^na_j - \prod_{j=1}^nb_j\Big| \le |a_n|\,\Big|\prod_{j&lt;n}a_j - \prod_{j&lt;n}b_j\Big| + \Big|\prod_{j&lt;n}b_j\Big|\,|a_n - b_n| \le \sum_{j&lt;n}|a_j - b_j| + |a_n - b_n|,
+\]</span> sumando y restando <span class="math inline">\(a_n\prod_{j&lt;n}b_j\)</span> y usando <span class="math inline">\(|a_n|\le1\)</span>, <span class="math inline">\(|\prod_{j&lt;n} b_j|\le1\)</span> y la hipótesis inductiva.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><strong>(del TCL, caso escalar).</strong> Sin pérdida de generalidad <span class="math inline">\(\mu = 0\)</span> y <span class="math inline">\(\sigma^2 = 1\)</span> (si no, se aplica a <span class="math inline">\((Z_i - \mu)/\sigma\)</span>). Sea <span class="math inline">\(\varphi\)</span> la función característica de <span class="math inline">\(Z_1\)</span> y <span class="math inline">\(S_n = \sqrt n\bar Z_n = n^{-1/2}\sum_iZ_i\)</span>. Por independencia, <span class="math display">\[
+\varphi_{S_n}(t) = \mathbb{E}\Big[\prod_{i=1}^ne^{itZ_i/\sqrt n}\Big] = \prod_{i=1}^n\mathbb{E}\big[e^{itZ_i/\sqrt n}\big] = \varphi(t/\sqrt n)^n.
+\]</span> <em>Expansión de <span class="math inline">\(\varphi\)</span>.</em> Para todo real <span class="math inline">\(x\)</span> se cumple <span class="math inline">\(\big|e^{ix} - 1 - ix + \tfrac{x^2}{2}\big|\le\min\big(|x|^3/6,\; x^2\big)\)</span> (resto de Taylor de orden 2 y de orden 3; ver Ejercicio 6.7). Tomando <span class="math inline">\(x = sZ_1\)</span> y esperanza, con <span class="math inline">\(\mathbb{E}Z_1 = 0\)</span> y <span class="math inline">\(\mathbb{E}Z_1^2 = 1\)</span>, <span class="math display">\[
+\Big|\varphi(s) - 1 + \frac{s^2}{2}\Big|\le\mathbb{E}\big[\min(|s|^3|Z_1|^3/6,\; s^2Z_1^2)\big] = s^2\,\mathbb{E}\big[\min(|s||Z_1|^3/6,\;Z_1^2)\big].
+\]</span> El integrando está dominado por <span class="math inline">\(Z_1^2\)</span> (integrable) y tiende a cero cuando <span class="math inline">\(s\to0\)</span>, así que, por convergencia dominada, <span class="math inline">\(\varphi(s) = 1 - \frac{s^2}{2} + s^2\rho(s)\)</span> con <span class="math inline">\(\rho(s)\to0\)</span> cuando <span class="math inline">\(s\to0\)</span>.</p>
+<p><em>Comparación con el límite.</em> Fijemos <span class="math inline">\(t\)</span>. Para <span class="math inline">\(n\)</span> grande, <span class="math inline">\(1 - t^2/(2n)\in[0,1]\)</span>. Aplicamos <a href="#lem-producto" class="quarto-xref">Lema&nbsp;4</a> con <span class="math inline">\(a_j = \varphi(t/\sqrt n)\)</span> y <span class="math inline">\(b_j = 1 - \frac{t^2}{2n}\)</span> (ambos de módulo <span class="math inline">\(\le1\)</span>): <span class="math display">\[
+\Big|\varphi(t/\sqrt n)^n - \Big(1 - \frac{t^2}{2n}\Big)^n\Big|\le n\,\Big|\varphi(t/\sqrt n) - 1 + \frac{t^2}{2n}\Big| = n\cdot\frac{t^2}{n}\,|\rho(t/\sqrt n)| = t^2|\rho(t/\sqrt n)|\to0.
+\]</span> Finalmente, <span class="math inline">\(\big(1 - \frac{t^2}{2n}\big)^n\to e^{-t^2/2}\)</span> (el límite clásico <span class="math inline">\((1 + x/n)^n\to e^x\)</span>). Luego <span class="math inline">\(\varphi_{S_n}(t)\to e^{-t^2/2}\)</span> para todo <span class="math inline">\(t\)</span> y, por Lévy, <span class="math inline">\(S_n\xrightarrow{d}N(0,1)\)</span>.</p>
+</div>
+<p>Nota dónde se usó cada supuesto: la independencia para factorizar <span class="math inline">\(\varphi_{S_n}\)</span>, la distribución idéntica para que todos los factores sean iguales, y el <strong>segundo momento finito</strong> para la expansión de Taylor. Sin segundo momento el TCL falla: la media de <span class="math inline">\(n\)</span> variables Cauchy i.i.d. vuelve a ser Cauchy, para todo <span class="math inline">\(n\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;La Cauchy es el villano favorito de los cursos de probabilidad: no tiene media, así que promediar no ayuda en absoluto. Promediar un millón de observaciones Cauchy da exactamente la misma precisión que una sola. Por suerte, en econometría casi nunca aparece… excepto como cociente de dos normales, que es justamente lo que aparece en el Ejercicio 10.6 con instrumentos irrelevantes.</p></div></div></section>
+</section>
+<section id="resumen" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Resumen</h1>
+<ul>
+<li><span class="math inline">\(Z_n\xrightarrow{p}c\)</span>: la probabilidad de alejarse de <span class="math inline">\(c\)</span> tiende a cero. Se prueba con Chebyshev (<a href="#lem-chebyshev" class="quarto-xref">Lema&nbsp;2</a>) o con “sesgo y varianza tienden a cero” (<a href="#thm-media-cuadratica" class="quarto-xref">Teorema&nbsp;2</a>).</li>
+<li>LGN: <span class="math inline">\(\bar Z_n\xrightarrow{p}\mu\)</span> (<a href="#thm-lgn" class="quarto-xref">Teorema&nbsp;1</a>). TCL: <span class="math inline">\(\sqrt n(\bar Z_n - \mu)\xrightarrow{d}N(0,\sigma^2)\)</span> (<a href="#thm-tcl" class="quarto-xref">Teorema&nbsp;4</a>).</li>
+<li>Función continua: la convergencia se preserva por funciones continuas (<a href="#thm-cmt-prob" class="quarto-xref">Teorema&nbsp;3</a>, <a href="#thm-cmt-dist" class="quarto-xref">Teorema&nbsp;6</a>).</li>
+<li>Slutsky: se pueden reemplazar las piezas que convergen en probabilidad por sus límites (<a href="#thm-slutsky" class="quarto-xref">Teorema&nbsp;7</a>).</li>
+<li>Método delta: <span class="math inline">\(\sqrt n(g(\hat\theta) - g(\theta))\xrightarrow{d}N(0, GVG')\)</span> (<a href="#thm-delta" class="quarto-xref">Teorema&nbsp;8</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ejercicios</h1>
+<p><strong>Ejercicio 6.1.</strong> Sea <span class="math inline">\(Z_n\)</span> igual a <span class="math inline">\(n\)</span> con probabilidad <span class="math inline">\(1/n\)</span> y a <span class="math inline">\(0\)</span> con probabilidad <span class="math inline">\(1 - 1/n\)</span>. Demuestra que <span class="math inline">\(Z_n\xrightarrow{p}0\)</span> pero <span class="math inline">\(\mathbb{E}[Z_n]\not\to0\)</span>. ¿Qué dice esto sobre consistencia versus insesgamiento asintótico?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Para <span class="math inline">\(\varepsilon\in(0,1)\)</span> y <span class="math inline">\(n &gt; \varepsilon\)</span>: <span class="math inline">\(P(|Z_n|&gt;\varepsilon) = P(Z_n = n) = 1/n\to0\)</span>. Pero <span class="math inline">\(\mathbb{E}[Z_n] = n\cdot\frac1n = 1\)</span> para todo <span class="math inline">\(n\)</span>. Un estimador puede ser consistente y no ser asintóticamente insesgado: la convergencia en probabilidad ignora eventos raros, aunque sean enormes; la esperanza no.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.2.</strong> Sean <span class="math inline">\(x_i\)</span> i.i.d. con <span class="math inline">\(\mathbb{E}[x_i] = \mu\ne0\)</span> y varianza finita. Encuentra la distribución asintótica de <span class="math inline">\(\sqrt n(\bar x^2 - \mu^2)\)</span> y de <span class="math inline">\(\sqrt n(1/\bar x - 1/\mu)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Método delta con <span class="math inline">\(\sqrt n(\bar x - \mu)\xrightarrow{d}N(0,\sigma^2)\)</span>. Con <span class="math inline">\(g(t) = t^2\)</span>, <span class="math inline">\(g'(\mu) = 2\mu\)</span>: <span class="math inline">\(N(0, 4\mu^2\sigma^2)\)</span>. Con <span class="math inline">\(g(t) = 1/t\)</span>, <span class="math inline">\(g'(\mu) = -1/\mu^2\)</span>: <span class="math inline">\(N(0,\sigma^2/\mu^4)\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.3.</strong> ¿Qué pasa con el método delta para <span class="math inline">\(g(t) = t^2\)</span> si <span class="math inline">\(\mu = 0\)</span>? Demuestra que en ese caso <span class="math inline">\(n\bar x^2/\sigma^2\xrightarrow{d}\chi^2_1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(G = 2\mu = 0\)</span> y el método delta da la distribución degenerada <span class="math inline">\(N(0,0)\)</span>: <span class="math inline">\(\sqrt n\bar x^2\xrightarrow{p}0\)</span>. La escala <span class="math inline">\(\sqrt n\)</span> es incorrecta. Con la escala <span class="math inline">\(n\)</span>: <span class="math inline">\(n\bar x^2/\sigma^2 = (\sqrt n\bar x/\sigma)^2\)</span>, y como <span class="math inline">\(\sqrt n\bar x/\sigma\xrightarrow{d}N(0,1)\)</span>, por el teorema de la función continua (con <span class="math inline">\(g(t) = t^2\)</span>) converge a <span class="math inline">\(\chi^2_1\)</span>. Moraleja: cuando el jacobiano es cero, hace falta un “método delta de segundo orden”.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.4.</strong> Sean <span class="math inline">\(x_i\)</span> i.i.d. Bernoulli(<span class="math inline">\(p\)</span>) con <span class="math inline">\(0&lt;p&lt;1\)</span>. Construye un intervalo de confianza asintótico al 95 % para <span class="math inline">\(p\)</span> y justifica cada paso con los teoremas de esta clase.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat p = \bar x\)</span>. TCL: <span class="math inline">\(\sqrt n(\hat p - p)\xrightarrow{d}N(0, p(1-p))\)</span>. LGN + función continua: <span class="math inline">\(\hat p(1 - \hat p)\xrightarrow{p}p(1-p)&gt;0\)</span>. Slutsky: <span class="math inline">\(\sqrt n(\hat p - p)/\sqrt{\hat p(1-\hat p)}\xrightarrow{d}N(0,1)\)</span>. Luego <span class="math inline">\(P\big(|\hat p - p|\le1{,}96\sqrt{\hat p(1-\hat p)/n}\big)\to0{,}95\)</span>, y el intervalo es <span class="math inline">\(\hat p\pm1{,}96\sqrt{\hat p(1-\hat p)/n}\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.5.</strong> Demuestra que si <span class="math inline">\(Z_n\xrightarrow{d}c\)</span> (una constante), entonces <span class="math inline">\(Z_n\xrightarrow{p}c\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La distribución de la constante <span class="math inline">\(c\)</span> es <span class="math inline">\(F(z) = \mathbb{1}\{z\ge c\}\)</span>, continua en todo <span class="math inline">\(z\ne c\)</span>. Para <span class="math inline">\(\varepsilon&gt;0\)</span>, <span class="math inline">\(c - \varepsilon\)</span> y <span class="math inline">\(c + \varepsilon/2\)</span> son puntos de continuidad, así que <span class="math inline">\(P(|Z_n - c|&gt;\varepsilon)\le P(Z_n\le c - \varepsilon) + 1 - P(Z_n\le c + \varepsilon/2)\to F(c - \varepsilon) + 1 - F(c + \varepsilon/2) = 0 + 1 - 1 = 0\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.6 ★.</strong> Demuestra que <span class="math inline">\(O_p(1) + o_p(1) = O_p(1)\)</span> y que si <span class="math inline">\(Z_n = O_p(n^{-1/2})\)</span> entonces <span class="math inline">\(Z_n = o_p(1)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Si <span class="math inline">\(X_n = O_p(1)\)</span>, <span class="math inline">\(Y_n = o_p(1)\)</span>: dado <span class="math inline">\(\varepsilon\)</span>, elige <span class="math inline">\(B\)</span> con <span class="math inline">\(P(|X_n|&gt;B)&lt;\varepsilon/2\)</span> para <span class="math inline">\(n\)</span> grande; como <span class="math inline">\(P(|Y_n|&gt;1)&lt;\varepsilon/2\)</span> para <span class="math inline">\(n\)</span> grande, <span class="math inline">\(P(|X_n + Y_n|&gt;B + 1)&lt;\varepsilon\)</span>. Para la segunda: <span class="math inline">\(Z_n = n^{-1/2}\cdot(\sqrt nZ_n)\)</span> con <span class="math inline">\(\sqrt nZ_n = O_p(1)\)</span> y <span class="math inline">\(n^{-1/2} = o(1)\)</span>; por la regla <span class="math inline">\(O_p(1)o_p(1) = o_p(1)\)</span>, <span class="math inline">\(Z_n = o_p(1)\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.7 ★.</strong> Demuestra que <span class="math inline">\(|e^{ix} - 1 - ix + x^2/2|\le\min(|x|^3/6, x^2)\)</span> para todo <span class="math inline">\(x\)</span> real.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Integrando por partes se obtiene la identidad <span class="math inline">\(e^{ix} = \sum_{m=0}^{k}\frac{(ix)^m}{m!} + \frac{i^{k+1}}{k!}\int_0^x(x - s)^ke^{is}ds\)</span>. Con <span class="math inline">\(k = 2\)</span>, el resto está acotado por <span class="math inline">\(\frac{1}{2}\big|\int_0^x(x-s)^2ds\big| = |x|^3/6\)</span>. Con <span class="math inline">\(k = 1\)</span>, el resto de orden 1 es <span class="math inline">\(R_1 = i^2\int_0^x(x - s)e^{is}ds\)</span> y, como <span class="math inline">\(\int_0^x(x-s)\,ds = x^2/2\)</span>, se puede escribir <span class="math inline">\(e^{ix} - 1 - ix + x^2/2 = -\int_0^x(x - s)(e^{is} - 1)\,ds\)</span>, cuyo módulo es <span class="math inline">\(\le\big|\int_0^x|x - s|\cdot2\,ds\big| = x^2\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-05.html" class="pagination-link" aria-label="Clase 5 · Inferencia exacta bajo normalidad">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 5 · Inferencia exacta bajo normalidad</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-07.html" class="pagination-link" aria-label="Clase 7 · MCO en muestras grandes">
+        <span class="nav-page-text">Clase 7 · MCO en muestras grandes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

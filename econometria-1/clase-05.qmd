@@ -1,0 +1,371 @@
+---
+title: "Clase 5 · Inferencia exacta bajo normalidad"
+subtitle: "Formas cuadráticas, χ², t y F"
+description: "La normal multivariada, formas cuadráticas de normales, distribución exacta de MCO y s², tests t y F, intervalos de confianza y mínimos cuadrados restringidos."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-05.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Del promedio a la distribución
+
+La Clase 4 nos dijo cuánto vale $\hat\beta$ *en promedio* y cuánto *varía*. Para hacer inferencia (tests, intervalos de confianza, valores $p$) necesitamos más: necesitamos su **distribución**. ¿Con qué probabilidad $\hat\beta_2$ cae a más de dos errores estándar de $\beta_2$?
+
+Hay dos caminos. El de esta clase: suponer que los errores son normales y obtener distribuciones **exactas**, válidas para cualquier $n$. El de las Clases 6 y 7: no suponer normalidad y obtener distribuciones **aproximadas**, válidas cuando $n$ es grande. El primer camino es más antiguo, más elegante y, francamente, menos realista.[^gosset] Pero sus resultados son la base de todo lo que reportan los programas estadísticos, y su maquinaria (formas cuadráticas de normales) es muy bonita.
+
+[^gosset]: La distribución $t$ fue descubierta por William Gosset en 1908 mientras trabajaba en la cervecería Guinness, estudiando la calidad de la cebada con muestras pequeñas. Guinness no permitía a sus empleados publicar, así que firmó como "Student". Por eso es la "$t$ de Student": la distribución más famosa de la estadística lleva el seudónimo de un cervecero.
+
+::: {.callout-caution title="Supuesto adicional"}
+- **RL5 (normalidad):** $u\mid X\sim N(0, \sigma^2I_n)$.
+:::
+
+Nota que RL5 implica RL3 y RL4, así que "RL1–RL5" es lo mismo que "RL1, RL2 y RL5".
+
+# La normal multivariada
+
+::: {#def-normal-multivariada}
+## Normal multivariada
+Un vector aleatorio $z\in\mathbb{R}^m$ tiene distribución **normal multivariada** con media $\mu$ y varianza $\Sigma$, $z\sim N(\mu,\Sigma)$, si para todo $a\in\mathbb{R}^m$ la variable escalar $a'z$ tiene distribución $N(a'\mu,\, a'\Sigma a)$. (Una normal con varianza cero es una constante.)
+:::
+
+Esta definición, vía combinaciones lineales, no requiere que $\Sigma$ sea invertible y hace que las demostraciones sean de una línea. Cuando $\Sigma\succ0$, es equivalente a que $z$ tenga la densidad conocida
+$$
+f(z) = (2\pi)^{-m/2}\det(\Sigma)^{-1/2}\exp\Big\{-\tfrac12(z - \mu)'\Sigma^{-1}(z - \mu)\Big\}.
+$$
+
+Usaremos tres propiedades.
+
+::: {#thm-normal-lineal}
+## Transformaciones lineales de normales
+Si $z\sim N(\mu,\Sigma)$ y $A$ ($p\times m$), $c$ ($p\times1$) son constantes, entonces $Az + c\sim N(A\mu + c,\, A\Sigma A')$.
+:::
+
+::: {.proof}
+Sea $b\in\mathbb{R}^p$. Entonces $b'(Az + c) = (A'b)'z + b'c$. Por definición, $(A'b)'z\sim N(b'A\mu,\, b'A\Sigma A'b)$, y sumarle la constante $b'c$ desplaza la media. Luego $b'(Az + c)\sim N\big(b'(A\mu + c),\, b'(A\Sigma A')b\big)$ para todo $b$, que es la definición de $Az + c\sim N(A\mu + c, A\Sigma A')$.
+:::
+
+::: {#thm-normal-independencia}
+## En la normal, no correlación implica independencia
+Sea $(z_1', z_2')'$ conjuntamente normal. Si $\operatorname{Cov}(z_1, z_2) = 0$, entonces $z_1$ y $z_2$ son independientes.
+:::
+
+::: {.proof}
+(Caso $\Sigma \succ 0$.) Si la covarianza cruzada es cero, $\Sigma = \operatorname{diag}(\Sigma_{11},\Sigma_{22})$ es diagonal por bloques. Entonces $\det\Sigma = \det\Sigma_{11}\det\Sigma_{22}$, $\Sigma^{-1} = \operatorname{diag}(\Sigma_{11}^{-1},\Sigma_{22}^{-1})$ y la forma cuadrática del exponente se separa:
+$$
+(z - \mu)'\Sigma^{-1}(z - \mu) = (z_1 - \mu_1)'\Sigma_{11}^{-1}(z_1 - \mu_1) + (z_2 - \mu_2)'\Sigma_{22}^{-1}(z_2 - \mu_2).
+$$
+La densidad conjunta es el producto de la densidad normal de $z_1$ por la de $z_2$, lo que es la definición de independencia. (El caso singular se trata con funciones características; ver el Ejercicio 5.6.)
+:::
+
+::: {.callout-warning title="¡Conjuntamente!"}
+El teorema exige que el vector $(z_1, z_2)$ sea normal **conjuntamente**. Dos variables normales por separado y no correlacionadas pueden ser dependientes: si $z\sim N(0,1)$ y $s = \pm1$ con probabilidad $\tfrac12$ independiente de $z$, entonces $w = sz$ también es $N(0,1)$, $\operatorname{Cov}(z,w) = \mathbb{E}[s]\mathbb{E}[z^2] = 0$, pero $|w| = |z|$. Son tan dependientes como se puede ser.
+:::
+
+# Las distribuciones $\chi^2$, $t$ y $F$
+
+::: {#def-chi-t-f}
+## Distribuciones derivadas de la normal
+- Si $w_1,\dots,w_r$ son i.i.d. $N(0,1)$, entonces $\sum_{j=1}^rw_j^2\sim\chi^2_r$ (**chi-cuadrado** con $r$ grados de libertad).
+- Si $Z\sim N(0,1)$ y $V\sim\chi^2_r$ son independientes, entonces $Z/\sqrt{V/r}\sim t_r$ (**$t$ de Student** con $r$ grados de libertad).
+- Si $V_1\sim\chi^2_{r_1}$ y $V_2\sim\chi^2_{r_2}$ son independientes, entonces $\dfrac{V_1/r_1}{V_2/r_2}\sim F_{r_1,r_2}$ (**$F$ de Fisher–Snedecor**).
+:::
+
+Como $\mathbb{E}[w_j^2] = 1$ y $\operatorname{Var}(w_j^2) = \mathbb{E}[w_j^4] - 1 = 3 - 1 = 2$, una $\chi^2_r$ tiene media $r$ y varianza $2r$. De la definición también sale que si $T\sim t_r$ entonces $T^2\sim F_{1,r}$ (porque $Z^2\sim\chi^2_1$).
+
+La observación clave de toda la clase es que **ciertas formas cuadráticas de vectores normales son $\chi^2$**. Hay dos versiones.
+
+::: {#lem-chi-idempotente}
+## Formas cuadráticas idempotentes
+Si $z\sim N(0, I_m)$ y $A$ es simétrica e idempotente con $\operatorname{rango}(A) = r$, entonces $z'Az\sim\chi^2_r$.
+:::
+
+::: {.callout-note title="Borrador"}
+Si $A$ fuera $\operatorname{diag}(1,\dots,1,0,\dots,0)$ con $r$ unos, sería trivial: $z'Az = z_1^2 + \dots + z_r^2$, suma de $r$ normales estándar independientes al cuadrado. Por el teorema espectral, toda simétrica idempotente es "así, en otra base": $A = Q\Lambda Q'$ con $\Lambda$ de ceros y unos. Solo necesito que el cambio de base $w = Q'z$ no arruine la normalidad estándar. Y no la arruina: la normal estándar es invariante a rotaciones, porque $\operatorname{Var}(Q'z) = Q'IQ = I$.
+:::
+
+::: {.proof}
+Por el teorema espectral y porque los valores propios de una idempotente son 0 o 1 (Clase 1), $A = Q\Lambda Q'$ con $Q$ ortogonal y $\Lambda$ diagonal con exactamente $r$ unos (pues $r = \operatorname{rango}(A)$ es el número de valores propios no nulos). Reordenando columnas de $Q$ podemos suponer que $\Lambda = \operatorname{diag}(I_r, 0)$. Sea $w = Q'z$. Por @thm-normal-lineal, $w\sim N(0, Q'IQ) = N(0, I_m)$, así que $w_1,\dots,w_m$ son i.i.d. $N(0,1)$ (por @thm-normal-independencia, normales conjuntas no correlacionadas). Finalmente,
+$$
+z'Az = z'Q\Lambda Q'z = w'\Lambda w = \sum_{j=1}^rw_j^2\sim\chi^2_r.
+$$
+:::
+
+::: {#lem-chi-inversa}
+## Forma cuadrática con la inversa de la varianza
+Si $z\sim N(0,\Sigma)$ con $\Sigma$ de $q\times q$ definida positiva, entonces $z'\Sigma^{-1}z\sim\chi^2_q$.
+:::
+
+::: {.proof}
+Sea $w = \Sigma^{-1/2}z$, con $\Sigma^{-1/2}$ la raíz cuadrada inversa simétrica (Clase 1, sección ★). Por @thm-normal-lineal, $w\sim N(0, \Sigma^{-1/2}\Sigma\Sigma^{-1/2}) = N(0, I_q)$. Entonces $z'\Sigma^{-1}z = z'\Sigma^{-1/2}\Sigma^{-1/2}z = w'w = \sum_{j=1}^q w_j^2\sim\chi^2_q$.
+:::
+
+# La distribución exacta de MCO
+
+::: {#thm-distribucion-exacta}
+## Distribución de $\hat\beta$ y $s^2$ bajo normalidad
+Bajo RL1, RL2 y RL5, condicional en $X$:
+
+1. $\hat\beta\sim N\big(\beta,\,\sigma^2(X'X)^{-1}\big)$.
+2. $\dfrac{(n-k)s^2}{\sigma^2}\sim\chi^2_{n-k}$.
+3. $\hat\beta$ y $s^2$ son independientes.
+:::
+
+::: {.callout-note title="Borrador"}
+Las tres cosas vienen de escribir todo en términos de $z = u/\sigma\sim N(0,I_n)$.
+
+(1) $\hat\beta = \beta + (X'X)^{-1}X'u$ es lineal en $u$, así que es normal, y la media y varianza ya las conozco de la Clase 4.
+
+(2) $(n-k)s^2/\sigma^2 = \hat u'\hat u/\sigma^2 = u'Mu/\sigma^2 = z'Mz$. $M$ es simétrica, idempotente, de rango $n-k$. ¡Es @lem-chi-idempotente!
+
+(3) $\hat\beta$ depende de $u$ solo a través de $(X'X)^{-1}X'u$, y $s^2$ solo a través de $Mu$. Si $(X'X)^{-1}X'u$ y $Mu$ no están correlacionados, como son conjuntamente normales, son independientes. La covarianza es $\sigma^2(X'X)^{-1}X'M = 0$ porque $X'M = 0$. Esto ya lo vimos en el Ejercicio 4.2.
+:::
+
+::: {.proof}
+Trabajamos condicional en $X$, de modo que $X$, $P$ y $M$ son constantes. Por RL5, $u\sim N(0,\sigma^2I_n)$.
+
+(1) $\hat\beta = \beta + (X'X)^{-1}X'u$ es una transformación lineal de $u$. Por @thm-normal-lineal, $\hat\beta\sim N\big(\beta,\,(X'X)^{-1}X'\sigma^2IX(X'X)^{-1}\big) = N\big(\beta, \sigma^2(X'X)^{-1}\big)$.
+
+(2) Sea $z = u/\sigma\sim N(0, I_n)$. Como $\hat u = Mu$ y $M$ es simétrica idempotente,
+$$
+\frac{(n-k)s^2}{\sigma^2} = \frac{\hat u'\hat u}{\sigma^2} = \frac{u'Mu}{\sigma^2} = z'Mz.
+$$
+$M$ es simétrica, idempotente y de rango $n-k$ (Clase 1), así que por @lem-chi-idempotente, $z'Mz\sim\chi^2_{n-k}$.
+
+(3) Consideremos el vector apilado
+$$
+\begin{pmatrix}(X'X)^{-1}X'u\\ Mu\end{pmatrix} = \begin{pmatrix}(X'X)^{-1}X'\\ M\end{pmatrix}u,
+$$
+que es conjuntamente normal por @thm-normal-lineal. Su bloque de covarianza cruzada es
+$$
+(X'X)^{-1}X'(\sigma^2I_n)M' = \sigma^2(X'X)^{-1}(MX)' = 0.
+$$
+Por @thm-normal-independencia, $(X'X)^{-1}X'u$ y $Mu$ son independientes. Como $\hat\beta$ es función del primero y $s^2 = (Mu)'(Mu)/(n-k)$ es función del segundo, $\hat\beta$ y $s^2$ son independientes.
+:::
+
+De (2) sale de regalo la varianza de $s^2$ que usamos en el Ejercicio 4.7: $\operatorname{Var}\big((n-k)s^2/\sigma^2\big) = 2(n-k)$, luego $\operatorname{Var}(s^2\mid X) = 2\sigma^4/(n-k)$.
+
+# El test $t$
+
+Queremos testear $H_0:\beta_j = \beta_j^0$ para un valor dado $\beta_j^0$ (típicamente cero). Si conociéramos $\sigma^2$, usaríamos
+$$
+Z = \frac{\hat\beta_j - \beta_j^0}{\sigma\sqrt{[(X'X)^{-1}]_{jj}}}\sim N(0,1) \text{ bajo } H_0.
+$$
+Pero no conocemos $\sigma$. Lo reemplazamos por $s$ y la distribución cambia de normal a $t$.
+
+::: {#thm-test-t}
+## Distribución del estadístico $t$
+Bajo RL1, RL2, RL5 y $H_0:\beta_j = \beta_j^0$,
+$$
+t_j = \frac{\hat\beta_j - \beta_j^0}{\operatorname{ee}(\hat\beta_j)} = \frac{\hat\beta_j - \beta_j^0}{s\sqrt{[(X'X)^{-1}]_{jj}}}\sim t_{n-k}.
+$$
+Esto vale condicional en $X$ y también incondicionalmente.
+:::
+
+::: {.proof}
+Sea $v_{jj} = [(X'X)^{-1}]_{jj}$. Escribimos
+$$
+t_j = \frac{(\hat\beta_j - \beta_j^0)/(\sigma\sqrt{v_{jj}})}{s/\sigma} = \frac{Z}{\sqrt{V/(n-k)}},
+\qquad Z = \frac{\hat\beta_j - \beta_j^0}{\sigma\sqrt{v_{jj}}},\quad V = \frac{(n-k)s^2}{\sigma^2}.
+$$
+Condicional en $X$ y bajo $H_0$:
+
+- $Z\sim N(0,1)$, por @thm-distribucion-exacta (1): la coordenada $j$ de $\hat\beta$ es $N(\beta_j, \sigma^2v_{jj})$.
+- $V\sim\chi^2_{n-k}$, por @thm-distribucion-exacta (2).
+- $Z$ y $V$ son independientes, por @thm-distribucion-exacta (3): $Z$ es función de $\hat\beta$ y $V$ de $s^2$.
+
+Por definición, $t_j\sim t_{n-k}$ condicional en $X$. Como esta distribución condicional no depende de $X$, la distribución incondicional es la misma: para todo $c$, $P(t_j\le c) = \mathbb{E}[P(t_j\le c\mid X)] = \mathbb{E}[F_{t_{n-k}}(c)] = F_{t_{n-k}}(c)$.
+:::
+
+El último paso es sutil y precioso: **el estadístico $t$ es pivotal**. Su distribución no depende de ningún parámetro desconocido ($\beta$, $\sigma^2$) ni de $X$. Por eso podemos tabularla una vez y usarla siempre.
+
+## Tests e intervalos
+
+Sea $c_{\alpha/2}$ el cuantil $1 - \alpha/2$ de la $t_{n-k}$. Entonces:
+
+- **Test bilateral** de nivel $\alpha$: rechazar $H_0:\beta_j = \beta_j^0$ si $|t_j| > c_{\alpha/2}$. Bajo $H_0$, la probabilidad de rechazar es **exactamente** $\alpha$.
+- **Intervalo de confianza** de nivel $1-\alpha$: $\hat\beta_j\pm c_{\alpha/2}\operatorname{ee}(\hat\beta_j)$. Contiene a $\beta_j$ con probabilidad exactamente $1-\alpha$, porque
+$$
+P\big(\beta_j\in\hat\beta_j\pm c_{\alpha/2}\operatorname{ee}(\hat\beta_j)\big) = P\Big(\Big|\frac{\hat\beta_j - \beta_j}{\operatorname{ee}(\hat\beta_j)}\Big|\le c_{\alpha/2}\Big) = 1 - \alpha.
+$$
+- **Valor $p$:** $p = P(|T|\ge|t_j^{\text{obs}}|)$ con $T\sim t_{n-k}$. Es el menor nivel $\alpha$ al que se rechazaría.
+
+::: {.callout-caution title="Qué es (y qué no es) un intervalo de confianza"}
+"Tengo 95 % de confianza en que $\beta_j\in[0{,}3;\,0{,}9]$" **no** significa que $P(\beta_j\in[0{,}3;0{,}9]) = 0{,}95$. El parámetro $\beta_j$ es un número fijo: o está en el intervalo o no está. Lo aleatorio es el intervalo. El 95 % es una propiedad del **procedimiento**: si repites el muestreo muchas veces, el 95 % de los intervalos que construyas contendrá a $\beta_j$.[^bayes]
+:::
+
+[^bayes]: Si quieres decir "la probabilidad de que $\beta_j$ esté en el intervalo es 95 %", tienes que volverte bayesiano, poner una distribución a priori sobre $\beta_j$ y calcular un *intervalo de credibilidad*. Con una a priori plana y errores normales, el intervalo resultante es numéricamente el mismo. La filosofía, no.
+
+::: {#exm-salarios}
+## Un test $t$
+En una regresión de $\log(\text{salario})$ sobre una constante, años de educación y experiencia con $n = 53$ observaciones, se obtiene $\hat\beta_{\text{educ}} = 0{,}082$ con $\operatorname{ee} = 0{,}021$. Con $n - k = 50$ grados de libertad, $c_{0{,}025}\approx2{,}009$. El estadístico para $H_0:\beta_{\text{educ}} = 0$ es $t = 0{,}082/0{,}021\approx3{,}90 > 2{,}009$: se rechaza al 5 %. El intervalo al 95 % es $0{,}082\pm2{,}009\cdot0{,}021 = [0{,}040;\,0{,}124]$: cada año de educación se asocia con un salario entre 4 % y 12 % mayor, aproximadamente.
+:::
+
+# El test $F$ de restricciones lineales
+
+Muchas hipótesis interesantes involucran varios coeficientes a la vez: "educación y experiencia no importan" ($\beta_2 = \beta_3 = 0$), "rendimientos constantes a escala" ($\beta_2 + \beta_3 = 1$), etc. Todas se escriben como
+$$
+H_0: R\beta = r,
+$$
+con $R$ una matriz $q\times k$ de rango $q$ (las $q$ restricciones no son redundantes) y $r\in\mathbb{R}^q$. Por ejemplo, con $k = 3$, "$\beta_2 = \beta_3 = 0$" es $R = \begin{pmatrix}0&1&0\\0&0&1\end{pmatrix}$, $r = (0,0)'$, y "$\beta_2 + \beta_3 = 1$" es $R = (0\;1\;1)$, $r = 1$.
+
+::: {#thm-test-f}
+## Distribución del estadístico $F$
+Bajo RL1, RL2, RL5 y $H_0: R\beta = r$ (con $\operatorname{rango}(R) = q$),
+$$
+F = \frac{(R\hat\beta - r)'\big[R(X'X)^{-1}R'\big]^{-1}(R\hat\beta - r)}{q\,s^2}\sim F_{q,\,n-k}.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Mismo esquema que el test $t$: escribir $F$ como cociente de dos $\chi^2$ independientes divididas por sus grados de libertad.
+
+Numerador: $R\hat\beta - r$ es normal (lineal en $\hat\beta$), con media $R\beta - r = 0$ bajo $H_0$ y varianza $\sigma^2R(X'X)^{-1}R'$. La forma cuadrática "vector por inversa de su varianza por vector" es $\chi^2_q$ por @lem-chi-inversa. Para usar ese lema necesito que $R(X'X)^{-1}R'$ sea invertible; eso sale de la Clase 1, porque $(X'X)^{-1}\succ0$ y $R'$ tiene rango columna $q$.
+
+Denominador: $(n-k)s^2/\sigma^2\sim\chi^2_{n-k}$.
+
+Independencia: el numerador es función de $\hat\beta$, el denominador de $s^2$. Los $\sigma^2$ se cancelan.
+:::
+
+::: {.proof}
+Condicional en $X$. Sea $\Sigma_R = R(X'X)^{-1}R'$ ($q\times q$). Como $(X'X)^{-1}\succ0$ y $R'$ ($k\times q$) tiene rango $q$, por las propiedades de las matrices definidas positivas (Clase 1), $\Sigma_R\succ0$ y es invertible.
+
+Por @thm-distribucion-exacta (1) y @thm-normal-lineal, bajo $H_0$,
+$$
+R\hat\beta - r = R(\hat\beta - \beta) \sim N(0,\sigma^2\Sigma_R).
+$$
+Por @lem-chi-inversa,
+$$
+V_1 = \frac{(R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r)}{\sigma^2} = (R\hat\beta - r)'(\sigma^2\Sigma_R)^{-1}(R\hat\beta - r)\sim\chi^2_q.
+$$
+Por @thm-distribucion-exacta (2), $V_2 = (n-k)s^2/\sigma^2\sim\chi^2_{n-k}$, y por (3), $V_1$ (función de $\hat\beta$) y $V_2$ (función de $s^2$) son independientes. Entonces
+$$
+\frac{V_1/q}{V_2/(n-k)} = \frac{(R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r)/(q\sigma^2)}{s^2/\sigma^2} = F\sim F_{q,n-k}.
+$$
+Como en el test $t$, la distribución no depende de $X$, así que también vale incondicionalmente.
+:::
+
+Si $q = 1$ y $R = e_j'$, entonces $\Sigma_R = [(X'X)^{-1}]_{jj}$ y $F = t_j^2$: el test $F$ de una restricción es el test $t$ bilateral.
+
+## La forma "restringido versus no restringido"
+
+Hay una forma equivalente del estadístico $F$ que es mucho más fácil de calcular y de recordar. Sea $\tilde\beta$ el estimador de **mínimos cuadrados restringidos**: el que minimiza $S(b) = (y - Xb)'(y - Xb)$ sujeto a $Rb = r$. Sea $\text{SCR}_R = S(\tilde\beta)$ su suma de residuos, y $\text{SCR}_{NR} = S(\hat\beta) = (n-k)s^2$ la del modelo sin restringir.
+
+::: {#thm-f-scr}
+## $F$ con sumas de residuos
+$$
+F = \frac{(\text{SCR}_R - \text{SCR}_{NR})/q}{\text{SCR}_{NR}/(n-k)}.
+$$
+:::
+
+La intuición es inmejorable: **imponer restricciones empeora el ajuste; el test $F$ pregunta si lo empeora "demasiado"**. Si $H_0$ es cierta, imponerla debería costar poco. La demostración está en la sección ★.
+
+Un caso particular importantísimo es el **test de significancia global**, $H_0:\beta_2 = \dots = \beta_k = 0$ (todos menos la constante). El modelo restringido solo tiene constante, así que $\text{SCR}_R = \text{SCT}$, y dividiendo numerador y denominador por $\text{SCT}$,
+$$
+F = \frac{R^2/(k-1)}{(1 - R^2)/(n-k)}.
+$$
+
+# ★ Postgrado: mínimos cuadrados restringidos
+
+::: {.callout-important title="★ Postgrado"}
+Derivamos $\tilde\beta$ con multiplicadores de Lagrange y demostramos @thm-f-scr usando la identidad de completación de cuadrados de la Clase 3.
+:::
+
+::: {#thm-mcr}
+## Mínimos cuadrados restringidos
+Si $\operatorname{rango}(X) = k$ y $\operatorname{rango}(R) = q$, el minimizador de $S(b)$ sujeto a $Rb = r$ es
+$$
+\tilde\beta = \hat\beta - (X'X)^{-1}R'\big[R(X'X)^{-1}R'\big]^{-1}(R\hat\beta - r).
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+La identidad de la Clase 3 dice $S(b) = S(\hat\beta) + (b - \hat\beta)'X'X(b - \hat\beta)$. Así que minimizar $S(b)$ sujeto a $Rb = r$ es minimizar la **distancia** $(b - \hat\beta)'X'X(b - \hat\beta)$ de $b$ a $\hat\beta$ (medida con la métrica $X'X$) sobre el conjunto afín $\{b: Rb = r\}$. Es una proyección. Con Lagrange: $\mathcal{L} = (b - \hat\beta)'X'X(b - \hat\beta) + 2\lambda'(Rb - r)$. Condición de primer orden: $2X'X(b - \hat\beta) + 2R'\lambda = 0$, así que $b = \hat\beta - (X'X)^{-1}R'\lambda$. Imponiendo $Rb = r$ despejo $\lambda$.
+:::
+
+::: {.proof}
+Sea $A = X'X\succ0$ y $\Sigma_R = RA^{-1}R'\succ0$. Por la identidad de completación de cuadrados de MCO (Clase 3), para todo $b$,
+$$
+S(b) = S(\hat\beta) + (b - \hat\beta)'A(b - \hat\beta).
+$$ {#eq-mcr-dist}
+Definamos $\tilde\beta$ como en el enunciado. Primero, es factible: $R\tilde\beta = R\hat\beta - RA^{-1}R'\Sigma_R^{-1}(R\hat\beta - r) = R\hat\beta - (R\hat\beta - r) = r$.
+
+Ahora sea $b$ cualquier punto factible ($Rb = r$) y escribamos $b - \hat\beta = (b - \tilde\beta) + (\tilde\beta - \hat\beta)$. Entonces
+$$
+(b - \hat\beta)'A(b - \hat\beta) = (b - \tilde\beta)'A(b - \tilde\beta) + (\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta) + 2(b - \tilde\beta)'A(\tilde\beta - \hat\beta).
+$$
+El término cruzado es cero: $A(\tilde\beta - \hat\beta) = -R'\Sigma_R^{-1}(R\hat\beta - r)$, así que
+$$
+(b - \tilde\beta)'A(\tilde\beta - \hat\beta) = -(Rb - R\tilde\beta)'\Sigma_R^{-1}(R\hat\beta - r) = -(r - r)'\Sigma_R^{-1}(R\hat\beta - r) = 0.
+$$
+Luego, para todo $b$ factible, $(b - \hat\beta)'A(b - \hat\beta)\ge(\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta)$, con igualdad si y solo si $b = \tilde\beta$ (pues $A\succ0$). Por @eq-mcr-dist, $\tilde\beta$ es el único minimizador de $S$ sobre el conjunto factible.
+:::
+
+::: {.proof}
+**(de @thm-f-scr).** Por @eq-mcr-dist con $b = \tilde\beta$,
+$$
+\text{SCR}_R - \text{SCR}_{NR} = (\tilde\beta - \hat\beta)'X'X(\tilde\beta - \hat\beta).
+$$
+Sustituyendo $\tilde\beta - \hat\beta = -A^{-1}R'\Sigma_R^{-1}(R\hat\beta - r)$,
+$$
+(\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta) = (R\hat\beta - r)'\Sigma_R^{-1}\underbrace{RA^{-1}AA^{-1}R'}_{=\,\Sigma_R}\Sigma_R^{-1}(R\hat\beta - r) = (R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r).
+$$
+Este es exactamente el numerador de $F$ multiplicado por $q$. Como $s^2 = \text{SCR}_{NR}/(n-k)$, las dos expresiones de $F$ coinciden.
+:::
+
+Una consecuencia inmediata: $\text{SCR}_R\ge\text{SCR}_{NR}$, así que $F\ge0$. Y si $R\hat\beta = r$ (el estimador sin restringir ya cumple la restricción), $\tilde\beta = \hat\beta$ y $F = 0$.
+
+# Resumen
+
+- Bajo normalidad, $\hat\beta\mid X\sim N(\beta,\sigma^2(X'X)^{-1})$, $(n-k)s^2/\sigma^2\sim\chi^2_{n-k}$, y ambos son independientes (@thm-distribucion-exacta).
+- La herramienta clave: $z'Az\sim\chi^2_r$ si $z\sim N(0,I)$ y $A$ es simétrica idempotente de rango $r$ (@lem-chi-idempotente).
+- $t_j = (\hat\beta_j - \beta_j^0)/\operatorname{ee}(\hat\beta_j)\sim t_{n-k}$ exactamente (@thm-test-t). Es pivotal.
+- Para $H_0: R\beta = r$, $F\sim F_{q,n-k}$ (@thm-test-f), y $F = \frac{(\text{SCR}_R - \text{SCR}_{NR})/q}{\text{SCR}_{NR}/(n-k)}$ (@thm-f-scr).
+
+# Ejercicios
+
+**Ejercicio 5.1.** En una regresión con $n = 40$ y $k = 4$ (incluida la constante) se obtiene $R^2 = 0{,}30$. Testea la significancia global al 5 %. (El cuantil $0{,}95$ de la $F_{3,36}$ es aproximadamente $2{,}87$.)
+
+::: {.callout-tip collapse="true" title="Solución 5.1"}
+$F = \dfrac{0{,}30/3}{0{,}70/36} = \dfrac{0{,}10}{0{,}01944}\approx5{,}14 > 2{,}87$. Se rechaza que todos los coeficientes (salvo la constante) sean cero.
+:::
+
+**Ejercicio 5.2.** Sea $z\sim N(0,I_n)$ y $M^0 = I - \frac1n\iota\iota'$. Demuestra que $\sum_i(z_i - \bar z)^2\sim\chi^2_{n-1}$ y que es independiente de $\bar z$. Deduce que, para una muestra i.i.d. $N(\mu,\sigma^2)$, $\sqrt n(\bar x - \mu)/S\sim t_{n-1}$, con $S^2$ la varianza muestral.
+
+::: {.callout-tip collapse="true" title="Solución 5.2"}
+$\sum(z_i - \bar z)^2 = z'M^0z$ y $M^0$ es simétrica idempotente de rango $n-1$ (Clase 1): es $\chi^2_{n-1}$ por @lem-chi-idempotente. $\bar z = \frac1n\iota'z$ y $\operatorname{Cov}(\frac1n\iota'z, M^0z) = \frac1n\iota'M^0 = 0$, así que son independientes. Es el caso $X = \iota$ de @thm-distribucion-exacta. Para la muestra, $z_i = (x_i - \mu)/\sigma$, y $\sqrt n(\bar x - \mu)/S = \dfrac{\sqrt n\bar z}{\sqrt{z'M^0z/(n-1)}}$, cociente de una $N(0,1)$ y la raíz de una $\chi^2_{n-1}/(n-1)$ independiente.
+:::
+
+**Ejercicio 5.3.** Escribe $R$ y $r$ para testear, en $\log Q = \beta_1 + \beta_2\log K + \beta_3\log L + u$, la hipótesis de rendimientos constantes a escala. Muestra que el modelo restringido se puede estimar por MCO con una variable transformada.
+
+::: {.callout-tip collapse="true" title="Solución 5.3"}
+$R = (0\;1\;1)$, $r = 1$. Bajo $H_0$, $\beta_3 = 1 - \beta_2$ y $\log Q - \log L = \beta_1 + \beta_2(\log K - \log L) + u$: se regresa $\log(Q/L)$ sobre una constante y $\log(K/L)$. Su SCR es $\text{SCR}_R$ (ojo: la variable dependiente cambió, pero los residuos son los del modelo original restringido, así que la SCR es comparable).
+:::
+
+**Ejercicio 5.4.** Demuestra que si $T\sim t_r$, entonces $T^2\sim F_{1,r}$, y usa esto para mostrar que el test $F$ de $H_0:\beta_j = 0$ y el test $t$ bilateral rechazan exactamente en los mismos casos.
+
+::: {.callout-tip collapse="true" title="Solución 5.4"}
+$T = Z/\sqrt{V/r}$ con $Z\sim N(0,1)$ indep. de $V\sim\chi^2_r$. $T^2 = (Z^2/1)/(V/r)$ con $Z^2\sim\chi^2_1$ independiente de $V$: es $F_{1,r}$. Si $c$ es el cuantil $1-\alpha/2$ de la $t_r$, entonces $c^2$ es el cuantil $1-\alpha$ de la $F_{1,r}$, porque $P(T^2\le c^2) = P(|T|\le c) = 1 - \alpha$. Luego $|t_j|>c\iff t_j^2 = F > c^2$.
+:::
+
+**Ejercicio 5.5.** ¿Por qué no se puede usar el test $F$ con sumas de residuos para comparar $y = \beta_1 + \beta_2x + u$ con $\log y = \gamma_1 + \gamma_2x + v$?
+
+::: {.callout-tip collapse="true" title="Solución 5.5"}
+Porque no son modelos anidados: ninguno es una restricción lineal del otro, y las variables dependientes son distintas, así que las SCR están en unidades distintas. El test $F$ exige que el modelo restringido sea el sin restringir con $R\beta = r$ impuesto.
+:::
+
+**Ejercicio 5.6 ★.** Usa la función característica $\varphi_z(t) = \mathbb{E}[e^{it'z}] = \exp(it'\mu - \frac12t'\Sigma t)$ de la $N(\mu,\Sigma)$ para demostrar @thm-normal-independencia sin suponer $\Sigma\succ0$.
+
+::: {.callout-tip collapse="true" title="Solución 5.6 ★"}
+Con $t = (t_1', t_2')'$ y $\Sigma_{12} = 0$: $t'\Sigma t = t_1'\Sigma_{11}t_1 + t_2'\Sigma_{22}t_2$ y $t'\mu = t_1'\mu_1 + t_2'\mu_2$, así que $\varphi_z(t) = \varphi_{z_1}(t_1)\varphi_{z_2}(t_2)$. La función característica conjunta se factoriza, lo que (por la unicidad de la función característica) equivale a independencia. La fórmula de $\varphi_z$ vale aunque $\Sigma$ sea singular: por la definición, $t'z\sim N(t'\mu, t'\Sigma t)$, y la función característica de una normal escalar evaluada en 1 da $\exp(it'\mu - \frac12t'\Sigma t)$.
+:::
+
+**Ejercicio 5.7 ★.** (Región de confianza.) Demuestra que el conjunto $\{b\in\mathbb{R}^k: (\hat\beta - b)'X'X(\hat\beta - b)\le k\,s^2\,c\}$, con $c$ el cuantil $1-\alpha$ de la $F_{k,n-k}$, es una región de confianza de nivel exacto $1-\alpha$ para $\beta$. ¿Qué forma geométrica tiene?
+
+::: {.callout-tip collapse="true" title="Solución 5.7 ★"}
+Con $R = I_k$, $r = \beta$, el estadístico $F = (\hat\beta - \beta)'X'X(\hat\beta - \beta)/(ks^2)\sim F_{k,n-k}$. Luego $P(F\le c) = 1-\alpha$, que es exactamente $P(\beta\in\text{región})$. La región es un elipsoide centrado en $\hat\beta$ con ejes en las direcciones de los vectores propios de $X'X$: es más angosto en las direcciones en que los datos tienen más variación. Con regresores muy correlacionados, el elipsoide es muy alargado: esa es la cara geométrica de la multicolinealidad (Clase 8).
+:::

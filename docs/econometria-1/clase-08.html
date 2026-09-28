@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Sesgo por variable omitida, el costo en varianza de las variables irrelevantes, multicolinealidad y el factor de inflación de varianza, y el sesgo de atenuación por error de medida.">
+
+<title>Clase 8 · Errores de especificación – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-09.html" rel="next">
+<link href="../econometria-1/clase-07.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-08.html">Clase 8 · Errores de especificación</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#el-modelo-que-estimas-no-es-el-que-querías" id="toc-el-modelo-que-estimas-no-es-el-que-querías" class="nav-link active" data-scroll-target="#el-modelo-que-estimas-no-es-el-que-querías"><span class="header-section-number">1</span> El modelo que estimas no es el que querías</a></li>
+  <li><a href="#omitir-variables-relevantes" id="toc-omitir-variables-relevantes" class="nav-link" data-scroll-target="#omitir-variables-relevantes"><span class="header-section-number">2</span> Omitir variables relevantes</a>
+  <ul class="collapse">
+  <li><a href="#el-caso-de-un-regresor" id="toc-el-caso-de-un-regresor" class="nav-link" data-scroll-target="#el-caso-de-un-regresor"><span class="header-section-number">2.1</span> El caso de un regresor</a></li>
+  <li><a href="#versión-asintótica" id="toc-versión-asintótica" class="nav-link" data-scroll-target="#versión-asintótica"><span class="header-section-number">2.2</span> Versión asintótica</a></li>
+  </ul></li>
+  <li><a href="#incluir-variables-irrelevantes" id="toc-incluir-variables-irrelevantes" class="nav-link" data-scroll-target="#incluir-variables-irrelevantes"><span class="header-section-number">3</span> Incluir variables irrelevantes</a>
+  <ul class="collapse">
+  <li><a href="#el-dilema-sesgovarianza" id="toc-el-dilema-sesgovarianza" class="nav-link" data-scroll-target="#el-dilema-sesgovarianza"><span class="header-section-number">3.1</span> El dilema sesgo–varianza</a></li>
+  </ul></li>
+  <li><a href="#multicolinealidad" id="toc-multicolinealidad" class="nav-link" data-scroll-target="#multicolinealidad"><span class="header-section-number">4</span> Multicolinealidad</a></li>
+  <li><a href="#error-de-medida" id="toc-error-de-medida" class="nav-link" data-scroll-target="#error-de-medida"><span class="header-section-number">5</span> Error de medida</a>
+  <ul class="collapse">
+  <li><a href="#en-la-variable-dependiente" id="toc-en-la-variable-dependiente" class="nav-link" data-scroll-target="#en-la-variable-dependiente"><span class="header-section-number">5.1</span> En la variable dependiente</a></li>
+  <li><a href="#en-un-regresor-el-sesgo-de-atenuación" id="toc-en-un-regresor-el-sesgo-de-atenuación" class="nav-link" data-scroll-target="#en-un-regresor-el-sesgo-de-atenuación"><span class="header-section-number">5.2</span> En un regresor: el sesgo de atenuación</a></li>
+  </ul></li>
+  <li><a href="#postgrado-atenuación-con-varios-regresores-y-el-test-reset" id="toc-postgrado-atenuación-con-varios-regresores-y-el-test-reset" class="nav-link" data-scroll-target="#postgrado-atenuación-con-varios-regresores-y-el-test-reset"><span class="header-section-number">6</span> ★ Postgrado: atenuación con varios regresores y el test RESET</a>
+  <ul class="collapse">
+  <li><a href="#error-de-medida-en-regresión-múltiple" id="toc-error-de-medida-en-regresión-múltiple" class="nav-link" data-scroll-target="#error-de-medida-en-regresión-múltiple"><span class="header-section-number">6.1</span> Error de medida en regresión múltiple</a></li>
+  <li><a href="#el-test-reset" id="toc-el-test-reset" class="nav-link" data-scroll-target="#el-test-reset"><span class="header-section-number">6.2</span> El test RESET</a></li>
+  </ul></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-08.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 8 · Errores de especificación</h1>
+<p class="subtitle lead">Variables omitidas, variables irrelevantes, multicolinealidad y error de medida</p>
+</div>
+
+<div>
+  <div class="description">
+    Sesgo por variable omitida, el costo en varianza de las variables irrelevantes, multicolinealidad y el factor de inflación de varianza, y el sesgo de atenuación por error de medida.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-08.pdf">Descargar esta clase en PDF</a></p>
+<section id="el-modelo-que-estimas-no-es-el-que-querías" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> El modelo que estimas no es el que querías</h1>
+<p>Hasta ahora supusimos que sabíamos qué regresores poner. En la vida real, la lista de regresores es una decisión, y se puede equivocar de cuatro formas:</p>
+<ol type="1">
+<li><strong>Omitir</strong> una variable que importa.</li>
+<li><strong>Incluir</strong> una variable que no importa.</li>
+<li>Incluir variables que están <strong>muy correlacionadas</strong> entre sí.</li>
+<li>Medir mal una variable.</li>
+</ol>
+<p>Esta clase estudia qué le pasa a MCO en cada caso. Spoiler: (1) y (4) producen <strong>sesgo</strong>, que no desaparece con más datos; (2) y (3) producen <strong>varianza</strong>, que sí desaparece con más datos. Casi todo el arte de la econometría aplicada consiste en preocuparse más de lo primero que de lo segundo.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Una vez un colega me dijo: “la varianza es un problema de muestra; el sesgo es un problema de ideas”. Con más datos resuelves el primero. Con más datos, el segundo solo te da más confianza en la respuesta equivocada.</p></div></div><p>Usaremos la partición <span class="math inline">\(X = [X_1\;\;X_2]\)</span> con <span class="math inline">\(X_1\)</span> de <span class="math inline">\(n\times k_1\)</span> (las variables que nos interesan) y <span class="math inline">\(X_2\)</span> de <span class="math inline">\(n\times k_2\)</span>, y la notación <span class="math inline">\(M_2 = I - X_2(X_2'X_2)^{-1}X_2'\)</span> de la Clase 3.</p>
+</section>
+<section id="omitir-variables-relevantes" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Omitir variables relevantes</h1>
+<p>Supongamos que el modelo verdadero es <span class="math display">\[
+y = X_1\beta_1 + X_2\beta_2 + u, \qquad \mathbb{E}[u\mid X] = 0,
+\]</span> (es decir, RL1–RL3 con los dos bloques) pero el investigador regresa <span class="math inline">\(y\)</span> solo sobre <span class="math inline">\(X_1\)</span> y obtiene el estimador “corto” <span class="math display">\[
+\tilde\beta_1 = (X_1'X_1)^{-1}X_1'y.
+\]</span></p>
+<div id="thm-ovb" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Sesgo por variable omitida)</strong></span> Bajo RL1–RL3 para el modelo largo y <span class="math inline">\(\operatorname{rango}(X_1) = k_1\)</span>, <span class="math display">\[
+\mathbb{E}[\tilde\beta_1\mid X] = \beta_1 + \underbrace{(X_1'X_1)^{-1}X_1'X_2}_{=\,\hat\Pi}\;\beta_2,
+\]</span> donde <span class="math inline">\(\hat\Pi\)</span> (<span class="math inline">\(k_1\times k_2\)</span>) es la matriz de coeficientes de MCO de regresar cada columna de <span class="math inline">\(X_2\)</span> sobre <span class="math inline">\(X_1\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sustituyendo el modelo verdadero, <span class="math display">\[
+\tilde\beta_1 = (X_1'X_1)^{-1}X_1'(X_1\beta_1 + X_2\beta_2 + u) = \beta_1 + (X_1'X_1)^{-1}X_1'X_2\beta_2 + (X_1'X_1)^{-1}X_1'u.
+\]</span> Tomando esperanza condicional en <span class="math inline">\(X\)</span> (que incluye a <span class="math inline">\(X_1\)</span> y <span class="math inline">\(X_2\)</span>), el último término tiene esperanza cero por RL3, y los dos primeros son funciones de <span class="math inline">\(X\)</span>.</p>
+</div>
+<p>El sesgo es <span class="math inline">\(\hat\Pi\beta_2\)</span>: el <strong>producto</strong> de dos cosas:</p>
+<ul>
+<li><span class="math inline">\(\beta_2\)</span>: cuánto afecta la variable omitida a <span class="math inline">\(y\)</span>.</li>
+<li><span class="math inline">\(\hat\Pi\)</span>: cuánto se relaciona la variable omitida con las incluidas.</li>
+</ul>
+<p>El sesgo desaparece solo si una de las dos es cero: o la variable omitida no importa (<span class="math inline">\(\beta_2 = 0\)</span>), o no está correlacionada en la muestra con las incluidas (<span class="math inline">\(X_1'X_2 = 0\)</span>, el caso del corolario de regresores ortogonales de la Clase 3).</p>
+<section id="el-caso-de-un-regresor" class="level2 page-columns page-full" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-caso-de-un-regresor"><span class="header-section-number">2.1</span> El caso de un regresor</h2>
+<p>Con un regresor de interés <span class="math inline">\(x\)</span>, una constante y una variable omitida <span class="math inline">\(w\)</span>, el modelo verdadero es <span class="math inline">\(y = \alpha + \beta x + \gamma w + u\)</span> y el sesgo del coeficiente de la regresión corta es <span class="math display">\[
+\mathbb{E}[\tilde\beta\mid X] - \beta = \gamma\,\hat\delta, \qquad \hat\delta = \frac{\sum_i(x_i - \bar x)(w_i - \bar w)}{\sum_i(x_i - \bar x)^2},
+\]</span> donde <span class="math inline">\(\hat\delta\)</span> es la pendiente de regresar <span class="math inline">\(w\)</span> sobre <span class="math inline">\(x\)</span>. Su signo sigue una tabla que vale la pena memorizar:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(\operatorname{Corr}(x,w)&gt;0\)</span></th>
+<th><span class="math inline">\(\operatorname{Corr}(x,w)&lt;0\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\gamma &gt; 0\)</span></td>
+<td>sesgo <strong>positivo</strong></td>
+<td>sesgo <strong>negativo</strong></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\gamma &lt; 0\)</span></td>
+<td>sesgo <strong>negativo</strong></td>
+<td>sesgo <strong>positivo</strong></td>
+</tr>
+</tbody>
+</table>
+<div id="exm-habilidad" class="theorem example page-columns page-full">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El retorno a la educación y la habilidad)</strong></span> En <span class="math inline">\(\log(\text{salario}) = \alpha + \beta\,\text{educ} + \gamma\,\text{habilidad} + u\)</span>, la habilidad no se observa. Es razonable pensar que <span class="math inline">\(\gamma&gt;0\)</span> (la habilidad sube el salario) y que habilidad y educación están positivamente correlacionadas (a quien le va bien estudiando, estudia más). La tabla dice: <strong>el MCO corto sobreestima el retorno a la educación</strong>. Parte de lo que atribuimos a la educación es en realidad habilidad. Esta es probablemente la discusión más famosa de la economía laboral, y la motivación de la Clase 10.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Lo curioso es que cuando se usan variables instrumentales (Clase 10), las estimaciones del retorno a la educación suelen salir <em>mayores</em> que las de MCO, no menores. Card (1999) discute por qué. Resulta que el sesgo por habilidad no es el único en juego: también hay error de medida en la educación, que sesga hacia abajo (lo vemos más adelante en esta clase).</p></div></div></div>
+</section>
+<section id="versión-asintótica" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="versión-asintótica"><span class="header-section-number">2.2</span> Versión asintótica</h2>
+<p>Con muestreo i.i.d. (Clase 7), el sesgo no desaparece con <span class="math inline">\(n\)</span>. Si <span class="math inline">\(y_i = x_{1i}'\beta_1 + x_{2i}'\beta_2 + u_i\)</span> con <span class="math inline">\(\mathbb{E}[x_iu_i] = 0\)</span>, entonces <span class="math display">\[
+\tilde\beta_1\xrightarrow{p}\beta_1 + \mathbb{E}[x_{1i}x_{1i}']^{-1}\mathbb{E}[x_{1i}x_{2i}']\,\beta_2 = \beta_1 + \Pi\beta_2,
+\]</span> por la LGN y la función continua aplicadas a <span class="math inline">\(\tilde\beta_1 = \beta_1 + \hat Q_{11}^{-1}\hat Q_{12}\beta_2 + \hat Q_{11}^{-1}\frac1n\sum_i x_{1i}u_i\)</span>. El estimador corto es <strong>inconsistente</strong> para <span class="math inline">\(\beta_1\)</span>: converge, con toda seguridad, al número equivocado. (Lo que sí estima consistentemente es el coeficiente de la proyección <em>corta</em>, que es un objeto distinto; ver el Ejercicio 2.6.)</p>
+</section>
+</section>
+<section id="incluir-variables-irrelevantes" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Incluir variables irrelevantes</h1>
+<p>Ahora el caso opuesto: el modelo verdadero es <span class="math inline">\(y = X_1\beta_1 + u\)</span> (es decir, <span class="math inline">\(\beta_2 = 0\)</span>), pero el investigador incluye <span class="math inline">\(X_2\)</span> de todos modos. El estimador largo <span class="math inline">\(\hat\beta_1\)</span> (el bloque de <span class="math inline">\(X_1\)</span> en la regresión sobre <span class="math inline">\([X_1\;X_2]\)</span>) sigue siendo insesgado: el modelo largo es correcto, solo que con <span class="math inline">\(\beta_2 = 0\)</span>. ¿Cuál es el costo? La varianza.</p>
+<div id="thm-irrelevantes" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (El precio de las variables irrelevantes)</strong></span> Supongamos RL1–RL4 para el modelo largo con <span class="math inline">\(\beta_2 = 0\)</span>, y <span class="math inline">\(X = [X_1\;X_2]\)</span> de rango completo. Sean <span class="math inline">\(\tilde\beta_1\)</span> (corto) y <span class="math inline">\(\hat\beta_1\)</span> (largo). Ambos son insesgados y <span class="math display">\[
+\operatorname{Var}(\hat\beta_1\mid X) = \sigma^2(X_1'M_2X_1)^{-1}\;\succeq\;\sigma^2(X_1'X_1)^{-1} = \operatorname{Var}(\tilde\beta_1\mid X).
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El insesgamiento del corto sale de <a href="#thm-ovb" class="quarto-xref">Teorema&nbsp;1</a> con <span class="math inline">\(\beta_2 = 0\)</span>. La varianza del largo sale de FWL (Clase 3): <span class="math inline">\(\hat\beta_1\)</span> es MCO de <span class="math inline">\(M_2y\)</span> sobre <span class="math inline">\(M_2X_1\)</span>, con matriz <span class="math inline">\((X_1'M_2X_1)^{-1}\)</span>. (También es el bloque <span class="math inline">\((1,1)\)</span> de <span class="math inline">\((X'X)^{-1}\)</span> por la inversa particionada de la Clase 1.) Para comparar varianzas necesito comparar las <strong>inversas</strong> de <span class="math inline">\(X_1'M_2X_1\)</span> y <span class="math inline">\(X_1'X_1\)</span>. Primero comparo las matrices sin invertir: <span class="math inline">\(X_1'X_1 - X_1'M_2X_1 = X_1'P_2X_1\succeq0\)</span>. Y luego uso el resultado ★ de la Clase 1: “si <span class="math inline">\(A\succeq B\succ0\)</span> entonces <span class="math inline">\(B^{-1}\succeq A^{-1}\)</span>”.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Insesgamiento.</em> El corto es insesgado por <a href="#thm-ovb" class="quarto-xref">Teorema&nbsp;1</a> con <span class="math inline">\(\beta_2 = 0\)</span>; el largo, por la Clase 4.</p>
+<p><em>Varianza del corto.</em> Con <span class="math inline">\(\beta_2 = 0\)</span>, <span class="math inline">\(\tilde\beta_1 = \beta_1 + (X_1'X_1)^{-1}X_1'u\)</span>, y por RL4, <span class="math inline">\(\operatorname{Var}(\tilde\beta_1\mid X) = \sigma^2(X_1'X_1)^{-1}\)</span>.</p>
+<p><em>Varianza del largo.</em> Por FWL, <span class="math inline">\(\hat\beta_1 = (X_1'M_2X_1)^{-1}X_1'M_2y\)</span>. Como <span class="math inline">\(M_2X_2 = 0\)</span> y <span class="math inline">\(\beta_2 = 0\)</span>, <span class="math inline">\(M_2y = M_2X_1\beta_1 + M_2u\)</span>, así que <span class="math inline">\(\hat\beta_1 = \beta_1 + (X_1'M_2X_1)^{-1}X_1'M_2u\)</span> y <span class="math display">\[
+\operatorname{Var}(\hat\beta_1\mid X) = (X_1'M_2X_1)^{-1}X_1'M_2(\sigma^2I)M_2X_1(X_1'M_2X_1)^{-1} = \sigma^2(X_1'M_2X_1)^{-1},
+\]</span> usando <span class="math inline">\(M_2M_2 = M_2\)</span>.</p>
+<p><em>Comparación.</em> Sean <span class="math inline">\(A = X_1'X_1\)</span> y <span class="math inline">\(B = X_1'M_2X_1\)</span>. Como <span class="math inline">\(I = P_2 + M_2\)</span>, <span class="math display">\[
+A - B = X_1'P_2X_1 = (P_2X_1)'(P_2X_1)\succeq0.
+\]</span> Además <span class="math inline">\(B\succ0\)</span> (en la demostración de FWL vimos que <span class="math inline">\(M_2X_1\)</span> tiene rango columna completo). Luego <span class="math inline">\(A\succeq B\succ0\)</span> y, por el orden de las inversas (Clase 1, sección ★), <span class="math inline">\(B^{-1}\succeq A^{-1}\)</span>. Multiplicando por <span class="math inline">\(\sigma^2&gt;0\)</span> se obtiene el resultado.</p>
+</div>
+<p>La diferencia es cero si y solo si <span class="math inline">\(P_2X_1 = 0\)</span>, es decir, si <span class="math inline">\(X_1\)</span> y <span class="math inline">\(X_2\)</span> son ortogonales. <strong>Incluir una variable irrelevante cuesta varianza en la medida en que esté correlacionada con las relevantes.</strong> Si no lo está, es gratis (salvo un grado de libertad en <span class="math inline">\(s^2\)</span>).</p>
+<section id="el-dilema-sesgovarianza" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="el-dilema-sesgovarianza"><span class="header-section-number">3.1</span> El dilema sesgo–varianza</h2>
+<p>Juntando <a href="#thm-ovb" class="quarto-xref">Teorema&nbsp;1</a> y <a href="#thm-irrelevantes" class="quarto-xref">Teorema&nbsp;2</a>: si dudas de si incluir <span class="math inline">\(X_2\)</span>,</p>
+<ul>
+<li>Si la incluyes y era irrelevante: pagas varianza.</li>
+<li>Si la omites y era relevante: pagas sesgo.</li>
+</ul>
+<p>Con una sola variable de interés, el error cuadrático medio del estimador corto es <span class="math inline">\(\text{ECM}(\tilde\beta_1) = \operatorname{Var}(\tilde\beta_1) + (\text{sesgo})^2\)</span>, y puede ser menor que el del largo si <span class="math inline">\(\beta_2\)</span> es chico. Pero como el sesgo no desaparece con <span class="math inline">\(n\)</span> y la varianza sí, <strong>en muestras grandes siempre gana incluir</strong>. Esto justifica la regla práctica de ser generoso con los controles, con una excepción importante: los <strong>malos controles</strong>, variables que son ellas mismas resultado del regresor de interés (Ejercicio 8.5).</p>
+</section>
+</section>
+<section id="multicolinealidad" class="level1 page-columns page-full" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Multicolinealidad</h1>
+<p>La multicolinealidad es el caso en que los regresores están muy correlacionados entre sí. Hay que distinguir dos versiones.</p>
+<p><strong>Perfecta:</strong> una columna de <span class="math inline">\(X\)</span> es combinación lineal exacta de otras. Entonces <span class="math inline">\(\operatorname{rango}(X)&lt;k\)</span>, <span class="math inline">\(X'X\)</span> no es invertible (Clase 1) y MCO no está definido. Los coeficientes no están <strong>identificados</strong>: hay infinitos <span class="math inline">\(b\)</span> que dan el mismo <span class="math inline">\(Xb\)</span>. La solución es eliminar la redundancia.</p>
+<p><strong>Imperfecta:</strong> las columnas son “casi” dependientes. MCO está definido y sigue siendo insesgado y MELI. El problema es solo de precisión. La fórmula de la Clase 4 lo dice todo: <span class="math display">\[
+\operatorname{Var}(\hat\beta_j\mid X) = \frac{\sigma^2}{\text{SCT}_j(1 - R_j^2)} = \frac{\sigma^2}{\text{SCT}_j}\cdot\underbrace{\frac{1}{1 - R_j^2}}_{\text{VIF}_j}.
+\]</span> El <strong>factor de inflación de varianza</strong> <span class="math inline">\(\text{VIF}_j\)</span> mide cuánto se multiplica la varianza de <span class="math inline">\(\hat\beta_j\)</span> respecto del caso en que <span class="math inline">\(x_j\)</span> no estuviera correlacionado con los demás regresores. Con <span class="math inline">\(R_j^2 = 0{,}9\)</span>, <span class="math inline">\(\text{VIF} = 10\)</span>; con <span class="math inline">\(R_j^2 = 0{,}99\)</span>, <span class="math inline">\(\text{VIF} = 100\)</span> y los errores estándar se multiplican por <span class="math inline">\(10\)</span>.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="La multicolinealidad no es una violación de supuestos">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>La multicolinealidad no es una violación de supuestos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Es tentador tratar la multicolinealidad como una “enfermedad” que hay que curar. No lo es. Todos los teoremas de las Clases 4, 5 y 7 siguen valiendo; los errores estándar grandes son <strong>correctos</strong>: reflejan que los datos no traen suficiente información para separar los efectos de <span class="math inline">\(x_j\)</span> y de los regresores con que se mueve. Goldberger se burlaba de esta confusión llamándola “micronumerosidad”: el problema es tener pocos datos (o datos con poca variación independiente), y a nadie se le ocurre hacer tests para detectar la micronumerosidad.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Las “soluciones” como eliminar un regresor correlacionado cambian la pregunta y, por <a href="#thm-ovb" class="quarto-xref">Teorema&nbsp;1</a>, introducen sesgo.</p>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;El capítulo 23 de <em>A Course in Econometrics</em> de Goldberger (1991) es una parodia perfecta: toma cada frase de los libros sobre multicolinealidad y la reescribe cambiando “multicolinealidad” por “micronumerosidad”. “Los síntomas de la micronumerosidad incluyen errores estándar grandes…” Si tienes acceso al libro, léelo. Son dos páginas.</p></div></div><p>Un detalle interesante: la multicolinealidad afecta a los coeficientes individuales, pero <strong>no</strong> necesariamente a combinaciones de ellos. Si <span class="math inline">\(x_2\)</span> y <span class="math inline">\(x_3\)</span> son casi idénticos, <span class="math inline">\(\hat\beta_2\)</span> y <span class="math inline">\(\hat\beta_3\)</span> son muy imprecisos, pero <span class="math inline">\(\hat\beta_2 + \hat\beta_3\)</span> puede estimarse con gran precisión (la covarianza entre <span class="math inline">\(\hat\beta_2\)</span> y <span class="math inline">\(\hat\beta_3\)</span> es muy negativa). Los datos saben el efecto conjunto; lo que no saben es cómo repartirlo.</p>
+</section>
+<section id="error-de-medida" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Error de medida</h1>
+<section id="en-la-variable-dependiente" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="en-la-variable-dependiente"><span class="header-section-number">5.1</span> En la variable dependiente</h2>
+<p>Si observamos <span class="math inline">\(y = y^* + v\)</span> en lugar de <span class="math inline">\(y^*\)</span>, con <span class="math inline">\(v\)</span> un error de medida con media cero no correlacionado con <span class="math inline">\(x\)</span>, entonces <span class="math inline">\(y = x'\beta + (u + v)\)</span>. El error compuesto <span class="math inline">\(u + v\)</span> sigue cumpliendo <span class="math inline">\(\mathbb{E}[x(u + v)] = 0\)</span>, así que MCO sigue siendo consistente. El único costo es más varianza (<span class="math inline">\(\operatorname{Var}(u + v)&gt;\operatorname{Var}(u)\)</span> si <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> no están correlacionados). <strong>El error de medida en <span class="math inline">\(y\)</span> es inocuo (salvo por precisión).</strong></p>
+</section>
+<section id="en-un-regresor-el-sesgo-de-atenuación" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="en-un-regresor-el-sesgo-de-atenuación"><span class="header-section-number">5.2</span> En un regresor: el sesgo de atenuación</h2>
+<p>El caso interesante es cuando el regresor está mal medido. Consideremos el modelo con un regresor: <span class="math display">\[
+y_i = \alpha + \beta x_i^* + u_i,
+\]</span> pero no observamos <span class="math inline">\(x_i^*\)</span> sino <span class="math inline">\(x_i = x_i^* + v_i\)</span>, donde <span class="math inline">\(v_i\)</span> es el error de medida.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos del error de medida clásico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos del error de medida clásico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\((x_i^*, u_i, v_i)\)</span> i.i.d., con <span class="math inline">\(\mathbb{E}[u_i] = \mathbb{E}[v_i] = 0\)</span>, <span class="math inline">\(\operatorname{Var}(x_i^*) = \sigma_*^2&gt;0\)</span>, <span class="math inline">\(\operatorname{Var}(v_i) = \sigma_v^2\)</span>, y <span class="math inline">\(u_i\)</span>, <span class="math inline">\(v_i\)</span>, <span class="math inline">\(x_i^*\)</span> mutuamente no correlacionados.</p>
+</div>
+</div>
+<div id="thm-atenuacion" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Sesgo de atenuación)</strong></span> Bajo los supuestos anteriores, la pendiente de MCO de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1, x)\)</span> satisface <span class="math display">\[
+\hat\beta\xrightarrow{p}\lambda\beta, \qquad \lambda = \frac{\sigma_*^2}{\sigma_*^2 + \sigma_v^2}\in(0, 1].
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sustituyo <span class="math inline">\(x^* = x - v\)</span> en el modelo: <span class="math inline">\(y = \alpha + \beta x + (u - \beta v)\)</span>. El nuevo “error” es <span class="math inline">\(u - \beta v\)</span>, y ahí está el problema: <span class="math inline">\(v\)</span> está dentro de <span class="math inline">\(x\)</span> <strong>y</strong> dentro del error. Así que el regresor está correlacionado con el error: <span class="math inline">\(\operatorname{Cov}(x, u - \beta v) = \operatorname{Cov}(x^* + v, u - \beta v) = -\beta\sigma_v^2\)</span>.</p>
+<p>Para el límite, uso que la pendiente converge a <span class="math inline">\(\operatorname{Cov}(x,y)/\operatorname{Var}(x)\)</span> (la pendiente de la proyección lineal, Clases 2 y 7). <span class="math inline">\(\operatorname{Cov}(x,y) = \operatorname{Cov}(x^* + v, \alpha + \beta x^* + u) = \beta\sigma_*^2\)</span> y <span class="math inline">\(\operatorname{Var}(x) = \sigma_*^2 + \sigma_v^2\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La pendiente de MCO es <span class="math inline">\(\hat\beta = \widehat{\operatorname{Cov}}(x,y)/\widehat{\operatorname{Var}}(x)\)</span> (Clase 3). Por la LGN y la función continua (como en la Clase 7), <span class="math inline">\(\hat\beta\xrightarrow{p}\operatorname{Cov}(x_i,y_i)/\operatorname{Var}(x_i)\)</span>, siempre que <span class="math inline">\(\operatorname{Var}(x_i)&gt;0\)</span>. Calculamos, usando bilinealidad de la covarianza y los supuestos de no correlación: <span class="math display">\[
+\operatorname{Cov}(x_i,y_i) = \operatorname{Cov}(x_i^* + v_i,\;\alpha + \beta x_i^* + u_i) = \beta\operatorname{Var}(x_i^*) + \operatorname{Cov}(x_i^*,u_i) + \beta\operatorname{Cov}(v_i,x_i^*) + \operatorname{Cov}(v_i,u_i) = \beta\sigma_*^2,
+\]</span> <span class="math display">\[
+\operatorname{Var}(x_i) = \operatorname{Var}(x_i^*) + \operatorname{Var}(v_i) + 2\operatorname{Cov}(x_i^*,v_i) = \sigma_*^2 + \sigma_v^2.
+\]</span> Luego <span class="math inline">\(\hat\beta\xrightarrow{p}\beta\sigma_*^2/(\sigma_*^2 + \sigma_v^2) = \lambda\beta\)</span>.</p>
+</div>
+<div id="fig-atenuacion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-atenuacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/atenuacion.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-atenuacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Con error de medida clásico en el regresor, la pendiente estimada se aplana. Aquí <span class="math inline">\(\sigma_v^2 = \sigma_*^2\)</span>, así que <span class="math inline">\(\lambda = 1/2\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>El factor <span class="math inline">\(\lambda\)</span> es la <strong>razón señal-ruido</strong> (o <em>fiabilidad</em>) de <span class="math inline">\(x\)</span>: la fracción de la varianza de <span class="math inline">\(x\)</span> que es señal. Como <span class="math inline">\(0&lt;\lambda\le1\)</span>, el estimador está sesgado <strong>hacia cero</strong>: tiene el signo correcto, pero es más chico en valor absoluto. Por eso se llama sesgo de <em>atenuación</em>. La intuición visual de la figura: el ruido esparce los puntos horizontalmente, y una nube más ancha con la misma variación vertical tiene una pendiente más plana.</p>
+<p>Un comentario sobre el contraste con el error en <span class="math inline">\(y\)</span>: el error de medida es inocuo en <span class="math inline">\(y\)</span> y dañino en <span class="math inline">\(x\)</span> porque MCO trata asimétricamente a <span class="math inline">\(y\)</span> y a <span class="math inline">\(x\)</span>. Minimiza distancias <strong>verticales</strong>; el ruido vertical se promedia, el horizontal no.</p>
+</section>
+</section>
+<section id="postgrado-atenuación-con-varios-regresores-y-el-test-reset" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: atenuación con varios regresores y el test RESET</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con varios regresores, el error de medida en uno contamina a todos. Además, presentamos el test RESET de forma funcional como un test de Wald.</p>
+</div>
+</div>
+<section id="error-de-medida-en-regresión-múltiple" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="error-de-medida-en-regresión-múltiple"><span class="header-section-number">6.1</span> Error de medida en regresión múltiple</h2>
+<p>Supongamos <span class="math inline">\(y_i = \beta x_i^* + w_i'\gamma + u_i\)</span>, con <span class="math inline">\(w_i\)</span> (que incluye la constante) bien medido y <span class="math inline">\(x_i = x_i^* + v_i\)</span> con error de medida clásico (<span class="math inline">\(v_i\)</span> no correlacionado con <span class="math inline">\(x_i^*\)</span>, <span class="math inline">\(w_i\)</span>, <span class="math inline">\(u_i\)</span>). Por FWL, el coeficiente de <span class="math inline">\(x\)</span> en la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((x, w)\)</span> converge a <span class="math inline">\(\operatorname{Cov}(\tilde x_i, y_i)/\operatorname{Var}(\tilde x_i)\)</span>, donde <span class="math inline">\(\tilde x_i\)</span> es el residuo de la proyección lineal de <span class="math inline">\(x_i\)</span> sobre <span class="math inline">\(w_i\)</span>. Sea <span class="math inline">\(\tilde x_i^*\)</span> el residuo de proyectar <span class="math inline">\(x_i^*\)</span> sobre <span class="math inline">\(w_i\)</span>. Como <span class="math inline">\(v_i\)</span> no está correlacionado con <span class="math inline">\(w_i\)</span>, la proyección de <span class="math inline">\(x_i = x_i^* + v_i\)</span> sobre <span class="math inline">\(w_i\)</span> es la de <span class="math inline">\(x_i^*\)</span>, y <span class="math inline">\(\tilde x_i = \tilde x_i^* + v_i\)</span>. Entonces <span class="math display">\[
+\hat\beta\xrightarrow{p}\beta\,\frac{\operatorname{Var}(\tilde x_i^*)}{\operatorname{Var}(\tilde x_i^*) + \sigma_v^2} = \beta\,\lambda_w,
+\qquad \lambda_w = \frac{\sigma_*^2(1 - \rho^2)}{\sigma_*^2(1 - \rho^2) + \sigma_v^2}\le\lambda,
+\]</span> donde <span class="math inline">\(\rho^2\)</span> es el <span class="math inline">\(R^2\)</span> poblacional de proyectar <span class="math inline">\(x^*\)</span> sobre <span class="math inline">\(w\)</span>. (Para el numerador: <span class="math inline">\(\operatorname{Cov}(\tilde x_i, y_i) = \operatorname{Cov}(\tilde x_i^* + v_i,\;\beta x_i^* + w_i'\gamma + u_i) = \beta\operatorname{Var}(\tilde x_i^*)\)</span>, porque <span class="math inline">\(\tilde x_i^*\)</span> es ortogonal a <span class="math inline">\(w_i\)</span> y <span class="math inline">\(\operatorname{Cov}(\tilde x_i^*, x_i^*) = \operatorname{Var}(\tilde x_i^*)\)</span>.) Dos lecciones:</p>
+<ol type="1">
+<li><strong>Agregar controles empeora la atenuación.</strong> Los controles se llevan parte de la señal de <span class="math inline">\(x^*\)</span> (la parte predecible por <span class="math inline">\(w\)</span>), pero nada del ruido. La razón señal-ruido del residuo es menor. Esto es especialmente grave en regresiones con efectos fijos (Econometría 2): al restar medias por individuo se elimina mucha señal y poco ruido.</li>
+<li><strong>El sesgo se contagia.</strong> Los coeficientes de <span class="math inline">\(w\)</span> también quedan sesgados: parte del efecto de <span class="math inline">\(x^*\)</span> que <span class="math inline">\(x\)</span> no logra capturar es absorbida por las variables de <span class="math inline">\(w\)</span> correlacionadas con <span class="math inline">\(x^*\)</span> (Ejercicio 8.7).</li>
+</ol>
+</section>
+<section id="el-test-reset" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="el-test-reset"><span class="header-section-number">6.2</span> El test RESET</h2>
+<p>Si la CEF no es lineal, la regresión lineal es solo una aproximación (Clase 2). Ramsey (1969) propuso un test simple de mala especificación de forma funcional: agregar potencias de los valores ajustados y testear si importan. Se estima <span class="math display">\[
+y_i = x_i'\beta + \delta_1\hat y_i^2 + \delta_2\hat y_i^3 + \text{error}
+\]</span> y se testea <span class="math inline">\(H_0:\delta_1 = \delta_2 = 0\)</span> con un test <span class="math inline">\(F\)</span> (o de Wald robusto, Clase 7). La lógica: si la CEF fuera <span class="math inline">\(x'\beta\)</span>, ninguna función no lineal de <span class="math inline">\(x\)</span> debería ayudar a predecir <span class="math inline">\(y\)</span> (por la descomposición de la CEF de la Clase 2, el error de la CEF no está correlacionado con <em>ninguna</em> función de <span class="math inline">\(x\)</span>). El test tiene poder contra muchas alternativas, pero no dice cuál es la forma correcta: detecta el problema, no lo arregla.</p>
+</section>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Omitir <span class="math inline">\(X_2\)</span> sesga <span class="math inline">\(\tilde\beta_1\)</span> en <span class="math inline">\(\hat\Pi\beta_2\)</span> (<a href="#thm-ovb" class="quarto-xref">Teorema&nbsp;1</a>): el efecto de la omitida por su relación con las incluidas. El sesgo no desaparece con <span class="math inline">\(n\)</span>.</li>
+<li>Incluir <span class="math inline">\(X_2\)</span> irrelevante no sesga, pero aumenta la varianza (<a href="#thm-irrelevantes" class="quarto-xref">Teorema&nbsp;2</a>), salvo si <span class="math inline">\(X_2\perp X_1\)</span>.</li>
+<li>Multicolinealidad imperfecta: varianza inflada por <span class="math inline">\(\text{VIF}_j = 1/(1 - R_j^2)\)</span>. No viola supuestos.</li>
+<li>Error de medida clásico en <span class="math inline">\(x\)</span>: <span class="math inline">\(\hat\beta\xrightarrow{p}\lambda\beta\)</span> con <span class="math inline">\(\lambda = \sigma_*^2/(\sigma_*^2 + \sigma_v^2)\)</span> (<a href="#thm-atenuacion" class="quarto-xref">Teorema&nbsp;3</a>). En <span class="math inline">\(y\)</span> es inocuo.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 8.1.</strong> Modelo verdadero: <span class="math inline">\(y = \beta_0 + \beta_1x + \beta_2w + u\)</span> con <span class="math inline">\(\beta_1 = 2\)</span>, <span class="math inline">\(\beta_2 = -3\)</span>. En la población, <span class="math inline">\(\operatorname{Var}(x) = 4\)</span>, <span class="math inline">\(\operatorname{Cov}(x,w) = 1\)</span>. ¿A qué converge la pendiente de la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1,x)\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\delta = \operatorname{Cov}(x,w)/\operatorname{Var}(x) = 1/4\)</span>. Límite: <span class="math inline">\(\beta_1 + \beta_2\delta = 2 - 3/4 = 1{,}25\)</span>. Sesgo negativo, como predice la tabla (<span class="math inline">\(\beta_2&lt;0\)</span>, correlación positiva).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.2.</strong> Demuestra que si <span class="math inline">\(x\)</span> y <span class="math inline">\(w\)</span> tienen correlación muestral cero, entonces el coeficiente de <span class="math inline">\(x\)</span> es el mismo en la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1,x)\)</span> y sobre <span class="math inline">\((1,x,w)\)</span>, pero su error estándar puede cambiar. ¿En qué dirección, típicamente?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por FWL con la constante, basta ver las variables en desvíos, que son ortogonales; por el corolario de regresores ortogonales (Clase 3), el coeficiente no cambia. El error estándar es <span class="math inline">\(s\sqrt{1/\text{SCT}_x}\)</span> en ambos casos (pues <span class="math inline">\(R_x^2 = 0\)</span>), pero <span class="math inline">\(s\)</span> cambia: si <span class="math inline">\(w\)</span> explica parte de <span class="math inline">\(y\)</span>, el <span class="math inline">\(s\)</span> de la regresión larga es menor. Típicamente el error estándar <strong>baja</strong>: agregar un control no correlacionado con <span class="math inline">\(x\)</span> pero que predice <span class="math inline">\(y\)</span> mejora la precisión. (Es la lógica de agregar controles en experimentos aleatorios.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.3.</strong> Con <span class="math inline">\(R_j^2 = 0{,}95\)</span>, ¿por cuánto se multiplican los errores estándar de <span class="math inline">\(\hat\beta_j\)</span> respecto del caso sin correlación? ¿Cuántas veces más observaciones harían falta para compensarlo (suponiendo que <span class="math inline">\(\text{SCT}_j\)</span> crece proporcionalmente a <span class="math inline">\(n\)</span>)?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\text{VIF} = 20\)</span>, los errores estándar se multiplican por <span class="math inline">\(\sqrt{20}\approx4{,}47\)</span>. Como la varianza es proporcional a <span class="math inline">\(1/n\)</span>, harían falta <span class="math inline">\(20\)</span> veces más observaciones. Esa es la “micronumerosidad” de Goldberger en números.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.4.</strong> En el modelo de error de medida clásico, suponga que un estudio previo informa que la fiabilidad de la variable <span class="math inline">\(x\)</span> es <span class="math inline">\(\lambda = 0{,}8\)</span>. Si la pendiente de MCO es <span class="math inline">\(0{,}4\)</span>, ¿cuál es una estimación consistente de <span class="math inline">\(\beta\)</span>? ¿Qué pasa con el intercepto?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\beta/\lambda = 0{,}5\)</span>. El intercepto converge a <span class="math inline">\(\mathbb{E}[y] - \lambda\beta\mathbb{E}[x] = \alpha + \beta\mu_* - \lambda\beta\mu_* = \alpha + (1 - \lambda)\beta\mu_*\)</span>: también está sesgado (salvo si <span class="math inline">\(\mu_* = 0\)</span>), en dirección opuesta a la pendiente, porque la recta sigue pasando por las medias.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.5.</strong> (Malos controles.) Un programa de capacitación <span class="math inline">\(D\)</span> (asignado al azar) sube el salario <span class="math inline">\(y\)</span> en parte porque permite acceder a mejores ocupaciones <span class="math inline">\(O\)</span>. Explica por qué la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(D\)</span> <em>y</em> <span class="math inline">\(O\)</span> no estima el efecto total del programa, aunque <span class="math inline">\(O\)</span> sea un predictor de <span class="math inline">\(y\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(O\)</span> es un resultado de <span class="math inline">\(D\)</span> (un “mediador”). Al controlar por <span class="math inline">\(O\)</span>, se compara a tratados y no tratados <em>dentro</em> de la misma ocupación, lo que elimina el canal ocupacional del efecto: el coeficiente de <span class="math inline">\(D\)</span> estima, a lo más, un efecto “directo”. Peor aún, si la ocupación depende también de habilidades no observadas, condicionar en <span class="math inline">\(O\)</span> rompe la aleatorización (quienes llegan a una buena ocupación <em>sin</em> el programa son distintos de quienes llegan <em>con</em> él) e introduce sesgo de selección. Angrist y Pischke (2009, sección 3.2.3) llaman a esto “bad control”.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.6 ★.</strong> Demuestra <a href="#thm-irrelevantes" class="quarto-xref">Teorema&nbsp;2</a> sin usar el orden de las inversas, calculando directamente <span class="math inline">\(\operatorname{Var}(\hat\beta_1\mid X) - \operatorname{Var}(\tilde\beta_1\mid X)\)</span> con Gauss–Markov.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(\beta_2 = 0\)</span>, el modelo <em>corto</em> satisface RL1–RL4 con regresores <span class="math inline">\(X_1\)</span>. <span class="math inline">\(\hat\beta_1 = (X_1'M_2X_1)^{-1}X_1'M_2y\)</span> es lineal en <span class="math inline">\(y\)</span> y es insesgado para <span class="math inline">\(\beta_1\)</span> en el modelo corto: <span class="math inline">\((X_1'M_2X_1)^{-1}X_1'M_2X_1 = I\)</span>. Por Gauss–Markov aplicado al modelo corto, su varianza es mayor o igual que la del MCO corto <span class="math inline">\(\tilde\beta_1\)</span>. ¡El teorema sale de Gauss–Markov en una línea!</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.7 ★.</strong> En <span class="math inline">\(y = \beta x^* + \gamma w + u\)</span> (variables con media cero, sin constante), con <span class="math inline">\(x = x^* + v\)</span> y error de medida clásico, demuestra que el coeficiente de <span class="math inline">\(w\)</span> en la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((x, w)\)</span> converge a <span class="math inline">\(\gamma + \beta(1 - \lambda_w)\pi\)</span>, donde <span class="math inline">\(\pi = \operatorname{Cov}(x^*,w)/\operatorname{Var}(w)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Escribe <span class="math inline">\(y = \beta x + \gamma w + (u - \beta v)\)</span>. Los coeficientes límite <span class="math inline">\((b_x, b_w)\)</span> resuelven <span class="math inline">\(\mathbb{E}[(x, w)'(y - b_xx - b_ww)] = 0\)</span>. Sabemos que <span class="math inline">\(b_x = \lambda_w\beta\)</span>. La ecuación de <span class="math inline">\(w\)</span>: <span class="math inline">\(\mathbb{E}[wy] = b_x\mathbb{E}[wx] + b_w\mathbb{E}[w^2]\)</span>. Con <span class="math inline">\(\mathbb{E}[wy] = \beta\mathbb{E}[wx^*] + \gamma\mathbb{E}[w^2]\)</span> y <span class="math inline">\(\mathbb{E}[wx] = \mathbb{E}[wx^*]\)</span>: <span class="math inline">\(b_w\mathbb{E}[w^2] = \gamma\mathbb{E}[w^2] + \beta(1 - \lambda_w)\mathbb{E}[wx^*]\)</span>. Dividiendo, <span class="math inline">\(b_w = \gamma + \beta(1 - \lambda_w)\pi\)</span>. El coeficiente de <span class="math inline">\(w\)</span> absorbe la parte del efecto de <span class="math inline">\(x^*\)</span> que la <span class="math inline">\(x\)</span> ruidosa no captura.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-07.html" class="pagination-link" aria-label="Clase 7 · MCO en muestras grandes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 7 · MCO en muestras grandes</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-09.html" class="pagination-link" aria-label="Clase 9 · Mínimos cuadrados generalizados">
+        <span class="nav-page-text">Clase 9 · Mínimos cuadrados generalizados</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

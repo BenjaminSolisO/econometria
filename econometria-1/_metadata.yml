@@ -1,0 +1,15 @@
+sidebar: eco1
+number-sections: true
+toc: true
+toc-title: "Contenido"
+# Opciones que solo usa el formato PDF (HTML las ignora)
+pdf-engine: xelatex
+documentclass: scrartcl
+papersize: letter
+mainfont: Cambria
+mathfont: Cambria Math
+monofont: Consolas
+fontsize: 11pt
+colorlinks: true
+linkcolor: teal
+reference-location: margin

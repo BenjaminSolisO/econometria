@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Esperanza condicional, ley de esperanzas iteradas, la CEF como mejor predictor, varianza total y el mejor predictor lineal.">
+
+<title>Clase 2 · La esperanza condicional – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-03.html" rel="next">
+<link href="../econometria-1/clase-01.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-02.html">Clase 2 · La esperanza condicional</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#una-pregunta-ingenua" id="toc-una-pregunta-ingenua" class="nav-link active" data-scroll-target="#una-pregunta-ingenua"><span class="header-section-number">1</span> Una pregunta ingenua</a></li>
+  <li><a href="#esperanza-condicional-definición-y-reglas" id="toc-esperanza-condicional-definición-y-reglas" class="nav-link" data-scroll-target="#esperanza-condicional-definición-y-reglas"><span class="header-section-number">2</span> Esperanza condicional: definición y reglas</a></li>
+  <li><a href="#la-descomposición-de-la-cef" id="toc-la-descomposición-de-la-cef" class="nav-link" data-scroll-target="#la-descomposición-de-la-cef"><span class="header-section-number">3</span> La descomposición de la CEF</a></li>
+  <li><a href="#la-cef-es-el-mejor-predictor" id="toc-la-cef-es-el-mejor-predictor" class="nav-link" data-scroll-target="#la-cef-es-el-mejor-predictor"><span class="header-section-number">4</span> La CEF es el mejor predictor</a></li>
+  <li><a href="#la-ley-de-la-varianza-total" id="toc-la-ley-de-la-varianza-total" class="nav-link" data-scroll-target="#la-ley-de-la-varianza-total"><span class="header-section-number">5</span> La ley de la varianza total</a></li>
+  <li><a href="#el-mejor-predictor-lineal" id="toc-el-mejor-predictor-lineal" class="nav-link" data-scroll-target="#el-mejor-predictor-lineal"><span class="header-section-number">6</span> El mejor predictor lineal</a>
+  <ul class="collapse">
+  <li><a href="#el-caso-de-un-regresor" id="toc-el-caso-de-un-regresor" class="nav-link" data-scroll-target="#el-caso-de-un-regresor"><span class="header-section-number">6.1</span> El caso de un regresor</a></li>
+  </ul></li>
+  <li><a href="#cef-versus-proyección-lineal" id="toc-cef-versus-proyección-lineal" class="nav-link" data-scroll-target="#cef-versus-proyección-lineal"><span class="header-section-number">7</span> CEF versus proyección lineal</a></li>
+  <li><a href="#postgrado-la-esperanza-condicional-como-proyección" id="toc-postgrado-la-esperanza-condicional-como-proyección" class="nav-link" data-scroll-target="#postgrado-la-esperanza-condicional-como-proyección"><span class="header-section-number">8</span> ★ Postgrado: la esperanza condicional como proyección</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">9</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">10</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-02.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 2 · La esperanza condicional</h1>
+<p class="subtitle lead">El objeto que la regresión realmente estima</p>
+</div>
+
+<div>
+  <div class="description">
+    Esperanza condicional, ley de esperanzas iteradas, la CEF como mejor predictor, varianza total y el mejor predictor lineal.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a></p>
+<section id="una-pregunta-ingenua" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Una pregunta ingenua</h1>
+<p>Antes de escribir un solo estimador conviene preguntarse: <strong>¿qué queremos estimar?</strong> La respuesta del pregrado suele ser “los <span class="math inline">\(\beta\)</span> del modelo <span class="math inline">\(y = X\beta + u\)</span>”. Pero esa respuesta esquiva la pregunta: ¿de dónde sale ese modelo?, ¿qué <em>es</em> <span class="math inline">\(\beta\)</span> si el mundo no es lineal?</p>
+<p>Esta clase contesta eso. La idea central es que detrás de toda regresión hay un objeto poblacional bien definido, que existe aunque nadie haya escrito ningún modelo: la <strong>función de esperanza condicional</strong> (CEF, por su sigla en inglés<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>), <span class="math display">\[
+m(x) = \mathbb{E}[y \mid x].
+\]</span> Veremos que la CEF es el mejor predictor posible de <span class="math inline">\(y\)</span> dado <span class="math inline">\(x\)</span>, que su mejor aproximación lineal tiene una fórmula cerrada, y que MCO (la Clase 3) no es más que la versión muestral de esa aproximación. Cuando terminemos, el “modelo” <span class="math inline">\(y = x'\beta + u\)</span> dejará de ser un supuesto misterioso y pasará a ser, en gran medida, una <em>definición</em>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;<em>Conditional Expectation Function</em>. Mantengo la sigla en inglés porque es la que vas a encontrar en todos los papers. Angrist y Pischke la popularizaron en <em>Mostly Harmless Econometrics</em>, un libro cuyo título es, en sí mismo, un chiste de econometristas.</p></div></div></section>
+<section id="esperanza-condicional-definición-y-reglas" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Esperanza condicional: definición y reglas</h1>
+<p>Para el pregrado basta con la definición “de libro de probabilidades”. Si <span class="math inline">\((y,x)\)</span> tiene densidad conjunta <span class="math inline">\(f(y,x)\)</span> y <span class="math inline">\(f_x(x) &gt; 0\)</span>, la <strong>densidad condicional</strong> es <span class="math inline">\(f(y\mid x) = f(y,x)/f_x(x)\)</span> y <span class="math display">\[
+\mathbb{E}[y \mid x] = \int y\, f(y \mid x)\, dy.
+\]</span> En el caso discreto se reemplaza la integral por una suma y la densidad por una probabilidad. Dos matices importantes:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[y\mid x = x_0]\)</span> es un <strong>número</strong>: el promedio de <span class="math inline">\(y\)</span> entre quienes tienen <span class="math inline">\(x = x_0\)</span>.</li>
+<li><span class="math inline">\(\mathbb{E}[y\mid x]\)</span>, sin fijar el valor, es la función <span class="math inline">\(m\)</span> evaluada en la variable aleatoria <span class="math inline">\(x\)</span>, es decir, <span class="math inline">\(m(x)\)</span>. Es una <strong>variable aleatoria</strong>.</li>
+</ol>
+<p>Esta segunda lectura confunde a mucha gente la primera vez.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Un ejemplo: si <span class="math inline">\(y\)</span> es el salario y <span class="math inline">\(x\)</span> son los años de educación, entonces <span class="math inline">\(m(12)\)</span> es el salario promedio de quienes tienen 12 años de educación (un número), mientras que <span class="math inline">\(m(x)\)</span> es “el salario promedio de alguien con tu educación”, que cambia según a quién le preguntes (una variable aleatoria).</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;A mí me confundió durante todo un semestre. Si te sirve de consuelo, Kolmogorov necesitó teoría de la medida para definirla bien, así que es razonable que tome un tiempo.</p></div></div><p>Todas las propiedades que usaremos se deducen de las siguientes reglas. Suponemos siempre que las esperanzas que aparecen existen.</p>
+<div id="thm-reglas-cef" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Reglas de la esperanza condicional)</strong></span> Sean <span class="math inline">\(y, w\)</span> variables aleatorias, <span class="math inline">\(x\)</span> un vector aleatorio, <span class="math inline">\(a,b\)</span> constantes y <span class="math inline">\(g\)</span> una función.</p>
+<ol type="1">
+<li><strong>Linealidad:</strong> <span class="math inline">\(\mathbb{E}[ay + bw\mid x] = a\,\mathbb{E}[y\mid x] + b\,\mathbb{E}[w\mid x]\)</span>.</li>
+<li><strong>Lo conocido sale:</strong> <span class="math inline">\(\mathbb{E}[g(x)\,y\mid x] = g(x)\,\mathbb{E}[y\mid x]\)</span>. En particular <span class="math inline">\(\mathbb{E}[g(x)\mid x] = g(x)\)</span>.</li>
+<li><strong>Independencia:</strong> si <span class="math inline">\(y\)</span> es independiente de <span class="math inline">\(x\)</span>, entonces <span class="math inline">\(\mathbb{E}[y\mid x] = \mathbb{E}[y]\)</span>.</li>
+<li><strong>Ley de esperanzas iteradas (LEI):</strong> <span class="math inline">\(\mathbb{E}\big[\mathbb{E}[y\mid x]\big] = \mathbb{E}[y]\)</span>.</li>
+</ol>
+</div>
+<p>Las reglas 1–3 son intuitivas: condicional en <span class="math inline">\(x\)</span>, cualquier función de <span class="math inline">\(x\)</span> “es una constante”. Demostremos la cuarta, que es la más poderosa y la menos obvia.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La LEI dice: si promedio los promedios condicionales, ponderando por lo común que es cada <span class="math inline">\(x\)</span>, obtengo el promedio total. Es el principio de “el promedio nacional es el promedio ponderado de los promedios regionales”. Para demostrarlo con densidades: escribo <span class="math inline">\(\mathbb{E}[m(x)] = \int m(x) f_x(x)\,dx\)</span>, reemplazo <span class="math inline">\(m(x)\)</span> por su definición como integral, y la <span class="math inline">\(f_x\)</span> se cancela con la <span class="math inline">\(f_x\)</span> del denominador de la densidad condicional. Queda una integral doble de <span class="math inline">\(y\,f(y,x)\)</span>, que es <span class="math inline">\(\mathbb{E}[y]\)</span>. Hay que justificar el intercambio de integrales (Fubini), que vale si <span class="math inline">\(\mathbb{E}|y| &lt; \infty\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Caso con densidad.) Sea <span class="math inline">\(m(x) = \mathbb{E}[y\mid x] = \int y f(y\mid x)\,dy\)</span>. Entonces <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[m(x)] &amp;= \int m(x)\, f_x(x)\,dx &amp;&amp;\text{(definición de esperanza de una función de } x)\\
+&amp;= \int \Big(\int y\,\frac{f(y,x)}{f_x(x)}\,dy\Big) f_x(x)\,dx &amp;&amp;\text{(definición de } m)\\
+&amp;= \int\!\!\int y\, f(y,x)\,dy\,dx &amp;&amp;\text{(se cancela } f_x(x))\\
+&amp;= \int y \Big(\int f(y,x)\,dx\Big)\,dy &amp;&amp;\text{(Fubini, pues } \mathbb{E}|y|&lt;\infty)\\
+&amp;= \int y\, f_y(y)\,dy = \mathbb{E}[y]. &amp;&amp;\text{(marginal de } y)
+\end{aligned}
+\]</span></p>
+</div>
+<p>Una versión más general, que usaremos a menudo, es la <strong>LEI anidada</strong>: si <span class="math inline">\(x_1\)</span> es una parte del vector <span class="math inline">\(x = (x_1, x_2)\)</span>, entonces <span class="math display">\[
+\mathbb{E}\big[\,\mathbb{E}[y \mid x_1, x_2]\,\big|\, x_1\big] = \mathbb{E}[y\mid x_1].
+\]</span> En palabras: “el conjunto de información más pequeño gana”. Si primero promedio condicionando en mucha información y luego promedio sobre la parte que quiero olvidar, obtengo el promedio condicionando en poca información.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> La demostración es la misma que arriba, pero condicionando todo en <span class="math inline">\(x_1\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;En inglés se llama <em>tower property</em>. Me gusta pensarlo como una torre: puedes bajar pisos (olvidar información), pero no puedes saltarte la regla de que siempre termina en el piso más bajo.</p></div></div></section>
+<section id="la-descomposición-de-la-cef" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> La descomposición de la CEF</h1>
+<p>Aquí está la primera sorpresa: <strong>cualquier</strong> variable <span class="math inline">\(y\)</span> puede escribirse como “CEF más error”, y ese error tiene propiedades muy buenas <em>gratis</em>, sin supuesto alguno.</p>
+<div id="thm-descomposicion-cef" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Descomposición de la CEF)</strong></span> Sea <span class="math inline">\(\mathbb{E}|y|&lt;\infty\)</span> y definamos <span class="math inline">\(e = y - m(x)\)</span>, con <span class="math inline">\(m(x) = \mathbb{E}[y\mid x]\)</span>. Entonces <span class="math display">\[
+y = m(x) + e,
+\]</span> y el error <span class="math inline">\(e\)</span> satisface:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[e\mid x] = 0\)</span> (<strong>independencia en media</strong>).</li>
+<li><span class="math inline">\(\mathbb{E}[e] = 0\)</span>.</li>
+<li>Para toda función <span class="math inline">\(h\)</span> tal que <span class="math inline">\(\mathbb{E}|h(x)e| &lt; \infty\)</span>, <span class="math inline">\(\mathbb{E}[h(x)\,e] = 0\)</span>. En particular, <span class="math inline">\(e\)</span> no está correlacionado con <span class="math inline">\(x\)</span> ni con ninguna función de <span class="math inline">\(x\)</span>.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La primera propiedad es solo aplicar las reglas: <span class="math inline">\(\mathbb{E}[e\mid x] = \mathbb{E}[y\mid x] - \mathbb{E}[m(x)\mid x] = m(x) - m(x)\)</span>. La segunda es la LEI aplicada a la primera. La tercera es el mismo patrón que se repite toda la clase: <strong>cuando veas <span class="math inline">\(\mathbb{E}[\text{algo}]\)</span> con una función de <span class="math inline">\(x\)</span> adentro, condiciona en <span class="math inline">\(x\)</span> (LEI), saca lo conocido, y usa lo que sepas de la esperanza condicional.</strong></p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li><p>Por linealidad y porque <span class="math inline">\(m(x)\)</span> es función de <span class="math inline">\(x\)</span> (regla 2), <span class="math display">\[
+\mathbb{E}[e\mid x] = \mathbb{E}[y\mid x] - \mathbb{E}[m(x)\mid x] = m(x) - m(x) = 0.
+\]</span></p></li>
+<li><p>Por la LEI y (1), <span class="math inline">\(\mathbb{E}[e] = \mathbb{E}\big[\mathbb{E}[e\mid x]\big] = \mathbb{E}[0] = 0\)</span>.</p></li>
+<li><p>Por la LEI, luego la regla 2 (“lo conocido sale”) y luego (1), <span class="math display">\[
+\mathbb{E}[h(x)e] = \mathbb{E}\big[\mathbb{E}[h(x)e\mid x]\big] = \mathbb{E}\big[h(x)\,\mathbb{E}[e\mid x]\big] = \mathbb{E}[h(x)\cdot 0] = 0.
+\]</span> Tomando <span class="math inline">\(h(x) = x_j\)</span> obtenemos <span class="math inline">\(\mathbb{E}[x_je] = 0\)</span> y, como <span class="math inline">\(\mathbb{E}[e]=0\)</span>, <span class="math inline">\(\operatorname{Cov}(x_j,e) = \mathbb{E}[x_je] - \mathbb{E}[x_j]\mathbb{E}[e] = 0\)</span>.</p></li>
+</ol>
+</div>
+<p>Detente un momento en lo que acabamos de probar. Nadie supuso que el error “no está correlacionado con los regresores”. Lo <em>construimos</em> así. La “exogeneidad” <span class="math inline">\(\mathbb{E}[e\mid x] = 0\)</span> es automática <strong>si el objeto de interés es la CEF</strong>. Cuando en la Clase 10 hablemos de endogeneidad, el problema será que el objeto de interés <em>no</em> es la CEF (por ejemplo, un efecto causal), y entonces el error relevante ya no tiene esta propiedad.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Jerarquía de supuestos sobre el error">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Jerarquía de supuestos sobre el error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tres condiciones que a menudo se confunden, de la más fuerte a la más débil: <span class="math display">\[
+\underbrace{e \perp\!\!\!\perp x}_{\text{independencia}} \;\Longrightarrow\; \underbrace{\mathbb{E}[e\mid x] = 0}_{\text{independencia en media}} \;\Longrightarrow\; \underbrace{\mathbb{E}[xe] = 0}_{\text{no correlación}}
+\]</span> (la segunda implicación, suponiendo <span class="math inline">\(\mathbb{E}[e]=0\)</span> implícito en la media condicional cero). Ninguna flecha se puede invertir. Los contraejemplos están en el Ejercicio 2.4.</p>
+</div>
+</div>
+</section>
+<section id="la-cef-es-el-mejor-predictor" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La CEF es el mejor predictor</h1>
+<p>Supongamos que alguien te da <span class="math inline">\(x\)</span> y te pide adivinar <span class="math inline">\(y\)</span>. Puedes usar cualquier función <span class="math inline">\(g(x)\)</span>. Si te castigan con el error cuadrático <span class="math inline">\((y - g(x))^2\)</span>, ¿qué función deberías usar?</p>
+<div id="thm-cef-mejor-predictor" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (La CEF minimiza el error cuadrático medio)</strong></span> Sea <span class="math inline">\(\mathbb{E}[y^2] &lt; \infty\)</span>. Para toda función <span class="math inline">\(g\)</span> con <span class="math inline">\(\mathbb{E}[g(x)^2] &lt; \infty\)</span>, <span class="math display">\[
+\mathbb{E}\big[(y - g(x))^2\big] = \mathbb{E}\big[(y - m(x))^2\big] + \mathbb{E}\big[(m(x) - g(x))^2\big] \;\ge\; \mathbb{E}\big[(y - m(x))^2\big].
+\]</span> Luego <span class="math inline">\(m(x) = \mathbb{E}[y\mid x]\)</span> es el mejor predictor de <span class="math inline">\(y\)</span> en error cuadrático medio, y es el único salvo en un conjunto de probabilidad cero.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El truco clásico: <strong>sumar y restar</strong> lo que quiero que aparezca. Escribo <span class="math inline">\(y - g = (y - m) + (m - g)\)</span>, elevo al cuadrado, y aparecen dos cuadrados y un término cruzado <span class="math inline">\(2(y - m)(m - g)\)</span>. Si el término cruzado tiene esperanza cero, gano. Y <span class="math inline">\(y - m\)</span> es justamente el <span class="math inline">\(e\)</span> de la descomposición, mientras que <span class="math inline">\(m - g\)</span> es una función de <span class="math inline">\(x\)</span>. ¡Es el punto (3) del teorema anterior con <span class="math inline">\(h = m - g\)</span>!</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Escribamos <span class="math inline">\(e = y - m(x)\)</span> y <span class="math inline">\(h(x) = m(x) - g(x)\)</span>. Entonces <span class="math inline">\(y - g(x) = e + h(x)\)</span> y <span class="math display">\[
+\mathbb{E}\big[(y - g(x))^2\big] = \mathbb{E}[e^2] + 2\,\mathbb{E}[h(x)e] + \mathbb{E}[h(x)^2].
+\]</span> Todas las esperanzas son finitas (por la desigualdad <span class="math inline">\((a+b)^2\le 2a^2 + 2b^2\)</span> y las hipótesis de segundo momento; <span class="math inline">\(\mathbb{E}[m(x)^2] \le \mathbb{E}[y^2]\)</span> por la desigualdad de Jensen condicional). Por <a href="#thm-descomposicion-cef" class="quarto-xref">Teorema&nbsp;2</a> (3), <span class="math inline">\(\mathbb{E}[h(x)e] = 0\)</span>. Queda <span class="math display">\[
+\mathbb{E}\big[(y - g(x))^2\big] = \mathbb{E}[e^2] + \mathbb{E}\big[(m(x) - g(x))^2\big].
+\]</span> El segundo término es <span class="math inline">\(\ge 0\)</span> y vale cero solo si <span class="math inline">\(g(x) = m(x)\)</span> con probabilidad uno.</p>
+</div>
+<p>Este teorema es la razón por la que nos interesa la CEF incluso si no nos interesa la causalidad: <strong>si quieres predecir, la CEF es imbatible.</strong> El término <span class="math inline">\(\mathbb{E}[(y - m(x))^2] = \mathbb{E}[e^2]\)</span> es el error irreducible: ni con infinitos datos puedes predecir mejor.</p>
+</section>
+<section id="la-ley-de-la-varianza-total" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> La ley de la varianza total</h1>
+<p>La descomposición <span class="math inline">\(y = m(x) + e\)</span> también descompone la varianza.</p>
+<div id="thm-varianza-total" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Ley de la varianza total)</strong></span> Si <span class="math inline">\(\mathbb{E}[y^2] &lt; \infty\)</span>, <span class="math display">\[
+\operatorname{Var}(y) = \operatorname{Var}\big(\mathbb{E}[y\mid x]\big) + \mathbb{E}\big[\operatorname{Var}(y\mid x)\big],
+\]</span> donde <span class="math inline">\(\operatorname{Var}(y\mid x) = \mathbb{E}\big[(y - m(x))^2\mid x\big]\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Como <span class="math inline">\(y = m(x) + e\)</span>, <span class="math display">\[
+\operatorname{Var}(y) = \operatorname{Var}(m(x)) + \operatorname{Var}(e) + 2\operatorname{Cov}(m(x), e).
+\]</span> Por <a href="#thm-descomposicion-cef" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(\operatorname{Cov}(m(x),e) = \mathbb{E}[m(x)e] - \mathbb{E}[m(x)]\mathbb{E}[e] = 0 - 0 = 0\)</span>. Además, como <span class="math inline">\(\mathbb{E}[e] = 0\)</span>, <span class="math display">\[
+\operatorname{Var}(e) = \mathbb{E}[e^2] = \mathbb{E}\big[\mathbb{E}[e^2\mid x]\big] = \mathbb{E}\big[\mathbb{E}[(y - m(x))^2\mid x]\big] = \mathbb{E}[\operatorname{Var}(y\mid x)].
+\]</span> Juntando las tres igualdades se obtiene el resultado.</p>
+</div>
+<p>La varianza total = varianza <strong>explicada</strong> por <span class="math inline">\(x\)</span> + varianza <strong>no explicada</strong>. El cociente <span class="math display">\[
+\frac{\operatorname{Var}(m(x))}{\operatorname{Var}(y)} \in [0,1]
+\]</span> es el “<span class="math inline">\(R^2\)</span> poblacional” de la CEF: la fracción de la variabilidad de <span class="math inline">\(y\)</span> que es predecible con <span class="math inline">\(x\)</span>. En la Clase 3 veremos su análogo muestral.</p>
+</section>
+<section id="el-mejor-predictor-lineal" class="level1 page-columns page-full" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> El mejor predictor lineal</h1>
+<p>La CEF es maravillosa, pero tiene un problema práctico: puede ser cualquier función. Con <span class="math inline">\(x\)</span> continuo y multidimensional, estimarla sin estructura es difícil.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Así que nos preguntamos algo más modesto: <strong>entre todas las funciones lineales <span class="math inline">\(x'b\)</span>, ¿cuál predice mejor a <span class="math inline">\(y\)</span>?</strong></p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Es la “maldición de la dimensionalidad”. Con <span class="math inline">\(k\)</span> regresores continuos, el número de observaciones que necesitas para estimar <span class="math inline">\(m(x)\)</span> con una precisión dada crece exponencialmente en <span class="math inline">\(k\)</span>. La econometría no paramétrica (Econometría 2) vive peleando con esa maldición.</p></div></div><div id="def-blp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Mejor predictor lineal)</strong></span> Sea <span class="math inline">\(x\)</span> un vector <span class="math inline">\(k\times 1\)</span> (que típicamente incluye una constante). El <strong>mejor predictor lineal</strong> (o <strong>proyección lineal</strong>) de <span class="math inline">\(y\)</span> dado <span class="math inline">\(x\)</span> es <span class="math inline">\(x'\beta\)</span>, donde <span class="math display">\[
+\beta = \operatorname*{arg\,min}_{b\in\mathbb{R}^k} S(b), \qquad S(b) = \mathbb{E}\big[(y - x'b)^2\big].
+\]</span></p>
+</div>
+<div id="thm-blp" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Fórmula del mejor predictor lineal)</strong></span> Supongamos que <span class="math inline">\(\mathbb{E}[y^2] &lt; \infty\)</span>, <span class="math inline">\(\mathbb{E}\|x\|^2&lt;\infty\)</span> y que <span class="math inline">\(Q_{xx} = \mathbb{E}[xx']\)</span> es definida positiva. Entonces el mejor predictor lineal existe, es único y <span class="math display">\[
+\beta = \big(\mathbb{E}[xx']\big)^{-1}\mathbb{E}[xy].
+\]</span> Además, el <strong>error de proyección</strong> <span class="math inline">\(u = y - x'\beta\)</span> satisface <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dos caminos. El de cálculo: expando <span class="math inline">\(S(b) = \mathbb{E}[y^2] - 2b'\mathbb{E}[xy] + b'\mathbb{E}[xx']b\)</span>, derivo con las derivadas matriciales de la Clase 1 y obtengo <span class="math inline">\(-2\mathbb{E}[xy] + 2\mathbb{E}[xx']b = 0\)</span>. Pero eso solo me da un punto crítico; tendría que argumentar que es un mínimo global.</p>
+<p>El camino elegante (el mismo del Ejercicio 1.4): <strong>completar el cuadrado</strong>. Si llamo <span class="math inline">\(\beta\)</span> al candidato, escribo <span class="math inline">\(y - x'b = (y - x'\beta) + x'(\beta - b)\)</span>, elevo al cuadrado, y el término cruzado muere justamente porque <span class="math inline">\(\mathbb{E}[x(y - x'\beta)] = 0\)</span>, que es lo que define a <span class="math inline">\(\beta\)</span>. Esto demuestra de un golpe existencia, unicidad y globalidad.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Definamos <span class="math inline">\(\beta = Q_{xx}^{-1}\mathbb{E}[xy]\)</span>, que existe porque <span class="math inline">\(Q_{xx}\succ 0\)</span> es invertible (Clase 1, propiedades de las matrices definidas positivas). Sea <span class="math inline">\(u = y - x'\beta\)</span>. Primero, <span class="math display">\[
+\mathbb{E}[xu] = \mathbb{E}[xy] - \mathbb{E}[xx']\beta = \mathbb{E}[xy] - Q_{xx}Q_{xx}^{-1}\mathbb{E}[xy] = 0.
+\]</span> Ahora, para cualquier <span class="math inline">\(b \in \mathbb{R}^k\)</span>, sumando y restando <span class="math inline">\(x'\beta\)</span>, <span class="math display">\[
+y - x'b = u + x'(\beta - b).
+\]</span> Elevando al cuadrado y tomando esperanza, <span class="math display">\[
+\begin{aligned}
+S(b) &amp;= \mathbb{E}[u^2] + 2(\beta - b)'\mathbb{E}[xu] + (\beta - b)'\mathbb{E}[xx'](\beta - b)\\
+&amp;= \mathbb{E}[u^2] + (\beta - b)'Q_{xx}(\beta - b) &amp;&amp;(\mathbb{E}[xu] = 0)\\
+&amp;= S(\beta) + (\beta - b)'Q_{xx}(\beta - b).
+\end{aligned}
+\]</span> Como <span class="math inline">\(Q_{xx}\succ0\)</span>, el último término es <span class="math inline">\(\ge0\)</span> y es cero si y solo si <span class="math inline">\(b = \beta\)</span>. Luego <span class="math inline">\(\beta\)</span> es el único minimizador global.</p>
+</div>
+<p>Fíjate en que <strong><span class="math inline">\(\mathbb{E}[xu] = 0\)</span> no es un supuesto, es una propiedad de la definición de <span class="math inline">\(\beta\)</span>.</strong> Por construcción, el error de proyección no está correlacionado con los regresores. Si <span class="math inline">\(x\)</span> incluye una constante, además <span class="math inline">\(\mathbb{E}[u] = 0\)</span> (es la coordenada de la constante en <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>).</p>
+<section id="el-caso-de-un-regresor" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="el-caso-de-un-regresor"><span class="header-section-number">6.1</span> El caso de un regresor</h2>
+<p>Con <span class="math inline">\(x = (1, z)'\)</span> la fórmula matricial se convierte en algo familiar. Escribiendo <span class="math inline">\(\beta = (\alpha, \gamma)'\)</span>, las dos ecuaciones de <span class="math inline">\(\mathbb{E}[xu] = 0\)</span> son <span class="math display">\[
+\mathbb{E}[y - \alpha - \gamma z] = 0, \qquad \mathbb{E}[z(y - \alpha - \gamma z)] = 0.
+\]</span> De la primera, <span class="math inline">\(\alpha = \mathbb{E}[y] - \gamma\mathbb{E}[z]\)</span>. Reemplazando en la segunda, <span class="math display">\[
+\mathbb{E}[zy] - \mathbb{E}[z]\mathbb{E}[y] - \gamma\big(\mathbb{E}[z^2] - (\mathbb{E}z)^2\big) = 0
+\quad\Longrightarrow\quad
+\gamma = \frac{\operatorname{Cov}(z,y)}{\operatorname{Var}(z)}.
+\]</span> La pendiente de la mejor recta es covarianza sobre varianza. Esta fórmula vale <strong>siempre</strong> (si <span class="math inline">\(\operatorname{Var}(z) &gt; 0\)</span>), sea cual sea la forma de la CEF.</p>
+</section>
+</section>
+<section id="cef-versus-proyección-lineal" class="level1 page-columns page-full" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> CEF versus proyección lineal</h1>
+<p>¿Qué relación hay entre <span class="math inline">\(m(x)\)</span> y <span class="math inline">\(x'\beta\)</span>? Dos resultados lo dicen todo.</p>
+<div id="thm-cef-lineal" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (Si la CEF es lineal, coincide con la proyección)</strong></span> Si <span class="math inline">\(m(x) = x'\beta^*\)</span> para algún <span class="math inline">\(\beta^*\)</span> y <span class="math inline">\(Q_{xx} \succ 0\)</span>, entonces <span class="math inline">\(\beta^* = \beta\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(e = y - m(x) = y - x'\beta^*\)</span>, <a href="#thm-descomposicion-cef" class="quarto-xref">Teorema&nbsp;2</a> (3) con <span class="math inline">\(h(x) = x\)</span> da <span class="math inline">\(\mathbb{E}[xe] = 0\)</span>, es decir, <span class="math inline">\(\mathbb{E}[xy] = Q_{xx}\beta^*\)</span>. Luego <span class="math inline">\(\beta^* = Q_{xx}^{-1}\mathbb{E}[xy] = \beta\)</span>.</p>
+</div>
+<div id="thm-blp-aprox-cef" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (La proyección lineal es la mejor aproximación lineal a la CEF)</strong></span> Bajo los supuestos de <a href="#thm-blp" class="quarto-xref">Teorema&nbsp;5</a>, <span class="math display">\[
+\beta = \operatorname*{arg\,min}_{b}\;\mathbb{E}\big[(m(x) - x'b)^2\big].
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por <a href="#thm-cef-mejor-predictor" class="quarto-xref">Teorema&nbsp;3</a> aplicado con <span class="math inline">\(g(x) = x'b\)</span>, <span class="math display">\[
+\mathbb{E}[(y - x'b)^2] = \mathbb{E}[(y - m(x))^2] + \mathbb{E}[(m(x) - x'b)^2].
+\]</span> El primer término no depende de <span class="math inline">\(b\)</span>. Luego minimizar el lado izquierdo en <span class="math inline">\(b\)</span> (lo que define <span class="math inline">\(\beta\)</span>) es lo mismo que minimizar el segundo término del lado derecho.</p>
+</div>
+<p>Juntando todo: <strong>la regresión lineal poblacional es la mejor aproximación lineal (en error cuadrático medio) a la CEF</strong>, sea esta lineal o no. Si la CEF es lineal, son lo mismo. Si no lo es, <span class="math inline">\(\beta\)</span> sigue siendo un objeto bien definido e interpretable: el de la mejor recta.</p>
+<div id="exm-cuadratica" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Una CEF no lineal)</strong></span> Sea <span class="math inline">\(z\sim U(-1, 2)\)</span>, <span class="math inline">\(y = z^2 + \varepsilon\)</span> con <span class="math inline">\(\varepsilon\)</span> independiente de <span class="math inline">\(z\)</span> y <span class="math inline">\(\mathbb{E}[\varepsilon] = 0\)</span>. La CEF es <span class="math inline">\(m(z) = z^2\)</span>. Para la proyección lineal sobre <span class="math inline">\((1, z)\)</span> necesitamos: <span class="math inline">\(\mathbb{E}[z] = \tfrac12\)</span>, <span class="math inline">\(\operatorname{Var}(z) = \tfrac{3^2}{12} = \tfrac34\)</span>, <span class="math inline">\(\mathbb{E}[z^2] = \tfrac34 + \tfrac14 = 1\)</span> y <span class="math inline">\(\mathbb{E}[z^3] = \tfrac{2^4 - (-1)^4}{4\cdot 3} = \tfrac{5}{4}\)</span>. Entonces <span class="math display">\[
+\gamma = \frac{\operatorname{Cov}(z, z^2)}{\operatorname{Var}(z)} = \frac{\mathbb{E}[z^3] - \mathbb{E}[z]\mathbb{E}[z^2]}{3/4} = \frac{5/4 - 1/2}{3/4} = 1, \qquad
+\alpha = \mathbb{E}[y] - \gamma\mathbb{E}[z] = 1 - \tfrac12 = \tfrac12.
+\]</span> La mejor recta es <span class="math inline">\(\tfrac12 + z\)</span>, que se muestra en la figura junto con la CEF. La recta subestima la CEF en los extremos y la sobreestima en el centro, pero ningún otro par <span class="math inline">\((\alpha,\gamma)\)</span> lo hace mejor en promedio cuadrático.</p>
+</div>
+<div id="fig-cef" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cef-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/cef_vs_blp.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cef-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: CEF no lineal (continua) y su mejor aproximación lineal (segmentada), con datos simulados.
+</figcaption>
+</figure>
+</div>
+<p>Un detalle que conviene notar: si en el ejemplo usáramos <span class="math inline">\(z \sim U(-1,1)\)</span> (simétrica), obtendríamos <span class="math inline">\(\gamma = \operatorname{Cov}(z,z^2)/\operatorname{Var}(z) = \mathbb{E}[z^3]/\operatorname{Var}(z) = 0\)</span>. ¡Pendiente cero, aunque <span class="math inline">\(y\)</span> depende perfectamente de <span class="math inline">\(z\)</span>! Correlación cero <strong>no</strong> significa “no hay relación”; significa “no hay relación <em>lineal</em>”.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;Es el contraejemplo favorito de los profesores de estadística. Si alguna vez te preguntan en una prueba “¿correlación cero implica independencia?”, dibuja una parábola y sal de la sala con aire triunfal.</p></div></div></section>
+<section id="postgrado-la-esperanza-condicional-como-proyección" class="level1 page-columns page-full" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> ★ Postgrado: la esperanza condicional como proyección</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aquí reinterpretamos todo lo anterior como geometría en un espacio de Hilbert. Esto unifica la CEF y la proyección lineal: ambas son proyecciones ortogonales, solo que sobre subespacios distintos.</p>
+</div>
+</div>
+<p>Sea <span class="math inline">\(L^2\)</span> el espacio de variables aleatorias con segundo momento finito, con producto interno <span class="math inline">\(\langle a, b\rangle = \mathbb{E}[ab]\)</span> y norma <span class="math inline">\(\|a\|_{L^2} = \sqrt{\mathbb{E}[a^2]}\)</span> (identificando variables iguales casi seguramente). Es un espacio de Hilbert: un espacio vectorial con producto interno y completo.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;La completitud de <span class="math inline">\(L^2\)</span> es el teorema de Riesz–Fischer. Sin ella el teorema de proyección de abajo fallaría: podrías tener una sucesión de “casi mejores” predictores que no converge a nada.</p></div></div><div id="thm-proyeccion-hilbert" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 8 (Teorema de proyección)</strong></span> Sea <span class="math inline">\(\mathcal{S}\)</span> un subespacio cerrado de un espacio de Hilbert <span class="math inline">\(\mathcal{H}\)</span> y <span class="math inline">\(y\in\mathcal{H}\)</span>. Existe un único <span class="math inline">\(\hat y \in \mathcal{S}\)</span> tal que <span class="math inline">\(\|y - \hat y\| = \min_{s\in\mathcal{S}}\|y - s\|\)</span>, y está caracterizado por la condición de ortogonalidad <span class="math display">\[
+\langle y - \hat y, s\rangle = 0 \quad \text{para todo } s \in \mathcal{S}.
+\]</span></p>
+</div>
+<p>Ahora mira las dos piezas de esta clase con estos lentes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Objeto</th>
+<th>Subespacio <span class="math inline">\(\mathcal{S}\)</span></th>
+<th>Condición de ortogonalidad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CEF <span class="math inline">\(m(x)\)</span></td>
+<td><span class="math inline">\(\{h(x) : \mathbb{E}[h(x)^2]&lt;\infty\}\)</span> (todas las funciones de <span class="math inline">\(x\)</span>)</td>
+<td><span class="math inline">\(\mathbb{E}[(y - m(x))h(x)] = 0\;\forall h\)</span></td>
+</tr>
+<tr class="even">
+<td>Proyección lineal <span class="math inline">\(x'\beta\)</span></td>
+<td><span class="math inline">\(\{x'b : b\in\mathbb{R}^k\}\)</span> (funciones lineales de <span class="math inline">\(x\)</span>)</td>
+<td><span class="math inline">\(\mathbb{E}[(y - x'\beta)x] = 0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>La descomposición de la CEF (<a href="#thm-descomposicion-cef" class="quarto-xref">Teorema&nbsp;2</a>, punto 3) <strong>es</strong> la condición de ortogonalidad de la primera fila, y la condición <span class="math inline">\(\mathbb{E}[xu]=0\)</span> de <a href="#thm-blp" class="quarto-xref">Teorema&nbsp;5</a> <strong>es</strong> la de la segunda. <a href="#thm-cef-mejor-predictor" class="quarto-xref">Teorema&nbsp;3</a> y <a href="#thm-blp" class="quarto-xref">Teorema&nbsp;5</a> son el teorema de proyección en dos subespacios. Y <a href="#thm-blp-aprox-cef" class="quarto-xref">Teorema&nbsp;7</a> es un hecho geométrico general: como el subespacio lineal está contenido en el de todas las funciones, proyectar <span class="math inline">\(y\)</span> sobre el pequeño es lo mismo que proyectar primero sobre el grande y después sobre el pequeño (la “ley de proyecciones iteradas”).</p>
+<p>Esta mirada también da la <strong>definición general</strong> de esperanza condicional, que no necesita densidades: si <span class="math inline">\(\mathcal{G}\)</span> es una sub-<span class="math inline">\(\sigma\)</span>-álgebra (la “información”), <span class="math inline">\(\mathbb{E}[y\mid\mathcal{G}]\)</span> es la proyección ortogonal de <span class="math inline">\(y \in L^2\)</span> sobre el subespacio cerrado de variables <span class="math inline">\(\mathcal{G}\)</span>-medibles de <span class="math inline">\(L^2\)</span>. (Para <span class="math inline">\(y\in L^1\)</span> se extiende por densidad, o se define vía el teorema de Radon–Nikodym.) La LEI anidada se vuelve la afirmación geométrica “si <span class="math inline">\(\mathcal{S}_1\subseteq\mathcal{S}_2\)</span>, proyectar sobre <span class="math inline">\(\mathcal{S}_2\)</span> y luego sobre <span class="math inline">\(\mathcal{S}_1\)</span> es proyectar sobre <span class="math inline">\(\mathcal{S}_1\)</span>”.</p>
+<p>La siguiente clase es, literalmente, esta misma tabla con una fila más: MCO es la proyección de <span class="math inline">\(y\in\mathbb{R}^n\)</span> sobre <span class="math inline">\(\operatorname{col}(X)\)</span>, con el producto interno <span class="math inline">\(\langle a, b\rangle = \frac1n\sum_i a_ib_i\)</span>, que es el análogo muestral de <span class="math inline">\(\mathbb{E}[ab]\)</span>.</p>
+</section>
+<section id="resumen" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Resumen</h1>
+<ul>
+<li>La CEF <span class="math inline">\(m(x) = \mathbb{E}[y\mid x]\)</span> existe sin supuestos de modelo. Su error <span class="math inline">\(e = y - m(x)\)</span> cumple <span class="math inline">\(\mathbb{E}[e\mid x]=0\)</span> <strong>por construcción</strong> (<a href="#thm-descomposicion-cef" class="quarto-xref">Teorema&nbsp;2</a>).</li>
+<li>La herramienta universal: condicionar en <span class="math inline">\(x\)</span> con la LEI y sacar lo conocido.</li>
+<li>La CEF es el mejor predictor en error cuadrático medio (<a href="#thm-cef-mejor-predictor" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+<li><span class="math inline">\(\operatorname{Var}(y) = \operatorname{Var}(\mathbb{E}[y\mid x]) + \mathbb{E}[\operatorname{Var}(y\mid x)]\)</span> (<a href="#thm-varianza-total" class="quarto-xref">Teorema&nbsp;4</a>).</li>
+<li>El mejor predictor lineal es <span class="math inline">\(\beta = \mathbb{E}[xx']^{-1}\mathbb{E}[xy]\)</span> y su error cumple <span class="math inline">\(\mathbb{E}[xu]=0\)</span> por construcción (<a href="#thm-blp" class="quarto-xref">Teorema&nbsp;5</a>). Es la mejor aproximación lineal a la CEF (<a href="#thm-blp-aprox-cef" class="quarto-xref">Teorema&nbsp;7</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Ejercicios</h1>
+<p><strong>Ejercicio 2.1.</strong> Sean <span class="math inline">\(x \in\{0,1\}\)</span> con <span class="math inline">\(P(x = 1) = 0{,}4\)</span>, y <span class="math inline">\(\mathbb{E}[y\mid x = 0] = 2\)</span>, <span class="math inline">\(\mathbb{E}[y\mid x=1] = 5\)</span>. Calcula <span class="math inline">\(\mathbb{E}[y]\)</span> usando la LEI. Muestra que la CEF es lineal en <span class="math inline">\(x\)</span> y encuentra <span class="math inline">\(\beta\)</span> de la proyección de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1, x)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}[y] = 0{,}6\cdot 2 + 0{,}4\cdot 5 = 3{,}2\)</span>. Con <span class="math inline">\(x\)</span> binaria, <em>toda</em> función de <span class="math inline">\(x\)</span> es lineal: <span class="math inline">\(m(x) = 2 + 3x\)</span> (vale en <span class="math inline">\(x=0\)</span> y <span class="math inline">\(x = 1\)</span>). Por <a href="#thm-cef-lineal" class="quarto-xref">Teorema&nbsp;6</a>, <span class="math inline">\(\beta = (2, 3)'\)</span>. Moraleja: con regresores binarios (o dummies que saturan todas las categorías), la regresión lineal <strong>es</strong> la CEF.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.2.</strong> Demuestra que <span class="math inline">\(\mathbb{E}[y\mid x] = \mathbb{E}[y]\)</span> implica <span class="math inline">\(\operatorname{Cov}(g(x), y) = 0\)</span> para toda <span class="math inline">\(g\)</span> con segundo momento finito. ¿Implica independencia?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}[g(x)y] = \mathbb{E}[g(x)\mathbb{E}[y\mid x]] = \mathbb{E}[g(x)]\,\mathbb{E}[y]\)</span> (LEI y “lo conocido sale”), así que la covarianza es cero. No implica independencia: si <span class="math inline">\(x \sim N(0,1)\)</span> e <span class="math inline">\(y = x\,\varepsilon\)</span> con <span class="math inline">\(\varepsilon\)</span> independiente de <span class="math inline">\(x\)</span>, <span class="math inline">\(\mathbb{E}[\varepsilon]=0\)</span>, <span class="math inline">\(\operatorname{Var}(\varepsilon) = 1\)</span>, entonces <span class="math inline">\(\mathbb{E}[y\mid x] = x\,\mathbb{E}[\varepsilon] = 0\)</span>, pero <span class="math inline">\(\operatorname{Var}(y\mid x) = x^2\)</span> depende de <span class="math inline">\(x\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.3.</strong> Demuestra que <span class="math inline">\(\mathbb{E}[e^2] \le \mathbb{E}[u^2]\)</span>, donde <span class="math inline">\(e\)</span> es el error de la CEF y <span class="math inline">\(u\)</span> el de la proyección lineal. ¿Cuándo hay igualdad?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por <a href="#thm-cef-mejor-predictor" class="quarto-xref">Teorema&nbsp;3</a> con <span class="math inline">\(g(x) = x'\beta\)</span>: <span class="math inline">\(\mathbb{E}[u^2] = \mathbb{E}[e^2] + \mathbb{E}[(m(x) - x'\beta)^2] \ge \mathbb{E}[e^2]\)</span>. Hay igualdad si y solo si <span class="math inline">\(m(x) = x'\beta\)</span> casi seguramente, es decir, si la CEF es lineal.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.4.</strong> Construye contraejemplos para las flechas inversas de la jerarquía: (a) <span class="math inline">\(\mathbb{E}[e\mid x] = 0\)</span> pero <span class="math inline">\(e\)</span> no independiente de <span class="math inline">\(x\)</span>; (b) <span class="math inline">\(\mathbb{E}[xe] = 0\)</span> y <span class="math inline">\(\mathbb{E}[e] = 0\)</span>, pero <span class="math inline">\(\mathbb{E}[e\mid x]\neq 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p>El del Ejercicio 2.2: <span class="math inline">\(e = x\varepsilon\)</span> (heterocedasticidad pura).</p></li>
+<li><p><span class="math inline">\(x \sim U(-1,1)\)</span> y <span class="math inline">\(e = x^2 - \tfrac13\)</span>. Entonces <span class="math inline">\(\mathbb{E}[e] = \tfrac13 - \tfrac13 = 0\)</span> y <span class="math inline">\(\mathbb{E}[xe] = \mathbb{E}[x^3] - \tfrac13\mathbb{E}[x] = 0\)</span> por simetría, pero <span class="math inline">\(\mathbb{E}[e\mid x] = x^2 - \tfrac13 \ne 0\)</span>. Este es exactamente el error de proyección lineal cuando la CEF es cuadrática: no está correlacionado con <span class="math inline">\(x\)</span>, pero su media condicional no es cero.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.5.</strong> (Coeficiente de proyección con una constante.) Sea <span class="math inline">\(x = (1, z')'\)</span> con <span class="math inline">\(z\in\mathbb{R}^{k-1}\)</span>. Demuestra que el coeficiente de <span class="math inline">\(z\)</span> en la proyección de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(x\)</span> es <span class="math inline">\(\gamma = \operatorname{Var}(z)^{-1}\operatorname{Cov}(z,y)\)</span>, y que el intercepto es <span class="math inline">\(\alpha = \mathbb{E}[y] - \mathbb{E}[z]'\gamma\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Las ecuaciones <span class="math inline">\(\mathbb{E}[xu] = 0\)</span> con <span class="math inline">\(u = y - \alpha - z'\gamma\)</span> son <span class="math inline">\(\mathbb{E}[u] = 0\)</span> y <span class="math inline">\(\mathbb{E}[zu] = 0\)</span>. La primera da <span class="math inline">\(\alpha = \mathbb{E}y - \mathbb{E}[z]'\gamma\)</span>. Sustituyendo, <span class="math inline">\(u = (y - \mathbb{E}y) - (z - \mathbb{E}z)'\gamma\)</span>, y como <span class="math inline">\(\mathbb{E}[u] = 0\)</span>, la segunda ecuación equivale a <span class="math inline">\(\mathbb{E}[(z - \mathbb{E}z)u] = 0\)</span>: <span class="math display">\[
+\mathbb{E}[(z-\mathbb{E}z)(y - \mathbb{E}y)] - \mathbb{E}[(z - \mathbb{E}z)(z - \mathbb{E}z)']\gamma = 0 \;\Longrightarrow\; \operatorname{Cov}(z,y) = \operatorname{Var}(z)\gamma.
+\]</span> <span class="math inline">\(\operatorname{Var}(z)\)</span> es invertible porque <span class="math inline">\(Q_{xx}\succ0\)</span> (si <span class="math inline">\(c'\operatorname{Var}(z)c = 0\)</span> con <span class="math inline">\(c \ne 0\)</span>, entonces <span class="math inline">\(c'z\)</span> es constante casi seguramente y <span class="math inline">\(x\)</span> tendría una combinación lineal degenerada).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.6 ★.</strong> (Ley de proyecciones iteradas.) Sea <span class="math inline">\(x = (x_1', x_2')'\)</span>. Sea <span class="math inline">\(\beta_1^{\text{corto}}\)</span> el coeficiente de proyectar <span class="math inline">\(y\)</span> solo sobre <span class="math inline">\(x_1\)</span>. Demuestra que es igual al coeficiente de proyectar <span class="math inline">\(m(x) = \mathbb{E}[y\mid x]\)</span> sobre <span class="math inline">\(x_1\)</span>, y también al de proyectar la proyección lineal larga <span class="math inline">\(x'\beta\)</span> sobre <span class="math inline">\(x_1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\beta_1^{\text{corto}} = \mathbb{E}[x_1x_1']^{-1}\mathbb{E}[x_1y]\)</span>. Por la LEI, <span class="math inline">\(\mathbb{E}[x_1y] = \mathbb{E}[x_1m(x)]\)</span>, así que el coeficiente de proyectar <span class="math inline">\(m(x)\)</span> sobre <span class="math inline">\(x_1\)</span> es el mismo. Además <span class="math inline">\(y = x'\beta + u\)</span> con <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>, en particular <span class="math inline">\(\mathbb{E}[x_1u] = 0\)</span>, así que <span class="math inline">\(\mathbb{E}[x_1y] = \mathbb{E}[x_1x'\beta]\)</span>, que es el numerador de proyectar <span class="math inline">\(x'\beta\)</span> sobre <span class="math inline">\(x_1\)</span>. Geométricamente: <span class="math inline">\(\operatorname{span}(x_1) \subseteq \operatorname{span}(x) \subseteq L^2(x)\)</span>, y proyectar en cadena sobre subespacios encajados equivale a proyectar directo sobre el más chico.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.7 ★.</strong> Demuestra la desigualdad de Jensen condicional para <span class="math inline">\(\varphi(t) = t^2\)</span>: <span class="math inline">\((\mathbb{E}[y\mid x])^2 \le \mathbb{E}[y^2\mid x]\)</span>. Deduce que <span class="math inline">\(\mathbb{E}[m(x)^2] \le \mathbb{E}[y^2]\)</span>, que se usó en <a href="#thm-cef-mejor-predictor" class="quarto-xref">Teorema&nbsp;3</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(0 \le \mathbb{E}[(y - m(x))^2\mid x] = \mathbb{E}[y^2\mid x] - 2m(x)\mathbb{E}[y\mid x] + m(x)^2 = \mathbb{E}[y^2\mid x] - m(x)^2\)</span>. Tomando esperanza (LEI): <span class="math inline">\(\mathbb{E}[m(x)^2] \le \mathbb{E}[y^2]\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-01.html" class="pagination-link" aria-label="Clase 1 · La caja de herramientas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 1 · La caja de herramientas</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-03.html" class="pagination-link" aria-label="Clase 3 · Mínimos cuadrados ordinarios">
+        <span class="nav-page-text">Clase 3 · Mínimos cuadrados ordinarios</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="La normal multivariada, formas cuadráticas de normales, distribución exacta de MCO y s², tests t y F, intervalos de confianza y mínimos cuadrados restringidos.">
+
+<title>Clase 5 · Inferencia exacta bajo normalidad – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-06.html" rel="next">
+<link href="../econometria-1/clase-04.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-05.html">Clase 5 · Inferencia exacta bajo normalidad</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#del-promedio-a-la-distribución" id="toc-del-promedio-a-la-distribución" class="nav-link active" data-scroll-target="#del-promedio-a-la-distribución"><span class="header-section-number">1</span> Del promedio a la distribución</a></li>
+  <li><a href="#la-normal-multivariada" id="toc-la-normal-multivariada" class="nav-link" data-scroll-target="#la-normal-multivariada"><span class="header-section-number">2</span> La normal multivariada</a></li>
+  <li><a href="#las-distribuciones-chi2-t-y-f" id="toc-las-distribuciones-chi2-t-y-f" class="nav-link" data-scroll-target="#las-distribuciones-chi2-t-y-f"><span class="header-section-number">3</span> Las distribuciones <span class="math inline">\(\chi^2\)</span>, <span class="math inline">\(t\)</span> y <span class="math inline">\(F\)</span></a></li>
+  <li><a href="#la-distribución-exacta-de-mco" id="toc-la-distribución-exacta-de-mco" class="nav-link" data-scroll-target="#la-distribución-exacta-de-mco"><span class="header-section-number">4</span> La distribución exacta de MCO</a></li>
+  <li><a href="#el-test-t" id="toc-el-test-t" class="nav-link" data-scroll-target="#el-test-t"><span class="header-section-number">5</span> El test <span class="math inline">\(t\)</span></a>
+  <ul class="collapse">
+  <li><a href="#tests-e-intervalos" id="toc-tests-e-intervalos" class="nav-link" data-scroll-target="#tests-e-intervalos"><span class="header-section-number">5.1</span> Tests e intervalos</a></li>
+  </ul></li>
+  <li><a href="#el-test-f-de-restricciones-lineales" id="toc-el-test-f-de-restricciones-lineales" class="nav-link" data-scroll-target="#el-test-f-de-restricciones-lineales"><span class="header-section-number">6</span> El test <span class="math inline">\(F\)</span> de restricciones lineales</a>
+  <ul class="collapse">
+  <li><a href="#la-forma-restringido-versus-no-restringido" id="toc-la-forma-restringido-versus-no-restringido" class="nav-link" data-scroll-target="#la-forma-restringido-versus-no-restringido"><span class="header-section-number">6.1</span> La forma “restringido versus no restringido”</a></li>
+  </ul></li>
+  <li><a href="#postgrado-mínimos-cuadrados-restringidos" id="toc-postgrado-mínimos-cuadrados-restringidos" class="nav-link" data-scroll-target="#postgrado-mínimos-cuadrados-restringidos"><span class="header-section-number">7</span> ★ Postgrado: mínimos cuadrados restringidos</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-05.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 5 · Inferencia exacta bajo normalidad</h1>
+<p class="subtitle lead">Formas cuadráticas, χ², t y F</p>
+</div>
+
+<div>
+  <div class="description">
+    La normal multivariada, formas cuadráticas de normales, distribución exacta de MCO y s², tests t y F, intervalos de confianza y mínimos cuadrados restringidos.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-05.pdf">Descargar esta clase en PDF</a></p>
+<section id="del-promedio-a-la-distribución" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Del promedio a la distribución</h1>
+<p>La Clase 4 nos dijo cuánto vale <span class="math inline">\(\hat\beta\)</span> <em>en promedio</em> y cuánto <em>varía</em>. Para hacer inferencia (tests, intervalos de confianza, valores <span class="math inline">\(p\)</span>) necesitamos más: necesitamos su <strong>distribución</strong>. ¿Con qué probabilidad <span class="math inline">\(\hat\beta_2\)</span> cae a más de dos errores estándar de <span class="math inline">\(\beta_2\)</span>?</p>
+<p>Hay dos caminos. El de esta clase: suponer que los errores son normales y obtener distribuciones <strong>exactas</strong>, válidas para cualquier <span class="math inline">\(n\)</span>. El de las Clases 6 y 7: no suponer normalidad y obtener distribuciones <strong>aproximadas</strong>, válidas cuando <span class="math inline">\(n\)</span> es grande. El primer camino es más antiguo, más elegante y, francamente, menos realista.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Pero sus resultados son la base de todo lo que reportan los programas estadísticos, y su maquinaria (formas cuadráticas de normales) es muy bonita.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;La distribución <span class="math inline">\(t\)</span> fue descubierta por William Gosset en 1908 mientras trabajaba en la cervecería Guinness, estudiando la calidad de la cebada con muestras pequeñas. Guinness no permitía a sus empleados publicar, así que firmó como “Student”. Por eso es la “<span class="math inline">\(t\)</span> de Student”: la distribución más famosa de la estadística lleva el seudónimo de un cervecero.</p></div></div><div class="callout callout-style-default callout-caution callout-titled" title="Supuesto adicional">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuesto adicional
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>RL5 (normalidad):</strong> <span class="math inline">\(u\mid X\sim N(0, \sigma^2I_n)\)</span>.</li>
+</ul>
+</div>
+</div>
+<p>Nota que RL5 implica RL3 y RL4, así que “RL1–RL5” es lo mismo que “RL1, RL2 y RL5”.</p>
+</section>
+<section id="la-normal-multivariada" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> La normal multivariada</h1>
+<div id="def-normal-multivariada" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Normal multivariada)</strong></span> Un vector aleatorio <span class="math inline">\(z\in\mathbb{R}^m\)</span> tiene distribución <strong>normal multivariada</strong> con media <span class="math inline">\(\mu\)</span> y varianza <span class="math inline">\(\Sigma\)</span>, <span class="math inline">\(z\sim N(\mu,\Sigma)\)</span>, si para todo <span class="math inline">\(a\in\mathbb{R}^m\)</span> la variable escalar <span class="math inline">\(a'z\)</span> tiene distribución <span class="math inline">\(N(a'\mu,\, a'\Sigma a)\)</span>. (Una normal con varianza cero es una constante.)</p>
+</div>
+<p>Esta definición, vía combinaciones lineales, no requiere que <span class="math inline">\(\Sigma\)</span> sea invertible y hace que las demostraciones sean de una línea. Cuando <span class="math inline">\(\Sigma\succ0\)</span>, es equivalente a que <span class="math inline">\(z\)</span> tenga la densidad conocida <span class="math display">\[
+f(z) = (2\pi)^{-m/2}\det(\Sigma)^{-1/2}\exp\Big\{-\tfrac12(z - \mu)'\Sigma^{-1}(z - \mu)\Big\}.
+\]</span></p>
+<p>Usaremos tres propiedades.</p>
+<div id="thm-normal-lineal" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Transformaciones lineales de normales)</strong></span> Si <span class="math inline">\(z\sim N(\mu,\Sigma)\)</span> y <span class="math inline">\(A\)</span> (<span class="math inline">\(p\times m\)</span>), <span class="math inline">\(c\)</span> (<span class="math inline">\(p\times1\)</span>) son constantes, entonces <span class="math inline">\(Az + c\sim N(A\mu + c,\, A\Sigma A')\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(b\in\mathbb{R}^p\)</span>. Entonces <span class="math inline">\(b'(Az + c) = (A'b)'z + b'c\)</span>. Por definición, <span class="math inline">\((A'b)'z\sim N(b'A\mu,\, b'A\Sigma A'b)\)</span>, y sumarle la constante <span class="math inline">\(b'c\)</span> desplaza la media. Luego <span class="math inline">\(b'(Az + c)\sim N\big(b'(A\mu + c),\, b'(A\Sigma A')b\big)\)</span> para todo <span class="math inline">\(b\)</span>, que es la definición de <span class="math inline">\(Az + c\sim N(A\mu + c, A\Sigma A')\)</span>.</p>
+</div>
+<div id="thm-normal-independencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (En la normal, no correlación implica independencia)</strong></span> Sea <span class="math inline">\((z_1', z_2')'\)</span> conjuntamente normal. Si <span class="math inline">\(\operatorname{Cov}(z_1, z_2) = 0\)</span>, entonces <span class="math inline">\(z_1\)</span> y <span class="math inline">\(z_2\)</span> son independientes.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Caso <span class="math inline">\(\Sigma \succ 0\)</span>.) Si la covarianza cruzada es cero, <span class="math inline">\(\Sigma = \operatorname{diag}(\Sigma_{11},\Sigma_{22})\)</span> es diagonal por bloques. Entonces <span class="math inline">\(\det\Sigma = \det\Sigma_{11}\det\Sigma_{22}\)</span>, <span class="math inline">\(\Sigma^{-1} = \operatorname{diag}(\Sigma_{11}^{-1},\Sigma_{22}^{-1})\)</span> y la forma cuadrática del exponente se separa: <span class="math display">\[
+(z - \mu)'\Sigma^{-1}(z - \mu) = (z_1 - \mu_1)'\Sigma_{11}^{-1}(z_1 - \mu_1) + (z_2 - \mu_2)'\Sigma_{22}^{-1}(z_2 - \mu_2).
+\]</span> La densidad conjunta es el producto de la densidad normal de <span class="math inline">\(z_1\)</span> por la de <span class="math inline">\(z_2\)</span>, lo que es la definición de independencia. (El caso singular se trata con funciones características; ver el Ejercicio 5.6.)</p>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="¡Conjuntamente!">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>¡Conjuntamente!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El teorema exige que el vector <span class="math inline">\((z_1, z_2)\)</span> sea normal <strong>conjuntamente</strong>. Dos variables normales por separado y no correlacionadas pueden ser dependientes: si <span class="math inline">\(z\sim N(0,1)\)</span> y <span class="math inline">\(s = \pm1\)</span> con probabilidad <span class="math inline">\(\tfrac12\)</span> independiente de <span class="math inline">\(z\)</span>, entonces <span class="math inline">\(w = sz\)</span> también es <span class="math inline">\(N(0,1)\)</span>, <span class="math inline">\(\operatorname{Cov}(z,w) = \mathbb{E}[s]\mathbb{E}[z^2] = 0\)</span>, pero <span class="math inline">\(|w| = |z|\)</span>. Son tan dependientes como se puede ser.</p>
+</div>
+</div>
+</section>
+<section id="las-distribuciones-chi2-t-y-f" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Las distribuciones <span class="math inline">\(\chi^2\)</span>, <span class="math inline">\(t\)</span> y <span class="math inline">\(F\)</span></h1>
+<div id="def-chi-t-f" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Distribuciones derivadas de la normal)</strong></span> &nbsp;</p>
+<ul>
+<li>Si <span class="math inline">\(w_1,\dots,w_r\)</span> son i.i.d. <span class="math inline">\(N(0,1)\)</span>, entonces <span class="math inline">\(\sum_{j=1}^rw_j^2\sim\chi^2_r\)</span> (<strong>chi-cuadrado</strong> con <span class="math inline">\(r\)</span> grados de libertad).</li>
+<li>Si <span class="math inline">\(Z\sim N(0,1)\)</span> y <span class="math inline">\(V\sim\chi^2_r\)</span> son independientes, entonces <span class="math inline">\(Z/\sqrt{V/r}\sim t_r\)</span> (<strong><span class="math inline">\(t\)</span> de Student</strong> con <span class="math inline">\(r\)</span> grados de libertad).</li>
+<li>Si <span class="math inline">\(V_1\sim\chi^2_{r_1}\)</span> y <span class="math inline">\(V_2\sim\chi^2_{r_2}\)</span> son independientes, entonces <span class="math inline">\(\dfrac{V_1/r_1}{V_2/r_2}\sim F_{r_1,r_2}\)</span> (<strong><span class="math inline">\(F\)</span> de Fisher–Snedecor</strong>).</li>
+</ul>
+</div>
+<p>Como <span class="math inline">\(\mathbb{E}[w_j^2] = 1\)</span> y <span class="math inline">\(\operatorname{Var}(w_j^2) = \mathbb{E}[w_j^4] - 1 = 3 - 1 = 2\)</span>, una <span class="math inline">\(\chi^2_r\)</span> tiene media <span class="math inline">\(r\)</span> y varianza <span class="math inline">\(2r\)</span>. De la definición también sale que si <span class="math inline">\(T\sim t_r\)</span> entonces <span class="math inline">\(T^2\sim F_{1,r}\)</span> (porque <span class="math inline">\(Z^2\sim\chi^2_1\)</span>).</p>
+<p>La observación clave de toda la clase es que <strong>ciertas formas cuadráticas de vectores normales son <span class="math inline">\(\chi^2\)</span></strong>. Hay dos versiones.</p>
+<div id="lem-chi-idempotente" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Formas cuadráticas idempotentes)</strong></span> Si <span class="math inline">\(z\sim N(0, I_m)\)</span> y <span class="math inline">\(A\)</span> es simétrica e idempotente con <span class="math inline">\(\operatorname{rango}(A) = r\)</span>, entonces <span class="math inline">\(z'Az\sim\chi^2_r\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si <span class="math inline">\(A\)</span> fuera <span class="math inline">\(\operatorname{diag}(1,\dots,1,0,\dots,0)\)</span> con <span class="math inline">\(r\)</span> unos, sería trivial: <span class="math inline">\(z'Az = z_1^2 + \dots + z_r^2\)</span>, suma de <span class="math inline">\(r\)</span> normales estándar independientes al cuadrado. Por el teorema espectral, toda simétrica idempotente es “así, en otra base”: <span class="math inline">\(A = Q\Lambda Q'\)</span> con <span class="math inline">\(\Lambda\)</span> de ceros y unos. Solo necesito que el cambio de base <span class="math inline">\(w = Q'z\)</span> no arruine la normalidad estándar. Y no la arruina: la normal estándar es invariante a rotaciones, porque <span class="math inline">\(\operatorname{Var}(Q'z) = Q'IQ = I\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por el teorema espectral y porque los valores propios de una idempotente son 0 o 1 (Clase 1), <span class="math inline">\(A = Q\Lambda Q'\)</span> con <span class="math inline">\(Q\)</span> ortogonal y <span class="math inline">\(\Lambda\)</span> diagonal con exactamente <span class="math inline">\(r\)</span> unos (pues <span class="math inline">\(r = \operatorname{rango}(A)\)</span> es el número de valores propios no nulos). Reordenando columnas de <span class="math inline">\(Q\)</span> podemos suponer que <span class="math inline">\(\Lambda = \operatorname{diag}(I_r, 0)\)</span>. Sea <span class="math inline">\(w = Q'z\)</span>. Por <a href="#thm-normal-lineal" class="quarto-xref">Teorema&nbsp;1</a>, <span class="math inline">\(w\sim N(0, Q'IQ) = N(0, I_m)\)</span>, así que <span class="math inline">\(w_1,\dots,w_m\)</span> son i.i.d. <span class="math inline">\(N(0,1)\)</span> (por <a href="#thm-normal-independencia" class="quarto-xref">Teorema&nbsp;2</a>, normales conjuntas no correlacionadas). Finalmente, <span class="math display">\[
+z'Az = z'Q\Lambda Q'z = w'\Lambda w = \sum_{j=1}^rw_j^2\sim\chi^2_r.
+\]</span></p>
+</div>
+<div id="lem-chi-inversa" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 2 (Forma cuadrática con la inversa de la varianza)</strong></span> Si <span class="math inline">\(z\sim N(0,\Sigma)\)</span> con <span class="math inline">\(\Sigma\)</span> de <span class="math inline">\(q\times q\)</span> definida positiva, entonces <span class="math inline">\(z'\Sigma^{-1}z\sim\chi^2_q\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(w = \Sigma^{-1/2}z\)</span>, con <span class="math inline">\(\Sigma^{-1/2}\)</span> la raíz cuadrada inversa simétrica (Clase 1, sección ★). Por <a href="#thm-normal-lineal" class="quarto-xref">Teorema&nbsp;1</a>, <span class="math inline">\(w\sim N(0, \Sigma^{-1/2}\Sigma\Sigma^{-1/2}) = N(0, I_q)\)</span>. Entonces <span class="math inline">\(z'\Sigma^{-1}z = z'\Sigma^{-1/2}\Sigma^{-1/2}z = w'w = \sum_{j=1}^q w_j^2\sim\chi^2_q\)</span>.</p>
+</div>
+</section>
+<section id="la-distribución-exacta-de-mco" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La distribución exacta de MCO</h1>
+<div id="thm-distribucion-exacta" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Distribución de <span class="math inline">\(\hat\beta\)</span> y <span class="math inline">\(s^2\)</span> bajo normalidad)</strong></span> Bajo RL1, RL2 y RL5, condicional en <span class="math inline">\(X\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(\hat\beta\sim N\big(\beta,\,\sigma^2(X'X)^{-1}\big)\)</span>.</li>
+<li><span class="math inline">\(\dfrac{(n-k)s^2}{\sigma^2}\sim\chi^2_{n-k}\)</span>.</li>
+<li><span class="math inline">\(\hat\beta\)</span> y <span class="math inline">\(s^2\)</span> son independientes.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las tres cosas vienen de escribir todo en términos de <span class="math inline">\(z = u/\sigma\sim N(0,I_n)\)</span>.</p>
+<ol type="1">
+<li><p><span class="math inline">\(\hat\beta = \beta + (X'X)^{-1}X'u\)</span> es lineal en <span class="math inline">\(u\)</span>, así que es normal, y la media y varianza ya las conozco de la Clase 4.</p></li>
+<li><p><span class="math inline">\((n-k)s^2/\sigma^2 = \hat u'\hat u/\sigma^2 = u'Mu/\sigma^2 = z'Mz\)</span>. <span class="math inline">\(M\)</span> es simétrica, idempotente, de rango <span class="math inline">\(n-k\)</span>. ¡Es <a href="#lem-chi-idempotente" class="quarto-xref">Lema&nbsp;1</a>!</p></li>
+<li><p><span class="math inline">\(\hat\beta\)</span> depende de <span class="math inline">\(u\)</span> solo a través de <span class="math inline">\((X'X)^{-1}X'u\)</span>, y <span class="math inline">\(s^2\)</span> solo a través de <span class="math inline">\(Mu\)</span>. Si <span class="math inline">\((X'X)^{-1}X'u\)</span> y <span class="math inline">\(Mu\)</span> no están correlacionados, como son conjuntamente normales, son independientes. La covarianza es <span class="math inline">\(\sigma^2(X'X)^{-1}X'M = 0\)</span> porque <span class="math inline">\(X'M = 0\)</span>. Esto ya lo vimos en el Ejercicio 4.2.</p></li>
+</ol>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Trabajamos condicional en <span class="math inline">\(X\)</span>, de modo que <span class="math inline">\(X\)</span>, <span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span> son constantes. Por RL5, <span class="math inline">\(u\sim N(0,\sigma^2I_n)\)</span>.</p>
+<ol type="1">
+<li><p><span class="math inline">\(\hat\beta = \beta + (X'X)^{-1}X'u\)</span> es una transformación lineal de <span class="math inline">\(u\)</span>. Por <a href="#thm-normal-lineal" class="quarto-xref">Teorema&nbsp;1</a>, <span class="math inline">\(\hat\beta\sim N\big(\beta,\,(X'X)^{-1}X'\sigma^2IX(X'X)^{-1}\big) = N\big(\beta, \sigma^2(X'X)^{-1}\big)\)</span>.</p></li>
+<li><p>Sea <span class="math inline">\(z = u/\sigma\sim N(0, I_n)\)</span>. Como <span class="math inline">\(\hat u = Mu\)</span> y <span class="math inline">\(M\)</span> es simétrica idempotente, <span class="math display">\[
+\frac{(n-k)s^2}{\sigma^2} = \frac{\hat u'\hat u}{\sigma^2} = \frac{u'Mu}{\sigma^2} = z'Mz.
+\]</span> <span class="math inline">\(M\)</span> es simétrica, idempotente y de rango <span class="math inline">\(n-k\)</span> (Clase 1), así que por <a href="#lem-chi-idempotente" class="quarto-xref">Lema&nbsp;1</a>, <span class="math inline">\(z'Mz\sim\chi^2_{n-k}\)</span>.</p></li>
+<li><p>Consideremos el vector apilado <span class="math display">\[
+\begin{pmatrix}(X'X)^{-1}X'u\\ Mu\end{pmatrix} = \begin{pmatrix}(X'X)^{-1}X'\\ M\end{pmatrix}u,
+\]</span> que es conjuntamente normal por <a href="#thm-normal-lineal" class="quarto-xref">Teorema&nbsp;1</a>. Su bloque de covarianza cruzada es <span class="math display">\[
+(X'X)^{-1}X'(\sigma^2I_n)M' = \sigma^2(X'X)^{-1}(MX)' = 0.
+\]</span> Por <a href="#thm-normal-independencia" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\((X'X)^{-1}X'u\)</span> y <span class="math inline">\(Mu\)</span> son independientes. Como <span class="math inline">\(\hat\beta\)</span> es función del primero y <span class="math inline">\(s^2 = (Mu)'(Mu)/(n-k)\)</span> es función del segundo, <span class="math inline">\(\hat\beta\)</span> y <span class="math inline">\(s^2\)</span> son independientes.</p></li>
+</ol>
+</div>
+<p>De (2) sale de regalo la varianza de <span class="math inline">\(s^2\)</span> que usamos en el Ejercicio 4.7: <span class="math inline">\(\operatorname{Var}\big((n-k)s^2/\sigma^2\big) = 2(n-k)\)</span>, luego <span class="math inline">\(\operatorname{Var}(s^2\mid X) = 2\sigma^4/(n-k)\)</span>.</p>
+</section>
+<section id="el-test-t" class="level1 page-columns page-full" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El test <span class="math inline">\(t\)</span></h1>
+<p>Queremos testear <span class="math inline">\(H_0:\beta_j = \beta_j^0\)</span> para un valor dado <span class="math inline">\(\beta_j^0\)</span> (típicamente cero). Si conociéramos <span class="math inline">\(\sigma^2\)</span>, usaríamos <span class="math display">\[
+Z = \frac{\hat\beta_j - \beta_j^0}{\sigma\sqrt{[(X'X)^{-1}]_{jj}}}\sim N(0,1) \text{ bajo } H_0.
+\]</span> Pero no conocemos <span class="math inline">\(\sigma\)</span>. Lo reemplazamos por <span class="math inline">\(s\)</span> y la distribución cambia de normal a <span class="math inline">\(t\)</span>.</p>
+<div id="thm-test-t" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Distribución del estadístico <span class="math inline">\(t\)</span>)</strong></span> Bajo RL1, RL2, RL5 y <span class="math inline">\(H_0:\beta_j = \beta_j^0\)</span>, <span class="math display">\[
+t_j = \frac{\hat\beta_j - \beta_j^0}{\operatorname{ee}(\hat\beta_j)} = \frac{\hat\beta_j - \beta_j^0}{s\sqrt{[(X'X)^{-1}]_{jj}}}\sim t_{n-k}.
+\]</span> Esto vale condicional en <span class="math inline">\(X\)</span> y también incondicionalmente.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(v_{jj} = [(X'X)^{-1}]_{jj}\)</span>. Escribimos <span class="math display">\[
+t_j = \frac{(\hat\beta_j - \beta_j^0)/(\sigma\sqrt{v_{jj}})}{s/\sigma} = \frac{Z}{\sqrt{V/(n-k)}},
+\qquad Z = \frac{\hat\beta_j - \beta_j^0}{\sigma\sqrt{v_{jj}}},\quad V = \frac{(n-k)s^2}{\sigma^2}.
+\]</span> Condicional en <span class="math inline">\(X\)</span> y bajo <span class="math inline">\(H_0\)</span>:</p>
+<ul>
+<li><span class="math inline">\(Z\sim N(0,1)\)</span>, por <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a> (1): la coordenada <span class="math inline">\(j\)</span> de <span class="math inline">\(\hat\beta\)</span> es <span class="math inline">\(N(\beta_j, \sigma^2v_{jj})\)</span>.</li>
+<li><span class="math inline">\(V\sim\chi^2_{n-k}\)</span>, por <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a> (2).</li>
+<li><span class="math inline">\(Z\)</span> y <span class="math inline">\(V\)</span> son independientes, por <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a> (3): <span class="math inline">\(Z\)</span> es función de <span class="math inline">\(\hat\beta\)</span> y <span class="math inline">\(V\)</span> de <span class="math inline">\(s^2\)</span>.</li>
+</ul>
+<p>Por definición, <span class="math inline">\(t_j\sim t_{n-k}\)</span> condicional en <span class="math inline">\(X\)</span>. Como esta distribución condicional no depende de <span class="math inline">\(X\)</span>, la distribución incondicional es la misma: para todo <span class="math inline">\(c\)</span>, <span class="math inline">\(P(t_j\le c) = \mathbb{E}[P(t_j\le c\mid X)] = \mathbb{E}[F_{t_{n-k}}(c)] = F_{t_{n-k}}(c)\)</span>.</p>
+</div>
+<p>El último paso es sutil y precioso: <strong>el estadístico <span class="math inline">\(t\)</span> es pivotal</strong>. Su distribución no depende de ningún parámetro desconocido (<span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma^2\)</span>) ni de <span class="math inline">\(X\)</span>. Por eso podemos tabularla una vez y usarla siempre.</p>
+<section id="tests-e-intervalos" class="level2 page-columns page-full" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="tests-e-intervalos"><span class="header-section-number">5.1</span> Tests e intervalos</h2>
+<p>Sea <span class="math inline">\(c_{\alpha/2}\)</span> el cuantil <span class="math inline">\(1 - \alpha/2\)</span> de la <span class="math inline">\(t_{n-k}\)</span>. Entonces:</p>
+<ul>
+<li><strong>Test bilateral</strong> de nivel <span class="math inline">\(\alpha\)</span>: rechazar <span class="math inline">\(H_0:\beta_j = \beta_j^0\)</span> si <span class="math inline">\(|t_j| &gt; c_{\alpha/2}\)</span>. Bajo <span class="math inline">\(H_0\)</span>, la probabilidad de rechazar es <strong>exactamente</strong> <span class="math inline">\(\alpha\)</span>.</li>
+<li><strong>Intervalo de confianza</strong> de nivel <span class="math inline">\(1-\alpha\)</span>: <span class="math inline">\(\hat\beta_j\pm c_{\alpha/2}\operatorname{ee}(\hat\beta_j)\)</span>. Contiene a <span class="math inline">\(\beta_j\)</span> con probabilidad exactamente <span class="math inline">\(1-\alpha\)</span>, porque <span class="math display">\[
+P\big(\beta_j\in\hat\beta_j\pm c_{\alpha/2}\operatorname{ee}(\hat\beta_j)\big) = P\Big(\Big|\frac{\hat\beta_j - \beta_j}{\operatorname{ee}(\hat\beta_j)}\Big|\le c_{\alpha/2}\Big) = 1 - \alpha.
+\]</span></li>
+<li><strong>Valor <span class="math inline">\(p\)</span>:</strong> <span class="math inline">\(p = P(|T|\ge|t_j^{\text{obs}}|)\)</span> con <span class="math inline">\(T\sim t_{n-k}\)</span>. Es el menor nivel <span class="math inline">\(\alpha\)</span> al que se rechazaría.</li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled" title="Qué es (y qué no es) un intervalo de confianza">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Qué es (y qué no es) un intervalo de confianza
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>“Tengo 95 % de confianza en que <span class="math inline">\(\beta_j\in[0{,}3;\,0{,}9]\)</span>” <strong>no</strong> significa que <span class="math inline">\(P(\beta_j\in[0{,}3;0{,}9]) = 0{,}95\)</span>. El parámetro <span class="math inline">\(\beta_j\)</span> es un número fijo: o está en el intervalo o no está. Lo aleatorio es el intervalo. El 95 % es una propiedad del <strong>procedimiento</strong>: si repites el muestreo muchas veces, el 95 % de los intervalos que construyas contendrá a <span class="math inline">\(\beta_j\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Si quieres decir “la probabilidad de que <span class="math inline">\(\beta_j\)</span> esté en el intervalo es 95 %”, tienes que volverte bayesiano, poner una distribución a priori sobre <span class="math inline">\(\beta_j\)</span> y calcular un <em>intervalo de credibilidad</em>. Con una a priori plana y errores normales, el intervalo resultante es numéricamente el mismo. La filosofía, no.</p></div></div><div id="exm-salarios" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un test <span class="math inline">\(t\)</span>)</strong></span> En una regresión de <span class="math inline">\(\log(\text{salario})\)</span> sobre una constante, años de educación y experiencia con <span class="math inline">\(n = 53\)</span> observaciones, se obtiene <span class="math inline">\(\hat\beta_{\text{educ}} = 0{,}082\)</span> con <span class="math inline">\(\operatorname{ee} = 0{,}021\)</span>. Con <span class="math inline">\(n - k = 50\)</span> grados de libertad, <span class="math inline">\(c_{0{,}025}\approx2{,}009\)</span>. El estadístico para <span class="math inline">\(H_0:\beta_{\text{educ}} = 0\)</span> es <span class="math inline">\(t = 0{,}082/0{,}021\approx3{,}90 &gt; 2{,}009\)</span>: se rechaza al 5 %. El intervalo al 95 % es <span class="math inline">\(0{,}082\pm2{,}009\cdot0{,}021 = [0{,}040;\,0{,}124]\)</span>: cada año de educación se asocia con un salario entre 4 % y 12 % mayor, aproximadamente.</p>
+</div>
+</section>
+</section>
+<section id="el-test-f-de-restricciones-lineales" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> El test <span class="math inline">\(F\)</span> de restricciones lineales</h1>
+<p>Muchas hipótesis interesantes involucran varios coeficientes a la vez: “educación y experiencia no importan” (<span class="math inline">\(\beta_2 = \beta_3 = 0\)</span>), “rendimientos constantes a escala” (<span class="math inline">\(\beta_2 + \beta_3 = 1\)</span>), etc. Todas se escriben como <span class="math display">\[
+H_0: R\beta = r,
+\]</span> con <span class="math inline">\(R\)</span> una matriz <span class="math inline">\(q\times k\)</span> de rango <span class="math inline">\(q\)</span> (las <span class="math inline">\(q\)</span> restricciones no son redundantes) y <span class="math inline">\(r\in\mathbb{R}^q\)</span>. Por ejemplo, con <span class="math inline">\(k = 3\)</span>, “<span class="math inline">\(\beta_2 = \beta_3 = 0\)</span>” es <span class="math inline">\(R = \begin{pmatrix}0&amp;1&amp;0\\0&amp;0&amp;1\end{pmatrix}\)</span>, <span class="math inline">\(r = (0,0)'\)</span>, y “<span class="math inline">\(\beta_2 + \beta_3 = 1\)</span>” es <span class="math inline">\(R = (0\;1\;1)\)</span>, <span class="math inline">\(r = 1\)</span>.</p>
+<div id="thm-test-f" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Distribución del estadístico <span class="math inline">\(F\)</span>)</strong></span> Bajo RL1, RL2, RL5 y <span class="math inline">\(H_0: R\beta = r\)</span> (con <span class="math inline">\(\operatorname{rango}(R) = q\)</span>), <span class="math display">\[
+F = \frac{(R\hat\beta - r)'\big[R(X'X)^{-1}R'\big]^{-1}(R\hat\beta - r)}{q\,s^2}\sim F_{q,\,n-k}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mismo esquema que el test <span class="math inline">\(t\)</span>: escribir <span class="math inline">\(F\)</span> como cociente de dos <span class="math inline">\(\chi^2\)</span> independientes divididas por sus grados de libertad.</p>
+<p>Numerador: <span class="math inline">\(R\hat\beta - r\)</span> es normal (lineal en <span class="math inline">\(\hat\beta\)</span>), con media <span class="math inline">\(R\beta - r = 0\)</span> bajo <span class="math inline">\(H_0\)</span> y varianza <span class="math inline">\(\sigma^2R(X'X)^{-1}R'\)</span>. La forma cuadrática “vector por inversa de su varianza por vector” es <span class="math inline">\(\chi^2_q\)</span> por <a href="#lem-chi-inversa" class="quarto-xref">Lema&nbsp;2</a>. Para usar ese lema necesito que <span class="math inline">\(R(X'X)^{-1}R'\)</span> sea invertible; eso sale de la Clase 1, porque <span class="math inline">\((X'X)^{-1}\succ0\)</span> y <span class="math inline">\(R'\)</span> tiene rango columna <span class="math inline">\(q\)</span>.</p>
+<p>Denominador: <span class="math inline">\((n-k)s^2/\sigma^2\sim\chi^2_{n-k}\)</span>.</p>
+<p>Independencia: el numerador es función de <span class="math inline">\(\hat\beta\)</span>, el denominador de <span class="math inline">\(s^2\)</span>. Los <span class="math inline">\(\sigma^2\)</span> se cancelan.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Condicional en <span class="math inline">\(X\)</span>. Sea <span class="math inline">\(\Sigma_R = R(X'X)^{-1}R'\)</span> (<span class="math inline">\(q\times q\)</span>). Como <span class="math inline">\((X'X)^{-1}\succ0\)</span> y <span class="math inline">\(R'\)</span> (<span class="math inline">\(k\times q\)</span>) tiene rango <span class="math inline">\(q\)</span>, por las propiedades de las matrices definidas positivas (Clase 1), <span class="math inline">\(\Sigma_R\succ0\)</span> y es invertible.</p>
+<p>Por <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a> (1) y <a href="#thm-normal-lineal" class="quarto-xref">Teorema&nbsp;1</a>, bajo <span class="math inline">\(H_0\)</span>, <span class="math display">\[
+R\hat\beta - r = R(\hat\beta - \beta) \sim N(0,\sigma^2\Sigma_R).
+\]</span> Por <a href="#lem-chi-inversa" class="quarto-xref">Lema&nbsp;2</a>, <span class="math display">\[
+V_1 = \frac{(R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r)}{\sigma^2} = (R\hat\beta - r)'(\sigma^2\Sigma_R)^{-1}(R\hat\beta - r)\sim\chi^2_q.
+\]</span> Por <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a> (2), <span class="math inline">\(V_2 = (n-k)s^2/\sigma^2\sim\chi^2_{n-k}\)</span>, y por (3), <span class="math inline">\(V_1\)</span> (función de <span class="math inline">\(\hat\beta\)</span>) y <span class="math inline">\(V_2\)</span> (función de <span class="math inline">\(s^2\)</span>) son independientes. Entonces <span class="math display">\[
+\frac{V_1/q}{V_2/(n-k)} = \frac{(R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r)/(q\sigma^2)}{s^2/\sigma^2} = F\sim F_{q,n-k}.
+\]</span> Como en el test <span class="math inline">\(t\)</span>, la distribución no depende de <span class="math inline">\(X\)</span>, así que también vale incondicionalmente.</p>
+</div>
+<p>Si <span class="math inline">\(q = 1\)</span> y <span class="math inline">\(R = e_j'\)</span>, entonces <span class="math inline">\(\Sigma_R = [(X'X)^{-1}]_{jj}\)</span> y <span class="math inline">\(F = t_j^2\)</span>: el test <span class="math inline">\(F\)</span> de una restricción es el test <span class="math inline">\(t\)</span> bilateral.</p>
+<section id="la-forma-restringido-versus-no-restringido" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="la-forma-restringido-versus-no-restringido"><span class="header-section-number">6.1</span> La forma “restringido versus no restringido”</h2>
+<p>Hay una forma equivalente del estadístico <span class="math inline">\(F\)</span> que es mucho más fácil de calcular y de recordar. Sea <span class="math inline">\(\tilde\beta\)</span> el estimador de <strong>mínimos cuadrados restringidos</strong>: el que minimiza <span class="math inline">\(S(b) = (y - Xb)'(y - Xb)\)</span> sujeto a <span class="math inline">\(Rb = r\)</span>. Sea <span class="math inline">\(\text{SCR}_R = S(\tilde\beta)\)</span> su suma de residuos, y <span class="math inline">\(\text{SCR}_{NR} = S(\hat\beta) = (n-k)s^2\)</span> la del modelo sin restringir.</p>
+<div id="thm-f-scr" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (<span class="math inline">\(F\)</span> con sumas de residuos)</strong></span> <span class="math display">\[
+F = \frac{(\text{SCR}_R - \text{SCR}_{NR})/q}{\text{SCR}_{NR}/(n-k)}.
+\]</span></p>
+</div>
+<p>La intuición es inmejorable: <strong>imponer restricciones empeora el ajuste; el test <span class="math inline">\(F\)</span> pregunta si lo empeora “demasiado”</strong>. Si <span class="math inline">\(H_0\)</span> es cierta, imponerla debería costar poco. La demostración está en la sección ★.</p>
+<p>Un caso particular importantísimo es el <strong>test de significancia global</strong>, <span class="math inline">\(H_0:\beta_2 = \dots = \beta_k = 0\)</span> (todos menos la constante). El modelo restringido solo tiene constante, así que <span class="math inline">\(\text{SCR}_R = \text{SCT}\)</span>, y dividiendo numerador y denominador por <span class="math inline">\(\text{SCT}\)</span>, <span class="math display">\[
+F = \frac{R^2/(k-1)}{(1 - R^2)/(n-k)}.
+\]</span></p>
+</section>
+</section>
+<section id="postgrado-mínimos-cuadrados-restringidos" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: mínimos cuadrados restringidos</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Derivamos <span class="math inline">\(\tilde\beta\)</span> con multiplicadores de Lagrange y demostramos <a href="#thm-f-scr" class="quarto-xref">Teorema&nbsp;6</a> usando la identidad de completación de cuadrados de la Clase 3.</p>
+</div>
+</div>
+<div id="thm-mcr" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (Mínimos cuadrados restringidos)</strong></span> Si <span class="math inline">\(\operatorname{rango}(X) = k\)</span> y <span class="math inline">\(\operatorname{rango}(R) = q\)</span>, el minimizador de <span class="math inline">\(S(b)\)</span> sujeto a <span class="math inline">\(Rb = r\)</span> es <span class="math display">\[
+\tilde\beta = \hat\beta - (X'X)^{-1}R'\big[R(X'X)^{-1}R'\big]^{-1}(R\hat\beta - r).
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La identidad de la Clase 3 dice <span class="math inline">\(S(b) = S(\hat\beta) + (b - \hat\beta)'X'X(b - \hat\beta)\)</span>. Así que minimizar <span class="math inline">\(S(b)\)</span> sujeto a <span class="math inline">\(Rb = r\)</span> es minimizar la <strong>distancia</strong> <span class="math inline">\((b - \hat\beta)'X'X(b - \hat\beta)\)</span> de <span class="math inline">\(b\)</span> a <span class="math inline">\(\hat\beta\)</span> (medida con la métrica <span class="math inline">\(X'X\)</span>) sobre el conjunto afín <span class="math inline">\(\{b: Rb = r\}\)</span>. Es una proyección. Con Lagrange: <span class="math inline">\(\mathcal{L} = (b - \hat\beta)'X'X(b - \hat\beta) + 2\lambda'(Rb - r)\)</span>. Condición de primer orden: <span class="math inline">\(2X'X(b - \hat\beta) + 2R'\lambda = 0\)</span>, así que <span class="math inline">\(b = \hat\beta - (X'X)^{-1}R'\lambda\)</span>. Imponiendo <span class="math inline">\(Rb = r\)</span> despejo <span class="math inline">\(\lambda\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(A = X'X\succ0\)</span> y <span class="math inline">\(\Sigma_R = RA^{-1}R'\succ0\)</span>. Por la identidad de completación de cuadrados de MCO (Clase 3), para todo <span class="math inline">\(b\)</span>, <span id="eq-mcr-dist"><span class="math display">\[
+S(b) = S(\hat\beta) + (b - \hat\beta)'A(b - \hat\beta).
+\tag{1}\]</span></span> Definamos <span class="math inline">\(\tilde\beta\)</span> como en el enunciado. Primero, es factible: <span class="math inline">\(R\tilde\beta = R\hat\beta - RA^{-1}R'\Sigma_R^{-1}(R\hat\beta - r) = R\hat\beta - (R\hat\beta - r) = r\)</span>.</p>
+<p>Ahora sea <span class="math inline">\(b\)</span> cualquier punto factible (<span class="math inline">\(Rb = r\)</span>) y escribamos <span class="math inline">\(b - \hat\beta = (b - \tilde\beta) + (\tilde\beta - \hat\beta)\)</span>. Entonces <span class="math display">\[
+(b - \hat\beta)'A(b - \hat\beta) = (b - \tilde\beta)'A(b - \tilde\beta) + (\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta) + 2(b - \tilde\beta)'A(\tilde\beta - \hat\beta).
+\]</span> El término cruzado es cero: <span class="math inline">\(A(\tilde\beta - \hat\beta) = -R'\Sigma_R^{-1}(R\hat\beta - r)\)</span>, así que <span class="math display">\[
+(b - \tilde\beta)'A(\tilde\beta - \hat\beta) = -(Rb - R\tilde\beta)'\Sigma_R^{-1}(R\hat\beta - r) = -(r - r)'\Sigma_R^{-1}(R\hat\beta - r) = 0.
+\]</span> Luego, para todo <span class="math inline">\(b\)</span> factible, <span class="math inline">\((b - \hat\beta)'A(b - \hat\beta)\ge(\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta)\)</span>, con igualdad si y solo si <span class="math inline">\(b = \tilde\beta\)</span> (pues <span class="math inline">\(A\succ0\)</span>). Por <a href="#eq-mcr-dist" class="quarto-xref">Ecuación&nbsp;1</a>, <span class="math inline">\(\tilde\beta\)</span> es el único minimizador de <span class="math inline">\(S\)</span> sobre el conjunto factible.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><strong>(de <a href="#thm-f-scr" class="quarto-xref">Teorema&nbsp;6</a>).</strong> Por <a href="#eq-mcr-dist" class="quarto-xref">Ecuación&nbsp;1</a> con <span class="math inline">\(b = \tilde\beta\)</span>, <span class="math display">\[
+\text{SCR}_R - \text{SCR}_{NR} = (\tilde\beta - \hat\beta)'X'X(\tilde\beta - \hat\beta).
+\]</span> Sustituyendo <span class="math inline">\(\tilde\beta - \hat\beta = -A^{-1}R'\Sigma_R^{-1}(R\hat\beta - r)\)</span>, <span class="math display">\[
+(\tilde\beta - \hat\beta)'A(\tilde\beta - \hat\beta) = (R\hat\beta - r)'\Sigma_R^{-1}\underbrace{RA^{-1}AA^{-1}R'}_{=\,\Sigma_R}\Sigma_R^{-1}(R\hat\beta - r) = (R\hat\beta - r)'\Sigma_R^{-1}(R\hat\beta - r).
+\]</span> Este es exactamente el numerador de <span class="math inline">\(F\)</span> multiplicado por <span class="math inline">\(q\)</span>. Como <span class="math inline">\(s^2 = \text{SCR}_{NR}/(n-k)\)</span>, las dos expresiones de <span class="math inline">\(F\)</span> coinciden.</p>
+</div>
+<p>Una consecuencia inmediata: <span class="math inline">\(\text{SCR}_R\ge\text{SCR}_{NR}\)</span>, así que <span class="math inline">\(F\ge0\)</span>. Y si <span class="math inline">\(R\hat\beta = r\)</span> (el estimador sin restringir ya cumple la restricción), <span class="math inline">\(\tilde\beta = \hat\beta\)</span> y <span class="math inline">\(F = 0\)</span>.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>Bajo normalidad, <span class="math inline">\(\hat\beta\mid X\sim N(\beta,\sigma^2(X'X)^{-1})\)</span>, <span class="math inline">\((n-k)s^2/\sigma^2\sim\chi^2_{n-k}\)</span>, y ambos son independientes (<a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+<li>La herramienta clave: <span class="math inline">\(z'Az\sim\chi^2_r\)</span> si <span class="math inline">\(z\sim N(0,I)\)</span> y <span class="math inline">\(A\)</span> es simétrica idempotente de rango <span class="math inline">\(r\)</span> (<a href="#lem-chi-idempotente" class="quarto-xref">Lema&nbsp;1</a>).</li>
+<li><span class="math inline">\(t_j = (\hat\beta_j - \beta_j^0)/\operatorname{ee}(\hat\beta_j)\sim t_{n-k}\)</span> exactamente (<a href="#thm-test-t" class="quarto-xref">Teorema&nbsp;4</a>). Es pivotal.</li>
+<li>Para <span class="math inline">\(H_0: R\beta = r\)</span>, <span class="math inline">\(F\sim F_{q,n-k}\)</span> (<a href="#thm-test-f" class="quarto-xref">Teorema&nbsp;5</a>), y <span class="math inline">\(F = \frac{(\text{SCR}_R - \text{SCR}_{NR})/q}{\text{SCR}_{NR}/(n-k)}\)</span> (<a href="#thm-f-scr" class="quarto-xref">Teorema&nbsp;6</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 5.1.</strong> En una regresión con <span class="math inline">\(n = 40\)</span> y <span class="math inline">\(k = 4\)</span> (incluida la constante) se obtiene <span class="math inline">\(R^2 = 0{,}30\)</span>. Testea la significancia global al 5 %. (El cuantil <span class="math inline">\(0{,}95\)</span> de la <span class="math inline">\(F_{3,36}\)</span> es aproximadamente <span class="math inline">\(2{,}87\)</span>.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(F = \dfrac{0{,}30/3}{0{,}70/36} = \dfrac{0{,}10}{0{,}01944}\approx5{,}14 &gt; 2{,}87\)</span>. Se rechaza que todos los coeficientes (salvo la constante) sean cero.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.2.</strong> Sea <span class="math inline">\(z\sim N(0,I_n)\)</span> y <span class="math inline">\(M^0 = I - \frac1n\iota\iota'\)</span>. Demuestra que <span class="math inline">\(\sum_i(z_i - \bar z)^2\sim\chi^2_{n-1}\)</span> y que es independiente de <span class="math inline">\(\bar z\)</span>. Deduce que, para una muestra i.i.d. <span class="math inline">\(N(\mu,\sigma^2)\)</span>, <span class="math inline">\(\sqrt n(\bar x - \mu)/S\sim t_{n-1}\)</span>, con <span class="math inline">\(S^2\)</span> la varianza muestral.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\sum(z_i - \bar z)^2 = z'M^0z\)</span> y <span class="math inline">\(M^0\)</span> es simétrica idempotente de rango <span class="math inline">\(n-1\)</span> (Clase 1): es <span class="math inline">\(\chi^2_{n-1}\)</span> por <a href="#lem-chi-idempotente" class="quarto-xref">Lema&nbsp;1</a>. <span class="math inline">\(\bar z = \frac1n\iota'z\)</span> y <span class="math inline">\(\operatorname{Cov}(\frac1n\iota'z, M^0z) = \frac1n\iota'M^0 = 0\)</span>, así que son independientes. Es el caso <span class="math inline">\(X = \iota\)</span> de <a href="#thm-distribucion-exacta" class="quarto-xref">Teorema&nbsp;3</a>. Para la muestra, <span class="math inline">\(z_i = (x_i - \mu)/\sigma\)</span>, y <span class="math inline">\(\sqrt n(\bar x - \mu)/S = \dfrac{\sqrt n\bar z}{\sqrt{z'M^0z/(n-1)}}\)</span>, cociente de una <span class="math inline">\(N(0,1)\)</span> y la raíz de una <span class="math inline">\(\chi^2_{n-1}/(n-1)\)</span> independiente.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.3.</strong> Escribe <span class="math inline">\(R\)</span> y <span class="math inline">\(r\)</span> para testear, en <span class="math inline">\(\log Q = \beta_1 + \beta_2\log K + \beta_3\log L + u\)</span>, la hipótesis de rendimientos constantes a escala. Muestra que el modelo restringido se puede estimar por MCO con una variable transformada.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(R = (0\;1\;1)\)</span>, <span class="math inline">\(r = 1\)</span>. Bajo <span class="math inline">\(H_0\)</span>, <span class="math inline">\(\beta_3 = 1 - \beta_2\)</span> y <span class="math inline">\(\log Q - \log L = \beta_1 + \beta_2(\log K - \log L) + u\)</span>: se regresa <span class="math inline">\(\log(Q/L)\)</span> sobre una constante y <span class="math inline">\(\log(K/L)\)</span>. Su SCR es <span class="math inline">\(\text{SCR}_R\)</span> (ojo: la variable dependiente cambió, pero los residuos son los del modelo original restringido, así que la SCR es comparable).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.4.</strong> Demuestra que si <span class="math inline">\(T\sim t_r\)</span>, entonces <span class="math inline">\(T^2\sim F_{1,r}\)</span>, y usa esto para mostrar que el test <span class="math inline">\(F\)</span> de <span class="math inline">\(H_0:\beta_j = 0\)</span> y el test <span class="math inline">\(t\)</span> bilateral rechazan exactamente en los mismos casos.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(T = Z/\sqrt{V/r}\)</span> con <span class="math inline">\(Z\sim N(0,1)\)</span> indep. de <span class="math inline">\(V\sim\chi^2_r\)</span>. <span class="math inline">\(T^2 = (Z^2/1)/(V/r)\)</span> con <span class="math inline">\(Z^2\sim\chi^2_1\)</span> independiente de <span class="math inline">\(V\)</span>: es <span class="math inline">\(F_{1,r}\)</span>. Si <span class="math inline">\(c\)</span> es el cuantil <span class="math inline">\(1-\alpha/2\)</span> de la <span class="math inline">\(t_r\)</span>, entonces <span class="math inline">\(c^2\)</span> es el cuantil <span class="math inline">\(1-\alpha\)</span> de la <span class="math inline">\(F_{1,r}\)</span>, porque <span class="math inline">\(P(T^2\le c^2) = P(|T|\le c) = 1 - \alpha\)</span>. Luego <span class="math inline">\(|t_j|&gt;c\iff t_j^2 = F &gt; c^2\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.5.</strong> ¿Por qué no se puede usar el test <span class="math inline">\(F\)</span> con sumas de residuos para comparar <span class="math inline">\(y = \beta_1 + \beta_2x + u\)</span> con <span class="math inline">\(\log y = \gamma_1 + \gamma_2x + v\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Porque no son modelos anidados: ninguno es una restricción lineal del otro, y las variables dependientes son distintas, así que las SCR están en unidades distintas. El test <span class="math inline">\(F\)</span> exige que el modelo restringido sea el sin restringir con <span class="math inline">\(R\beta = r\)</span> impuesto.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.6 ★.</strong> Usa la función característica <span class="math inline">\(\varphi_z(t) = \mathbb{E}[e^{it'z}] = \exp(it'\mu - \frac12t'\Sigma t)\)</span> de la <span class="math inline">\(N(\mu,\Sigma)\)</span> para demostrar <a href="#thm-normal-independencia" class="quarto-xref">Teorema&nbsp;2</a> sin suponer <span class="math inline">\(\Sigma\succ0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(t = (t_1', t_2')'\)</span> y <span class="math inline">\(\Sigma_{12} = 0\)</span>: <span class="math inline">\(t'\Sigma t = t_1'\Sigma_{11}t_1 + t_2'\Sigma_{22}t_2\)</span> y <span class="math inline">\(t'\mu = t_1'\mu_1 + t_2'\mu_2\)</span>, así que <span class="math inline">\(\varphi_z(t) = \varphi_{z_1}(t_1)\varphi_{z_2}(t_2)\)</span>. La función característica conjunta se factoriza, lo que (por la unicidad de la función característica) equivale a independencia. La fórmula de <span class="math inline">\(\varphi_z\)</span> vale aunque <span class="math inline">\(\Sigma\)</span> sea singular: por la definición, <span class="math inline">\(t'z\sim N(t'\mu, t'\Sigma t)\)</span>, y la función característica de una normal escalar evaluada en 1 da <span class="math inline">\(\exp(it'\mu - \frac12t'\Sigma t)\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 5.7 ★.</strong> (Región de confianza.) Demuestra que el conjunto <span class="math inline">\(\{b\in\mathbb{R}^k: (\hat\beta - b)'X'X(\hat\beta - b)\le k\,s^2\,c\}\)</span>, con <span class="math inline">\(c\)</span> el cuantil <span class="math inline">\(1-\alpha\)</span> de la <span class="math inline">\(F_{k,n-k}\)</span>, es una región de confianza de nivel exacto <span class="math inline">\(1-\alpha\)</span> para <span class="math inline">\(\beta\)</span>. ¿Qué forma geométrica tiene?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 5.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 5.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(R = I_k\)</span>, <span class="math inline">\(r = \beta\)</span>, el estadístico <span class="math inline">\(F = (\hat\beta - \beta)'X'X(\hat\beta - \beta)/(ks^2)\sim F_{k,n-k}\)</span>. Luego <span class="math inline">\(P(F\le c) = 1-\alpha\)</span>, que es exactamente <span class="math inline">\(P(\beta\in\text{región})\)</span>. La región es un elipsoide centrado en <span class="math inline">\(\hat\beta\)</span> con ejes en las direcciones de los vectores propios de <span class="math inline">\(X'X\)</span>: es más angosto en las direcciones en que los datos tienen más variación. Con regresores muy correlacionados, el elipsoide es muy alargado: esa es la cara geométrica de la multicolinealidad (Clase 8).</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-04.html" class="pagination-link" aria-label="Clase 4 · MCO en muestras finitas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 4 · MCO en muestras finitas</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-06.html" class="pagination-link" aria-label="Clase 6 · Teoría asintótica">
+        <span class="nav-page-text">Clase 6 · Teoría asintótica</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

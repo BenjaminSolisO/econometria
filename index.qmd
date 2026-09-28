@@ -1,0 +1,81 @@
+---
+title: "Econometría"
+description: "Cursos de Econometría 1, 2 y 3: teoría, demostraciones paso a paso y ejercicios resueltos."
+page-layout: full
+title-block-banner: false
+toc: false
+format:
+  html:
+    include-in-header:
+      text: |
+        <style>#title-block-header{display:none;}</style>
+---
+
+::: {.hero}
+<div class="eyebrow">Tres cursos · teoría y demostraciones</div>
+
+<h1>Econometría,<br>paso a paso.</h1>
+
+<p class="lead">Un recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender <em>por qué</em> funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.</p>
+
+<div class="formula">$$\hat\beta \;=\; (X'X)^{-1}X'y \;=\; \beta + \Big(\tfrac{1}{n}\textstyle\sum_i x_ix_i'\Big)^{-1}\tfrac{1}{n}\textstyle\sum_i x_iu_i$$</div>
+:::
+
+::: {.cursos}
+<div class="curso">
+<div class="num">1</div>
+<h3>Econometría 1</h3>
+<p>El modelo de regresión lineal: proyecciones, MCO, Gauss–Markov, inferencia exacta y asintótica, errores de especificación, MCG y variables instrumentales. Diez clases, pregrado con extensiones ★ de postgrado.</p>
+<span class="estado activo">● Disponible · 10 clases</span>
+<a class="boton" href="econometria-1/index.qmd">Entrar al curso →</a>
+</div>
+
+<div class="curso pronto">
+<div class="num">2</div>
+<h3>Econometría 2</h3>
+<p>Más allá del modelo lineal: método generalizado de momentos, máxima verosimilitud, modelos de elección discreta, datos de panel y series de tiempo.</p>
+<span class="estado proximo">○ En preparación</span>
+<a class="boton" href="econometria-2/index.qmd">Ver temario →</a>
+</div>
+
+<div class="curso pronto">
+<div class="num">3</div>
+<h3>Econometría 3</h3>
+<p>Temas avanzados: inferencia causal moderna, métodos no paramétricos, alta dimensión y aprendizaje automático para econometría, bootstrap e inferencia robusta.</p>
+<span class="estado proximo">○ En preparación</span>
+<a class="boton" href="econometria-3/index.qmd">Ver temario →</a>
+</div>
+:::
+
+## Cómo están escritos
+
+::: {.principios}
+<div>
+<h4>Borrador antes que demostración</h4>
+<p>Antes de cada demostración hay un recuadro donde se piensa en voz alta: qué se sabe, qué se quiere, qué truco podría servir. La demostración formal viene después, limpia y con cada paso justificado.</p>
+</div>
+<div>
+<h4>Notas al margen</h4>
+<p>Contexto histórico, advertencias, conexiones con otras clases y alguna que otra broma. Leerlas es opcional; saltárselas, también.</p>
+</div>
+<div>
+<h4>Dos niveles en un mismo texto</h4>
+<p>El núcleo de cada clase es de pregrado. Las secciones marcadas con ★ llevan el mismo tema a nivel de postgrado, sin cambiar de notación ni de libro.</p>
+</div>
+<div>
+<h4>Ejercicios con solución</h4>
+<p>Cada clase termina con ejercicios de ambos niveles. Las soluciones están plegadas: primero se intenta, después se mira.</p>
+</div>
+:::
+
+## Un ejemplo del estilo
+
+::: {.callout-note title="Borrador"}
+Quiero mostrar que $X'Xb = 0$ implica $Xb = 0$. No puedo "cancelar" $X'$ porque no tiene inversa. ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y $\|Xb\|^2 = b'X'Xb$... ¡que tiene un $X'Xb$ adentro! Es el truco de multiplicar por $b'$ a la izquierda.
+:::
+
+::: {.proof}
+Si $X'Xb = 0$, entonces $0 = b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 = \sum_i (Xb)_i^2$. Una suma de cuadrados es cero solo si cada término lo es, luego $Xb = 0$.
+:::
+
+<p style="margin-top:2rem;">Este es un fragmento de la <a href="econometria-1/clase-01.qmd">Clase 1</a>, donde se usa para demostrar que $X'X$ es invertible exactamente cuando $X$ tiene rango columna completo.</p>

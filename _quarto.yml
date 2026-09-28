@@ -1,0 +1,66 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - econometria-1/*.qmd
+    - econometria-2/index.qmd
+    - econometria-3/index.qmd
+
+lang: es
+
+website:
+  title: "Econometría"
+  site-url: "https://benjaminsoliso.github.io/econometria/"
+  description: "Cursos de Econometría 1, 2 y 3: teoría, demostraciones paso a paso y ejercicios resueltos."
+  page-navigation: true
+  navbar:
+    left:
+      - text: "Inicio"
+        href: index.qmd
+      - text: "Econometría 1"
+        href: econometria-1/index.qmd
+      - text: "Econometría 2"
+        href: econometria-2/index.qmd
+      - text: "Econometría 3"
+        href: econometria-3/index.qmd
+  sidebar:
+    - id: eco1
+      title: "Econometría 1"
+      style: floating
+      contents:
+        - econometria-1/index.qmd
+        - econometria-1/clase-01.qmd
+        - econometria-1/clase-02.qmd
+        - econometria-1/clase-03.qmd
+        - econometria-1/clase-04.qmd
+        - econometria-1/clase-05.qmd
+        - econometria-1/clase-06.qmd
+        - econometria-1/clase-07.qmd
+        - econometria-1/clase-08.qmd
+        - econometria-1/clase-09.qmd
+        - econometria-1/clase-10.qmd
+  page-footer:
+    left: "© 2026 Benjamín Solís · Econometría"
+    right: "Hecho con [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme:
+      light: [cosmo, assets/estilo.scss]
+    css: assets/extra.css
+    toc: true
+    toc-title: "En esta clase"
+    reference-location: margin
+    html-math-method: mathjax
+    smooth-scroll: true
+    link-external-newwindow: true
+
+crossref:
+  thm-title: "Teorema"
+  lem-title: "Lema"
+  cor-title: "Corolario"
+  prp-title: "Proposición"
+  def-title: "Definición"
+  exm-title: "Ejemplo"
+  exr-title: "Ejercicio"

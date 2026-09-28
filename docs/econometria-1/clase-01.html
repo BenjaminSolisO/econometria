@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Rango, formas cuadráticas, traza, matrices idempotentes, proyecciones, derivadas matriciales y momentos de vectores aleatorios.">
+
+<title>Clase 1 · La caja de herramientas – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-02.html" rel="next">
+<link href="../econometria-1/index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-01.html">Clase 1 · La caja de herramientas</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#por-qué-empezar-con-matrices" id="toc-por-qué-empezar-con-matrices" class="nav-link active" data-scroll-target="#por-qué-empezar-con-matrices"><span class="header-section-number">1</span> ¿Por qué empezar con matrices?</a></li>
+  <li><a href="#notación" id="toc-notación" class="nav-link" data-scroll-target="#notación"><span class="header-section-number">2</span> Notación</a></li>
+  <li><a href="#rango-e-invertibilidad" id="toc-rango-e-invertibilidad" class="nav-link" data-scroll-target="#rango-e-invertibilidad"><span class="header-section-number">3</span> Rango e invertibilidad</a></li>
+  <li><a href="#formas-cuadráticas-y-matrices-definidas-positivas" id="toc-formas-cuadráticas-y-matrices-definidas-positivas" class="nav-link" data-scroll-target="#formas-cuadráticas-y-matrices-definidas-positivas"><span class="header-section-number">4</span> Formas cuadráticas y matrices definidas positivas</a></li>
+  <li><a href="#la-traza" id="toc-la-traza" class="nav-link" data-scroll-target="#la-traza"><span class="header-section-number">5</span> La traza</a></li>
+  <li><a href="#matrices-idempotentes" id="toc-matrices-idempotentes" class="nav-link" data-scroll-target="#matrices-idempotentes"><span class="header-section-number">6</span> Matrices idempotentes</a></li>
+  <li><a href="#proyecciones-las-matrices-p-y-m" id="toc-proyecciones-las-matrices-p-y-m" class="nav-link" data-scroll-target="#proyecciones-las-matrices-p-y-m"><span class="header-section-number">7</span> Proyecciones: las matrices <span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span></a></li>
+  <li><a href="#derivadas-matriciales" id="toc-derivadas-matriciales" class="nav-link" data-scroll-target="#derivadas-matriciales"><span class="header-section-number">8</span> Derivadas matriciales</a></li>
+  <li><a href="#sec-vectores-aleatorios" id="toc-sec-vectores-aleatorios" class="nav-link" data-scroll-target="#sec-vectores-aleatorios"><span class="header-section-number">9</span> Vectores aleatorios</a></li>
+  <li><a href="#postgrado-más-herramientas-matriciales" id="toc-postgrado-más-herramientas-matriciales" class="nav-link" data-scroll-target="#postgrado-más-herramientas-matriciales"><span class="header-section-number">10</span> ★ Postgrado: más herramientas matriciales</a>
+  <ul class="collapse">
+  <li><a href="#raíz-cuadrada-de-una-matriz-definida-positiva" id="toc-raíz-cuadrada-de-una-matriz-definida-positiva" class="nav-link" data-scroll-target="#raíz-cuadrada-de-una-matriz-definida-positiva"><span class="header-section-number">10.1</span> Raíz cuadrada de una matriz definida positiva</a></li>
+  <li><a href="#el-orden-de-las-inversas" id="toc-el-orden-de-las-inversas" class="nav-link" data-scroll-target="#el-orden-de-las-inversas"><span class="header-section-number">10.2</span> El orden de las inversas</a></li>
+  <li><a href="#inversa-particionada" id="toc-inversa-particionada" class="nav-link" data-scroll-target="#inversa-particionada"><span class="header-section-number">10.3</span> Inversa particionada</a></li>
+  </ul></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">11</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">12</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 1 · La caja de herramientas</h1>
+<p class="subtitle lead">Álgebra matricial, proyecciones y vectores aleatorios</p>
+</div>
+
+<div>
+  <div class="description">
+    Rango, formas cuadráticas, traza, matrices idempotentes, proyecciones, derivadas matriciales y momentos de vectores aleatorios.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a></p>
+<section id="por-qué-empezar-con-matrices" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> ¿Por qué empezar con matrices?</h1>
+<p>Imagina que tienes <span class="math inline">\(n = 3.000\)</span> trabajadores y quieres explicar el salario de cada uno con sus años de educación, su experiencia y una constante. Eso son <span class="math inline">\(3.000\)</span> ecuaciones:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{salario}_1 &amp;= \beta_1 + \beta_2\,\text{educ}_1 + \beta_3\,\text{exper}_1 + u_1\\
+\text{salario}_2 &amp;= \beta_1 + \beta_2\,\text{educ}_2 + \beta_3\,\text{exper}_2 + u_2\\
+&amp;\;\;\vdots\\
+\text{salario}_{3000} &amp;= \beta_1 + \beta_2\,\text{educ}_{3000} + \beta_3\,\text{exper}_{3000} + u_{3000}.
+\end{aligned}
+\]</span></p>
+<p>Escribir esto es tedioso. Demostrar cosas sobre esto, sin la notación adecuada, es una tortura.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> El álgebra matricial es la notación adecuada: todo lo anterior cabe en una línea,</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Los econometristas de los años 30 hacían exactamente eso, a mano, con sumatorias anidadas. Cuando veas una fórmula de 1935 con cuatro <span class="math inline">\(\Sigma\)</span> seguidas, ten compasión.</p></div></div><p><span class="math display">\[
+y = X\beta + u,
+\]</span></p>
+<p>y, lo que es más importante, las <em>demostraciones</em> sobre este objeto se vuelven cortas y transparentes. Esta clase junta todas las herramientas que usaremos en el curso. No hay econometría “de verdad” todavía, pero te prometo que cada resultado de hoy reaparecerá al menos una vez más adelante; al lado de cada uno anoto dónde.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Cómo leer este curso">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Cómo leer este curso
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cada clase tiene un <strong>núcleo de pregrado</strong> y secciones marcadas con <strong>★ Postgrado</strong>. Si estás en pregrado puedes saltarte las ★ en una primera lectura sin perder el hilo. Antes de muchas demostraciones hay un recuadro <strong>Borrador</strong>: ahí se piensa en voz alta, se prueban ideas y se descubre <em>por qué</em> la demostración funciona. Después viene la <strong>Demostración</strong> limpia, que es lo que escribirías en una prueba.</p>
+</div>
+</div>
+</section>
+<section id="notación" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Notación</h1>
+<p>Un <strong>vector</strong> es, para nosotros, siempre un vector <em>columna</em>. Si <span class="math inline">\(a \in \mathbb{R}^k\)</span>, <span class="math display">\[
+a = \begin{pmatrix} a_1 \\ \vdots \\ a_k\end{pmatrix}, \qquad a' = (a_1, \dots, a_k).
+\]</span> La prima <span class="math inline">\('\)</span> denota transpuesta.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> El producto interno de <span class="math inline">\(a,b \in \mathbb{R}^k\)</span> es <span class="math inline">\(a'b = \sum_{j=1}^k a_j b_j\)</span> y la norma euclidiana es <span class="math inline">\(\|a\| = \sqrt{a'a}\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Algunos libros usan <span class="math inline">\(a^\top\)</span> o <span class="math inline">\(a^T\)</span>. Los econometristas usamos la prima porque somos gente práctica y la prima es más fácil de escribir en una pizarra. Mala suerte para quien quiera escribir una derivada.</p></div></div><p>Para el modelo de regresión usaremos siempre la misma notación:</p>
+<ul>
+<li><span class="math inline">\(n\)</span> observaciones, <span class="math inline">\(k\)</span> regresores (incluida la constante, si la hay).</li>
+<li><span class="math inline">\(y_i \in \mathbb{R}\)</span> es la variable dependiente de la observación <span class="math inline">\(i\)</span>; <span class="math inline">\(x_i \in \mathbb{R}^k\)</span> es su vector de regresores.</li>
+<li><span class="math inline">\(y = (y_1,\dots,y_n)'\)</span> es <span class="math inline">\(n\times 1\)</span>; <span class="math inline">\(X\)</span> es la matriz <span class="math inline">\(n \times k\)</span> cuya fila <span class="math inline">\(i\)</span> es <span class="math inline">\(x_i'\)</span>: <span class="math display">\[
+X = \begin{pmatrix} x_1' \\ x_2' \\ \vdots \\ x_n' \end{pmatrix}
+= \begin{pmatrix} x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1k}\\
+                  x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2k}\\
+                  \vdots &amp; &amp; &amp; \vdots\\
+                  x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{nk}\end{pmatrix}.
+\]</span></li>
+<li><span class="math inline">\(\beta \in \mathbb{R}^k\)</span> son los parámetros y <span class="math inline">\(u \in \mathbb{R}^n\)</span> los errores.</li>
+</ul>
+<p>Así, la ecuación <span class="math inline">\(i\)</span> es <span class="math inline">\(y_i = x_i'\beta + u_i\)</span> y el sistema completo es <span class="math inline">\(y = X\beta + u\)</span>.</p>
+<p>Hay una identidad que vas a usar mil veces, así que vale la pena demostrarla de una vez.</p>
+<div id="lem-sumas" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Productos como sumas de observaciones)</strong></span> <span class="math display">\[
+X'X = \sum_{i=1}^n x_i x_i', \qquad X'y = \sum_{i=1}^n x_i y_i.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Por qué debería ser cierto? <span class="math inline">\(X'X\)</span> es <span class="math inline">\(k\times k\)</span> y cada <span class="math inline">\(x_ix_i'\)</span> también es <span class="math inline">\(k\times k\)</span>, así que al menos las dimensiones calzan. Miremos una entrada. La entrada <span class="math inline">\((j,l)\)</span> de <span class="math inline">\(X'X\)</span> es “fila <span class="math inline">\(j\)</span> de <span class="math inline">\(X'\)</span> por columna <span class="math inline">\(l\)</span> de <span class="math inline">\(X\)</span>”, es decir, “columna <span class="math inline">\(j\)</span> de <span class="math inline">\(X\)</span> por columna <span class="math inline">\(l\)</span> de <span class="math inline">\(X\)</span>”, que es <span class="math inline">\(\sum_i x_{ij}x_{il}\)</span>. Y la entrada <span class="math inline">\((j,l)\)</span> de <span class="math inline">\(x_ix_i'\)</span> es <span class="math inline">\(x_{ij}x_{il}\)</span>. ¡Listo! Solo hay que escribirlo.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\((j,l)\)</span> una entrada cualquiera, con <span class="math inline">\(1 \le j,l\le k\)</span>. Por definición del producto matricial y de la transpuesta, <span class="math display">\[
+(X'X)_{jl} = \sum_{i=1}^n (X')_{ji} X_{il} = \sum_{i=1}^n X_{ij}X_{il} = \sum_{i=1}^n x_{ij}x_{il}.
+\]</span> Por otro lado, <span class="math inline">\((x_ix_i')_{jl} = x_{ij}x_{il}\)</span>, así que <span class="math display">\[
+\Big(\sum_{i=1}^n x_ix_i'\Big)_{jl} = \sum_{i=1}^n (x_ix_i')_{jl} = \sum_{i=1}^n x_{ij}x_{il}.
+\]</span> Las dos matrices coinciden entrada a entrada, luego son iguales. El caso <span class="math inline">\(X'y\)</span> es idéntico, cambiando la columna <span class="math inline">\(l\)</span> de <span class="math inline">\(X\)</span> por <span class="math inline">\(y\)</span>.</p>
+</div>
+<p>Moraleja: <strong>una matriz del tipo <span class="math inline">\(X'X\)</span> es una suma sobre observaciones.</strong> Esto será clave en la Clase 7, cuando apliquemos la ley de los grandes números a <span class="math inline">\(\frac1n X'X = \frac1n\sum_i x_ix_i'\)</span>.</p>
+</section>
+<section id="rango-e-invertibilidad" class="level1 page-columns page-full" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Rango e invertibilidad</h1>
+<div id="def-rango" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Rango)</strong></span> El <strong>rango</strong> de una matriz <span class="math inline">\(A\)</span> (<span class="math inline">\(n\times k\)</span>), <span class="math inline">\(\operatorname{rango}(A)\)</span>, es el número máximo de columnas linealmente independientes de <span class="math inline">\(A\)</span>. Equivalentemente, es la dimensión del <strong>espacio columna</strong> <span class="math inline">\(\operatorname{col}(A) = \{Ab : b \in \mathbb{R}^k\}\)</span>. Decimos que <span class="math inline">\(A\)</span> tiene <strong>rango columna completo</strong> si <span class="math inline">\(\operatorname{rango}(A) = k\)</span>.</p>
+</div>
+<p>Tener rango columna completo significa que ninguna columna es combinación lineal de las otras. En regresión: ningún regresor es redundante. Si pones en <span class="math inline">\(X\)</span> una columna de “años de educación” y otra de “meses de educación”, el rango cae y, como veremos, todo explota.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;La versión clásica de este error es la <em>trampa de las variables dummy</em>: incluir una constante y, además, una dummy por cada categoría. Las dummies suman la constante, así que las columnas son linealmente dependientes.</p></div></div><p>Recordemos un hecho de álgebra lineal que usaremos sin demostrar.</p>
+<div id="thm-rango-nulidad" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Rango–nulidad)</strong></span> Si <span class="math inline">\(A\)</span> es <span class="math inline">\(n \times k\)</span> y <span class="math inline">\(\operatorname{nul}(A) = \{b \in \mathbb{R}^k : Ab = 0\}\)</span>, entonces <span class="math display">\[
+\operatorname{rango}(A) + \dim\operatorname{nul}(A) = k.
+\]</span></p>
+</div>
+<p>En particular, <span class="math inline">\(A\)</span> tiene rango columna completo si y solo si <span class="math inline">\(Ab = 0 \Rightarrow b = 0\)</span>. Y una matriz cuadrada <span class="math inline">\(k\times k\)</span> es invertible si y solo si tiene rango <span class="math inline">\(k\)</span>.</p>
+<p>Ahora el primer resultado genuinamente econométrico del curso.</p>
+<div id="thm-rango-xx" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (El rango de <span class="math inline">\(X'X\)</span>)</strong></span> Para toda matriz <span class="math inline">\(X\)</span> de <span class="math inline">\(n\times k\)</span>, <span class="math display">\[
+\operatorname{rango}(X'X) = \operatorname{rango}(X).
+\]</span> En particular, <span class="math inline">\(X'X\)</span> es invertible si y solo si <span class="math inline">\(X\)</span> tiene rango columna completo.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Por rango–nulidad, <span class="math inline">\(\operatorname{rango}(X'X) = k - \dim \operatorname{nul}(X'X)\)</span> y <span class="math inline">\(\operatorname{rango}(X) = k - \dim\operatorname{nul}(X)\)</span>. Así que basta probar que los <strong>espacios nulos</strong> son iguales: <span class="math inline">\(X'Xb = 0 \iff Xb = 0\)</span>.</p>
+<p>La dirección <span class="math inline">\(\Leftarrow\)</span> es regalada: si <span class="math inline">\(Xb = 0\)</span>, multiplico por <span class="math inline">\(X'\)</span>.</p>
+<p>La dirección <span class="math inline">\(\Rightarrow\)</span> es la interesante. Sé que <span class="math inline">\(X'Xb = 0\)</span> y quiero <span class="math inline">\(Xb = 0\)</span>. No puedo “cancelar” <span class="math inline">\(X'\)</span> (¡no tiene inversa!). ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y <span class="math inline">\(\|Xb\|^2 = (Xb)'(Xb) = b'X'Xb\)</span>… ¡que tiene un <span class="math inline">\(X'Xb\)</span> adentro! Es el truco de multiplicar por <span class="math inline">\(b'\)</span> a la izquierda. Vamos.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por el teorema de rango–nulidad aplicado a <span class="math inline">\(X\)</span> y a <span class="math inline">\(X'X\)</span> (ambas con <span class="math inline">\(k\)</span> columnas), basta demostrar que <span class="math inline">\(\operatorname{nul}(X'X) = \operatorname{nul}(X)\)</span>.</p>
+<p>(<span class="math inline">\(\supseteq\)</span>) Si <span class="math inline">\(Xb = 0\)</span>, entonces <span class="math inline">\(X'Xb = X'0 = 0\)</span>.</p>
+<p>(<span class="math inline">\(\subseteq\)</span>) Supongamos que <span class="math inline">\(X'Xb = 0\)</span>. Multiplicando a la izquierda por <span class="math inline">\(b'\)</span>, <span class="math display">\[
+0 = b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 = \sum_{i=1}^n (Xb)_i^2.
+\]</span> Una suma de cuadrados de números reales es cero solo si cada término es cero, así que <span class="math inline">\((Xb)_i = 0\)</span> para todo <span class="math inline">\(i\)</span>, es decir, <span class="math inline">\(Xb = 0\)</span>.</p>
+<p>Los espacios nulos coinciden, luego tienen la misma dimensión y, por rango–nulidad, <span class="math inline">\(\operatorname{rango}(X'X)=\operatorname{rango}(X)\)</span>. Como <span class="math inline">\(X'X\)</span> es <span class="math inline">\(k\times k\)</span>, es invertible si y solo si su rango es <span class="math inline">\(k\)</span>, es decir, si y solo si <span class="math inline">\(\operatorname{rango}(X) = k\)</span>.</p>
+</div>
+<p>Este teorema es la razón de ser del supuesto de “no multicolinealidad perfecta” que veremos en la Clase 3: el estimador de MCO es <span class="math inline">\((X'X)^{-1}X'y\)</span>, y la inversa existe exactamente cuando <span class="math inline">\(X\)</span> tiene rango columna completo. Nota también que esto exige <span class="math inline">\(n \ge k\)</span>: una matriz <span class="math inline">\(n\times k\)</span> no puede tener rango mayor que <span class="math inline">\(n\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Si tienes más variables que observaciones, <span class="math inline">\(X'X\)</span> es singular <em>siempre</em>. Ese es el mundo de “alta dimensión” (<span class="math inline">\(k &gt; n\)</span>), donde MCO no está definido y entran LASSO y compañía. Econometría 3 dirá algo al respecto.</p></div></div></section>
+<section id="formas-cuadráticas-y-matrices-definidas-positivas" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Formas cuadráticas y matrices definidas positivas</h1>
+<div id="def-definida" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Matrices (semi)definidas positivas)</strong></span> Sea <span class="math inline">\(A\)</span> una matriz <span class="math inline">\(k\times k\)</span> <strong>simétrica</strong>. La función <span class="math inline">\(b \mapsto b'Ab\)</span> es su <strong>forma cuadrática</strong>. Decimos que <span class="math inline">\(A\)</span> es</p>
+<ul>
+<li><strong>semidefinida positiva</strong> (<span class="math inline">\(A \succeq 0\)</span>) si <span class="math inline">\(b'Ab \ge 0\)</span> para todo <span class="math inline">\(b \in \mathbb{R}^k\)</span>;</li>
+<li><strong>definida positiva</strong> (<span class="math inline">\(A \succ 0\)</span>) si <span class="math inline">\(b'Ab &gt; 0\)</span> para todo <span class="math inline">\(b \ne 0\)</span>.</li>
+</ul>
+<p>Escribimos <span class="math inline">\(A \succeq B\)</span> si <span class="math inline">\(A - B \succeq 0\)</span>.</p>
+</div>
+<p>La relación <span class="math inline">\(A \succeq B\)</span> es el sentido en que una matriz de varianzas es “más grande” que otra. Cuando en la Clase 4 digamos “MCO tiene la menor varianza”, querremos decir exactamente esto: <span class="math inline">\(\operatorname{Var}(\tilde\beta) \succeq \operatorname{Var}(\hat\beta)\)</span>. ¿Por qué esta definición y no, por ejemplo, comparar entrada a entrada? Porque <span class="math inline">\(A \succeq B\)</span> implica que <strong>toda combinación lineal</strong> <span class="math inline">\(c'\hat\beta\)</span> tiene varianza menor o igual a la de <span class="math inline">\(c'\tilde\beta\)</span> (ya que <span class="math inline">\(c'Ac \ge c'Bc\)</span>). Eso incluye cada coeficiente por separado (<span class="math inline">\(c = e_j\)</span>), cualquier diferencia <span class="math inline">\(\beta_2 - \beta_3\)</span>, cualquier predicción <span class="math inline">\(x_0'\beta\)</span>… Es la noción correcta.</p>
+<div id="thm-xx-pd" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (<span class="math inline">\(X'X\)</span> es semidefinida positiva)</strong></span> Para toda <span class="math inline">\(X\)</span> de <span class="math inline">\(n \times k\)</span>, <span class="math inline">\(X'X \succeq 0\)</span>. Además, <span class="math inline">\(X'X \succ 0\)</span> si y solo si <span class="math inline">\(\operatorname{rango}(X) = k\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Primero, <span class="math inline">\(X'X\)</span> es simétrica, pues <span class="math inline">\((X'X)' = X'(X')' = X'X\)</span>. Sea <span class="math inline">\(b \in \mathbb{R}^k\)</span>. Entonces <span class="math display">\[
+b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 \ge 0,
+\]</span> luego <span class="math inline">\(X'X \succeq 0\)</span>.</p>
+<p>Para la segunda afirmación: <span class="math inline">\(X'X\succ 0\)</span> significa que <span class="math inline">\(\|Xb\|^2 &gt; 0\)</span> para todo <span class="math inline">\(b\neq 0\)</span>, es decir, que <span class="math inline">\(Xb \ne 0\)</span> siempre que <span class="math inline">\(b \ne 0\)</span>. Eso es exactamente decir que <span class="math inline">\(\operatorname{nul}(X) = \{0\}\)</span>, lo que por rango–nulidad equivale a <span class="math inline">\(\operatorname{rango}(X) = k\)</span>.</p>
+</div>
+<p>Dos hechos más que usaremos:</p>
+<div id="lem-pd-propiedades" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 2 (Propiedades de las matrices definidas positivas)</strong></span> Sea <span class="math inline">\(A \succ 0\)</span> de <span class="math inline">\(k\times k\)</span>.</p>
+<ol type="1">
+<li><span class="math inline">\(A\)</span> es invertible y <span class="math inline">\(A^{-1} \succ 0\)</span>.</li>
+<li>Si <span class="math inline">\(C\)</span> es <span class="math inline">\(k \times m\)</span> con <span class="math inline">\(\operatorname{rango}(C) = m\)</span>, entonces <span class="math inline">\(C'AC \succ 0\)</span>.</li>
+<li>Si <span class="math inline">\(A \succeq 0\)</span> y <span class="math inline">\(C\)</span> es cualquier matriz <span class="math inline">\(k \times m\)</span>, entonces <span class="math inline">\(C'AC \succeq 0\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li><p>Si <span class="math inline">\(Ab = 0\)</span> con <span class="math inline">\(b\ne 0\)</span>, entonces <span class="math inline">\(b'Ab = 0\)</span>, contradiciendo <span class="math inline">\(A \succ 0\)</span>. Luego <span class="math inline">\(\operatorname{nul}(A) = \{0\}\)</span> y <span class="math inline">\(A\)</span> es invertible. La inversa de una simétrica es simétrica: <span class="math inline">\((A^{-1})' = (A')^{-1} = A^{-1}\)</span>. Dado <span class="math inline">\(c \ne 0\)</span>, sea <span class="math inline">\(b = A^{-1}c\)</span>, que es distinto de cero (si fuera cero, <span class="math inline">\(c = Ab = 0\)</span>). Entonces <span class="math display">\[
+c'A^{-1}c = (Ab)'A^{-1}(Ab) = b'A'A^{-1}Ab = b'Ab &gt; 0.
+\]</span></p></li>
+<li><p><span class="math inline">\(C'AC\)</span> es simétrica y, para <span class="math inline">\(d \in \mathbb{R}^m\)</span>, <span class="math inline">\(d'C'ACd = (Cd)'A(Cd) \ge 0\)</span> porque <span class="math inline">\(A\succeq 0\)</span>.</p></li>
+<li><p>Igual que (3), pero ahora si <span class="math inline">\(d \neq 0\)</span> entonces <span class="math inline">\(Cd \neq 0\)</span> (por rango completo), y <span class="math inline">\(A \succ 0\)</span> da <span class="math inline">\((Cd)'A(Cd) &gt; 0\)</span>.</p></li>
+</ol>
+</div>
+</section>
+<section id="la-traza" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> La traza</h1>
+<div id="def-traza" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 3 (Traza)</strong></span> La <strong>traza</strong> de una matriz cuadrada <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times m\)</span> es la suma de su diagonal: <span class="math inline">\(\operatorname{tr}(A) = \sum_{j=1}^m A_{jj}\)</span>.</p>
+</div>
+<p>La traza parece una operación aburrida. No lo es. Es la herramienta que convierte escalares en matrices y viceversa, y es el corazón de la demostración de que <span class="math inline">\(s^2\)</span> es insesgado (Clase 4) y de que ciertas formas cuadráticas son <span class="math inline">\(\chi^2\)</span> (Clase 5). Su superpoder es el siguiente.</p>
+<div id="thm-traza-ciclica" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Propiedades de la traza)</strong></span> Sean <span class="math inline">\(A, B\)</span> matrices de dimensiones compatibles y <span class="math inline">\(c\in\mathbb{R}\)</span>.</p>
+<ol type="1">
+<li><strong>Linealidad:</strong> <span class="math inline">\(\operatorname{tr}(A + B) = \operatorname{tr}(A) + \operatorname{tr}(B)\)</span> y <span class="math inline">\(\operatorname{tr}(cA) = c\operatorname{tr}(A)\)</span>.</li>
+<li><strong>Transpuesta:</strong> <span class="math inline">\(\operatorname{tr}(A') = \operatorname{tr}(A)\)</span>.</li>
+<li><strong>Ciclicidad:</strong> si <span class="math inline">\(A\)</span> es <span class="math inline">\(m\times p\)</span> y <span class="math inline">\(B\)</span> es <span class="math inline">\(p\times m\)</span>, entonces <span class="math inline">\(\operatorname{tr}(AB) = \operatorname{tr}(BA)\)</span>.</li>
+<li><strong>Escalares:</strong> si <span class="math inline">\(a\)</span> es un escalar (una matriz <span class="math inline">\(1\times 1\)</span>), <span class="math inline">\(\operatorname{tr}(a) = a\)</span>.</li>
+</ol>
+</div>
+<p>Observa lo raro de (3): <span class="math inline">\(AB\)</span> es <span class="math inline">\(m \times m\)</span> y <span class="math inline">\(BA\)</span> es <span class="math inline">\(p\times p\)</span>. ¡Son matrices de tamaños distintos! Y aun así tienen la misma traza.</p>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(1), (2) y (4) son inmediatas de la definición: la diagonal de <span class="math inline">\(A+B\)</span> es la suma de las diagonales, la diagonal de <span class="math inline">\(cA\)</span> es <span class="math inline">\(c\)</span> por la diagonal, la transpuesta no mueve la diagonal y una matriz <span class="math inline">\(1\times1\)</span> es su propia diagonal.</p>
+<p>Para (3), escribimos ambas trazas como sumas dobles: <span class="math display">\[
+\operatorname{tr}(AB) = \sum_{j=1}^m (AB)_{jj} = \sum_{j=1}^m\sum_{l=1}^p A_{jl}B_{lj},
+\qquad
+\operatorname{tr}(BA) = \sum_{l=1}^p (BA)_{ll} = \sum_{l=1}^p\sum_{j=1}^m B_{lj}A_{jl}.
+\]</span> Las dos sumas dobles tienen los mismos <span class="math inline">\(mp\)</span> términos <span class="math inline">\(A_{jl}B_{lj}\)</span> (el producto de números reales conmuta), solo sumados en distinto orden. Una suma finita no depende del orden, así que son iguales.</p>
+</div>
+<p>El truco más usado del curso combina (3) y (4): <strong>una forma cuadrática es su propia traza, y dentro de la traza se puede rotar.</strong> <span id="eq-truco-traza"><span class="math display">\[
+z'Az = \operatorname{tr}(z'Az) = \operatorname{tr}(Azz').
+\tag{1}\]</span></span> La primera igualdad es (4), porque <span class="math inline">\(z'Az\)</span> es un escalar. La segunda es (3) con “<span class="math inline">\(A\)</span>” <span class="math inline">\(= z'\)</span> y “<span class="math inline">\(B\)</span>” <span class="math inline">\(= Az\)</span>. ¿Por qué querríamos hacer esto? Porque <span class="math inline">\(zz'\)</span> es una matriz cuya esperanza conocemos (es la varianza, si <span class="math inline">\(z\)</span> tiene media cero), y la esperanza entra dentro de la traza por linealidad. Lo verás en acción en la <a href="#sec-vectores-aleatorios" class="quarto-xref">Sección&nbsp;9</a>.</p>
+</section>
+<section id="matrices-idempotentes" class="level1 page-columns page-full" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Matrices idempotentes</h1>
+<div id="def-idempotente" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4 (Matriz idempotente)</strong></span> Una matriz cuadrada <span class="math inline">\(A\)</span> es <strong>idempotente</strong> si <span class="math inline">\(AA = A\)</span>.</p>
+</div>
+<p>La palabra viene del latín <em>idem</em> (“lo mismo”) y <em>potens</em> (“potencia”): todas sus potencias son ella misma, <span class="math inline">\(A^3 = A^2A = AA = A\)</span>, etc. Aplicarla dos veces es lo mismo que aplicarla una vez. La intuición geométrica es la de <strong>proyectar</strong>: si proyectas tu sombra en el suelo y luego proyectas la sombra en el suelo, obtienes… la misma sombra.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;Esta es la metáfora que usa todo el mundo. Yo intenté inventar otra mejor durante una semana. No hay otra mejor.</p></div></div><p>Hay tres ejemplos que conviene tener a mano. La identidad <span class="math inline">\(I\)</span> y la matriz cero son idempotentes (aburridas, pero ciertas). El ejemplo interesante es la matriz que <strong>resta la media</strong>. Sea <span class="math inline">\(\iota = (1,\dots,1)'\)</span> el vector de unos en <span class="math inline">\(\mathbb{R}^n\)</span> y definamos <span class="math display">\[
+M^0 = I_n - \frac{1}{n}\iota\iota'.
+\]</span> Para cualquier <span class="math inline">\(z \in \mathbb{R}^n\)</span>, <span class="math inline">\(\iota'z = \sum_i z_i = n\bar z\)</span>, así que <span class="math display">\[
+M^0 z = z - \frac{1}{n}\iota(\iota'z) = z - \iota\bar z = \begin{pmatrix} z_1 - \bar z\\ \vdots \\ z_n - \bar z\end{pmatrix}.
+\]</span> <span class="math inline">\(M^0\)</span> toma un vector y le resta su promedio. Restarle el promedio a algo que ya tiene promedio cero no hace nada, así que <span class="math inline">\(M^0\)</span> debería ser idempotente. Verifiquémoslo con álgebra, usando <span class="math inline">\(\iota'\iota = n\)</span>: <span class="math display">\[
+M^0M^0 = I - \tfrac{2}{n}\iota\iota' + \tfrac{1}{n^2}\iota(\iota'\iota)\iota' = I - \tfrac{2}{n}\iota\iota' + \tfrac{1}{n}\iota\iota' = M^0.
+\]</span></p>
+<p>Los valores propios de una matriz idempotente son muy especiales.</p>
+<div id="thm-valores-propios-idem" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Valores propios de una idempotente)</strong></span> Si <span class="math inline">\(A\)</span> es idempotente y <span class="math inline">\(\lambda\)</span> es un valor propio de <span class="math inline">\(A\)</span>, entonces <span class="math inline">\(\lambda \in \{0,1\}\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un valor propio satisface <span class="math inline">\(Av = \lambda v\)</span> para algún <span class="math inline">\(v \ne 0\)</span>. La única información que tengo de <span class="math inline">\(A\)</span> es <span class="math inline">\(A^2 = A\)</span>. Así que apliquemos <span class="math inline">\(A\)</span> dos veces a <span class="math inline">\(v\)</span> y comparemos: <span class="math inline">\(A^2v = A(\lambda v) = \lambda Av = \lambda^2 v\)</span>. Pero también <span class="math inline">\(A^2 v = Av = \lambda v\)</span>. Entonces <span class="math inline">\(\lambda^2 v = \lambda v\)</span>, y como <span class="math inline">\(v\ne0\)</span>… <span class="math inline">\(\lambda^2 = \lambda\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(v \ne 0\)</span> con <span class="math inline">\(Av = \lambda v\)</span>. Por un lado, <span class="math display">\[
+A^2 v = A(Av) = A(\lambda v) = \lambda (Av) = \lambda^2 v.
+\]</span> Por otro, como <span class="math inline">\(A^2 = A\)</span>, <span class="math inline">\(A^2 v = Av = \lambda v\)</span>. Igualando, <span class="math inline">\((\lambda^2 - \lambda)v = 0\)</span>. Como <span class="math inline">\(v \ne 0\)</span>, alguna coordenada <span class="math inline">\(v_j \ne 0\)</span>, y <span class="math inline">\((\lambda^2-\lambda)v_j = 0\)</span> obliga a <span class="math inline">\(\lambda^2 - \lambda = \lambda(\lambda-1) = 0\)</span>. Luego <span class="math inline">\(\lambda = 0\)</span> o <span class="math inline">\(\lambda = 1\)</span>.</p>
+</div>
+<p>Para sacarle todo el jugo a este resultado necesitamos un teorema clásico de álgebra lineal que, de nuevo, usaremos sin demostrar.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;La demostración del teorema espectral está en cualquier libro de álgebra lineal y requiere un poco de análisis (o el teorema fundamental del álgebra). Es uno de esos teoremas que vale la pena ver demostrado una vez en la vida, pero no hoy.</p></div></div><div id="thm-espectral" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (Teorema espectral)</strong></span> Si <span class="math inline">\(A\)</span> es una matriz real simétrica de <span class="math inline">\(m\times m\)</span>, existen una matriz ortogonal <span class="math inline">\(Q\)</span> (es decir, <span class="math inline">\(Q'Q = QQ' = I_m\)</span>) y una matriz diagonal <span class="math inline">\(\Lambda = \operatorname{diag}(\lambda_1,\dots,\lambda_m)\)</span>, con los valores propios de <span class="math inline">\(A\)</span> en la diagonal, tales que <span class="math display">\[
+A = Q\Lambda Q'.
+\]</span> Las columnas de <span class="math inline">\(Q\)</span> son vectores propios ortonormales de <span class="math inline">\(A\)</span>, y el número de <span class="math inline">\(\lambda_j\)</span> distintos de cero es <span class="math inline">\(\operatorname{rango}(A)\)</span>.</p>
+</div>
+<div id="cor-rango-traza" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 1 (Para idempotentes simétricas, rango = traza)</strong></span> Si <span class="math inline">\(A\)</span> es simétrica e idempotente, entonces <span class="math inline">\(\operatorname{rango}(A) = \operatorname{tr}(A)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por el teorema espectral, <span class="math inline">\(A = Q\Lambda Q'\)</span> con <span class="math inline">\(Q\)</span> ortogonal. Por <a href="#thm-valores-propios-idem" class="quarto-xref">Teorema&nbsp;5</a> cada <span class="math inline">\(\lambda_j\)</span> es <span class="math inline">\(0\)</span> o <span class="math inline">\(1\)</span>, así que el número de valores propios no nulos (que es el rango) es igual al número de unos en la diagonal de <span class="math inline">\(\Lambda\)</span>, que es <span class="math inline">\(\sum_j \lambda_j = \operatorname{tr}(\Lambda)\)</span>. Finalmente, por ciclicidad de la traza, <span class="math display">\[
+\operatorname{tr}(A) = \operatorname{tr}(Q\Lambda Q') = \operatorname{tr}(\Lambda Q'Q) = \operatorname{tr}(\Lambda I) = \operatorname{tr}(\Lambda) = \operatorname{rango}(A).
+\]</span></p>
+</div>
+<p>Por ejemplo, <span class="math inline">\(\operatorname{tr}(M^0) = \operatorname{tr}(I_n) - \frac1n\operatorname{tr}(\iota\iota') = n - \frac1n \operatorname{tr}(\iota'\iota) = n - 1\)</span>. Así que <span class="math inline">\(M^0\)</span> tiene rango <span class="math inline">\(n-1\)</span>. Esto es el famoso “se pierde un grado de libertad al estimar la media”: los <span class="math inline">\(n\)</span> desvíos <span class="math inline">\(z_i - \bar z\)</span> viven en un subespacio de dimensión <span class="math inline">\(n-1\)</span> (porque suman cero).</p>
+</section>
+<section id="proyecciones-las-matrices-p-y-m" class="level1 page-columns page-full" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Proyecciones: las matrices <span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span></h1>
+<p>Llegamos a las dos matrices protagonistas del curso. Supongamos que <span class="math inline">\(X\)</span> (<span class="math inline">\(n \times k\)</span>) tiene rango columna completo, de modo que <span class="math inline">\((X'X)^{-1}\)</span> existe por <a href="#thm-rango-xx" class="quarto-xref">Teorema&nbsp;2</a>. Definimos <span class="math display">\[
+P = X(X'X)^{-1}X', \qquad M = I_n - P.
+\]</span> <span class="math inline">\(P\)</span> se llama la <strong>matriz de proyección</strong> (o “matriz sombrero”, porque en la Clase 3 veremos que <span class="math inline">\(\hat y = Py\)</span>: le pone el sombrero a <span class="math inline">\(y\)</span>) y <span class="math inline">\(M\)</span> la <strong>matriz aniquiladora</strong> o generadora de residuos.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;“Aniquiladora” porque aniquila a <span class="math inline">\(X\)</span>: <span class="math inline">\(MX = 0\)</span>. Es uno de los pocos nombres dramáticos de la econometría, así que disfrútalo.</p></div></div><div id="thm-propiedades-pm" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (Propiedades de <span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span>)</strong></span> Si <span class="math inline">\(X\)</span> es <span class="math inline">\(n\times k\)</span> con <span class="math inline">\(\operatorname{rango}(X) = k\)</span>, entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span> son simétricas.</li>
+<li><span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span> son idempotentes.</li>
+<li><span class="math inline">\(PX = X\)</span> y <span class="math inline">\(MX = 0\)</span>.</li>
+<li><span class="math inline">\(PM = MP = 0\)</span>.</li>
+<li><span class="math inline">\(\operatorname{tr}(P) = k\)</span> y <span class="math inline">\(\operatorname{tr}(M) = n - k\)</span>. En consecuencia, <span class="math inline">\(\operatorname{rango}(P) = k\)</span> y <span class="math inline">\(\operatorname{rango}(M) = n-k\)</span>.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled" title="Intuición antes de demostrar">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Intuición antes de demostrar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P\)</span> toma cualquier vector de <span class="math inline">\(\mathbb{R}^n\)</span> y lo proyecta ortogonalmente sobre el espacio columna de <span class="math inline">\(X\)</span> (un subespacio de dimensión <span class="math inline">\(k\)</span>). <span class="math inline">\(M\)</span> se queda con “lo que sobra”, la parte perpendicular. Con esa imagen: (3) dice que proyectar algo que <em>ya está</em> en el espacio columna no lo mueve; (4) dice que la sombra de la parte perpendicular es cero; (5) dice que el subespacio sobre el que proyecta <span class="math inline">\(P\)</span> tiene dimensión <span class="math inline">\(k\)</span> y el complemento tiene dimensión <span class="math inline">\(n-k\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Usamos repetidamente que <span class="math inline">\((X'X)^{-1}\)</span> es simétrica (inversa de una simétrica) y que <span class="math inline">\((ABC)' = C'B'A'\)</span>.</p>
+<ol type="1">
+<li><p><span class="math inline">\(P' = \big(X(X'X)^{-1}X'\big)' = (X')'\big((X'X)^{-1}\big)'X' = X(X'X)^{-1}X' = P\)</span>. Y <span class="math inline">\(M' = I' - P' = I - P = M\)</span>.</p></li>
+<li><p>Para <span class="math inline">\(P\)</span>, el término del medio se cancela: <span class="math display">\[
+PP = X(X'X)^{-1}\underbrace{X'X(X'X)^{-1}}_{=\,I_k}X' = X(X'X)^{-1}X' = P.
+\]</span> Para <span class="math inline">\(M\)</span>, usando lo anterior, <span class="math display">\[
+MM = (I - P)(I-P) = I - 2P + PP = I - 2P + P = I - P = M.
+\]</span></p></li>
+<li><p><span class="math inline">\(PX = X(X'X)^{-1}X'X = X I_k = X\)</span>, y entonces <span class="math inline">\(MX = X - PX = X - X = 0\)</span>.</p></li>
+<li><p><span class="math inline">\(PM = P(I - P) = P - PP = P - P = 0\)</span>. Trasponiendo y usando (1), <span class="math inline">\(MP = M'P' = (PM)' = 0' = 0\)</span>.</p></li>
+<li><p>Por ciclicidad de la traza, con “<span class="math inline">\(A\)</span>” <span class="math inline">\(= X\)</span> (<span class="math inline">\(n\times k\)</span>) y “<span class="math inline">\(B\)</span>” <span class="math inline">\(= (X'X)^{-1}X'\)</span> (<span class="math inline">\(k \times n\)</span>), <span class="math display">\[
+\operatorname{tr}(P) = \operatorname{tr}\big(X(X'X)^{-1}X'\big) = \operatorname{tr}\big((X'X)^{-1}X'X\big) = \operatorname{tr}(I_k) = k.
+\]</span> Luego <span class="math inline">\(\operatorname{tr}(M) = \operatorname{tr}(I_n) - \operatorname{tr}(P) = n - k\)</span>. Como ambas son simétricas e idempotentes, <a href="#cor-rango-traza" class="quarto-xref">Corolario&nbsp;1</a> da los rangos.</p></li>
+</ol>
+</div>
+<p>Mira la elegancia de (5): calcular la traza de una matriz <span class="math inline">\(n\times n\)</span> con <span class="math inline">\(n = 3.000\)</span> se redujo a calcular la traza de la identidad <span class="math inline">\(k\times k\)</span>. Ese “<span class="math inline">\(n - k\)</span>” es el que aparece en el denominador de <span class="math inline">\(s^2 = \hat u'\hat u/(n-k)\)</span> en la Clase 4. Cuando alguien te diga “se pierden <span class="math inline">\(k\)</span> grados de libertad”, lo que está diciendo es “<span class="math inline">\(\operatorname{tr}(M) = n-k\)</span>”.</p>
+<p>Una última observación que conecta con la geometría. Para todo <span class="math inline">\(z \in \mathbb{R}^n\)</span>, <span class="math display">\[
+z = Pz + Mz, \qquad (Pz)'(Mz) = z'P'Mz = z'PMz = 0.
+\]</span> Todo vector se descompone de forma única en una parte dentro de <span class="math inline">\(\operatorname{col}(X)\)</span> y una parte ortogonal a ella. Y por Pitágoras (que ahora es un cálculo de una línea), <span id="eq-pitagoras"><span class="math display">\[
+\|z\|^2 = (Pz + Mz)'(Pz + Mz) = \|Pz\|^2 + 2(Pz)'(Mz) + \|Mz\|^2 = \|Pz\|^2 + \|Mz\|^2.
+\tag{2}\]</span></span></p>
+<p>Un caso particular útil: si <span class="math inline">\(X = \iota\)</span> (solo una constante), entonces <span class="math inline">\(P = \iota(\iota'\iota)^{-1}\iota' = \frac1n\iota\iota'\)</span> y <span class="math inline">\(M = M^0\)</span>. <strong>Restar la media es proyectar sobre la constante y quedarse con el residuo.</strong> La Clase 3 generaliza esta idea con el teorema de Frisch–Waugh–Lovell.</p>
+</section>
+<section id="derivadas-matriciales" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Derivadas matriciales</h1>
+<p>Para encontrar el estimador de MCO en la Clase 3 minimizaremos una función de <span class="math inline">\(b \in \mathbb{R}^k\)</span>. Necesitamos derivar respecto de un vector. La convención es: si <span class="math inline">\(f:\mathbb{R}^k \to \mathbb{R}\)</span>, entonces <span class="math inline">\(\frac{\partial f}{\partial b}\)</span> es el vector columna de derivadas parciales, <span class="math display">\[
+\frac{\partial f}{\partial b} = \begin{pmatrix} \partial f/\partial b_1 \\ \vdots \\ \partial f/\partial b_k\end{pmatrix}.
+\]</span></p>
+<div id="thm-derivadas" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 8 (Dos derivadas que resuelven todo)</strong></span> Sean <span class="math inline">\(a \in\mathbb{R}^k\)</span> y <span class="math inline">\(A\)</span> una matriz <span class="math inline">\(k\times k\)</span>, ambos constantes. Entonces</p>
+<ol type="1">
+<li><span class="math inline">\(\dfrac{\partial\, (a'b)}{\partial b} = a\)</span>.</li>
+<li><span class="math inline">\(\dfrac{\partial\, (b'Ab)}{\partial b} = (A + A')b\)</span>. Si <span class="math inline">\(A\)</span> es simétrica, esto es <span class="math inline">\(2Ab\)</span>.</li>
+</ol>
+</div>
+<p>La segunda es el análogo matricial de <span class="math inline">\(\frac{d}{db}(ab^2) = 2ab\)</span>. Es muy tentador creerla “por analogía”, y justamente por eso hay que demostrarla: la analogía falla si <span class="math inline">\(A\)</span> no es simétrica.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Derivar respecto de un vector es derivar respecto de cada coordenada. Así que hay que escribir <span class="math inline">\(a'b\)</span> y <span class="math inline">\(b'Ab\)</span> como sumas y derivar respecto de <span class="math inline">\(b_m\)</span>, un <span class="math inline">\(m\)</span> fijo cualquiera.</p>
+<p>Para <span class="math inline">\(b'Ab = \sum_j\sum_l b_jA_{jl}b_l\)</span>: el término <span class="math inline">\(b_jA_{jl}b_l\)</span> contiene a <span class="math inline">\(b_m\)</span> si <span class="math inline">\(j = m\)</span>, si <span class="math inline">\(l = m\)</span>, o si ambos. Con la regla del producto, <span class="math inline">\(\frac{\partial}{\partial b_m}(b_jb_l) = \mathbb{1}\{j=m\}b_l + b_j\mathbb{1}\{l = m\}\)</span>. Eso separa la suma doble en dos sumas simples. Una será “fila <span class="math inline">\(m\)</span> de <span class="math inline">\(A\)</span> por <span class="math inline">\(b\)</span>” y la otra “columna <span class="math inline">\(m\)</span> de <span class="math inline">\(A\)</span> por <span class="math inline">\(b\)</span>”. Fila <span class="math inline">\(m\)</span> de <span class="math inline">\(A\)</span> más columna <span class="math inline">\(m\)</span> de <span class="math inline">\(A\)</span> es fila <span class="math inline">\(m\)</span> de <span class="math inline">\(A + A'\)</span>. ¡Ahí está el <span class="math inline">\((A + A')\)</span>!</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li><p><span class="math inline">\(a'b = \sum_{j=1}^k a_jb_j\)</span>, así que <span class="math inline">\(\partial(a'b)/\partial b_m = a_m\)</span> para cada <span class="math inline">\(m\)</span>. Apilando, el gradiente es <span class="math inline">\(a\)</span>.</p></li>
+<li><p>Escribimos <span class="math inline">\(b'Ab = \sum_{j=1}^k\sum_{l=1}^k A_{jl}b_jb_l\)</span>. Fijemos <span class="math inline">\(m\)</span>. Por la regla del producto, <span class="math inline">\(\frac{\partial}{\partial b_m}(b_jb_l) = \mathbb{1}\{j = m\}\,b_l + b_j\,\mathbb{1}\{l = m\}\)</span>. Entonces <span class="math display">\[
+\begin{aligned}
+\frac{\partial\,(b'Ab)}{\partial b_m}
+&amp;= \sum_{j=1}^k\sum_{l=1}^k A_{jl}\big(\mathbb{1}\{j = m\}\,b_l + b_j\,\mathbb{1}\{l = m\}\big)\\
+&amp;= \sum_{l=1}^k A_{ml}b_l + \sum_{j=1}^k A_{jm}b_j &amp;&amp;\text{(solo sobreviven } j=m \text{ o } l=m)\\
+&amp;= (Ab)_m + (A'b)_m &amp;&amp;(A_{jm} = (A')_{mj})\\
+&amp;= \big((A + A')b\big)_m.
+\end{aligned}
+\]</span> Como esto vale para cada <span class="math inline">\(m = 1,\dots,k\)</span>, el gradiente es <span class="math inline">\((A+A')b\)</span>. Si <span class="math inline">\(A = A'\)</span>, es <span class="math inline">\(2Ab\)</span>.</p></li>
+</ol>
+</div>
+<p>También necesitaremos la segunda derivada. La <strong>matriz hessiana</strong> de <span class="math inline">\(f\)</span> es la matriz <span class="math inline">\(k\times k\)</span> de segundas derivadas <span class="math inline">\(\frac{\partial^2 f}{\partial b\,\partial b'}\)</span>, cuya entrada <span class="math inline">\((m,l)\)</span> es <span class="math inline">\(\partial^2 f/\partial b_m\partial b_l\)</span>. Si <span class="math inline">\(A\)</span> es simétrica, derivar <span class="math inline">\(2Ab\)</span> (cuya coordenada <span class="math inline">\(m\)</span> es <span class="math inline">\(2\sum_l A_{ml}b_l\)</span>) respecto de <span class="math inline">\(b_l\)</span> da <span class="math inline">\(2A_{ml}\)</span>; es decir, <span class="math display">\[
+\frac{\partial^2 (b'Ab)}{\partial b\,\partial b'} = 2A.
+\]</span></p>
+</section>
+<section id="sec-vectores-aleatorios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Vectores aleatorios</h1>
+<p>Todo lo anterior era álgebra determinista. Ahora dejamos que los vectores sean aleatorios. Si <span class="math inline">\(z = (z_1,\dots,z_m)'\)</span> es un vector aleatorio, su <strong>esperanza</strong> es el vector de esperanzas y su <strong>matriz de varianzas y covarianzas</strong> es <span class="math display">\[
+\mathbb{E}[z] = \begin{pmatrix}\mathbb{E}[z_1]\\ \vdots \\ \mathbb{E}[z_m]\end{pmatrix}, \qquad
+\operatorname{Var}(z) = \mathbb{E}\big[(z - \mathbb{E}z)(z - \mathbb{E}z)'\big].
+\]</span> La entrada <span class="math inline">\((j,l)\)</span> de <span class="math inline">\(\operatorname{Var}(z)\)</span> es <span class="math inline">\(\mathbb{E}[(z_j - \mathbb{E} z_j)(z_l - \mathbb{E}z_l)] = \operatorname{Cov}(z_j,z_l)\)</span>, y en la diagonal están las varianzas. Así que <span class="math inline">\(\operatorname{Var}(z)\)</span> es simétrica. Además es semidefinida positiva: para cualquier <span class="math inline">\(c\)</span> fijo, <span class="math inline">\(c'\operatorname{Var}(z)c = \mathbb{E}[(c'(z - \mathbb{E}z))^2] \ge 0\)</span>.</p>
+<p>(Cuando la matriz es una esperanza condicional, como <span class="math inline">\(\mathbb{E}[uu'\mid X]\)</span>, todo lo de esta sección vale igual condicionando en <span class="math inline">\(X\)</span>: las matrices que dependen solo de <span class="math inline">\(X\)</span> se tratan como constantes. La Clase 2 hace precisa esta idea.)</p>
+<div id="thm-momentos-lineales" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 9 (Esperanza y varianza de transformaciones lineales)</strong></span> Sea <span class="math inline">\(z\)</span> un vector aleatorio de <span class="math inline">\(m\times 1\)</span> con <span class="math inline">\(\mathbb{E}[z] = \mu\)</span> y <span class="math inline">\(\operatorname{Var}(z) = \Sigma\)</span>. Sean <span class="math inline">\(A\)</span> (<span class="math inline">\(p \times m\)</span>) y <span class="math inline">\(c\)</span> (<span class="math inline">\(p\times1\)</span>) constantes. Entonces <span class="math display">\[
+\mathbb{E}[Az + c] = A\mu + c, \qquad \operatorname{Var}(Az + c) = A\Sigma A'.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La coordenada <span class="math inline">\(j\)</span> de <span class="math inline">\(Az + c\)</span> es <span class="math inline">\(\sum_l A_{jl}z_l + c_j\)</span>. Por linealidad de la esperanza (de variables escalares), <span class="math display">\[
+\mathbb{E}\Big[\sum_l A_{jl}z_l + c_j\Big] = \sum_l A_{jl}\mathbb{E}[z_l] + c_j = (A\mu + c)_j.
+\]</span> Esto da la primera igualdad, y con ella sabemos que <span class="math inline">\((Az + c) - \mathbb{E}[Az+c] = A(z - \mu)\)</span>. Entonces <span class="math display">\[
+\operatorname{Var}(Az + c) = \mathbb{E}\big[A(z-\mu)(z-\mu)'A'\big] = A\,\mathbb{E}\big[(z-\mu)(z-\mu)'\big]\,A' = A\Sigma A',
+\]</span> donde sacamos las matrices constantes de la esperanza usando la primera parte (aplicada entrada a entrada).</p>
+</div>
+<p>Este teorema es el que dará <span class="math inline">\(\operatorname{Var}(\hat\beta\mid X) = \sigma^2(X'X)^{-1}\)</span> en la Clase 4. Y el siguiente es el que dará <span class="math inline">\(\mathbb{E}[s^2] = \sigma^2\)</span>.</p>
+<div id="thm-esperanza-forma-cuadratica" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 10 (Esperanza de una forma cuadrática)</strong></span> Sea <span class="math inline">\(z\)</span> un vector aleatorio de <span class="math inline">\(m \times 1\)</span> con <span class="math inline">\(\mathbb{E}[z] = \mu\)</span>, <span class="math inline">\(\operatorname{Var}(z) = \Sigma\)</span>, y sea <span class="math inline">\(A\)</span> una matriz <span class="math inline">\(m\times m\)</span> constante. Entonces <span class="math display">\[
+\mathbb{E}[z'Az] = \operatorname{tr}(A\Sigma) + \mu'A\mu.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aquí el truco de la traza (<a href="#eq-truco-traza" class="quarto-xref">Ecuación&nbsp;1</a>) brilla. <span class="math inline">\(z'Az = \operatorname{tr}(Azz')\)</span> y la esperanza entra en la traza (la traza es una suma, la esperanza es lineal). Entonces necesito <span class="math inline">\(\mathbb{E}[zz']\)</span>. Y eso es “el segundo momento”, que es varianza más media al cuadrado: <span class="math inline">\(\mathbb{E}[zz'] = \Sigma + \mu\mu'\)</span>, la versión matricial de <span class="math inline">\(\mathbb{E}[Z^2] = \operatorname{Var}(Z) + (\mathbb{E}Z)^2\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Primero, <span class="math inline">\(\mathbb{E}[zz'] = \Sigma + \mu\mu'\)</span>. En efecto, expandiendo, <span class="math display">\[
+\Sigma = \mathbb{E}[(z-\mu)(z-\mu)'] = \mathbb{E}[zz'] - \mathbb{E}[z]\mu' - \mu\mathbb{E}[z'] + \mu\mu' = \mathbb{E}[zz'] - \mu\mu'.
+\]</span> Ahora, <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[z'Az] &amp;= \mathbb{E}[\operatorname{tr}(Azz')] &amp;&amp;\text{(truco de la traza)}\\
+&amp;= \operatorname{tr}(A\,\mathbb{E}[zz']) &amp;&amp;\text{(traza y esperanza son lineales)}\\
+&amp;= \operatorname{tr}(A\Sigma) + \operatorname{tr}(A\mu\mu') &amp;&amp;\text{(linealidad de la traza)}\\
+&amp;= \operatorname{tr}(A\Sigma) + \mu'A\mu &amp;&amp;\text{(ciclicidad y } \operatorname{tr}(\text{escalar}) = \text{escalar}).
+\end{aligned}
+\]</span></p>
+</div>
+<p>Un caso especial para calentar: si <span class="math inline">\(z_1,\dots,z_n\)</span> son independientes con media <span class="math inline">\(\mu\)</span> y varianza <span class="math inline">\(\sigma^2\)</span>, entonces <span class="math inline">\(\sum_i(z_i - \bar z)^2 = z'M^0z\)</span> y, con <span class="math inline">\(\mathbb{E}[z] = \mu\iota\)</span>, <span class="math inline">\(\operatorname{Var}(z) = \sigma^2 I\)</span>, <span class="math display">\[
+\mathbb{E}\Big[\sum_i (z_i - \bar z)^2\Big] = \operatorname{tr}(M^0\sigma^2 I) + \mu^2\iota'M^0\iota = \sigma^2(n - 1) + 0,
+\]</span> porque <span class="math inline">\(M^0\iota = 0\)</span> (restarle la media a un vector constante da cero). <strong>Por eso la varianza muestral divide por <span class="math inline">\(n-1\)</span>.</strong> Si alguna vez te preguntaste de dónde sale ese <span class="math inline">\(n-1\)</span>, la respuesta es: de la traza de una matriz idempotente.</p>
+</section>
+<section id="postgrado-más-herramientas-matriciales" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> ★ Postgrado: más herramientas matriciales</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Esta sección reúne tres resultados que se usan en las secciones ★ de clases posteriores: raíces cuadradas de matrices, el orden de las inversas y la inversa particionada.</p>
+</div>
+</div>
+<section id="raíz-cuadrada-de-una-matriz-definida-positiva" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="raíz-cuadrada-de-una-matriz-definida-positiva"><span class="header-section-number">10.1</span> Raíz cuadrada de una matriz definida positiva</h2>
+<p>Si <span class="math inline">\(A\succ 0\)</span>, por el teorema espectral <span class="math inline">\(A = Q\Lambda Q'\)</span> con <span class="math inline">\(\lambda_j &gt; 0\)</span> (¿por qué? si <span class="math inline">\(v\)</span> es vector propio unitario, <span class="math inline">\(\lambda_j = v'Av &gt; 0\)</span>). Definimos <span class="math display">\[
+A^{1/2} = Q\Lambda^{1/2}Q', \qquad A^{-1/2} = Q\Lambda^{-1/2}Q',
+\]</span> con <span class="math inline">\(\Lambda^{\pm1/2} = \operatorname{diag}(\lambda_1^{\pm1/2},\dots,\lambda_m^{\pm1/2})\)</span>. Ambas son simétricas, <span class="math inline">\(A^{1/2}A^{1/2} = Q\Lambda^{1/2}Q'Q\Lambda^{1/2}Q' = Q\Lambda Q' = A\)</span> y, por el mismo cálculo, <span class="math inline">\(A^{-1/2}AA^{-1/2} = I\)</span> y <span class="math inline">\(A^{-1/2}A^{-1/2} = A^{-1}\)</span>. Esta es la matriz que “estandariza” un vector: si <span class="math inline">\(\operatorname{Var}(z) = \Sigma \succ 0\)</span>, entonces <span class="math inline">\(\operatorname{Var}(\Sigma^{-1/2}z) = \Sigma^{-1/2}\Sigma\Sigma^{-1/2} = I\)</span>. En la Clase 9 esto es exactamente lo que hace mínimos cuadrados generalizados.</p>
+</section>
+<section id="el-orden-de-las-inversas" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="el-orden-de-las-inversas"><span class="header-section-number">10.2</span> El orden de las inversas</h2>
+<div id="thm-orden-inversas" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 11 (Invertir da vuelta la desigualdad)</strong></span> Si <span class="math inline">\(A \succeq B \succ 0\)</span>, entonces <span class="math inline">\(B^{-1} \succeq A^{-1}\)</span>.</p>
+</div>
+<p>Es el análogo de “<span class="math inline">\(a \ge b &gt; 0 \Rightarrow 1/b \ge 1/a\)</span>”. Lo usaremos en la Clase 8 (agregar regresores irrelevantes aumenta la varianza) y en la Clase 9 (MCG es más eficiente que MCO).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con escalares es trivial. Con matrices, la idea es “reducir al caso <span class="math inline">\(B = I\)</span>”. Si <span class="math inline">\(B = I\)</span> y <span class="math inline">\(A \succeq I\)</span>, todos los valores propios de <span class="math inline">\(A\)</span> son <span class="math inline">\(\ge 1\)</span>, así que los de <span class="math inline">\(A^{-1}\)</span> son <span class="math inline">\(\le 1\)</span>, es decir, <span class="math inline">\(A^{-1} \preceq I\)</span>. Para el caso general, “divido por <span class="math inline">\(B\)</span>” de forma simétrica: <span class="math inline">\(C = B^{-1/2}AB^{-1/2}\)</span>. Entonces <span class="math inline">\(A \succeq B\)</span> se vuelve <span class="math inline">\(C \succeq I\)</span>, aplico el caso fácil y deshago el cambio.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(C = B^{-1/2}AB^{-1/2}\)</span>, que es simétrica. Por <a href="#lem-pd-propiedades" class="quarto-xref">Lema&nbsp;2</a> (3) con la matriz <span class="math inline">\(B^{-1/2}\)</span>, <span class="math display">\[
+C - I = B^{-1/2}AB^{-1/2} - B^{-1/2}BB^{-1/2} = B^{-1/2}(A - B)B^{-1/2} \succeq 0.
+\]</span> Si <span class="math inline">\(v\)</span> es un vector propio unitario de <span class="math inline">\(C\)</span> con valor propio <span class="math inline">\(\gamma\)</span>, entonces <span class="math inline">\(\gamma - 1 = v'(C - I)v \ge 0\)</span>. Luego todos los valores propios de <span class="math inline">\(C\)</span> son <span class="math inline">\(\ge 1 &gt; 0\)</span>. Escribiendo <span class="math inline">\(C = Q\Gamma Q'\)</span> (teorema espectral), <span class="math inline">\(C\)</span> es invertible, <span class="math inline">\(C^{-1} = Q\Gamma^{-1}Q'\)</span> y <span class="math display">\[
+I - C^{-1} = Q(I - \Gamma^{-1})Q' \succeq 0,
+\]</span> porque <span class="math inline">\(I - \Gamma^{-1}\)</span> es diagonal con entradas <span class="math inline">\(1 - 1/\gamma_j \ge 0\)</span>. Ahora bien, <span class="math inline">\(C^{-1} = B^{1/2}A^{-1}B^{1/2}\)</span> (verifícalo multiplicando por <span class="math inline">\(C\)</span>). Así, <span class="math display">\[
+B^{-1} - A^{-1} = B^{-1/2}\big(I - B^{1/2}A^{-1}B^{1/2}\big)B^{-1/2} = B^{-1/2}(I - C^{-1})B^{-1/2} \succeq 0,
+\]</span> otra vez por <a href="#lem-pd-propiedades" class="quarto-xref">Lema&nbsp;2</a> (3).</p>
+</div>
+</section>
+<section id="inversa-particionada" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="inversa-particionada"><span class="header-section-number">10.3</span> Inversa particionada</h2>
+<div id="thm-inversa-particionada" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 12 (Inversa de una matriz por bloques)</strong></span> Sea <span class="math display">\[
+A = \begin{pmatrix} A_{11} &amp; A_{12}\\ A_{21} &amp; A_{22}\end{pmatrix}
+\]</span> invertible, con <span class="math inline">\(A_{11}\)</span> y <span class="math inline">\(A_{22}\)</span> cuadradas, <span class="math inline">\(A_{22}\)</span> invertible, y sea <span class="math inline">\(F = A_{11} - A_{12}A_{22}^{-1}A_{21}\)</span> (el <strong>complemento de Schur</strong> de <span class="math inline">\(A_{22}\)</span>), también invertible. Entonces el bloque <span class="math inline">\((1,1)\)</span> de <span class="math inline">\(A^{-1}\)</span> es <span class="math inline">\(F^{-1}\)</span>: <span class="math display">\[
+A^{-1} = \begin{pmatrix} F^{-1} &amp; -F^{-1}A_{12}A_{22}^{-1}\\ -A_{22}^{-1}A_{21}F^{-1} &amp; A_{22}^{-1} + A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}\end{pmatrix}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Basta multiplicar <span class="math inline">\(A\)</span> por la matriz propuesta, llamémosla <span class="math inline">\(B\)</span>, y verificar que da la identidad. Bloque <span class="math inline">\((1,1)\)</span> de <span class="math inline">\(AB\)</span>: <span class="math display">\[
+A_{11}F^{-1} - A_{12}A_{22}^{-1}A_{21}F^{-1} = (A_{11} - A_{12}A_{22}^{-1}A_{21})F^{-1} = FF^{-1} = I.
+\]</span> Bloque <span class="math inline">\((1,2)\)</span>: <span class="math display">\[
+-A_{11}F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}
+= -\big(A_{11} - A_{12}A_{22}^{-1}A_{21}\big)F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} = 0.
+\]</span> Bloque <span class="math inline">\((2,1)\)</span>: <span class="math inline">\(A_{21}F^{-1} - A_{22}A_{22}^{-1}A_{21}F^{-1} = 0\)</span>. Bloque <span class="math inline">\((2,2)\)</span>: <span class="math display">\[
+-A_{21}F^{-1}A_{12}A_{22}^{-1} + I + A_{21}F^{-1}A_{12}A_{22}^{-1} = I.
+\]</span> Luego <span class="math inline">\(AB = I\)</span> y, como <span class="math inline">\(A\)</span> es cuadrada, <span class="math inline">\(B = A^{-1}\)</span>.</p>
+</div>
+<p>Aplicado a <span class="math inline">\(A = X'X\)</span> con <span class="math inline">\(X = [X_1 \; X_2]\)</span>, el complemento de Schur es <span class="math inline">\(F = X_1'X_1 - X_1'X_2(X_2'X_2)^{-1}X_2'X_1 = X_1'M_2X_1\)</span>, donde <span class="math inline">\(M_2 = I - X_2(X_2'X_2)^{-1}X_2'\)</span>. Es decir, <span id="eq-bloque-11"><span class="math display">\[
+\big[(X'X)^{-1}\big]_{11} = (X_1'M_2X_1)^{-1}.
+\tag{3}\]</span></span> Guarda esta fórmula: en la Clase 3 la redescubriremos con el teorema de Frisch–Waugh–Lovell, y en la Clase 4 nos dará la fórmula de la varianza de un coeficiente individual.</p>
+</section>
+</section>
+<section id="resumen" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Resumen</h1>
+<ul>
+<li>Toda matriz del tipo <span class="math inline">\(X'X\)</span> o <span class="math inline">\(X'y\)</span> es una suma sobre observaciones (<a href="#lem-sumas" class="quarto-xref">Lema&nbsp;1</a>).</li>
+<li><span class="math inline">\(X'X\)</span> es invertible <span class="math inline">\(\iff\)</span> <span class="math inline">\(X\)</span> tiene rango columna completo (<a href="#thm-rango-xx" class="quarto-xref">Teorema&nbsp;2</a>), y en ese caso <span class="math inline">\(X'X\succ0\)</span> (<a href="#thm-xx-pd" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+<li>La traza es cíclica, y una forma cuadrática es su propia traza (<a href="#eq-truco-traza" class="quarto-xref">Ecuación&nbsp;1</a>).</li>
+<li>Las idempotentes simétricas tienen valores propios <span class="math inline">\(0\)</span> o <span class="math inline">\(1\)</span> y su rango es su traza (<a href="#cor-rango-traza" class="quarto-xref">Corolario&nbsp;1</a>).</li>
+<li><span class="math inline">\(P = X(X'X)^{-1}X'\)</span> y <span class="math inline">\(M = I - P\)</span> son proyecciones ortogonales con trazas <span class="math inline">\(k\)</span> y <span class="math inline">\(n-k\)</span> (<a href="#thm-propiedades-pm" class="quarto-xref">Teorema&nbsp;7</a>).</li>
+<li><span class="math inline">\(\partial (b'Ab)/\partial b = (A+A')b\)</span> (<a href="#thm-derivadas" class="quarto-xref">Teorema&nbsp;8</a>).</li>
+<li><span class="math inline">\(\operatorname{Var}(Az) = A\Sigma A'\)</span> y <span class="math inline">\(\mathbb{E}[z'Az] = \operatorname{tr}(A\Sigma) + \mu'A\mu\)</span> (<a href="#thm-momentos-lineales" class="quarto-xref">Teorema&nbsp;9</a>, <a href="#thm-esperanza-forma-cuadratica" class="quarto-xref">Teorema&nbsp;10</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Ejercicios</h1>
+<p><strong>Ejercicio 1.1.</strong> Sea <span class="math inline">\(X = \begin{pmatrix} 1 &amp; 2\\ 1 &amp; 4\\ 1 &amp; 6\end{pmatrix}\)</span>. Calcula <span class="math inline">\(X'X\)</span>, verifica que es invertible, calcula <span class="math inline">\(P\)</span> y verifica que <span class="math inline">\(\operatorname{tr}(P) = 2\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(X'X = \begin{pmatrix} 3 &amp; 12 \\ 12 &amp; 56\end{pmatrix}\)</span>, con determinante <span class="math inline">\(3\cdot 56 - 144 = 24 \neq 0\)</span>, así que es invertible y <span class="math inline">\((X'X)^{-1} = \frac{1}{24}\begin{pmatrix} 56 &amp; -12\\ -12 &amp; 3\end{pmatrix}\)</span>. Para la fila <span class="math inline">\(x_i' = (1, x)\)</span> y la columna <span class="math inline">\(x_j = (1, w)'\)</span>, la entrada <span class="math inline">\(P_{ij} = x_i'(X'X)^{-1}x_j = \frac{1}{24}(56 - 12x - 12w + 3xw)\)</span>. Con <span class="math inline">\(x, w\in\{2,4,6\}\)</span>: <span class="math display">\[
+P = \frac{1}{24}\begin{pmatrix} 20 &amp; 8 &amp; -4\\ 8 &amp; 8 &amp; 8\\ -4 &amp; 8 &amp; 20\end{pmatrix}
+= \begin{pmatrix} 5/6 &amp; 1/3 &amp; -1/6\\ 1/3 &amp; 1/3 &amp; 1/3 \\ -1/6 &amp; 1/3 &amp; 5/6\end{pmatrix}.
+\]</span> La traza es <span class="math inline">\(5/6 + 1/3 + 5/6 = 2 = k\)</span>. (Puedes verificar además que <span class="math inline">\(P\iota = \iota\)</span> y que <span class="math inline">\(P(2,4,6)' = (2,4,6)'\)</span>, como exige <span class="math inline">\(PX = X\)</span>.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.2.</strong> Demuestra que si <span class="math inline">\(A\)</span> es idempotente, entonces <span class="math inline">\(I - A\)</span> también lo es. ¿Es cierto que si <span class="math inline">\(A\)</span> es idempotente entonces <span class="math inline">\(A\)</span> es simétrica? Da una demostración o un contraejemplo.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\((I - A)(I-A) = I - 2A + A^2 = I - 2A + A = I - A\)</span>.</p>
+<p>No: <span class="math inline">\(A = \begin{pmatrix} 1 &amp; 1\\ 0 &amp; 0\end{pmatrix}\)</span> cumple <span class="math inline">\(A^2 = \begin{pmatrix} 1 &amp; 1\\ 0 &amp; 0\end{pmatrix} = A\)</span>, pero no es simétrica. Geométricamente es una proyección <em>oblicua</em> (no ortogonal) sobre el eje horizontal. Las proyecciones ortogonales son exactamente las idempotentes simétricas; por eso siempre pedimos las dos propiedades.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.3.</strong> Sea <span class="math inline">\(z \in\mathbb{R}^n\)</span> con <span class="math inline">\(\mathbb{E}[z] = 0\)</span> y <span class="math inline">\(\operatorname{Var}(z) = \sigma^2 I_n\)</span>. Si <span class="math inline">\(M\)</span> es la aniquiladora asociada a una <span class="math inline">\(X\)</span> fija de rango <span class="math inline">\(k\)</span>, calcula <span class="math inline">\(\mathbb{E}[z'Mz]\)</span> y <span class="math inline">\(\mathbb{E}[z'Pz]\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por <a href="#thm-esperanza-forma-cuadratica" class="quarto-xref">Teorema&nbsp;10</a> con <span class="math inline">\(\mu = 0\)</span>: <span class="math inline">\(\mathbb{E}[z'Mz] = \operatorname{tr}(M\sigma^2I) = \sigma^2(n-k)\)</span> y <span class="math inline">\(\mathbb{E}[z'Pz] = \sigma^2 k\)</span>. Nota que suman <span class="math inline">\(\sigma^2 n = \mathbb{E}[z'z]\)</span>, como debe ser por <a href="#eq-pitagoras" class="quarto-xref">Ecuación&nbsp;2</a>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.4.</strong> Usa <a href="#thm-derivadas" class="quarto-xref">Teorema&nbsp;8</a> para encontrar el <span class="math inline">\(b\)</span> que minimiza <span class="math inline">\(f(b) = b'Ab - 2c'b\)</span>, con <span class="math inline">\(A \succ 0\)</span>. Verifica que es un mínimo global completando el cuadrado: muestra que <span class="math inline">\(f(b) = (b - A^{-1}c)'A(b - A^{-1}c) - c'A^{-1}c\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El gradiente es <span class="math inline">\(2Ab - 2c\)</span>; igualando a cero, <span class="math inline">\(b^* = A^{-1}c\)</span>. Expandiendo la expresión propuesta y usando <span class="math inline">\(A' = A\)</span>: <span class="math display">\[
+(b - A^{-1}c)'A(b - A^{-1}c) = b'Ab - b'c - c'b + c'A^{-1}c = b'Ab - 2c'b + c'A^{-1}c.
+\]</span> Restando <span class="math inline">\(c'A^{-1}c\)</span> se recupera <span class="math inline">\(f(b)\)</span>. Como <span class="math inline">\(A\succ0\)</span>, el primer término es <span class="math inline">\(\ge 0\)</span> y vale <span class="math inline">\(0\)</span> solo si <span class="math inline">\(b = A^{-1}c\)</span>. Luego <span class="math inline">\(f(b) \ge -c'A^{-1}c = f(b^*)\)</span>, con igualdad solo en <span class="math inline">\(b^*\)</span>. (Este es exactamente el argumento que usaremos para MCO en la Clase 3.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.5.</strong> Sean <span class="math inline">\(A\)</span> (<span class="math inline">\(m\times m\)</span>) y <span class="math inline">\(B\)</span> (<span class="math inline">\(m \times m\)</span>) semidefinidas positivas. Demuestra que <span class="math inline">\(\operatorname{tr}(A)\ge 0\)</span> y que <span class="math inline">\(\operatorname{tr}(A) = 0\)</span> implica <span class="math inline">\(A = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(A_{jj} = e_j'Ae_j \ge 0\)</span>, así que <span class="math inline">\(\operatorname{tr}(A) = \sum_j A_{jj}\ge0\)</span>. Si la traza es cero, todos los <span class="math inline">\(\lambda_j \ge 0\)</span> de <span class="math inline">\(A\)</span> suman cero (la traza es la suma de valores propios: <span class="math inline">\(\operatorname{tr}(Q\Lambda Q') = \operatorname{tr}(\Lambda)\)</span>), luego todos son cero y <span class="math inline">\(A = Q\,0\,Q' = 0\)</span>. (La hipótesis sobre <span class="math inline">\(B\)</span> sobra: era una trampa para ver si lees con cuidado.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.6 ★.</strong> Sea <span class="math inline">\(X = [X_1\; X_2]\)</span> de rango completo y <span class="math inline">\(P_1\)</span>, <span class="math inline">\(P\)</span> las proyecciones sobre <span class="math inline">\(\operatorname{col}(X_1)\)</span> y <span class="math inline">\(\operatorname{col}(X)\)</span>. Demuestra que <span class="math inline">\(PP_1 = P_1\)</span> y que <span class="math inline">\(P - P_1\)</span> es simétrica e idempotente. Interpreta.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Como <span class="math inline">\(X_1\)</span> está formada por columnas de <span class="math inline">\(X\)</span>, <span class="math inline">\(X_1 = XS\)</span> para una matriz de selección <span class="math inline">\(S\)</span>, así que <span class="math inline">\(PX_1 = PXS = XS = X_1\)</span> (por <a href="#thm-propiedades-pm" class="quarto-xref">Teorema&nbsp;7</a> (3)). Entonces <span class="math inline">\(PP_1 = PX_1(X_1'X_1)^{-1}X_1' = X_1(X_1'X_1)^{-1}X_1' = P_1\)</span>. Trasponiendo, <span class="math inline">\(P_1P = P_1\)</span>.</p>
+<p><span class="math inline">\(P - P_1\)</span> es simétrica por ser diferencia de simétricas, y <span class="math display">\[
+(P - P_1)^2 = P - PP_1 - P_1P + P_1 = P - P_1 - P_1 + P_1 = P - P_1.
+\]</span> Interpretación: <span class="math inline">\(P - P_1\)</span> proyecta sobre la parte de <span class="math inline">\(\operatorname{col}(X)\)</span> que es ortogonal a <span class="math inline">\(\operatorname{col}(X_1)\)</span>, y su rango es <span class="math inline">\(\operatorname{tr}(P) - \operatorname{tr}(P_1) = k - k_1\)</span>. Esta matriz aparece en la Clase 5 cuando comparamos la suma de residuos de un modelo restringido y uno sin restringir.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.7 ★.</strong> Demuestra que si <span class="math inline">\(A\)</span> es simétrica e idempotente de <span class="math inline">\(m\times m\)</span>, entonces <span class="math inline">\(0 \preceq A \preceq I\)</span>. Deduce que los elementos diagonales <span class="math inline">\(P_{ii}\)</span> de la matriz de proyección cumplen <span class="math inline">\(0\le P_{ii}\le1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Para cualquier <span class="math inline">\(b\)</span>: <span class="math inline">\(b'Ab = b'A'Ab = \|Ab\|^2 \ge 0\)</span>, y <span class="math inline">\(b'(I - A)b = \|(I-A)b\|^2\ge0\)</span> porque <span class="math inline">\(I - A\)</span> también es simétrica e idempotente (Ejercicio 1.2). Tomando <span class="math inline">\(b = e_i\)</span>: <span class="math inline">\(0 \le A_{ii}\le 1\)</span>. Aplicado a <span class="math inline">\(P\)</span>, los <span class="math inline">\(h_{ii} = P_{ii}\)</span> se llaman <em>leverages</em> y los estudiaremos en la Clase 3.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/index.html" class="pagination-link" aria-label="Econometría 1">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Econometría 1</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-02.html" class="pagination-link" aria-label="Clase 2 · La esperanza condicional">
+        <span class="nav-page-text">Clase 2 · La esperanza condicional</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

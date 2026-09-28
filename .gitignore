@@ -1,0 +1,8 @@
+/.quarto/
+*_files/
+*.log
+*.aux
+*.tex
+!assets/*.tex
+
+**/*.quarto_ipynb

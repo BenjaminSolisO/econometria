@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El estimador de MCO, las ecuaciones normales, la geometría de proyecciones, el R², el teorema FWL y el leverage.">
+
+<title>Clase 3 · Mínimos cuadrados ordinarios – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-04.html" rel="next">
+<link href="../econometria-1/clase-02.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-03.html">Clase 3 · Mínimos cuadrados ordinarios</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#de-la-población-a-la-muestra" id="toc-de-la-población-a-la-muestra" class="nav-link active" data-scroll-target="#de-la-población-a-la-muestra"><span class="header-section-number">1</span> De la población a la muestra</a></li>
+  <li><a href="#derivación-del-estimador" id="toc-derivación-del-estimador" class="nav-link" data-scroll-target="#derivación-del-estimador"><span class="header-section-number">2</span> Derivación del estimador</a>
+  <ul class="collapse">
+  <li><a href="#el-caso-de-regresión-simple" id="toc-el-caso-de-regresión-simple" class="nav-link" data-scroll-target="#el-caso-de-regresión-simple"><span class="header-section-number">2.1</span> El caso de regresión simple</a></li>
+  </ul></li>
+  <li><a href="#geometría-proyección-sobre-el-espacio-columna" id="toc-geometría-proyección-sobre-el-espacio-columna" class="nav-link" data-scroll-target="#geometría-proyección-sobre-el-espacio-columna"><span class="header-section-number">3</span> Geometría: proyección sobre el espacio columna</a></li>
+  <li><a href="#bondad-de-ajuste-el-r2" id="toc-bondad-de-ajuste-el-r2" class="nav-link" data-scroll-target="#bondad-de-ajuste-el-r2"><span class="header-section-number">4</span> Bondad de ajuste: el <span class="math inline">\(R^2\)</span></a>
+  <ul class="collapse">
+  <li><a href="#el-r2-nunca-baja" id="toc-el-r2-nunca-baja" class="nav-link" data-scroll-target="#el-r2-nunca-baja"><span class="header-section-number">4.1</span> El <span class="math inline">\(R^2\)</span> nunca baja</a></li>
+  </ul></li>
+  <li><a href="#el-teorema-de-frischwaughlovell" id="toc-el-teorema-de-frischwaughlovell" class="nav-link" data-scroll-target="#el-teorema-de-frischwaughlovell"><span class="header-section-number">5</span> El teorema de Frisch–Waugh–Lovell</a>
+  <ul class="collapse">
+  <li><a href="#tres-corolarios-que-usarás-siempre" id="toc-tres-corolarios-que-usarás-siempre" class="nav-link" data-scroll-target="#tres-corolarios-que-usarás-siempre"><span class="header-section-number">5.1</span> Tres corolarios que usarás siempre</a></li>
+  </ul></li>
+  <li><a href="#postgrado-leverage-e-influencia" id="toc-postgrado-leverage-e-influencia" class="nav-link" data-scroll-target="#postgrado-leverage-e-influencia"><span class="header-section-number">6</span> ★ Postgrado: leverage e influencia</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-03.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 3 · Mínimos cuadrados ordinarios</h1>
+<p class="subtitle lead">Derivación, geometría y el teorema de Frisch–Waugh–Lovell</p>
+</div>
+
+<div>
+  <div class="description">
+    El estimador de MCO, las ecuaciones normales, la geometría de proyecciones, el R², el teorema FWL y el leverage.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-03.pdf">Descargar esta clase en PDF</a></p>
+<section id="de-la-población-a-la-muestra" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> De la población a la muestra</h1>
+<p>En la Clase 2 encontramos el mejor predictor lineal <em>poblacional</em>: <span class="math display">\[
+\beta = \operatorname*{arg\,min}_{b}\;\mathbb{E}\big[(y - x'b)^2\big] = \big(\mathbb{E}[xx']\big)^{-1}\mathbb{E}[xy].
+\]</span> El problema es que no conocemos la distribución de <span class="math inline">\((y,x)\)</span>, así que no podemos calcular esas esperanzas. Lo que sí tenemos es una muestra <span class="math inline">\(\{(y_i, x_i)\}_{i=1}^n\)</span>. La idea más natural del mundo, llamada <strong>principio de analogía</strong>, es reemplazar cada esperanza poblacional por un promedio muestral:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[
+\mathbb{E}\big[(y - x'b)^2\big] \;\rightsquigarrow\; \frac1n\sum_{i=1}^n (y_i - x_i'b)^2.
+\]</span> Minimizar esto último es lo que llamamos <strong>mínimos cuadrados ordinarios</strong> (MCO). Esta clase trata de lo que pasa en la muestra, con álgebra pura: todavía no hay probabilidades. Todo lo que probemos hoy es cierto para <em>cualquier</em> conjunto de números <span class="math inline">\(y\)</span> y <span class="math inline">\(X\)</span>, sean datos reales, simulados o inventados en una servilleta.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Goldberger lo llamaba <em>analogy principle</em>. Si no sabes qué hacer, haz en la muestra lo que harías en la población. Es sorprendente cuántas veces este consejo ingenuo produce estimadores óptimos.</p></div></div></section>
+<section id="derivación-del-estimador" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Derivación del estimador</h1>
+<p>Definimos la <strong>suma de residuos al cuadrado</strong> como función de un candidato <span class="math inline">\(b \in\mathbb{R}^k\)</span>: <span class="math display">\[
+S(b) = \sum_{i=1}^n (y_i - x_i'b)^2 = (y - Xb)'(y - Xb).
+\]</span></p>
+<div id="def-mco" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Estimador de MCO)</strong></span> El estimador de mínimos cuadrados ordinarios es <span class="math inline">\(\hat\beta = \operatorname*{arg\,min}_{b\in\mathbb{R}^k} S(b)\)</span>. Definimos los <strong>valores ajustados</strong> <span class="math inline">\(\hat y = X\hat\beta\)</span> y los <strong>residuos</strong> <span class="math inline">\(\hat u = y - X\hat\beta\)</span>.</p>
+</div>
+<div id="thm-mco" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Fórmula de MCO)</strong></span> Si <span class="math inline">\(\operatorname{rango}(X) = k\)</span>, entonces el minimizador de <span class="math inline">\(S(b)\)</span> existe, es único y <span id="eq-mco"><span class="math display">\[
+\hat\beta = (X'X)^{-1}X'y.
+\tag{1}\]</span></span> Además, los residuos satisfacen las <strong>ecuaciones normales</strong> <span id="eq-normales"><span class="math display">\[
+X'\hat u = 0.
+\tag{2}\]</span></span></p>
+</div>
+<p>Voy a demostrar esto de dos maneras. La primera es la que todos aprenden (cálculo). La segunda es la que yo prefiero (álgebra), porque demuestra de golpe que el mínimo es global y único.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador (vía cálculo)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador (vía cálculo)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expando: <span class="math inline">\(S(b) = y'y - b'X'y - y'Xb + b'X'Xb\)</span>. Como <span class="math inline">\(y'Xb\)</span> es un escalar, es igual a su transpuesta <span class="math inline">\(b'X'y\)</span>. Así que <span class="math inline">\(S(b) = y'y - 2b'X'y + b'X'Xb\)</span>. Con las derivadas matriciales de la Clase 1 (<span class="math inline">\(\partial(a'b)/\partial b = a\)</span> y <span class="math inline">\(\partial(b'Ab)/\partial b = 2Ab\)</span> para <span class="math inline">\(A\)</span> simétrica): <span class="math display">\[
+\frac{\partial S}{\partial b} = -2X'y + 2X'Xb.
+\]</span> Igualo a cero: <span class="math inline">\(X'Xb = X'y\)</span>. Como <span class="math inline">\(X'X\)</span> es invertible (rango completo), <span class="math inline">\(b = (X'X)^{-1}X'y\)</span>. La hessiana es <span class="math inline">\(2X'X \succ 0\)</span>, así que <span class="math inline">\(S\)</span> es estrictamente convexa y el punto crítico es el mínimo global.</p>
+<p>Esto está bien, pero apoyarse en “estrictamente convexa <span class="math inline">\(\Rightarrow\)</span> el punto crítico es mínimo global” es usar un teorema de análisis que no demostramos. Hay una ruta que no necesita nada: completar el cuadrado, como en la Clase 2.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\hat\beta = (X'X)^{-1}X'y\)</span>, que existe porque <span class="math inline">\(X'X\)</span> es invertible (Clase 1: <span class="math inline">\(\operatorname{rango}(X'X) = \operatorname{rango}(X) = k\)</span>). Sea <span class="math inline">\(\hat u = y - X\hat\beta\)</span>. Primero verificamos las ecuaciones normales: <span class="math display">\[
+X'\hat u = X'y - X'X(X'X)^{-1}X'y = X'y - X'y = 0.
+\]</span> Ahora tomemos cualquier <span class="math inline">\(b\in\mathbb{R}^k\)</span>. Sumando y restando <span class="math inline">\(X\hat\beta\)</span>, <span class="math display">\[
+y - Xb = \hat u + X(\hat\beta - b).
+\]</span> Entonces <span id="eq-completar-cuadrado"><span class="math display">\[
+\begin{aligned}
+S(b) &amp;= \big(\hat u + X(\hat\beta - b)\big)'\big(\hat u + X(\hat\beta - b)\big)\\
+&amp;= \hat u'\hat u + 2(\hat\beta - b)'X'\hat u + (\hat\beta - b)'X'X(\hat\beta - b)\\
+&amp;= S(\hat\beta) + (\hat\beta - b)'X'X(\hat\beta - b). &amp;&amp;(X'\hat u = 0)
+\end{aligned}
+\tag{3}\]</span></span> Como <span class="math inline">\(X'X \succ 0\)</span> (Clase 1), el último término es <span class="math inline">\(\ge 0\)</span>, con igualdad si y solo si <span class="math inline">\(b = \hat\beta\)</span>. Luego <span class="math inline">\(S(b) \ge S(\hat\beta)\)</span> para todo <span class="math inline">\(b\)</span>, con igualdad solo en <span class="math inline">\(b = \hat\beta\)</span>.</p>
+</div>
+<p>La identidad <a href="#eq-completar-cuadrado" class="quarto-xref">Ecuación&nbsp;3</a> es la versión muestral exacta de la que usamos para el mejor predictor lineal en la Clase 2. <strong>Misma demostración, distinto producto interno.</strong> Esa repetición no es casualidad, y la sección ★ de la Clase 2 explica por qué.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Qué dicen las ecuaciones normales">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Qué dicen las ecuaciones normales
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(X'\hat u = 0\)</span> son <span class="math inline">\(k\)</span> ecuaciones: <span class="math inline">\(\sum_i x_{ij}\hat u_i = 0\)</span> para cada regresor <span class="math inline">\(j\)</span>. Es decir, <strong>los residuos no están correlacionados en la muestra con ningún regresor.</strong> Es la versión muestral de <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>. Y, otra vez, no es un supuesto: es lo que <em>define</em> a <span class="math inline">\(\hat\beta\)</span>.</p>
+</div>
+</div>
+<section id="el-caso-de-regresión-simple" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-caso-de-regresión-simple"><span class="header-section-number">2.1</span> El caso de regresión simple</h2>
+<p>Con <span class="math inline">\(x_i = (1, z_i)'\)</span>, las dos ecuaciones normales son <span class="math display">\[
+\sum_{i=1}^n (y_i - \hat\alpha - \hat\gamma z_i) = 0, \qquad \sum_{i=1}^n z_i(y_i - \hat\alpha - \hat\gamma z_i) = 0.
+\]</span> Dividiendo la primera por <span class="math inline">\(n\)</span>: <span class="math inline">\(\hat\alpha = \bar y - \hat\gamma\bar z\)</span>. Sustituyendo en la segunda y usando que <span class="math inline">\(\sum_i z_i(y_i - \bar y) = \sum_i (z_i - \bar z)(y_i - \bar y)\)</span> (porque <span class="math inline">\(\sum_i \bar z(y_i - \bar y) = 0\)</span>), y lo mismo para <span class="math inline">\(z\)</span>, <span class="math display">\[
+\hat\gamma = \frac{\sum_{i=1}^n (z_i - \bar z)(y_i - \bar y)}{\sum_{i=1}^n (z_i - \bar z)^2} = \frac{\widehat{\operatorname{Cov}}(z,y)}{\widehat{\operatorname{Var}}(z)}.
+\]</span> Es la fórmula poblacional “covarianza sobre varianza” de la Clase 2, con momentos muestrales. El principio de analogía funciona.</p>
+</section>
+</section>
+<section id="geometría-proyección-sobre-el-espacio-columna" class="level1 page-columns page-full" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Geometría: proyección sobre el espacio columna</h1>
+<p>Sustituyendo <a href="#eq-mco" class="quarto-xref">Ecuación&nbsp;1</a> en las definiciones, <span class="math display">\[
+\hat y = X\hat\beta = X(X'X)^{-1}X'y = Py, \qquad \hat u = y - Py = My,
+\]</span> donde <span class="math inline">\(P\)</span> y <span class="math inline">\(M\)</span> son las matrices de proyección y aniquiladora de la Clase 1. Todo lo que sabemos de ellas se traduce en hechos sobre MCO:</p>
+<div id="thm-geometria-mco" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Geometría de MCO)</strong></span> Si <span class="math inline">\(\operatorname{rango}(X) = k\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(\hat y = Py \in \operatorname{col}(X)\)</span> y <span class="math inline">\(\hat u = My \perp \operatorname{col}(X)\)</span>.</li>
+<li><span class="math inline">\(\hat y'\hat u = 0\)</span>: valores ajustados y residuos son ortogonales.</li>
+<li><span class="math inline">\(y'y = \hat y'\hat y + \hat u'\hat u\)</span>.</li>
+<li><span class="math inline">\(\hat u = Mu\)</span> si <span class="math inline">\(y = X\beta + u\)</span> para algún <span class="math inline">\(\beta\)</span>: los residuos son una transformación lineal de los errores.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li><p><span class="math inline">\(\hat y = X\hat\beta\)</span> es una combinación lineal de las columnas de <span class="math inline">\(X\)</span>. Para cualquier <span class="math inline">\(Xc \in \operatorname{col}(X)\)</span>, <span class="math inline">\((Xc)'\hat u = c'X'\hat u = 0\)</span> por las ecuaciones normales.</p></li>
+<li><p>Es (1) con <span class="math inline">\(c = \hat\beta\)</span>.</p></li>
+<li><p>Es la identidad de Pitágoras de la Clase 1 con <span class="math inline">\(z = y\)</span>: <span class="math inline">\(y = Py + My\)</span> y los sumandos son ortogonales.</p></li>
+<li><p><span class="math inline">\(\hat u = My = M(X\beta + u) = MX\beta + Mu = Mu\)</span>, porque <span class="math inline">\(MX = 0\)</span>.</p></li>
+</ol>
+</div>
+<div id="fig-proyeccion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-proyeccion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/proyeccion.png" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-proyeccion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: MCO proyecta <span class="math inline">\(y\)</span> ortogonalmente sobre el plano generado por las columnas de <span class="math inline">\(X\)</span>. El residuo es el cateto perpendicular.
+</figcaption>
+</figure>
+</div>
+<p>La figura dice todo: <span class="math inline">\(\hat y\)</span> es el punto del plano <span class="math inline">\(\operatorname{col}(X)\)</span> más cercano a <span class="math inline">\(y\)</span>, y la línea más corta de un punto a un plano es la perpendicular. <strong>MCO es “bajar la perpendicular”.</strong> Nota que el dibujo vive en <span class="math inline">\(\mathbb{R}^n\)</span>, el espacio de <em>observaciones</em> (cada eje es una persona), no en el diagrama de dispersión habitual donde cada eje es una variable. Acostumbrarse a pensar en este espacio es uno de los saltos conceptuales del curso.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Si <span class="math inline">\(n = 3.000\)</span>, el dibujo vive en <span class="math inline">\(\mathbb{R}^{3000}\)</span>. Yo tampoco puedo imaginarme <span class="math inline">\(\mathbb{R}^{3000}\)</span>. El truco, que usa todo el mundo, es imaginar <span class="math inline">\(\mathbb{R}^3\)</span> y decir “<span class="math inline">\(n\)</span>” en voz alta con mucha seguridad.</p></div></div><p>El punto (4) merece una pausa: los residuos <span class="math inline">\(\hat u\)</span> no son los errores <span class="math inline">\(u\)</span>. Son <span class="math inline">\(Mu\)</span>, una versión “aplastada” de los errores donde se eliminó toda componente en <span class="math inline">\(\operatorname{col}(X)\)</span>. Por eso <span class="math inline">\(\hat u\)</span> vive en un subespacio de dimensión <span class="math inline">\(n - k\)</span> y por eso, en la Clase 4, para estimar <span class="math inline">\(\sigma^2\)</span> dividiremos por <span class="math inline">\(n-k\)</span> y no por <span class="math inline">\(n\)</span>.</p>
+</section>
+<section id="bondad-de-ajuste-el-r2" class="level1 page-columns page-full" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Bondad de ajuste: el <span class="math inline">\(R^2\)</span></h1>
+<p>Supongamos ahora que <span class="math inline">\(X\)</span> contiene una columna de unos. Entonces la primera ecuación normal dice <span class="math inline">\(\iota'\hat u = \sum_i \hat u_i = 0\)</span>, y de ahí salen varias propiedades:</p>
+<div id="lem-con-constante" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Consecuencias de incluir una constante)</strong></span> Si <span class="math inline">\(\iota\in\operatorname{col}(X)\)</span>, entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(\sum_i\hat u_i = 0\)</span>.</li>
+<li><span class="math inline">\(\bar{\hat y} = \bar y\)</span>: el promedio de los ajustados es el promedio de <span class="math inline">\(y\)</span>.</li>
+<li>La recta (hiperplano) de regresión pasa por las medias: <span class="math inline">\(\bar y = \bar x'\hat\beta\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li>Como <span class="math inline">\(\iota\in\operatorname{col}(X)\)</span>, por <a href="#thm-geometria-mco" class="quarto-xref">Teorema&nbsp;2</a> (1), <span class="math inline">\(\iota'\hat u = 0\)</span>.</li>
+<li><span class="math inline">\(y = \hat y + \hat u\)</span>; promediando y usando (1), <span class="math inline">\(\bar y = \bar{\hat y}\)</span>.</li>
+<li><span class="math inline">\(\bar{\hat y} = \frac1n\sum_i x_i'\hat\beta = \bar x'\hat\beta\)</span> y se aplica (2).</li>
+</ol>
+</div>
+<p>Definimos las tres sumas de cuadrados: <span class="math display">\[
+\text{SCT} = \sum_i (y_i - \bar y)^2, \qquad \text{SCE} = \sum_i(\hat y_i - \bar y)^2, \qquad \text{SCR} = \sum_i\hat u_i^2,
+\]</span> total, explicada y de residuos.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;Las siglas cambian de libro en libro y de idioma en idioma (SST/SSE/SSR, TSS/ESS/RSS…) y algunos libros intercambian qué significa la E y la R. Es una fuente inagotable de confusión en pruebas. Mira siempre la definición, nunca la sigla.</p></div></div><div id="thm-descomposicion-sct" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Descomposición de la suma de cuadrados)</strong></span> Si <span class="math inline">\(\iota\in\operatorname{col}(X)\)</span>, entonces <span class="math inline">\(\text{SCT} = \text{SCE} + \text{SCR}\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En notación matricial, con <span class="math inline">\(M^0\)</span> la matriz que resta la media, <span class="math inline">\(\text{SCT} = y'M^0y = \|M^0y\|^2\)</span>. Quiero descomponer <span class="math inline">\(M^0 y\)</span> en dos piezas ortogonales. Como <span class="math inline">\(y = \hat y + \hat u\)</span>, tengo <span class="math inline">\(M^0 y = M^0\hat y + M^0\hat u\)</span>. Pero <span class="math inline">\(\hat u\)</span> ya tiene media cero, así que <span class="math inline">\(M^0\hat u = \hat u\)</span>. Entonces <span class="math inline">\(M^0y = M^0\hat y + \hat u\)</span>, y solo tengo que ver que <span class="math inline">\(M^0\hat y\perp\hat u\)</span>. <span class="math inline">\(M^0\hat y = \hat y - \bar y\iota\)</span>, y tanto <span class="math inline">\(\hat y\)</span> como <span class="math inline">\(\iota\)</span> son ortogonales a <span class="math inline">\(\hat u\)</span>. ¡Listo!</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(M^0 = I - \frac1n\iota\iota'\)</span>. Por <a href="#lem-con-constante" class="quarto-xref">Lema&nbsp;1</a>, <span class="math inline">\(\iota'\hat u = 0\)</span> y entonces <span class="math inline">\(M^0\hat u = \hat u - \frac1n\iota(\iota'\hat u) = \hat u\)</span>. Luego <span class="math display">\[
+M^0y = M^0\hat y + M^0\hat u = M^0\hat y + \hat u.
+\]</span> Los dos sumandos son ortogonales: <span class="math inline">\((M^0\hat y)'\hat u = \hat y'\hat u - \bar{\hat y}\,\iota'\hat u = 0 - 0 = 0\)</span>, usando <a href="#thm-geometria-mco" class="quarto-xref">Teorema&nbsp;2</a> (2) y <a href="#lem-con-constante" class="quarto-xref">Lema&nbsp;1</a> (1). Por Pitágoras, <span class="math display">\[
+\text{SCT} = \|M^0y\|^2 = \|M^0\hat y\|^2 + \|\hat u\|^2 = \sum_i(\hat y_i - \bar{\hat y})^2 + \text{SCR} = \text{SCE} + \text{SCR},
+\]</span> donde en el último paso usamos <span class="math inline">\(\bar{\hat y} = \bar y\)</span>.</p>
+</div>
+<div id="def-r2" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Coeficiente de determinación)</strong></span> Si <span class="math inline">\(\iota\in\operatorname{col}(X)\)</span> y <span class="math inline">\(\text{SCT} &gt; 0\)</span>, <span class="math display">\[
+R^2 = \frac{\text{SCE}}{\text{SCT}} = 1 - \frac{\text{SCR}}{\text{SCT}}.
+\]</span></p>
+</div>
+<p>Por <a href="#thm-descomposicion-sct" class="quarto-xref">Teorema&nbsp;3</a>, <span class="math inline">\(0 \le R^2 \le 1\)</span>. Es el análogo muestral del cociente <span class="math inline">\(\operatorname{Var}(m(x))/\operatorname{Var}(y)\)</span> de la Clase 2 (pero para la proyección <em>lineal</em>). Hay una interpretación más:</p>
+<div id="prp-r2-correlacion" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (<span class="math inline">\(R^2\)</span> es una correlación al cuadrado)</strong></span> Si <span class="math inline">\(\iota\in\operatorname{col}(X)\)</span>, <span class="math inline">\(R^2 = \widehat{\operatorname{Corr}}(y,\hat y)^2\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Usando <span class="math inline">\(\bar{\hat y} = \bar y\)</span>, la covarianza muestral (sin dividir por <span class="math inline">\(n\)</span>) entre <span class="math inline">\(y\)</span> y <span class="math inline">\(\hat y\)</span> es <span class="math display">\[
+\sum_i (y_i - \bar y)(\hat y_i - \bar y) = \sum_i(\hat y_i - \bar y + \hat u_i)(\hat y_i - \bar y) = \text{SCE} + \sum_i\hat u_i(\hat y_i - \bar y) = \text{SCE},
+\]</span> porque <span class="math inline">\(\sum_i \hat u_i\hat y_i = 0\)</span> y <span class="math inline">\(\sum_i\hat u_i = 0\)</span>. Entonces <span class="math display">\[
+\widehat{\operatorname{Corr}}(y,\hat y)^2 = \frac{\text{SCE}^2}{\text{SCT}\cdot\text{SCE}} = \frac{\text{SCE}}{\text{SCT}} = R^2.
+\]</span></p>
+</div>
+<section id="el-r2-nunca-baja" class="level2 page-columns page-full" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="el-r2-nunca-baja"><span class="header-section-number">4.1</span> El <span class="math inline">\(R^2\)</span> nunca baja</h2>
+<div id="thm-r2-monotono" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Agregar regresores no reduce el <span class="math inline">\(R^2\)</span>)</strong></span> Sean <span class="math inline">\(X_1\)</span> (<span class="math inline">\(n\times k_1\)</span>) y <span class="math inline">\(X = [X_1\;X_2]\)</span> (<span class="math inline">\(n\times k\)</span>), ambas con la constante. Sean <span class="math inline">\(\text{SCR}_1\)</span> y <span class="math inline">\(\text{SCR}\)</span> las sumas de residuos de regresar <span class="math inline">\(y\)</span> sobre <span class="math inline">\(X_1\)</span> y sobre <span class="math inline">\(X\)</span>. Entonces <span class="math inline">\(\text{SCR}\le\text{SCR}_1\)</span>, y por lo tanto <span class="math inline">\(R^2\ge R_1^2\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\text{SCR} = \min_{b\in\mathbb{R}^k}\|y - Xb\|^2\)</span>. El candidato particular <span class="math inline">\(b = (\hat\beta_1', 0')'\)</span>, donde <span class="math inline">\(\hat\beta_1\)</span> es el MCO de la regresión corta, da <span class="math inline">\(Xb = X_1\hat\beta_1\)</span>. Luego <span class="math display">\[
+\text{SCR} = \min_b\|y - Xb\|^2 \le \|y - X_1\hat\beta_1\|^2 = \text{SCR}_1.
+\]</span> Como <span class="math inline">\(\text{SCT}\)</span> no depende de los regresores, <span class="math inline">\(R^2 = 1 - \text{SCR}/\text{SCT}\ge 1 - \text{SCR}_1/\text{SCT} = R_1^2\)</span>.</p>
+</div>
+<p>La demostración es de una línea y la moraleja es importante: <strong>el <span class="math inline">\(R^2\)</span> premia agregar basura.</strong> Agrega a tu regresión de salarios el número de letras del apellido de cada persona y el <span class="math inline">\(R^2\)</span> subirá (o, con suerte, quedará igual).<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Por eso existe el <span class="math inline">\(R^2\)</span> ajustado, <span class="math display">\[
+\bar R^2 = 1 - \frac{\text{SCR}/(n-k)}{\text{SCT}/(n-1)},
+\]</span> que penaliza con los grados de libertad y puede bajar al agregar regresores. La razón de dividir por <span class="math inline">\(n - k\)</span> y <span class="math inline">\(n-1\)</span> se verá en la Clase 4 (son los divisores que hacen insesgadas a las varianzas estimadas).</p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Esto no es un chiste: con <span class="math inline">\(k = n\)</span> regresores linealmente independientes, <span class="math inline">\(\operatorname{col}(X) = \mathbb{R}^n\)</span>, <span class="math inline">\(\hat y = y\)</span> y <span class="math inline">\(R^2 = 1\)</span>. Ajuste perfecto, poder predictivo nulo.</p></div></div></section>
+</section>
+<section id="el-teorema-de-frischwaughlovell" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El teorema de Frisch–Waugh–Lovell</h1>
+<p>Este es, para mí, el teorema más bonito del curso. Particionemos <span class="math inline">\(X = [X_1\;X_2]\)</span> con <span class="math inline">\(X_1\)</span> de <span class="math inline">\(n\times k_1\)</span> y <span class="math inline">\(X_2\)</span> de <span class="math inline">\(n\times k_2\)</span>, y el vector de MCO correspondiente <span class="math inline">\(\hat\beta = (\hat\beta_1', \hat\beta_2')'\)</span>. La pregunta: <strong>¿qué es <span class="math inline">\(\hat\beta_1\)</span> por sí solo?</strong> La respuesta de todo curso de pregrado es “el efecto de <span class="math inline">\(X_1\)</span> manteniendo <span class="math inline">\(X_2\)</span> constante”. Pero ¿qué significa eso en una muestra donde nadie mantuvo nada constante? FWL da la respuesta precisa.</p>
+<p>Sea <span class="math inline">\(M_2 = I - X_2(X_2'X_2)^{-1}X_2'\)</span> la aniquiladora de <span class="math inline">\(X_2\)</span>. Recuerda que <span class="math inline">\(M_2 z\)</span> son los residuos de regresar <span class="math inline">\(z\)</span> sobre <span class="math inline">\(X_2\)</span>: lo que queda de <span class="math inline">\(z\)</span> después de sacarle todo lo que <span class="math inline">\(X_2\)</span> puede explicar linealmente.</p>
+<div id="thm-fwl" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Frisch–Waugh–Lovell)</strong></span> Si <span class="math inline">\(X = [X_1\;X_2]\)</span> tiene rango completo, entonces <span class="math display">\[
+\hat\beta_1 = (X_1'M_2X_1)^{-1}X_1'M_2y = \big(\tilde X_1'\tilde X_1\big)^{-1}\tilde X_1'\tilde y,
+\]</span> donde <span class="math inline">\(\tilde X_1 = M_2X_1\)</span> y <span class="math inline">\(\tilde y = M_2y\)</span>. Es decir, <span class="math inline">\(\hat\beta_1\)</span> se obtiene en tres pasos:</p>
+<ol type="1">
+<li>Regresar <span class="math inline">\(y\)</span> sobre <span class="math inline">\(X_2\)</span> y guardar los residuos <span class="math inline">\(\tilde y\)</span>.</li>
+<li>Regresar cada columna de <span class="math inline">\(X_1\)</span> sobre <span class="math inline">\(X_2\)</span> y guardar los residuos <span class="math inline">\(\tilde X_1\)</span>.</li>
+<li>Regresar <span class="math inline">\(\tilde y\)</span> sobre <span class="math inline">\(\tilde X_1\)</span>.</li>
+</ol>
+<p>Además, los residuos de la regresión del paso 3 son idénticos a los residuos <span class="math inline">\(\hat u\)</span> de la regresión completa.</p>
+</div>
+<p>En palabras: <strong>el coeficiente de <span class="math inline">\(X_1\)</span> en la regresión larga es el coeficiente de una regresión simple entre las “versiones limpias” de <span class="math inline">\(y\)</span> y de <span class="math inline">\(X_1\)</span>, ya purgadas de <span class="math inline">\(X_2\)</span>.</strong> Eso es lo que significa “controlar por <span class="math inline">\(X_2\)</span>”.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La regresión larga dice <span class="math inline">\(y = X_1\hat\beta_1 + X_2\hat\beta_2 + \hat u\)</span>. Quiero aislar <span class="math inline">\(\hat\beta_1\)</span>; la molestia es <span class="math inline">\(X_2\hat\beta_2\)</span>. ¿Cómo me deshago de algo que está en el espacio columna de <span class="math inline">\(X_2\)</span>? ¡Con <span class="math inline">\(M_2\)</span>, que lo aniquila! Multiplico todo por <span class="math inline">\(M_2\)</span>: <span class="math display">\[
+M_2y = M_2X_1\hat\beta_1 + \underbrace{M_2X_2}_{=0}\hat\beta_2 + M_2\hat u.
+\]</span> ¿Y qué es <span class="math inline">\(M_2\hat u\)</span>? <span class="math inline">\(\hat u\)</span> es ortogonal a todo <span class="math inline">\(\operatorname{col}(X)\)</span>, en particular a <span class="math inline">\(\operatorname{col}(X_2)\)</span>, así que proyectarlo sobre <span class="math inline">\(X_2\)</span> da cero: <span class="math inline">\(P_2\hat u = 0\)</span> y <span class="math inline">\(M_2\hat u = \hat u\)</span>. Queda <span class="math inline">\(\tilde y = \tilde X_1\hat\beta_1 + \hat u\)</span>. Ahora multiplico por <span class="math inline">\(\tilde X_1'\)</span> y necesito que <span class="math inline">\(\tilde X_1'\hat u = 0\)</span>. Pero <span class="math inline">\(\tilde X_1'\hat u = X_1'M_2\hat u = X_1'\hat u = 0\)</span> (ecuaciones normales). Se despeja <span class="math inline">\(\hat\beta_1\)</span>. Solo me falta verificar que <span class="math inline">\(\tilde X_1'\tilde X_1\)</span> es invertible.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por definición de MCO y de los residuos, <span id="eq-fwl-larga"><span class="math display">\[
+y = X_1\hat\beta_1 + X_2\hat\beta_2 + \hat u, \qquad X_1'\hat u = 0, \qquad X_2'\hat u = 0.
+\tag{4}\]</span></span></p>
+<p><em>Paso 1: <span class="math inline">\(M_2\hat u = \hat u\)</span>.</em> Como <span class="math inline">\(X_2'\hat u = 0\)</span>, <span class="math inline">\(P_2\hat u = X_2(X_2'X_2)^{-1}X_2'\hat u = 0\)</span>, así que <span class="math inline">\(M_2\hat u = \hat u - P_2\hat u = \hat u\)</span>.</p>
+<p><em>Paso 2: premultiplicar por <span class="math inline">\(M_2\)</span>.</em> Como <span class="math inline">\(M_2X_2 = 0\)</span> (Clase 1), <a href="#eq-fwl-larga" class="quarto-xref">Ecuación&nbsp;4</a> da <span id="eq-fwl-paso2"><span class="math display">\[
+M_2 y = M_2X_1\hat\beta_1 + \hat u.
+\tag{5}\]</span></span></p>
+<p><em>Paso 3: premultiplicar por <span class="math inline">\(X_1'\)</span>.</em> Usando <span class="math inline">\(X_1'\hat u = 0\)</span>, <span class="math display">\[
+X_1'M_2y = X_1'M_2X_1\hat\beta_1.
+\]</span></p>
+<p><em>Paso 4: invertibilidad.</em> <span class="math inline">\(X_1'M_2X_1 = (M_2X_1)'(M_2X_1)\)</span> porque <span class="math inline">\(M_2\)</span> es simétrica e idempotente. Si <span class="math inline">\((M_2X_1)c = 0\)</span> para algún <span class="math inline">\(c\)</span>, entonces <span class="math inline">\(X_1c = P_2X_1c = X_2d\)</span> con <span class="math inline">\(d = (X_2'X_2)^{-1}X_2'X_1c\)</span>, es decir, <span class="math inline">\(X_1c - X_2d = 0\)</span>. Como <span class="math inline">\([X_1\;X_2]\)</span> tiene rango completo, <span class="math inline">\(c = 0\)</span> (y <span class="math inline">\(d = 0\)</span>). Luego <span class="math inline">\(M_2X_1\)</span> tiene rango columna completo y <span class="math inline">\(X_1'M_2X_1\)</span> es invertible (Clase 1). Despejando, <span class="math display">\[
+\hat\beta_1 = (X_1'M_2X_1)^{-1}X_1'M_2y.
+\]</span> Como <span class="math inline">\(X_1'M_2X_1 = \tilde X_1'\tilde X_1\)</span> y <span class="math inline">\(X_1'M_2y = X_1'M_2M_2y = \tilde X_1'\tilde y\)</span>, esta es la fórmula de MCO de <span class="math inline">\(\tilde y\)</span> sobre <span class="math inline">\(\tilde X_1\)</span>.</p>
+<p><em>Paso 5: residuos.</em> Por <a href="#eq-fwl-paso2" class="quarto-xref">Ecuación&nbsp;5</a>, los residuos de la regresión del paso 3 son <span class="math inline">\(\tilde y - \tilde X_1\hat\beta_1 = \hat u\)</span>.</p>
+</div>
+<p>Compara con la Clase 1: allí, con la inversa particionada, vimos que el bloque <span class="math inline">\((1,1)\)</span> de <span class="math inline">\((X'X)^{-1}\)</span> es <span class="math inline">\((X_1'M_2X_1)^{-1}\)</span>. FWL lo “explica”: es la matriz <span class="math inline">\((\tilde X_1'\tilde X_1)^{-1}\)</span> de la regresión de los residuos. Esto será crucial en la Clase 4.</p>
+<section id="tres-corolarios-que-usarás-siempre" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="tres-corolarios-que-usarás-siempre"><span class="header-section-number">5.1</span> Tres corolarios que usarás siempre</h2>
+<div id="cor-fwl-demean" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 1 (Incluir una constante es restar medias)</strong></span> En la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\([\,\iota\;\; Z\,]\)</span>, el coeficiente de <span class="math inline">\(Z\)</span> es el MCO de <span class="math inline">\((y - \bar y)\)</span> sobre las columnas de <span class="math inline">\(Z\)</span> en desvíos respecto de sus medias.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Aplica FWL con <span class="math inline">\(X_2 = \iota\)</span> y <span class="math inline">\(X_1 = Z\)</span>. Como vimos en la Clase 1, <span class="math inline">\(M_2 = M^0\)</span>, que resta la media.</p>
+</div>
+<div id="cor-fwl-simple" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 2 (Coeficiente individual como regresión simple)</strong></span> En la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\([x_j\;\;X_{-j}]\)</span> (donde <span class="math inline">\(X_{-j}\)</span> son los demás regresores, incluida la constante), <span class="math display">\[
+\hat\beta_j = \frac{\sum_i \tilde x_{ij}\,y_i}{\sum_i\tilde x_{ij}^2},
+\]</span> donde <span class="math inline">\(\tilde x_{ij}\)</span> son los residuos de regresar <span class="math inline">\(x_j\)</span> sobre <span class="math inline">\(X_{-j}\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por FWL con <span class="math inline">\(X_1 = x_j\)</span> (una columna), <span class="math inline">\(\hat\beta_j = (\tilde x_j'\tilde x_j)^{-1}\tilde x_j'\tilde y\)</span>. Y <span class="math inline">\(\tilde x_j'\tilde y = x_j'M_{-j}M_{-j}y = \tilde x_j'y\)</span>, porque <span class="math inline">\(M_{-j}\)</span> es simétrica e idempotente.</p>
+</div>
+<p>Nota que <strong>no hace falta purgar a <span class="math inline">\(y\)</span></strong>: basta con purgar al regresor. Esto se usa en la Clase 4 para calcular la varianza de <span class="math inline">\(\hat\beta_j\)</span> y en la Clase 8 para entender la multicolinealidad.</p>
+<div id="cor-fwl-ortogonal" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 3 (Regresores ortogonales)</strong></span> Si <span class="math inline">\(X_1'X_2 = 0\)</span>, entonces <span class="math inline">\(\hat\beta_1 = (X_1'X_1)^{-1}X_1'y\)</span>: el coeficiente de <span class="math inline">\(X_1\)</span> es el mismo en la regresión larga y en la corta (sin <span class="math inline">\(X_2\)</span>).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(X_2'X_1 = 0\)</span>, entonces <span class="math inline">\(P_2X_1 = X_2(X_2'X_2)^{-1}X_2'X_1 = 0\)</span> y <span class="math inline">\(M_2X_1 = X_1\)</span>. FWL da <span class="math inline">\(\hat\beta_1 = (X_1'X_1)^{-1}X_1'y\)</span>.</p>
+</div>
+<p>Este último corolario es el germen del <strong>sesgo por variable omitida</strong> (Clase 8): omitir <span class="math inline">\(X_2\)</span> no cambia el coeficiente de <span class="math inline">\(X_1\)</span> <em>solo si</em> son ortogonales en la muestra. Si no lo son, omitir <span class="math inline">\(X_2\)</span> contamina <span class="math inline">\(\hat\beta_1\)</span>.</p>
+</section>
+</section>
+<section id="postgrado-leverage-e-influencia" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: leverage e influencia</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Cuánto depende <span class="math inline">\(\hat\beta\)</span> de una sola observación? Para responderlo, estudiamos la diagonal de <span class="math inline">\(P\)</span> y una fórmula exacta para el cambio de <span class="math inline">\(\hat\beta\)</span> al borrar una observación.</p>
+</div>
+</div>
+<p>Los elementos diagonales de <span class="math inline">\(P\)</span> se llaman <strong>leverages</strong>: <span class="math display">\[
+h_{ii} = P_{ii} = x_i'(X'X)^{-1}x_i.
+\]</span> Por el Ejercicio 1.7, <span class="math inline">\(0 \le h_{ii}\le 1\)</span>, y como <span class="math inline">\(\operatorname{tr}(P) = k\)</span>, se tiene <span class="math inline">\(\sum_i h_{ii} = k\)</span>: el leverage promedio es <span class="math inline">\(k/n\)</span>. Además, <span class="math inline">\(\hat y_i = \sum_j P_{ij}y_j\)</span>, así que <span class="math inline">\(h_{ii}\)</span> mide cuánto pesa <span class="math inline">\(y_i\)</span> en su propio valor ajustado. Una observación con <span class="math inline">\(h_{ii}\)</span> cerca de 1 “tira” de la regresión hacia sí misma.</p>
+<div id="lem-sherman-morrison" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 2 (Sherman–Morrison)</strong></span> Si <span class="math inline">\(A\)</span> es invertible y <span class="math inline">\(1 - v'A^{-1}v \neq 0\)</span>, entonces <span class="math display">\[
+(A - vv')^{-1} = A^{-1} + \frac{A^{-1}vv'A^{-1}}{1 - v'A^{-1}v}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Multiplicamos <span class="math inline">\((A - vv')\)</span> por el lado derecho propuesto. Sea <span class="math inline">\(c = v'A^{-1}v\)</span> (un escalar): <span class="math display">\[
+\begin{aligned}
+(A - vv')\Big(A^{-1} + \frac{A^{-1}vv'A^{-1}}{1 - c}\Big)
+&amp;= I - vv'A^{-1} + \frac{vv'A^{-1} - v(v'A^{-1}v)v'A^{-1}}{1-c}\\
+&amp;= I - vv'A^{-1} + \frac{(1 - c)\,vv'A^{-1}}{1 - c} = I.
+\end{aligned}
+\]</span></p>
+</div>
+<div id="thm-influencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (Efecto de borrar una observación)</strong></span> Sea <span class="math inline">\(\hat\beta_{(i)}\)</span> el MCO calculado sin la observación <span class="math inline">\(i\)</span>. Si <span class="math inline">\(h_{ii} &lt; 1\)</span>, <span class="math display">\[
+\hat\beta - \hat\beta_{(i)} = \frac{(X'X)^{-1}x_i\,\hat u_i}{1 - h_{ii}}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sin la observación <span class="math inline">\(i\)</span>, las sumas <span class="math inline">\(X'X = \sum_j x_jx_j'\)</span> y <span class="math inline">\(X'y = \sum_j x_jy_j\)</span> pierden un término: <span class="math inline">\(X_{(i)}'X_{(i)} = X'X - x_ix_i'\)</span> y <span class="math inline">\(X_{(i)}'y_{(i)} = X'y - x_iy_i\)</span>. ¡Es exactamente la forma de Sherman–Morrison con <span class="math inline">\(v = x_i\)</span>! Y <span class="math inline">\(v'A^{-1}v = x_i'(X'X)^{-1}x_i = h_{ii}\)</span>. Luego aplico SM, multiplico, y hay que ser ordenado con el álgebra: aparecerán <span class="math inline">\(x_i'\hat\beta = \hat y_i\)</span> y <span class="math inline">\(y_i - \hat y_i = \hat u_i\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(A = X'X\)</span>. Por la identidad “productos como sumas de observaciones” de la Clase 1, <span class="math inline">\(X_{(i)}'X_{(i)} = A - x_ix_i'\)</span> y <span class="math inline">\(X_{(i)}'y_{(i)} = X'y - x_iy_i\)</span>. Por Sherman–Morrison con <span class="math inline">\(v = x_i\)</span> (y <span class="math inline">\(v'A^{-1}v = h_{ii} \ne 1\)</span>), <span class="math display">\[
+\hat\beta_{(i)} = \Big(A^{-1} + \frac{A^{-1}x_ix_i'A^{-1}}{1 - h_{ii}}\Big)(X'y - x_iy_i).
+\]</span> Expandimos, usando <span class="math inline">\(A^{-1}X'y = \hat\beta\)</span>, <span class="math inline">\(x_i'\hat\beta = \hat y_i\)</span> y <span class="math inline">\(x_i'A^{-1}x_i = h_{ii}\)</span>: <span class="math display">\[
+\begin{aligned}
+\hat\beta_{(i)} &amp;= \hat\beta - A^{-1}x_iy_i + \frac{A^{-1}x_i\hat y_i}{1 - h_{ii}} - \frac{A^{-1}x_i\,h_{ii}\,y_i}{1 - h_{ii}}\\
+&amp;= \hat\beta - \frac{A^{-1}x_i}{1-h_{ii}}\Big[(1 - h_{ii})y_i - \hat y_i + h_{ii}y_i\Big]\\
+&amp;= \hat\beta - \frac{A^{-1}x_i\,(y_i - \hat y_i)}{1 - h_{ii}} = \hat\beta - \frac{(X'X)^{-1}x_i\,\hat u_i}{1 - h_{ii}}.
+\end{aligned}
+\]</span></p>
+</div>
+<p>La influencia de una observación es el producto de dos cosas: su residuo <span class="math inline">\(\hat u_i\)</span> (qué tan mal la ajusta la recta) y su leverage vía <span class="math inline">\(1/(1 - h_{ii})\)</span> (qué tan atípicos son sus regresores). Una observación con residuo chico y leverage alto puede ser igual de influyente que una con residuo grande. De aquí salen la distancia de Cook, los DFBETAS y, en la Clase 7, los estimadores de varianza robustos HC2 y HC3, que dividen <span class="math inline">\(\hat u_i^2\)</span> por <span class="math inline">\((1 - h_{ii})\)</span> o <span class="math inline">\((1 - h_{ii})^2\)</span>.</p>
+<p>Un corolario útil: el <strong>error de predicción fuera de muestra</strong> de la observación <span class="math inline">\(i\)</span> (usando <span class="math inline">\(\hat\beta_{(i)}\)</span>) es <span class="math display">\[
+y_i - x_i'\hat\beta_{(i)} = \hat u_i + \frac{x_i'(X'X)^{-1}x_i\,\hat u_i}{1 - h_{ii}} = \frac{\hat u_i}{1 - h_{ii}},
+\]</span> lo que permite calcular la validación cruzada <em>leave-one-out</em> de una regresión lineal sin reestimar <span class="math inline">\(n\)</span> veces.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li><span class="math inline">\(\hat\beta = (X'X)^{-1}X'y\)</span> minimiza la suma de residuos al cuadrado; el mínimo es global y único por completación de cuadrados (<a href="#thm-mco" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>Las ecuaciones normales <span class="math inline">\(X'\hat u = 0\)</span> dicen que los residuos son ortogonales a los regresores.</li>
+<li><span class="math inline">\(\hat y = Py\)</span>, <span class="math inline">\(\hat u = My = Mu\)</span>: MCO es una proyección ortogonal (<a href="#thm-geometria-mco" class="quarto-xref">Teorema&nbsp;2</a>).</li>
+<li>Con constante: <span class="math inline">\(\text{SCT} = \text{SCE} + \text{SCR}\)</span>, <span class="math inline">\(R^2\in[0,1]\)</span>, y <span class="math inline">\(R^2\)</span> no baja al agregar regresores.</li>
+<li>FWL: <span class="math inline">\(\hat\beta_1\)</span> es la regresión de <span class="math inline">\(M_2y\)</span> sobre <span class="math inline">\(M_2X_1\)</span> (<a href="#thm-fwl" class="quarto-xref">Teorema&nbsp;5</a>). “Controlar por <span class="math inline">\(X_2\)</span>” = “purgar de <span class="math inline">\(X_2\)</span>”.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 3.1.</strong> Con los datos <span class="math inline">\(z = (1,2,3,4)'\)</span> e <span class="math inline">\(y = (2,3,5,6)'\)</span>, calcula <span class="math inline">\(\hat\alpha\)</span> y <span class="math inline">\(\hat\gamma\)</span> de la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1, z)\)</span>, los residuos y el <span class="math inline">\(R^2\)</span>. Verifica las ecuaciones normales.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\bar z = 2{,}5\)</span>, <span class="math inline">\(\bar y = 4\)</span>. Desvíos: <span class="math inline">\(z - \bar z = (-1{,}5; -0{,}5; 0{,}5; 1{,}5)\)</span>, <span class="math inline">\(y - \bar y = (-2;-1;1;2)\)</span>. <span class="math inline">\(\sum(z-\bar z)(y - \bar y) = 3 + 0{,}5 + 0{,}5 + 3 = 7\)</span> y <span class="math inline">\(\sum(z-\bar z)^2 = 5\)</span>. Así <span class="math inline">\(\hat\gamma = 1{,}4\)</span> y <span class="math inline">\(\hat\alpha = 4 - 1{,}4\cdot2{,}5 = 0{,}5\)</span>. Ajustados: <span class="math inline">\((1{,}9;\,3{,}3;\,4{,}7;\,6{,}1)\)</span>. Residuos: <span class="math inline">\((0{,}1;\,-0{,}3;\,0{,}3;\,-0{,}1)\)</span>. Verificación: <span class="math inline">\(\sum\hat u_i = 0\)</span> y <span class="math inline">\(\sum z_i\hat u_i = 0{,}1 - 0{,}6 + 0{,}9 - 0{,}4 = 0\)</span>. <span class="math inline">\(\text{SCR} = 0{,}01 + 0{,}09 + 0{,}09 + 0{,}01 = 0{,}2\)</span>, <span class="math inline">\(\text{SCT} = 10\)</span>, <span class="math inline">\(R^2 = 0{,}98\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.2.</strong> Demuestra que si se multiplica un regresor <span class="math inline">\(x_j\)</span> por una constante <span class="math inline">\(c \ne 0\)</span>, su coeficiente de MCO se divide por <span class="math inline">\(c\)</span> y los demás coeficientes, los ajustados y el <span class="math inline">\(R^2\)</span> no cambian. (Pista: <span class="math inline">\(\tilde X = XD\)</span> con <span class="math inline">\(D\)</span> diagonal invertible.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\tilde\beta = (D'X'XD)^{-1}D'X'y = D^{-1}(X'X)^{-1}D'^{-1}D'X'y = D^{-1}\hat\beta\)</span>. Con <span class="math inline">\(D = \operatorname{diag}(1,\dots,c,\dots,1)\)</span>, solo la coordenada <span class="math inline">\(j\)</span> se divide por <span class="math inline">\(c\)</span>. <span class="math inline">\(\tilde X\tilde\beta = XDD^{-1}\hat\beta = X\hat\beta\)</span>, así que ajustados, residuos y <span class="math inline">\(R^2\)</span> son iguales. Más en general: <span class="math inline">\(\operatorname{col}(XD) = \operatorname{col}(X)\)</span>, y MCO solo depende del espacio columna.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.3.</strong> Da un ejemplo en que, sin constante en la regresión, el “<span class="math inline">\(R^2\)</span>” definido como <span class="math inline">\(1 - \text{SCR}/\text{SCT}\)</span> sea negativo.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Tomemos <span class="math inline">\(y = (3, 4, 5)'\)</span> y un único regresor <span class="math inline">\(x = (1, -1, 0)'\)</span> sin constante. <span class="math inline">\(\hat\beta = x'y/x'x = (3 - 4)/2 = -0{,}5\)</span>, <span class="math inline">\(\hat y = (-0{,}5;\,0{,}5;\,0)\)</span>, <span class="math inline">\(\hat u = (3{,}5;\,3{,}5;\,5)\)</span>, <span class="math inline">\(\text{SCR} = 12{,}25 + 12{,}25 + 25 = 49{,}5\)</span>. <span class="math inline">\(\text{SCT} = 1 + 0 + 1 = 2\)</span>. Así “<span class="math inline">\(R^2\)</span>” <span class="math inline">\(= 1 - 24{,}75 &lt; 0\)</span>. La descomposición <span class="math inline">\(\text{SCT} = \text{SCE}+\text{SCR}\)</span> requiere la constante.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.4.</strong> Usa FWL para demostrar que el coeficiente de una tendencia lineal <span class="math inline">\(t = (1, 2,\dots,n)'\)</span> en la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1, t, z)\)</span> es el mismo que se obtiene al “destendenciar” <span class="math inline">\(y\)</span> y <span class="math inline">\(z\)</span> primero y luego regresar <span class="math inline">\(y\)</span> destendenciada sobre <span class="math inline">\(z\)</span> destendenciada… ¡Cuidado! ¿Qué coeficiente se obtiene así: el de <span class="math inline">\(t\)</span> o el de <span class="math inline">\(z\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El enunciado tenía una trampa deliberada. Destendenciar significa aplicar <span class="math inline">\(M_2\)</span> con <span class="math inline">\(X_2 = [\iota\;\; t]\)</span>, y FWL dice que regresar <span class="math inline">\(M_2y\)</span> sobre <span class="math inline">\(M_2z\)</span> da el coeficiente <strong>de <span class="math inline">\(z\)</span></strong> en la regresión larga (no el de <span class="math inline">\(t\)</span>). Este es el resultado original de Frisch y Waugh (1933): da lo mismo destendenciar las series antes de regresar que incluir la tendencia como regresor.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.5.</strong> Demuestra que la regresión de <span class="math inline">\(\hat u\)</span> (residuos de la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(X\)</span>) sobre <span class="math inline">\(X\)</span> tiene coeficientes cero y <span class="math inline">\(R^2\)</span> cero (si hay constante).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Coeficientes: <span class="math inline">\((X'X)^{-1}X'\hat u = 0\)</span> por las ecuaciones normales. Ajustados: <span class="math inline">\(0\)</span>. Residuos: <span class="math inline">\(\hat u\)</span> mismo. <span class="math inline">\(\text{SCR} = \hat u'\hat u = \text{SCT}\)</span> (pues <span class="math inline">\(\bar{\hat u} = 0\)</span>), así que <span class="math inline">\(R^2 = 0\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.6 ★.</strong> Sea <span class="math inline">\(X\)</span> con constante. Demuestra que <span class="math inline">\(h_{ii}\ge 1/n\)</span> para todo <span class="math inline">\(i\)</span>. (Pista: <span class="math inline">\(P - \frac1n\iota\iota'\)</span> es simétrica e idempotente, por el Ejercicio 1.6.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(X_1 = \iota\)</span>, <span class="math inline">\(P_1 = \frac1n\iota\iota'\)</span>, y por el Ejercicio 1.6, <span class="math inline">\(P - P_1\)</span> es simétrica e idempotente, luego semidefinida positiva (Ejercicio 1.7). Su diagonal es no negativa: <span class="math inline">\(h_{ii} - \frac1n\ge0\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.7 ★.</strong> Demuestra que la suma de los errores de predicción <em>leave-one-out</em> al cuadrado es <span class="math inline">\(\text{CV} = \sum_i\big(\hat u_i/(1 - h_{ii})\big)^2\)</span>. ¿Por qué CV es siempre mayor o igual que <span class="math inline">\(\text{SCR}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La fórmula sale directo del corolario al final de la sección de influencia. Como <span class="math inline">\(0\le h_{ii}&lt;1\)</span>, <span class="math inline">\(1/(1-h_{ii})^2\ge1\)</span>, así que cada término es <span class="math inline">\(\ge\hat u_i^2\)</span>. Interpretación: los residuos dentro de muestra son “demasiado optimistas” porque cada observación ayudó a elegir la recta que la ajusta.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-02.html" class="pagination-link" aria-label="Clase 2 · La esperanza condicional">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 2 · La esperanza condicional</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-1/clase-04.html" class="pagination-link" aria-label="Clase 4 · MCO en muestras finitas">
+        <span class="nav-page-text">Clase 4 · MCO en muestras finitas</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

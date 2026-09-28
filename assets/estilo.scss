@@ -1,0 +1,22 @@
+/*-- scss:defaults --*/
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+$font-family-sans-serif: "Source Serif 4", Georgia, serif;
+$font-family-monospace: "JetBrains Mono", Consolas, monospace;
+$headings-font-family: "Fraunces", Georgia, serif;
+$headings-font-weight: 600;
+$font-size-root: 18px;
+$line-height-base: 1.62;
+
+$body-bg: #fbf8f1;
+$body-color: #1f2430;
+$primary: #0f5e6b;
+$link-color: #0f5e6b;
+$navbar-bg: #1f2430;
+$navbar-fg: #f3ede0;
+$footer-bg: #f3ede0;
+
+/*-- scss:rules --*/
+h1.title { font-weight: 800; letter-spacing: -0.01em; }
+h2 { border-bottom: 1px solid #e3dccb; padding-bottom: .25rem; margin-top: 2.4rem; }
+.navbar-brand, .navbar-title { font-family: "Fraunces", serif; font-weight: 600; }

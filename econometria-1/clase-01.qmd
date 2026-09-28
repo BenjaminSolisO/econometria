@@ -1,0 +1,640 @@
+---
+title: "Clase 1 · La caja de herramientas"
+subtitle: "Álgebra matricial, proyecciones y vectores aleatorios"
+description: "Rango, formas cuadráticas, traza, matrices idempotentes, proyecciones, derivadas matriciales y momentos de vectores aleatorios."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a>
+:::
+
+# ¿Por qué empezar con matrices?
+
+Imagina que tienes $n = 3.000$ trabajadores y quieres explicar el salario de cada uno con sus años de educación, su experiencia y una constante. Eso son $3.000$ ecuaciones:
+
+$$
+\begin{aligned}
+\text{salario}_1 &= \beta_1 + \beta_2\,\text{educ}_1 + \beta_3\,\text{exper}_1 + u_1\\
+\text{salario}_2 &= \beta_1 + \beta_2\,\text{educ}_2 + \beta_3\,\text{exper}_2 + u_2\\
+&\;\;\vdots\\
+\text{salario}_{3000} &= \beta_1 + \beta_2\,\text{educ}_{3000} + \beta_3\,\text{exper}_{3000} + u_{3000}.
+\end{aligned}
+$$
+
+Escribir esto es tedioso. Demostrar cosas sobre esto, sin la notación adecuada, es una tortura.[^tortura] El álgebra matricial es la notación adecuada: todo lo anterior cabe en una línea,
+
+[^tortura]: Los econometristas de los años 30 hacían exactamente eso, a mano, con sumatorias anidadas. Cuando veas una fórmula de 1935 con cuatro $\Sigma$ seguidas, ten compasión.
+
+$$
+y = X\beta + u,
+$$
+
+y, lo que es más importante, las *demostraciones* sobre este objeto se vuelven cortas y transparentes. Esta clase junta todas las herramientas que usaremos en el curso. No hay econometría "de verdad" todavía, pero te prometo que cada resultado de hoy reaparecerá al menos una vez más adelante; al lado de cada uno anoto dónde.
+
+::: {.callout-caution title="Cómo leer este curso"}
+Cada clase tiene un **núcleo de pregrado** y secciones marcadas con **★ Postgrado**. Si estás en pregrado puedes saltarte las ★ en una primera lectura sin perder el hilo. Antes de muchas demostraciones hay un recuadro **Borrador**: ahí se piensa en voz alta, se prueban ideas y se descubre *por qué* la demostración funciona. Después viene la **Demostración** limpia, que es lo que escribirías en una prueba.
+:::
+
+# Notación
+
+Un **vector** es, para nosotros, siempre un vector *columna*. Si $a \in \mathbb{R}^k$,
+$$
+a = \begin{pmatrix} a_1 \\ \vdots \\ a_k\end{pmatrix}, \qquad a' = (a_1, \dots, a_k).
+$$
+La prima $'$ denota transpuesta.[^prima] El producto interno de $a,b \in \mathbb{R}^k$ es $a'b = \sum_{j=1}^k a_j b_j$ y la norma euclidiana es $\|a\| = \sqrt{a'a}$.
+
+[^prima]: Algunos libros usan $a^\top$ o $a^T$. Los econometristas usamos la prima porque somos gente práctica y la prima es más fácil de escribir en una pizarra. Mala suerte para quien quiera escribir una derivada.
+
+Para el modelo de regresión usaremos siempre la misma notación:
+
+- $n$ observaciones, $k$ regresores (incluida la constante, si la hay).
+- $y_i \in \mathbb{R}$ es la variable dependiente de la observación $i$; $x_i \in \mathbb{R}^k$ es su vector de regresores.
+- $y = (y_1,\dots,y_n)'$ es $n\times 1$; $X$ es la matriz $n \times k$ cuya fila $i$ es $x_i'$:
+$$
+X = \begin{pmatrix} x_1' \\ x_2' \\ \vdots \\ x_n' \end{pmatrix}
+  = \begin{pmatrix} x_{11} & x_{12} & \cdots & x_{1k}\\
+                    x_{21} & x_{22} & \cdots & x_{2k}\\
+                    \vdots & & & \vdots\\
+                    x_{n1} & x_{n2} & \cdots & x_{nk}\end{pmatrix}.
+$$
+- $\beta \in \mathbb{R}^k$ son los parámetros y $u \in \mathbb{R}^n$ los errores.
+
+Así, la ecuación $i$ es $y_i = x_i'\beta + u_i$ y el sistema completo es $y = X\beta + u$.
+
+Hay una identidad que vas a usar mil veces, así que vale la pena demostrarla de una vez.
+
+::: {#lem-sumas}
+## Productos como sumas de observaciones
+$$
+X'X = \sum_{i=1}^n x_i x_i', \qquad X'y = \sum_{i=1}^n x_i y_i.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+¿Por qué debería ser cierto? $X'X$ es $k\times k$ y cada $x_ix_i'$ también es $k\times k$, así que al menos las dimensiones calzan. Miremos una entrada. La entrada $(j,l)$ de $X'X$ es "fila $j$ de $X'$ por columna $l$ de $X$", es decir, "columna $j$ de $X$ por columna $l$ de $X$", que es $\sum_i x_{ij}x_{il}$. Y la entrada $(j,l)$ de $x_ix_i'$ es $x_{ij}x_{il}$. ¡Listo! Solo hay que escribirlo.
+:::
+
+::: {.proof}
+Sea $(j,l)$ una entrada cualquiera, con $1 \le j,l\le k$. Por definición del producto matricial y de la transpuesta,
+$$
+(X'X)_{jl} = \sum_{i=1}^n (X')_{ji} X_{il} = \sum_{i=1}^n X_{ij}X_{il} = \sum_{i=1}^n x_{ij}x_{il}.
+$$
+Por otro lado, $(x_ix_i')_{jl} = x_{ij}x_{il}$, así que
+$$
+\Big(\sum_{i=1}^n x_ix_i'\Big)_{jl} = \sum_{i=1}^n (x_ix_i')_{jl} = \sum_{i=1}^n x_{ij}x_{il}.
+$$
+Las dos matrices coinciden entrada a entrada, luego son iguales. El caso $X'y$ es idéntico, cambiando la columna $l$ de $X$ por $y$.
+:::
+
+Moraleja: **una matriz del tipo $X'X$ es una suma sobre observaciones.** Esto será clave en la Clase 7, cuando apliquemos la ley de los grandes números a $\frac1n X'X = \frac1n\sum_i x_ix_i'$.
+
+# Rango e invertibilidad
+
+::: {#def-rango}
+## Rango
+El **rango** de una matriz $A$ ($n\times k$), $\operatorname{rango}(A)$, es el número máximo de columnas linealmente independientes de $A$. Equivalentemente, es la dimensión del **espacio columna** $\operatorname{col}(A) = \{Ab : b \in \mathbb{R}^k\}$. Decimos que $A$ tiene **rango columna completo** si $\operatorname{rango}(A) = k$.
+:::
+
+Tener rango columna completo significa que ninguna columna es combinación lineal de las otras. En regresión: ningún regresor es redundante. Si pones en $X$ una columna de "años de educación" y otra de "meses de educación", el rango cae y, como veremos, todo explota.[^trampa]
+
+[^trampa]: La versión clásica de este error es la *trampa de las variables dummy*: incluir una constante y, además, una dummy por cada categoría. Las dummies suman la constante, así que las columnas son linealmente dependientes.
+
+Recordemos un hecho de álgebra lineal que usaremos sin demostrar.
+
+::: {#thm-rango-nulidad}
+## Rango–nulidad
+Si $A$ es $n \times k$ y $\operatorname{nul}(A) = \{b \in \mathbb{R}^k : Ab = 0\}$, entonces
+$$
+\operatorname{rango}(A) + \dim\operatorname{nul}(A) = k.
+$$
+:::
+
+En particular, $A$ tiene rango columna completo si y solo si $Ab = 0 \Rightarrow b = 0$. Y una matriz cuadrada $k\times k$ es invertible si y solo si tiene rango $k$.
+
+Ahora el primer resultado genuinamente econométrico del curso.
+
+::: {#thm-rango-xx}
+## El rango de $X'X$
+Para toda matriz $X$ de $n\times k$,
+$$
+\operatorname{rango}(X'X) = \operatorname{rango}(X).
+$$
+En particular, $X'X$ es invertible si y solo si $X$ tiene rango columna completo.
+:::
+
+::: {.callout-note title="Borrador"}
+Por rango–nulidad, $\operatorname{rango}(X'X) = k - \dim \operatorname{nul}(X'X)$ y $\operatorname{rango}(X) = k - \dim\operatorname{nul}(X)$. Así que basta probar que los **espacios nulos** son iguales: $X'Xb = 0 \iff Xb = 0$.
+
+La dirección $\Leftarrow$ es regalada: si $Xb = 0$, multiplico por $X'$.
+
+La dirección $\Rightarrow$ es la interesante. Sé que $X'Xb = 0$ y quiero $Xb = 0$. No puedo "cancelar" $X'$ (¡no tiene inversa!). ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y $\|Xb\|^2 = (Xb)'(Xb) = b'X'Xb$... ¡que tiene un $X'Xb$ adentro! Es el truco de multiplicar por $b'$ a la izquierda. Vamos.
+:::
+
+::: {.proof}
+Por el teorema de rango–nulidad aplicado a $X$ y a $X'X$ (ambas con $k$ columnas), basta demostrar que $\operatorname{nul}(X'X) = \operatorname{nul}(X)$.
+
+($\supseteq$) Si $Xb = 0$, entonces $X'Xb = X'0 = 0$.
+
+($\subseteq$) Supongamos que $X'Xb = 0$. Multiplicando a la izquierda por $b'$,
+$$
+0 = b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 = \sum_{i=1}^n (Xb)_i^2.
+$$
+Una suma de cuadrados de números reales es cero solo si cada término es cero, así que $(Xb)_i = 0$ para todo $i$, es decir, $Xb = 0$.
+
+Los espacios nulos coinciden, luego tienen la misma dimensión y, por rango–nulidad, $\operatorname{rango}(X'X)=\operatorname{rango}(X)$. Como $X'X$ es $k\times k$, es invertible si y solo si su rango es $k$, es decir, si y solo si $\operatorname{rango}(X) = k$.
+:::
+
+Este teorema es la razón de ser del supuesto de "no multicolinealidad perfecta" que veremos en la Clase 3: el estimador de MCO es $(X'X)^{-1}X'y$, y la inversa existe exactamente cuando $X$ tiene rango columna completo. Nota también que esto exige $n \ge k$: una matriz $n\times k$ no puede tener rango mayor que $n$.[^nk]
+
+[^nk]: Si tienes más variables que observaciones, $X'X$ es singular *siempre*. Ese es el mundo de "alta dimensión" ($k > n$), donde MCO no está definido y entran LASSO y compañía. Econometría 3 dirá algo al respecto.
+
+# Formas cuadráticas y matrices definidas positivas
+
+::: {#def-definida}
+## Matrices (semi)definidas positivas
+Sea $A$ una matriz $k\times k$ **simétrica**. La función $b \mapsto b'Ab$ es su **forma cuadrática**. Decimos que $A$ es
+
+- **semidefinida positiva** ($A \succeq 0$) si $b'Ab \ge 0$ para todo $b \in \mathbb{R}^k$;
+- **definida positiva** ($A \succ 0$) si $b'Ab > 0$ para todo $b \ne 0$.
+
+Escribimos $A \succeq B$ si $A - B \succeq 0$.
+:::
+
+La relación $A \succeq B$ es el sentido en que una matriz de varianzas es "más grande" que otra. Cuando en la Clase 4 digamos "MCO tiene la menor varianza", querremos decir exactamente esto: $\operatorname{Var}(\tilde\beta) \succeq \operatorname{Var}(\hat\beta)$. ¿Por qué esta definición y no, por ejemplo, comparar entrada a entrada? Porque $A \succeq B$ implica que **toda combinación lineal** $c'\hat\beta$ tiene varianza menor o igual a la de $c'\tilde\beta$ (ya que $c'Ac \ge c'Bc$). Eso incluye cada coeficiente por separado ($c = e_j$), cualquier diferencia $\beta_2 - \beta_3$, cualquier predicción $x_0'\beta$... Es la noción correcta.
+
+::: {#thm-xx-pd}
+## $X'X$ es semidefinida positiva
+Para toda $X$ de $n \times k$, $X'X \succeq 0$. Además, $X'X \succ 0$ si y solo si $\operatorname{rango}(X) = k$.
+:::
+
+::: {.proof}
+Primero, $X'X$ es simétrica, pues $(X'X)' = X'(X')' = X'X$. Sea $b \in \mathbb{R}^k$. Entonces
+$$
+b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 \ge 0,
+$$
+luego $X'X \succeq 0$.
+
+Para la segunda afirmación: $X'X\succ 0$ significa que $\|Xb\|^2 > 0$ para todo $b\neq 0$, es decir, que $Xb \ne 0$ siempre que $b \ne 0$. Eso es exactamente decir que $\operatorname{nul}(X) = \{0\}$, lo que por rango–nulidad equivale a $\operatorname{rango}(X) = k$.
+:::
+
+Dos hechos más que usaremos:
+
+::: {#lem-pd-propiedades}
+## Propiedades de las matrices definidas positivas
+Sea $A \succ 0$ de $k\times k$.
+
+1. $A$ es invertible y $A^{-1} \succ 0$.
+2. Si $C$ es $k \times m$ con $\operatorname{rango}(C) = m$, entonces $C'AC \succ 0$.
+3. Si $A \succeq 0$ y $C$ es cualquier matriz $k \times m$, entonces $C'AC \succeq 0$.
+:::
+
+::: {.proof}
+(1) Si $Ab = 0$ con $b\ne 0$, entonces $b'Ab = 0$, contradiciendo $A \succ 0$. Luego $\operatorname{nul}(A) = \{0\}$ y $A$ es invertible. La inversa de una simétrica es simétrica: $(A^{-1})' = (A')^{-1} = A^{-1}$. Dado $c \ne 0$, sea $b = A^{-1}c$, que es distinto de cero (si fuera cero, $c = Ab = 0$). Entonces
+$$
+c'A^{-1}c = (Ab)'A^{-1}(Ab) = b'A'A^{-1}Ab = b'Ab > 0.
+$$
+
+(3) $C'AC$ es simétrica y, para $d \in \mathbb{R}^m$, $d'C'ACd = (Cd)'A(Cd) \ge 0$ porque $A\succeq 0$.
+
+(2) Igual que (3), pero ahora si $d \neq 0$ entonces $Cd \neq 0$ (por rango completo), y $A \succ 0$ da $(Cd)'A(Cd) > 0$.
+:::
+
+# La traza
+
+::: {#def-traza}
+## Traza
+La **traza** de una matriz cuadrada $A$ de $m\times m$ es la suma de su diagonal: $\operatorname{tr}(A) = \sum_{j=1}^m A_{jj}$.
+:::
+
+La traza parece una operación aburrida. No lo es. Es la herramienta que convierte escalares en matrices y viceversa, y es el corazón de la demostración de que $s^2$ es insesgado (Clase 4) y de que ciertas formas cuadráticas son $\chi^2$ (Clase 5). Su superpoder es el siguiente.
+
+::: {#thm-traza-ciclica}
+## Propiedades de la traza
+Sean $A, B$ matrices de dimensiones compatibles y $c\in\mathbb{R}$.
+
+1. **Linealidad:** $\operatorname{tr}(A + B) = \operatorname{tr}(A) + \operatorname{tr}(B)$ y $\operatorname{tr}(cA) = c\operatorname{tr}(A)$.
+2. **Transpuesta:** $\operatorname{tr}(A') = \operatorname{tr}(A)$.
+3. **Ciclicidad:** si $A$ es $m\times p$ y $B$ es $p\times m$, entonces $\operatorname{tr}(AB) = \operatorname{tr}(BA)$.
+4. **Escalares:** si $a$ es un escalar (una matriz $1\times 1$), $\operatorname{tr}(a) = a$.
+:::
+
+Observa lo raro de (3): $AB$ es $m \times m$ y $BA$ es $p\times p$. ¡Son matrices de tamaños distintos! Y aun así tienen la misma traza.
+
+::: {.proof}
+(1), (2) y (4) son inmediatas de la definición: la diagonal de $A+B$ es la suma de las diagonales, la diagonal de $cA$ es $c$ por la diagonal, la transpuesta no mueve la diagonal y una matriz $1\times1$ es su propia diagonal.
+
+Para (3), escribimos ambas trazas como sumas dobles:
+$$
+\operatorname{tr}(AB) = \sum_{j=1}^m (AB)_{jj} = \sum_{j=1}^m\sum_{l=1}^p A_{jl}B_{lj},
+\qquad
+\operatorname{tr}(BA) = \sum_{l=1}^p (BA)_{ll} = \sum_{l=1}^p\sum_{j=1}^m B_{lj}A_{jl}.
+$$
+Las dos sumas dobles tienen los mismos $mp$ términos $A_{jl}B_{lj}$ (el producto de números reales conmuta), solo sumados en distinto orden. Una suma finita no depende del orden, así que son iguales.
+:::
+
+El truco más usado del curso combina (3) y (4): **una forma cuadrática es su propia traza, y dentro de la traza se puede rotar.**
+$$
+z'Az = \operatorname{tr}(z'Az) = \operatorname{tr}(Azz').
+$$ {#eq-truco-traza}
+La primera igualdad es (4), porque $z'Az$ es un escalar. La segunda es (3) con "$A$" $= z'$ y "$B$" $= Az$. ¿Por qué querríamos hacer esto? Porque $zz'$ es una matriz cuya esperanza conocemos (es la varianza, si $z$ tiene media cero), y la esperanza entra dentro de la traza por linealidad. Lo verás en acción en la @sec-vectores-aleatorios.
+
+# Matrices idempotentes
+
+::: {#def-idempotente}
+## Matriz idempotente
+Una matriz cuadrada $A$ es **idempotente** si $AA = A$.
+:::
+
+La palabra viene del latín *idem* ("lo mismo") y *potens* ("potencia"): todas sus potencias son ella misma, $A^3 = A^2A = AA = A$, etc. Aplicarla dos veces es lo mismo que aplicarla una vez. La intuición geométrica es la de **proyectar**: si proyectas tu sombra en el suelo y luego proyectas la sombra en el suelo, obtienes... la misma sombra.[^sombra]
+
+[^sombra]: Esta es la metáfora que usa todo el mundo. Yo intenté inventar otra mejor durante una semana. No hay otra mejor.
+
+Hay tres ejemplos que conviene tener a mano. La identidad $I$ y la matriz cero son idempotentes (aburridas, pero ciertas). El ejemplo interesante es la matriz que **resta la media**. Sea $\iota = (1,\dots,1)'$ el vector de unos en $\mathbb{R}^n$ y definamos
+$$
+M^0 = I_n - \frac{1}{n}\iota\iota'.
+$$
+Para cualquier $z \in \mathbb{R}^n$, $\iota'z = \sum_i z_i = n\bar z$, así que
+$$
+M^0 z = z - \frac{1}{n}\iota(\iota'z) = z - \iota\bar z = \begin{pmatrix} z_1 - \bar z\\ \vdots \\ z_n - \bar z\end{pmatrix}.
+$$
+$M^0$ toma un vector y le resta su promedio. Restarle el promedio a algo que ya tiene promedio cero no hace nada, así que $M^0$ debería ser idempotente. Verifiquémoslo con álgebra, usando $\iota'\iota = n$:
+$$
+M^0M^0 = I - \tfrac{2}{n}\iota\iota' + \tfrac{1}{n^2}\iota(\iota'\iota)\iota' = I - \tfrac{2}{n}\iota\iota' + \tfrac{1}{n}\iota\iota' = M^0.
+$$
+
+Los valores propios de una matriz idempotente son muy especiales.
+
+::: {#thm-valores-propios-idem}
+## Valores propios de una idempotente
+Si $A$ es idempotente y $\lambda$ es un valor propio de $A$, entonces $\lambda \in \{0,1\}$.
+:::
+
+::: {.callout-note title="Borrador"}
+Un valor propio satisface $Av = \lambda v$ para algún $v \ne 0$. La única información que tengo de $A$ es $A^2 = A$. Así que apliquemos $A$ dos veces a $v$ y comparemos: $A^2v = A(\lambda v) = \lambda Av = \lambda^2 v$. Pero también $A^2 v = Av = \lambda v$. Entonces $\lambda^2 v = \lambda v$, y como $v\ne0$... $\lambda^2 = \lambda$.
+:::
+
+::: {.proof}
+Sea $v \ne 0$ con $Av = \lambda v$. Por un lado,
+$$
+A^2 v = A(Av) = A(\lambda v) = \lambda (Av) = \lambda^2 v.
+$$
+Por otro, como $A^2 = A$, $A^2 v = Av = \lambda v$. Igualando, $(\lambda^2 - \lambda)v = 0$. Como $v \ne 0$, alguna coordenada $v_j \ne 0$, y $(\lambda^2-\lambda)v_j = 0$ obliga a $\lambda^2 - \lambda = \lambda(\lambda-1) = 0$. Luego $\lambda = 0$ o $\lambda = 1$.
+:::
+
+Para sacarle todo el jugo a este resultado necesitamos un teorema clásico de álgebra lineal que, de nuevo, usaremos sin demostrar.[^espectral]
+
+[^espectral]: La demostración del teorema espectral está en cualquier libro de álgebra lineal y requiere un poco de análisis (o el teorema fundamental del álgebra). Es uno de esos teoremas que vale la pena ver demostrado una vez en la vida, pero no hoy.
+
+::: {#thm-espectral}
+## Teorema espectral
+Si $A$ es una matriz real simétrica de $m\times m$, existen una matriz ortogonal $Q$ (es decir, $Q'Q = QQ' = I_m$) y una matriz diagonal $\Lambda = \operatorname{diag}(\lambda_1,\dots,\lambda_m)$, con los valores propios de $A$ en la diagonal, tales que
+$$
+A = Q\Lambda Q'.
+$$
+Las columnas de $Q$ son vectores propios ortonormales de $A$, y el número de $\lambda_j$ distintos de cero es $\operatorname{rango}(A)$.
+:::
+
+::: {#cor-rango-traza}
+## Para idempotentes simétricas, rango = traza
+Si $A$ es simétrica e idempotente, entonces $\operatorname{rango}(A) = \operatorname{tr}(A)$.
+:::
+
+::: {.proof}
+Por el teorema espectral, $A = Q\Lambda Q'$ con $Q$ ortogonal. Por @thm-valores-propios-idem cada $\lambda_j$ es $0$ o $1$, así que el número de valores propios no nulos (que es el rango) es igual al número de unos en la diagonal de $\Lambda$, que es $\sum_j \lambda_j = \operatorname{tr}(\Lambda)$. Finalmente, por ciclicidad de la traza,
+$$
+\operatorname{tr}(A) = \operatorname{tr}(Q\Lambda Q') = \operatorname{tr}(\Lambda Q'Q) = \operatorname{tr}(\Lambda I) = \operatorname{tr}(\Lambda) = \operatorname{rango}(A).
+$$
+:::
+
+Por ejemplo, $\operatorname{tr}(M^0) = \operatorname{tr}(I_n) - \frac1n\operatorname{tr}(\iota\iota') = n - \frac1n \operatorname{tr}(\iota'\iota) = n - 1$. Así que $M^0$ tiene rango $n-1$. Esto es el famoso "se pierde un grado de libertad al estimar la media": los $n$ desvíos $z_i - \bar z$ viven en un subespacio de dimensión $n-1$ (porque suman cero).
+
+# Proyecciones: las matrices $P$ y $M$
+
+Llegamos a las dos matrices protagonistas del curso. Supongamos que $X$ ($n \times k$) tiene rango columna completo, de modo que $(X'X)^{-1}$ existe por @thm-rango-xx. Definimos
+$$
+P = X(X'X)^{-1}X', \qquad M = I_n - P.
+$$
+$P$ se llama la **matriz de proyección** (o "matriz sombrero", porque en la Clase 3 veremos que $\hat y = Py$: le pone el sombrero a $y$) y $M$ la **matriz aniquiladora** o generadora de residuos.[^aniquiladora]
+
+[^aniquiladora]: "Aniquiladora" porque aniquila a $X$: $MX = 0$. Es uno de los pocos nombres dramáticos de la econometría, así que disfrútalo.
+
+::: {#thm-propiedades-pm}
+## Propiedades de $P$ y $M$
+Si $X$ es $n\times k$ con $\operatorname{rango}(X) = k$, entonces:
+
+1. $P$ y $M$ son simétricas.
+2. $P$ y $M$ son idempotentes.
+3. $PX = X$ y $MX = 0$.
+4. $PM = MP = 0$.
+5. $\operatorname{tr}(P) = k$ y $\operatorname{tr}(M) = n - k$. En consecuencia, $\operatorname{rango}(P) = k$ y $\operatorname{rango}(M) = n-k$.
+:::
+
+::: {.callout-caution title="Intuición antes de demostrar"}
+$P$ toma cualquier vector de $\mathbb{R}^n$ y lo proyecta ortogonalmente sobre el espacio columna de $X$ (un subespacio de dimensión $k$). $M$ se queda con "lo que sobra", la parte perpendicular. Con esa imagen: (3) dice que proyectar algo que *ya está* en el espacio columna no lo mueve; (4) dice que la sombra de la parte perpendicular es cero; (5) dice que el subespacio sobre el que proyecta $P$ tiene dimensión $k$ y el complemento tiene dimensión $n-k$.
+:::
+
+::: {.proof}
+Usamos repetidamente que $(X'X)^{-1}$ es simétrica (inversa de una simétrica) y que $(ABC)' = C'B'A'$.
+
+(1) $P' = \big(X(X'X)^{-1}X'\big)' = (X')'\big((X'X)^{-1}\big)'X' = X(X'X)^{-1}X' = P$. Y $M' = I' - P' = I - P = M$.
+
+(2) Para $P$, el término del medio se cancela:
+$$
+PP = X(X'X)^{-1}\underbrace{X'X(X'X)^{-1}}_{=\,I_k}X' = X(X'X)^{-1}X' = P.
+$$
+Para $M$, usando lo anterior,
+$$
+MM = (I - P)(I-P) = I - 2P + PP = I - 2P + P = I - P = M.
+$$
+
+(3) $PX = X(X'X)^{-1}X'X = X I_k = X$, y entonces $MX = X - PX = X - X = 0$.
+
+(4) $PM = P(I - P) = P - PP = P - P = 0$. Trasponiendo y usando (1), $MP = M'P' = (PM)' = 0' = 0$.
+
+(5) Por ciclicidad de la traza, con "$A$" $= X$ ($n\times k$) y "$B$" $= (X'X)^{-1}X'$ ($k \times n$),
+$$
+\operatorname{tr}(P) = \operatorname{tr}\big(X(X'X)^{-1}X'\big) = \operatorname{tr}\big((X'X)^{-1}X'X\big) = \operatorname{tr}(I_k) = k.
+$$
+Luego $\operatorname{tr}(M) = \operatorname{tr}(I_n) - \operatorname{tr}(P) = n - k$. Como ambas son simétricas e idempotentes, @cor-rango-traza da los rangos.
+:::
+
+Mira la elegancia de (5): calcular la traza de una matriz $n\times n$ con $n = 3.000$ se redujo a calcular la traza de la identidad $k\times k$. Ese "$n - k$" es el que aparece en el denominador de $s^2 = \hat u'\hat u/(n-k)$ en la Clase 4. Cuando alguien te diga "se pierden $k$ grados de libertad", lo que está diciendo es "$\operatorname{tr}(M) = n-k$".
+
+Una última observación que conecta con la geometría. Para todo $z \in \mathbb{R}^n$,
+$$
+z = Pz + Mz, \qquad (Pz)'(Mz) = z'P'Mz = z'PMz = 0.
+$$
+Todo vector se descompone de forma única en una parte dentro de $\operatorname{col}(X)$ y una parte ortogonal a ella. Y por Pitágoras (que ahora es un cálculo de una línea),
+$$
+\|z\|^2 = (Pz + Mz)'(Pz + Mz) = \|Pz\|^2 + 2(Pz)'(Mz) + \|Mz\|^2 = \|Pz\|^2 + \|Mz\|^2.
+$$ {#eq-pitagoras}
+
+Un caso particular útil: si $X = \iota$ (solo una constante), entonces $P = \iota(\iota'\iota)^{-1}\iota' = \frac1n\iota\iota'$ y $M = M^0$. **Restar la media es proyectar sobre la constante y quedarse con el residuo.** La Clase 3 generaliza esta idea con el teorema de Frisch–Waugh–Lovell.
+
+# Derivadas matriciales
+
+Para encontrar el estimador de MCO en la Clase 3 minimizaremos una función de $b \in \mathbb{R}^k$. Necesitamos derivar respecto de un vector. La convención es: si $f:\mathbb{R}^k \to \mathbb{R}$, entonces $\frac{\partial f}{\partial b}$ es el vector columna de derivadas parciales,
+$$
+\frac{\partial f}{\partial b} = \begin{pmatrix} \partial f/\partial b_1 \\ \vdots \\ \partial f/\partial b_k\end{pmatrix}.
+$$
+
+::: {#thm-derivadas}
+## Dos derivadas que resuelven todo
+Sean $a \in\mathbb{R}^k$ y $A$ una matriz $k\times k$, ambos constantes. Entonces
+
+1. $\dfrac{\partial\, (a'b)}{\partial b} = a$.
+2. $\dfrac{\partial\, (b'Ab)}{\partial b} = (A + A')b$. Si $A$ es simétrica, esto es $2Ab$.
+:::
+
+La segunda es el análogo matricial de $\frac{d}{db}(ab^2) = 2ab$. Es muy tentador creerla "por analogía", y justamente por eso hay que demostrarla: la analogía falla si $A$ no es simétrica.
+
+::: {.callout-note title="Borrador"}
+Derivar respecto de un vector es derivar respecto de cada coordenada. Así que hay que escribir $a'b$ y $b'Ab$ como sumas y derivar respecto de $b_m$, un $m$ fijo cualquiera.
+
+Para $b'Ab = \sum_j\sum_l b_jA_{jl}b_l$: el término $b_jA_{jl}b_l$ contiene a $b_m$ si $j = m$, si $l = m$, o si ambos. Con la regla del producto, $\frac{\partial}{\partial b_m}(b_jb_l) = \mathbb{1}\{j=m\}b_l + b_j\mathbb{1}\{l = m\}$. Eso separa la suma doble en dos sumas simples. Una será "fila $m$ de $A$ por $b$" y la otra "columna $m$ de $A$ por $b$". Fila $m$ de $A$ más columna $m$ de $A$ es fila $m$ de $A + A'$. ¡Ahí está el $(A + A')$!
+:::
+
+::: {.proof}
+(1) $a'b = \sum_{j=1}^k a_jb_j$, así que $\partial(a'b)/\partial b_m = a_m$ para cada $m$. Apilando, el gradiente es $a$.
+
+(2) Escribimos $b'Ab = \sum_{j=1}^k\sum_{l=1}^k A_{jl}b_jb_l$. Fijemos $m$. Por la regla del producto, $\frac{\partial}{\partial b_m}(b_jb_l) = \mathbb{1}\{j = m\}\,b_l + b_j\,\mathbb{1}\{l = m\}$. Entonces
+$$
+\begin{aligned}
+\frac{\partial\,(b'Ab)}{\partial b_m}
+&= \sum_{j=1}^k\sum_{l=1}^k A_{jl}\big(\mathbb{1}\{j = m\}\,b_l + b_j\,\mathbb{1}\{l = m\}\big)\\
+&= \sum_{l=1}^k A_{ml}b_l + \sum_{j=1}^k A_{jm}b_j &&\text{(solo sobreviven } j=m \text{ o } l=m)\\
+&= (Ab)_m + (A'b)_m &&(A_{jm} = (A')_{mj})\\
+&= \big((A + A')b\big)_m.
+\end{aligned}
+$$
+Como esto vale para cada $m = 1,\dots,k$, el gradiente es $(A+A')b$. Si $A = A'$, es $2Ab$.
+:::
+
+También necesitaremos la segunda derivada. La **matriz hessiana** de $f$ es la matriz $k\times k$ de segundas derivadas $\frac{\partial^2 f}{\partial b\,\partial b'}$, cuya entrada $(m,l)$ es $\partial^2 f/\partial b_m\partial b_l$. Si $A$ es simétrica, derivar $2Ab$ (cuya coordenada $m$ es $2\sum_l A_{ml}b_l$) respecto de $b_l$ da $2A_{ml}$; es decir,
+$$
+\frac{\partial^2 (b'Ab)}{\partial b\,\partial b'} = 2A.
+$$
+
+# Vectores aleatorios {#sec-vectores-aleatorios}
+
+Todo lo anterior era álgebra determinista. Ahora dejamos que los vectores sean aleatorios. Si $z = (z_1,\dots,z_m)'$ es un vector aleatorio, su **esperanza** es el vector de esperanzas y su **matriz de varianzas y covarianzas** es
+$$
+\mathbb{E}[z] = \begin{pmatrix}\mathbb{E}[z_1]\\ \vdots \\ \mathbb{E}[z_m]\end{pmatrix}, \qquad
+\operatorname{Var}(z) = \mathbb{E}\big[(z - \mathbb{E}z)(z - \mathbb{E}z)'\big].
+$$
+La entrada $(j,l)$ de $\operatorname{Var}(z)$ es $\mathbb{E}[(z_j - \mathbb{E} z_j)(z_l - \mathbb{E}z_l)] = \operatorname{Cov}(z_j,z_l)$, y en la diagonal están las varianzas. Así que $\operatorname{Var}(z)$ es simétrica. Además es semidefinida positiva: para cualquier $c$ fijo, $c'\operatorname{Var}(z)c = \mathbb{E}[(c'(z - \mathbb{E}z))^2] \ge 0$.
+
+(Cuando la matriz es una esperanza condicional, como $\mathbb{E}[uu'\mid X]$, todo lo de esta sección vale igual condicionando en $X$: las matrices que dependen solo de $X$ se tratan como constantes. La Clase 2 hace precisa esta idea.)
+
+::: {#thm-momentos-lineales}
+## Esperanza y varianza de transformaciones lineales
+Sea $z$ un vector aleatorio de $m\times 1$ con $\mathbb{E}[z] = \mu$ y $\operatorname{Var}(z) = \Sigma$. Sean $A$ ($p \times m$) y $c$ ($p\times1$) constantes. Entonces
+$$
+\mathbb{E}[Az + c] = A\mu + c, \qquad \operatorname{Var}(Az + c) = A\Sigma A'.
+$$
+:::
+
+::: {.proof}
+La coordenada $j$ de $Az + c$ es $\sum_l A_{jl}z_l + c_j$. Por linealidad de la esperanza (de variables escalares),
+$$
+\mathbb{E}\Big[\sum_l A_{jl}z_l + c_j\Big] = \sum_l A_{jl}\mathbb{E}[z_l] + c_j = (A\mu + c)_j.
+$$
+Esto da la primera igualdad, y con ella sabemos que $(Az + c) - \mathbb{E}[Az+c] = A(z - \mu)$. Entonces
+$$
+\operatorname{Var}(Az + c) = \mathbb{E}\big[A(z-\mu)(z-\mu)'A'\big] = A\,\mathbb{E}\big[(z-\mu)(z-\mu)'\big]\,A' = A\Sigma A',
+$$
+donde sacamos las matrices constantes de la esperanza usando la primera parte (aplicada entrada a entrada).
+:::
+
+Este teorema es el que dará $\operatorname{Var}(\hat\beta\mid X) = \sigma^2(X'X)^{-1}$ en la Clase 4. Y el siguiente es el que dará $\mathbb{E}[s^2] = \sigma^2$.
+
+::: {#thm-esperanza-forma-cuadratica}
+## Esperanza de una forma cuadrática
+Sea $z$ un vector aleatorio de $m \times 1$ con $\mathbb{E}[z] = \mu$, $\operatorname{Var}(z) = \Sigma$, y sea $A$ una matriz $m\times m$ constante. Entonces
+$$
+\mathbb{E}[z'Az] = \operatorname{tr}(A\Sigma) + \mu'A\mu.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Aquí el truco de la traza (@eq-truco-traza) brilla. $z'Az = \operatorname{tr}(Azz')$ y la esperanza entra en la traza (la traza es una suma, la esperanza es lineal). Entonces necesito $\mathbb{E}[zz']$. Y eso es "el segundo momento", que es varianza más media al cuadrado: $\mathbb{E}[zz'] = \Sigma + \mu\mu'$, la versión matricial de $\mathbb{E}[Z^2] = \operatorname{Var}(Z) + (\mathbb{E}Z)^2$.
+:::
+
+::: {.proof}
+Primero, $\mathbb{E}[zz'] = \Sigma + \mu\mu'$. En efecto, expandiendo,
+$$
+\Sigma = \mathbb{E}[(z-\mu)(z-\mu)'] = \mathbb{E}[zz'] - \mathbb{E}[z]\mu' - \mu\mathbb{E}[z'] + \mu\mu' = \mathbb{E}[zz'] - \mu\mu'.
+$$
+Ahora,
+$$
+\begin{aligned}
+\mathbb{E}[z'Az] &= \mathbb{E}[\operatorname{tr}(Azz')] &&\text{(truco de la traza)}\\
+&= \operatorname{tr}(A\,\mathbb{E}[zz']) &&\text{(traza y esperanza son lineales)}\\
+&= \operatorname{tr}(A\Sigma) + \operatorname{tr}(A\mu\mu') &&\text{(linealidad de la traza)}\\
+&= \operatorname{tr}(A\Sigma) + \mu'A\mu &&\text{(ciclicidad y } \operatorname{tr}(\text{escalar}) = \text{escalar}).
+\end{aligned}
+$$
+:::
+
+Un caso especial para calentar: si $z_1,\dots,z_n$ son independientes con media $\mu$ y varianza $\sigma^2$, entonces $\sum_i(z_i - \bar z)^2 = z'M^0z$ y, con $\mathbb{E}[z] = \mu\iota$, $\operatorname{Var}(z) = \sigma^2 I$,
+$$
+\mathbb{E}\Big[\sum_i (z_i - \bar z)^2\Big] = \operatorname{tr}(M^0\sigma^2 I) + \mu^2\iota'M^0\iota = \sigma^2(n - 1) + 0,
+$$
+porque $M^0\iota = 0$ (restarle la media a un vector constante da cero). **Por eso la varianza muestral divide por $n-1$.** Si alguna vez te preguntaste de dónde sale ese $n-1$, la respuesta es: de la traza de una matriz idempotente.
+
+# ★ Postgrado: más herramientas matriciales
+
+::: {.callout-important title="★ Postgrado"}
+Esta sección reúne tres resultados que se usan en las secciones ★ de clases posteriores: raíces cuadradas de matrices, el orden de las inversas y la inversa particionada.
+:::
+
+## Raíz cuadrada de una matriz definida positiva
+
+Si $A\succ 0$, por el teorema espectral $A = Q\Lambda Q'$ con $\lambda_j > 0$ (¿por qué? si $v$ es vector propio unitario, $\lambda_j = v'Av > 0$). Definimos
+$$
+A^{1/2} = Q\Lambda^{1/2}Q', \qquad A^{-1/2} = Q\Lambda^{-1/2}Q',
+$$
+con $\Lambda^{\pm1/2} = \operatorname{diag}(\lambda_1^{\pm1/2},\dots,\lambda_m^{\pm1/2})$. Ambas son simétricas, $A^{1/2}A^{1/2} = Q\Lambda^{1/2}Q'Q\Lambda^{1/2}Q' = Q\Lambda Q' = A$ y, por el mismo cálculo, $A^{-1/2}AA^{-1/2} = I$ y $A^{-1/2}A^{-1/2} = A^{-1}$. Esta es la matriz que "estandariza" un vector: si $\operatorname{Var}(z) = \Sigma \succ 0$, entonces $\operatorname{Var}(\Sigma^{-1/2}z) = \Sigma^{-1/2}\Sigma\Sigma^{-1/2} = I$. En la Clase 9 esto es exactamente lo que hace mínimos cuadrados generalizados.
+
+## El orden de las inversas
+
+::: {#thm-orden-inversas}
+## Invertir da vuelta la desigualdad
+Si $A \succeq B \succ 0$, entonces $B^{-1} \succeq A^{-1}$.
+:::
+
+Es el análogo de "$a \ge b > 0 \Rightarrow 1/b \ge 1/a$". Lo usaremos en la Clase 8 (agregar regresores irrelevantes aumenta la varianza) y en la Clase 9 (MCG es más eficiente que MCO).
+
+::: {.callout-note title="Borrador"}
+Con escalares es trivial. Con matrices, la idea es "reducir al caso $B = I$". Si $B = I$ y $A \succeq I$, todos los valores propios de $A$ son $\ge 1$, así que los de $A^{-1}$ son $\le 1$, es decir, $A^{-1} \preceq I$. Para el caso general, "divido por $B$" de forma simétrica: $C = B^{-1/2}AB^{-1/2}$. Entonces $A \succeq B$ se vuelve $C \succeq I$, aplico el caso fácil y deshago el cambio.
+:::
+
+::: {.proof}
+Sea $C = B^{-1/2}AB^{-1/2}$, que es simétrica. Por @lem-pd-propiedades (3) con la matriz $B^{-1/2}$,
+$$
+C - I = B^{-1/2}AB^{-1/2} - B^{-1/2}BB^{-1/2} = B^{-1/2}(A - B)B^{-1/2} \succeq 0.
+$$
+Si $v$ es un vector propio unitario de $C$ con valor propio $\gamma$, entonces $\gamma - 1 = v'(C - I)v \ge 0$. Luego todos los valores propios de $C$ son $\ge 1 > 0$. Escribiendo $C = Q\Gamma Q'$ (teorema espectral), $C$ es invertible, $C^{-1} = Q\Gamma^{-1}Q'$ y
+$$
+I - C^{-1} = Q(I - \Gamma^{-1})Q' \succeq 0,
+$$
+porque $I - \Gamma^{-1}$ es diagonal con entradas $1 - 1/\gamma_j \ge 0$. Ahora bien, $C^{-1} = B^{1/2}A^{-1}B^{1/2}$ (verifícalo multiplicando por $C$). Así,
+$$
+B^{-1} - A^{-1} = B^{-1/2}\big(I - B^{1/2}A^{-1}B^{1/2}\big)B^{-1/2} = B^{-1/2}(I - C^{-1})B^{-1/2} \succeq 0,
+$$
+otra vez por @lem-pd-propiedades (3).
+:::
+
+## Inversa particionada
+
+::: {#thm-inversa-particionada}
+## Inversa de una matriz por bloques
+Sea
+$$
+A = \begin{pmatrix} A_{11} & A_{12}\\ A_{21} & A_{22}\end{pmatrix}
+$$
+invertible, con $A_{11}$ y $A_{22}$ cuadradas, $A_{22}$ invertible, y sea $F = A_{11} - A_{12}A_{22}^{-1}A_{21}$ (el **complemento de Schur** de $A_{22}$), también invertible. Entonces el bloque $(1,1)$ de $A^{-1}$ es $F^{-1}$:
+$$
+A^{-1} = \begin{pmatrix} F^{-1} & -F^{-1}A_{12}A_{22}^{-1}\\ -A_{22}^{-1}A_{21}F^{-1} & A_{22}^{-1} + A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}\end{pmatrix}.
+$$
+:::
+
+::: {.proof}
+Basta multiplicar $A$ por la matriz propuesta, llamémosla $B$, y verificar que da la identidad. Bloque $(1,1)$ de $AB$:
+$$
+A_{11}F^{-1} - A_{12}A_{22}^{-1}A_{21}F^{-1} = (A_{11} - A_{12}A_{22}^{-1}A_{21})F^{-1} = FF^{-1} = I.
+$$
+Bloque $(1,2)$:
+$$
+-A_{11}F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1}A_{21}F^{-1}A_{12}A_{22}^{-1}
+= -\big(A_{11} - A_{12}A_{22}^{-1}A_{21}\big)F^{-1}A_{12}A_{22}^{-1} + A_{12}A_{22}^{-1} = 0.
+$$
+Bloque $(2,1)$: $A_{21}F^{-1} - A_{22}A_{22}^{-1}A_{21}F^{-1} = 0$. Bloque $(2,2)$:
+$$
+-A_{21}F^{-1}A_{12}A_{22}^{-1} + I + A_{21}F^{-1}A_{12}A_{22}^{-1} = I.
+$$
+Luego $AB = I$ y, como $A$ es cuadrada, $B = A^{-1}$.
+:::
+
+Aplicado a $A = X'X$ con $X = [X_1 \; X_2]$, el complemento de Schur es $F = X_1'X_1 - X_1'X_2(X_2'X_2)^{-1}X_2'X_1 = X_1'M_2X_1$, donde $M_2 = I - X_2(X_2'X_2)^{-1}X_2'$. Es decir,
+$$
+\big[(X'X)^{-1}\big]_{11} = (X_1'M_2X_1)^{-1}.
+$$ {#eq-bloque-11}
+Guarda esta fórmula: en la Clase 3 la redescubriremos con el teorema de Frisch–Waugh–Lovell, y en la Clase 4 nos dará la fórmula de la varianza de un coeficiente individual.
+
+# Resumen
+
+- Toda matriz del tipo $X'X$ o $X'y$ es una suma sobre observaciones (@lem-sumas).
+- $X'X$ es invertible $\iff$ $X$ tiene rango columna completo (@thm-rango-xx), y en ese caso $X'X\succ0$ (@thm-xx-pd).
+- La traza es cíclica, y una forma cuadrática es su propia traza (@eq-truco-traza).
+- Las idempotentes simétricas tienen valores propios $0$ o $1$ y su rango es su traza (@cor-rango-traza).
+- $P = X(X'X)^{-1}X'$ y $M = I - P$ son proyecciones ortogonales con trazas $k$ y $n-k$ (@thm-propiedades-pm).
+- $\partial (b'Ab)/\partial b = (A+A')b$ (@thm-derivadas).
+- $\operatorname{Var}(Az) = A\Sigma A'$ y $\mathbb{E}[z'Az] = \operatorname{tr}(A\Sigma) + \mu'A\mu$ (@thm-momentos-lineales, @thm-esperanza-forma-cuadratica).
+
+# Ejercicios
+
+**Ejercicio 1.1.** Sea $X = \begin{pmatrix} 1 & 2\\ 1 & 4\\ 1 & 6\end{pmatrix}$. Calcula $X'X$, verifica que es invertible, calcula $P$ y verifica que $\operatorname{tr}(P) = 2$.
+
+::: {.callout-tip collapse="true" title="Solución 1.1"}
+$X'X = \begin{pmatrix} 3 & 12 \\ 12 & 56\end{pmatrix}$, con determinante $3\cdot 56 - 144 = 24 \neq 0$, así que es invertible y
+$(X'X)^{-1} = \frac{1}{24}\begin{pmatrix} 56 & -12\\ -12 & 3\end{pmatrix}$.
+Para la fila $x_i' = (1, x)$ y la columna $x_j = (1, w)'$, la entrada $P_{ij} = x_i'(X'X)^{-1}x_j = \frac{1}{24}(56 - 12x - 12w + 3xw)$. Con $x, w\in\{2,4,6\}$:
+$$
+P = \frac{1}{24}\begin{pmatrix} 20 & 8 & -4\\ 8 & 8 & 8\\ -4 & 8 & 20\end{pmatrix}
+= \begin{pmatrix} 5/6 & 1/3 & -1/6\\ 1/3 & 1/3 & 1/3 \\ -1/6 & 1/3 & 5/6\end{pmatrix}.
+$$
+La traza es $5/6 + 1/3 + 5/6 = 2 = k$. (Puedes verificar además que $P\iota = \iota$ y que $P(2,4,6)' = (2,4,6)'$, como exige $PX = X$.)
+:::
+
+**Ejercicio 1.2.** Demuestra que si $A$ es idempotente, entonces $I - A$ también lo es. ¿Es cierto que si $A$ es idempotente entonces $A$ es simétrica? Da una demostración o un contraejemplo.
+
+::: {.callout-tip collapse="true" title="Solución 1.2"}
+$(I - A)(I-A) = I - 2A + A^2 = I - 2A + A = I - A$.
+
+No: $A = \begin{pmatrix} 1 & 1\\ 0 & 0\end{pmatrix}$ cumple $A^2 = \begin{pmatrix} 1 & 1\\ 0 & 0\end{pmatrix} = A$, pero no es simétrica. Geométricamente es una proyección *oblicua* (no ortogonal) sobre el eje horizontal. Las proyecciones ortogonales son exactamente las idempotentes simétricas; por eso siempre pedimos las dos propiedades.
+:::
+
+**Ejercicio 1.3.** Sea $z \in\mathbb{R}^n$ con $\mathbb{E}[z] = 0$ y $\operatorname{Var}(z) = \sigma^2 I_n$. Si $M$ es la aniquiladora asociada a una $X$ fija de rango $k$, calcula $\mathbb{E}[z'Mz]$ y $\mathbb{E}[z'Pz]$.
+
+::: {.callout-tip collapse="true" title="Solución 1.3"}
+Por @thm-esperanza-forma-cuadratica con $\mu = 0$: $\mathbb{E}[z'Mz] = \operatorname{tr}(M\sigma^2I) = \sigma^2(n-k)$ y $\mathbb{E}[z'Pz] = \sigma^2 k$. Nota que suman $\sigma^2 n = \mathbb{E}[z'z]$, como debe ser por @eq-pitagoras.
+:::
+
+**Ejercicio 1.4.** Usa @thm-derivadas para encontrar el $b$ que minimiza $f(b) = b'Ab - 2c'b$, con $A \succ 0$. Verifica que es un mínimo global completando el cuadrado: muestra que $f(b) = (b - A^{-1}c)'A(b - A^{-1}c) - c'A^{-1}c$.
+
+::: {.callout-tip collapse="true" title="Solución 1.4"}
+El gradiente es $2Ab - 2c$; igualando a cero, $b^* = A^{-1}c$. Expandiendo la expresión propuesta y usando $A' = A$:
+$$
+(b - A^{-1}c)'A(b - A^{-1}c) = b'Ab - b'c - c'b + c'A^{-1}c = b'Ab - 2c'b + c'A^{-1}c.
+$$
+Restando $c'A^{-1}c$ se recupera $f(b)$. Como $A\succ0$, el primer término es $\ge 0$ y vale $0$ solo si $b = A^{-1}c$. Luego $f(b) \ge -c'A^{-1}c = f(b^*)$, con igualdad solo en $b^*$. (Este es exactamente el argumento que usaremos para MCO en la Clase 3.)
+:::
+
+**Ejercicio 1.5.** Sean $A$ ($m\times m$) y $B$ ($m \times m$) semidefinidas positivas. Demuestra que $\operatorname{tr}(A)\ge 0$ y que $\operatorname{tr}(A) = 0$ implica $A = 0$.
+
+::: {.callout-tip collapse="true" title="Solución 1.5"}
+$A_{jj} = e_j'Ae_j \ge 0$, así que $\operatorname{tr}(A) = \sum_j A_{jj}\ge0$. Si la traza es cero, todos los $\lambda_j \ge 0$ de $A$ suman cero (la traza es la suma de valores propios: $\operatorname{tr}(Q\Lambda Q') = \operatorname{tr}(\Lambda)$), luego todos son cero y $A = Q\,0\,Q' = 0$. (La hipótesis sobre $B$ sobra: era una trampa para ver si lees con cuidado.)
+:::
+
+**Ejercicio 1.6 ★.** Sea $X = [X_1\; X_2]$ de rango completo y $P_1$, $P$ las proyecciones sobre $\operatorname{col}(X_1)$ y $\operatorname{col}(X)$. Demuestra que $PP_1 = P_1$ y que $P - P_1$ es simétrica e idempotente. Interpreta.
+
+::: {.callout-tip collapse="true" title="Solución 1.6 ★"}
+Como $X_1$ está formada por columnas de $X$, $X_1 = XS$ para una matriz de selección $S$, así que $PX_1 = PXS = XS = X_1$ (por @thm-propiedades-pm (3)). Entonces $PP_1 = PX_1(X_1'X_1)^{-1}X_1' = X_1(X_1'X_1)^{-1}X_1' = P_1$. Trasponiendo, $P_1P = P_1$.
+
+$P - P_1$ es simétrica por ser diferencia de simétricas, y
+$$
+(P - P_1)^2 = P - PP_1 - P_1P + P_1 = P - P_1 - P_1 + P_1 = P - P_1.
+$$
+Interpretación: $P - P_1$ proyecta sobre la parte de $\operatorname{col}(X)$ que es ortogonal a $\operatorname{col}(X_1)$, y su rango es $\operatorname{tr}(P) - \operatorname{tr}(P_1) = k - k_1$. Esta matriz aparece en la Clase 5 cuando comparamos la suma de residuos de un modelo restringido y uno sin restringir.
+:::
+
+**Ejercicio 1.7 ★.** Demuestra que si $A$ es simétrica e idempotente de $m\times m$, entonces $0 \preceq A \preceq I$. Deduce que los elementos diagonales $P_{ii}$ de la matriz de proyección cumplen $0\le P_{ii}\le1$.
+
+::: {.callout-tip collapse="true" title="Solución 1.7 ★"}
+Para cualquier $b$: $b'Ab = b'A'Ab = \|Ab\|^2 \ge 0$, y $b'(I - A)b = \|(I-A)b\|^2\ge0$ porque $I - A$ también es simétrica e idempotente (Ejercicio 1.2). Tomando $b = e_i$: $0 \le A_{ii}\le 1$. Aplicado a $P$, los $h_{ii} = P_{ii}$ se llaman *leverages* y los estudiaremos en la Clase 3.
+:::

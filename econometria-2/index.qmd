@@ -1,0 +1,25 @@
+---
+title: "Econometría 2"
+subtitle: "Más allá del modelo lineal"
+description: "Temario tentativo de Econometría 2. En preparación."
+toc: false
+---
+
+::: {.callout-caution title="En preparación"}
+Este curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1 (borradores, demostraciones paso a paso, secciones ★ y ejercicios resueltos).
+:::
+
+## Temario tentativo
+
+1. **Estimación por extremos:** consistencia y normalidad asintótica de M-estimadores.
+2. **Máxima verosimilitud:** identificación, información de Fisher, cota de Cramér–Rao, eficiencia asintótica.
+3. **Tests de la trinidad:** Wald, razón de verosimilitud y multiplicador de Lagrange.
+4. **Método generalizado de momentos:** matriz de pesos óptima, test $J$ de Hansen.
+5. **Elección discreta:** probit, logit y efectos marginales.
+6. **Datos censurados y selección:** tobit y el modelo de Heckman.
+7. **Datos de panel I:** efectos fijos, efectos aleatorios y el test de Hausman.
+8. **Datos de panel II:** paneles dinámicos, Arellano–Bond.
+9. **Series de tiempo I:** estacionariedad, ARMA, ergodicidad y LGN/TCL con dependencia.
+10. **Series de tiempo II:** raíces unitarias, cointegración y VAR.
+
+Mientras tanto, puedes empezar (o repasar) con [Econometría 1](../econometria-1/index.qmd).

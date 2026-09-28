@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Fuentes de endogeneidad, inconsistencia de MCO, el estimador de variables instrumentales, MC2E, identificación, distribución asintótica, instrumentos débiles y el test de Hausman.">
+
+<title>Clase 10 · Endogeneidad y variables instrumentales – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-1/clase-09.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-1/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-1/clase-10.html">Clase 10 · Endogeneidad y variables instrumentales</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · La caja de herramientas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · La esperanza condicional</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Mínimos cuadrados ordinarios</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · MCO en muestras finitas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Inferencia exacta bajo normalidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Teoría asintótica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · MCO en muestras grandes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Errores de especificación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Mínimos cuadrados generalizados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-1/clase-10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 10 · Endogeneidad y variables instrumentales</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#el-supuesto-que-no-se-puede-probar" id="toc-el-supuesto-que-no-se-puede-probar" class="nav-link active" data-scroll-target="#el-supuesto-que-no-se-puede-probar"><span class="header-section-number">1</span> El supuesto que no se puede probar</a></li>
+  <li><a href="#tres-fuentes-de-endogeneidad" id="toc-tres-fuentes-de-endogeneidad" class="nav-link" data-scroll-target="#tres-fuentes-de-endogeneidad"><span class="header-section-number">2</span> Tres fuentes de endogeneidad</a></li>
+  <li><a href="#el-estimador-de-variables-instrumentales" id="toc-el-estimador-de-variables-instrumentales" class="nav-link" data-scroll-target="#el-estimador-de-variables-instrumentales"><span class="header-section-number">3</span> El estimador de variables instrumentales</a>
+  <ul class="collapse">
+  <li><a href="#el-caso-simple" id="toc-el-caso-simple" class="nav-link" data-scroll-target="#el-caso-simple"><span class="header-section-number">3.1</span> El caso simple</a></li>
+  <li><a href="#el-caso-general-exactamente-identificado" id="toc-el-caso-general-exactamente-identificado" class="nav-link" data-scroll-target="#el-caso-general-exactamente-identificado"><span class="header-section-number">3.2</span> El caso general: exactamente identificado</a></li>
+  </ul></li>
+  <li><a href="#mínimos-cuadrados-en-dos-etapas" id="toc-mínimos-cuadrados-en-dos-etapas" class="nav-link" data-scroll-target="#mínimos-cuadrados-en-dos-etapas"><span class="header-section-number">4</span> Mínimos cuadrados en dos etapas</a></li>
+  <li><a href="#propiedades-asintóticas" id="toc-propiedades-asintóticas" class="nav-link" data-scroll-target="#propiedades-asintóticas"><span class="header-section-number">5</span> Propiedades asintóticas</a></li>
+  <li><a href="#instrumentos-débiles" id="toc-instrumentos-débiles" class="nav-link" data-scroll-target="#instrumentos-débiles"><span class="header-section-number">6</span> Instrumentos débiles</a></li>
+  <li><a href="#postgrado-optimalidad-de-mc2e-hausman-y-sobreidentificación" id="toc-postgrado-optimalidad-de-mc2e-hausman-y-sobreidentificación" class="nav-link" data-scroll-target="#postgrado-optimalidad-de-mc2e-hausman-y-sobreidentificación"><span class="header-section-number">7</span> ★ Postgrado: optimalidad de MC2E, Hausman y sobreidentificación</a>
+  <ul class="collapse">
+  <li><a href="#mc2e-es-el-mejor-uso-lineal-de-los-instrumentos" id="toc-mc2e-es-el-mejor-uso-lineal-de-los-instrumentos" class="nav-link" data-scroll-target="#mc2e-es-el-mejor-uso-lineal-de-los-instrumentos"><span class="header-section-number">7.1</span> MC2E es el mejor uso lineal de los instrumentos</a></li>
+  <li><a href="#el-test-de-hausman" id="toc-el-test-de-hausman" class="nav-link" data-scroll-target="#el-test-de-hausman"><span class="header-section-number">7.2</span> El test de Hausman</a></li>
+  <li><a href="#restricciones-de-sobreidentificación" id="toc-restricciones-de-sobreidentificación" class="nav-link" data-scroll-target="#restricciones-de-sobreidentificación"><span class="header-section-number">7.3</span> Restricciones de sobreidentificación</a></li>
+  </ul></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-10.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 10 · Endogeneidad y variables instrumentales</h1>
+<p class="subtitle lead">Cuando el regresor está correlacionado con el error</p>
+</div>
+
+<div>
+  <div class="description">
+    Fuentes de endogeneidad, inconsistencia de MCO, el estimador de variables instrumentales, MC2E, identificación, distribución asintótica, instrumentos débiles y el test de Hausman.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a></p>
+<section id="el-supuesto-que-no-se-puede-probar" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> El supuesto que no se puede probar</h1>
+<p>Durante nueve clases hemos visto que MCO es consistente para el coeficiente de proyección lineal <span class="math inline">\(\beta = \mathbb{E}[xx']^{-1}\mathbb{E}[xy]\)</span>. Eso es un hecho matemático, sin condiciones. Pero muchas veces <strong>ese no es el <span class="math inline">\(\beta\)</span> que nos interesa</strong>. Queremos el efecto <em>causal</em> de la educación sobre el salario, el efecto de un precio sobre la cantidad demandada, el efecto de la policía sobre el crimen. Y el coeficiente de proyección no tiene por qué coincidir con esos efectos.</p>
+<p>Formalmente, escribimos un <strong>modelo estructural</strong> <span class="math display">\[
+y_i = x_i'\beta + u_i,
+\]</span> donde ahora <span class="math inline">\(\beta\)</span> es el parámetro causal y <span class="math inline">\(u_i\)</span> son todos los demás determinantes de <span class="math inline">\(y_i\)</span>. Decimos que el regresor <span class="math inline">\(x_{ij}\)</span> es <strong>endógeno</strong> si <span class="math inline">\(\mathbb{E}[x_{ij}u_i]\ne0\)</span> y <strong>exógeno</strong> si <span class="math inline">\(\mathbb{E}[x_{ij}u_i] = 0\)</span>. Cuando algún regresor es endógeno, el <span class="math inline">\(\beta\)</span> estructural y el de proyección son distintos, y MCO estima el equivocado.</p>
+<p>Esta clase trata de cómo recuperar el <span class="math inline">\(\beta\)</span> estructural con ayuda externa: una variable, el <strong>instrumento</strong>, que mueve a <span class="math inline">\(x\)</span> pero no está relacionada con <span class="math inline">\(u\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Las variables instrumentales fueron inventadas por Philip Wright en 1928, en un apéndice de un libro sobre… aranceles a los aceites vegetales. El apéndice contenía la primera solución al problema de identificar oferta y demanda. Durante décadas hubo un debate sobre si lo había escrito Philip o su hijo Sewall, el famoso genetista que inventó el análisis de senderos. Un análisis estilométrico de 2003 (Stock y Trebbi) concluyó que fue Philip. La econometría resolviendo sus propios misterios.</p></div></div></section>
+<section id="tres-fuentes-de-endogeneidad" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Tres fuentes de endogeneidad</h1>
+<p><strong>1. Variables omitidas.</strong> Si el modelo verdadero es <span class="math inline">\(y = x'\beta + \gamma w + e\)</span> con <span class="math inline">\(\mathbb{E}[xe] = 0\)</span> pero <span class="math inline">\(w\)</span> no se observa, entonces <span class="math inline">\(u = \gamma w + e\)</span> y <span class="math inline">\(\mathbb{E}[xu] = \gamma\mathbb{E}[xw]\ne0\)</span> si <span class="math inline">\(w\)</span> está correlacionada con <span class="math inline">\(x\)</span>. Es el sesgo por variable omitida de la Clase 8 (habilidad y educación).</p>
+<p><strong>2. Error de medida.</strong> Si <span class="math inline">\(x = x^* + v\)</span> con error clásico, vimos en la Clase 8 que <span class="math inline">\(y = \beta x + (u - \beta v)\)</span> y <span class="math inline">\(\operatorname{Cov}(x, u - \beta v) = -\beta\sigma_v^2\ne0\)</span>.</p>
+<p><strong>3. Simultaneidad.</strong> Cuando <span class="math inline">\(y\)</span> y <span class="math inline">\(x\)</span> se determinan juntos. El ejemplo canónico es la oferta y la demanda: <span class="math display">\[
+\text{Demanda: } q_i = \alpha_d + \beta_dp_i + u_i^d, \qquad \text{Oferta: } q_i = \alpha_s + \beta_sp_i + u_i^s.
+\]</span> El precio de equilibrio resuelve el sistema: <span class="math inline">\(p_i = \dfrac{\alpha_s - \alpha_d + u_i^s - u_i^d}{\beta_d - \beta_s}\)</span>. <strong>El precio depende de los shocks de demanda</strong>, así que en la ecuación de demanda el regresor <span class="math inline">\(p\)</span> está correlacionado con el error <span class="math inline">\(u^d\)</span>. Regresar <span class="math inline">\(q\)</span> sobre <span class="math inline">\(p\)</span> no estima ni la oferta ni la demanda: estima una mezcla de ambas (Ejercicio 10.1).</p>
+<div id="thm-inconsistencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Inconsistencia de MCO con endogeneidad)</strong></span> Si <span class="math inline">\(y_i = x_i'\beta + u_i\)</span> con <span class="math inline">\((y_i, x_i)\)</span> i.i.d., <span class="math inline">\(Q = \mathbb{E}[x_ix_i']\succ0\)</span> y momentos finitos, entonces <span class="math display">\[
+\hat\beta_{\text{MCO}}\xrightarrow{p}\beta + Q^{-1}\mathbb{E}[x_iu_i].
+\]</span> En particular, MCO es inconsistente para el <span class="math inline">\(\beta\)</span> estructural si <span class="math inline">\(\mathbb{E}[x_iu_i]\ne0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Es la demostración de consistencia de la Clase 7, sin usar <span class="math inline">\(\mathbb{E}[x_iu_i] = 0\)</span>: <span class="math inline">\(\hat\beta = \beta + \hat Q^{-1}\frac1n\sum_ix_iu_i\xrightarrow{p}\beta + Q^{-1}\mathbb{E}[x_iu_i]\)</span> por la LGN y la función continua.</p>
+</div>
+</section>
+<section id="el-estimador-de-variables-instrumentales" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El estimador de variables instrumentales</h1>
+<section id="el-caso-simple" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="el-caso-simple"><span class="header-section-number">3.1</span> El caso simple</h2>
+<p>Empecemos con un regresor endógeno y una constante: <span class="math inline">\(y_i = \alpha + \beta x_i + u_i\)</span> con <span class="math inline">\(\mathbb{E}[u_i] = 0\)</span> y <span class="math inline">\(\operatorname{Cov}(x_i,u_i)\ne0\)</span>. Supongamos que tenemos una variable <span class="math inline">\(z_i\)</span> que cumple:</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Condiciones de un instrumento válido">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Condiciones de un instrumento válido
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Exogeneidad (o exclusión):</strong> <span class="math inline">\(\operatorname{Cov}(z_i, u_i) = 0\)</span>. El instrumento no está relacionado con los determinantes no observados de <span class="math inline">\(y\)</span>; solo afecta a <span class="math inline">\(y\)</span> a través de <span class="math inline">\(x\)</span>.</li>
+<li><strong>Relevancia:</strong> <span class="math inline">\(\operatorname{Cov}(z_i, x_i)\ne0\)</span>. El instrumento efectivamente mueve al regresor.</li>
+</ul>
+</div>
+</div>
+<p>Con esto, <span class="math inline">\(\beta\)</span> queda determinado por los momentos poblacionales. Tomando covarianza con <span class="math inline">\(z_i\)</span> en ambos lados del modelo, <span class="math display">\[
+\operatorname{Cov}(z_i, y_i) = \beta\operatorname{Cov}(z_i, x_i) + \operatorname{Cov}(z_i,u_i) = \beta\operatorname{Cov}(z_i,x_i),
+\]</span> y, por relevancia, <span id="eq-beta-vi"><span class="math display">\[
+\beta = \frac{\operatorname{Cov}(z_i,y_i)}{\operatorname{Cov}(z_i,x_i)}.
+\tag{1}\]</span></span> Esta es una <strong>fórmula de identificación</strong>: escribe el parámetro causal en términos de momentos de variables observables. El principio de analogía hace el resto: <span class="math display">\[
+\hat\beta_{\text{VI}} = \frac{\sum_i(z_i - \bar z)(y_i - \bar y)}{\sum_i(z_i - \bar z)(x_i - \bar x)}.
+\]</span></p>
+<p>Compara con MCO, que es <span class="math inline">\(\widehat{\operatorname{Cov}}(x,y)/\widehat{\operatorname{Var}}(x)\)</span>: VI reemplaza “<span class="math inline">\(x\)</span> consigo mismo” por “<span class="math inline">\(x\)</span> con <span class="math inline">\(z\)</span>” en el denominador, y “<span class="math inline">\(x\)</span> con <span class="math inline">\(y\)</span>” por “<span class="math inline">\(z\)</span> con <span class="math inline">\(y\)</span>” en el numerador. Solo usa la variación de <span class="math inline">\(x\)</span> que viene de <span class="math inline">\(z\)</span>, que por exogeneidad está “limpia” de <span class="math inline">\(u\)</span>.</p>
+<p>Hay otra forma de escribir <a href="#eq-beta-vi" class="quarto-xref">Ecuación&nbsp;1</a> que da mucha intuición. Dividiendo numerador y denominador por <span class="math inline">\(\operatorname{Var}(z)\)</span>, <span class="math display">\[
+\beta = \frac{\operatorname{Cov}(z,y)/\operatorname{Var}(z)}{\operatorname{Cov}(z,x)/\operatorname{Var}(z)} = \frac{\text{efecto de } z \text{ en } y \text{ (forma reducida)}}{\text{efecto de } z \text{ en } x \text{ (primera etapa)}}.
+\]</span> Si el instrumento sube <span class="math inline">\(x\)</span> en 2 unidades y sube <span class="math inline">\(y\)</span> en 1 unidad, y solo afecta a <span class="math inline">\(y\)</span> a través de <span class="math inline">\(x\)</span>, entonces cada unidad de <span class="math inline">\(x\)</span> sube <span class="math inline">\(y\)</span> en <span class="math inline">\(1/2\)</span>. Es una regla de tres.</p>
+<div id="exm-wald" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El estimador de Wald)</strong></span> Si <span class="math inline">\(z_i\in\{0,1\}\)</span> es binario (por ejemplo, haber sido sorteado para recibir un voucher escolar), entonces (Ejercicio 10.3) <span class="math display">\[
+\beta = \frac{\mathbb{E}[y\mid z = 1] - \mathbb{E}[y\mid z = 0]}{\mathbb{E}[x\mid z = 1] - \mathbb{E}[x\mid z = 0]}.
+\]</span> Angrist (1990) usó el sorteo de reclutamiento para Vietnam como instrumento del servicio militar: los números de sorteo bajos aumentaban la probabilidad de ir a la guerra, y el sorteo era literalmente aleatorio. El cociente entre la diferencia de ingresos y la diferencia en la probabilidad de haber servido estima el efecto del servicio militar sobre los ingresos.</p>
+</div>
+</section>
+<section id="el-caso-general-exactamente-identificado" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="el-caso-general-exactamente-identificado"><span class="header-section-number">3.2</span> El caso general: exactamente identificado</h2>
+<p>Con <span class="math inline">\(k\)</span> regresores en <span class="math inline">\(x_i\)</span> (algunos exógenos, que sirven como sus propios instrumentos, y algunos endógenos) y <span class="math inline">\(k\)</span> instrumentos en <span class="math inline">\(z_i\)</span>, las condiciones son:</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de VI (exactamente identificado)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de VI (exactamente identificado)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>VI1:</strong> <span class="math inline">\((y_i, x_i, z_i)\)</span> i.i.d. y <span class="math inline">\(y_i = x_i'\beta + u_i\)</span>.</li>
+<li><strong>VI2 (exogeneidad):</strong> <span class="math inline">\(\mathbb{E}[z_iu_i] = 0\)</span>.</li>
+<li><strong>VI3 (relevancia):</strong> <span class="math inline">\(Q_{zx} = \mathbb{E}[z_ix_i']\)</span> (<span class="math inline">\(k\times k\)</span>) es invertible.</li>
+</ul>
+</div>
+</div>
+<p>De VI2, <span class="math inline">\(\mathbb{E}[z_i(y_i - x_i'\beta)] = 0\)</span>, es decir, <span class="math inline">\(\mathbb{E}[z_iy_i] = Q_{zx}\beta\)</span>, y por VI3, <span class="math display">\[
+\beta = Q_{zx}^{-1}\mathbb{E}[z_iy_i], \qquad \hat\beta_{\text{VI}} = \Big(\sum_iz_ix_i'\Big)^{-1}\sum_iz_iy_i = (Z'X)^{-1}Z'y.
+\]</span> Con <span class="math inline">\(z_i = x_i\)</span> (todos los regresores exógenos), esto es MCO. MCO es el caso particular de VI en que cada regresor es su propio instrumento.</p>
+</section>
+</section>
+<section id="mínimos-cuadrados-en-dos-etapas" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Mínimos cuadrados en dos etapas</h1>
+<p>¿Qué pasa si tenemos <strong>más instrumentos que regresores endógenos</strong>? Por ejemplo, para la educación podríamos usar la distancia a la universidad más cercana <em>y</em> el trimestre de nacimiento. Con <span class="math inline">\(\ell&gt;k\)</span> instrumentos, <span class="math inline">\(Z'X\)</span> es <span class="math inline">\(\ell\times k\)</span> y no se puede invertir. Tenemos más ecuaciones (<span class="math inline">\(\mathbb{E}[z_iu_i] = 0\)</span> son <span class="math inline">\(\ell\)</span> ecuaciones) que incógnitas (<span class="math inline">\(k\)</span>). El modelo está <strong>sobreidentificado</strong>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de MC2E">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de MC2E
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>VI1</strong> como antes, con <span class="math inline">\(z_i\in\mathbb{R}^\ell\)</span>, <span class="math inline">\(\ell\ge k\)</span>.</li>
+<li><strong>VI2:</strong> <span class="math inline">\(\mathbb{E}[z_iu_i] = 0\)</span>.</li>
+<li><strong>VI3′ (condición de rango):</strong> <span class="math inline">\(Q_{zz} = \mathbb{E}[z_iz_i']\succ0\)</span> y <span class="math inline">\(Q_{zx} = \mathbb{E}[z_ix_i']\)</span> (<span class="math inline">\(\ell\times k\)</span>) tiene rango <span class="math inline">\(k\)</span>.</li>
+</ul>
+</div>
+</div>
+<p>La condición de rango implica la <strong>condición de orden</strong> <span class="math inline">\(\ell\ge k\)</span>: se necesitan al menos tantos instrumentos como regresores (contando los exógenos, que son sus propios instrumentos). Equivalentemente: al menos un instrumento excluido por cada regresor endógeno.</p>
+<p>La idea de MC2E es combinar los <span class="math inline">\(\ell\)</span> instrumentos en <span class="math inline">\(k\)</span> “instrumentos óptimos”: las <strong>proyecciones de los regresores sobre los instrumentos</strong>.</p>
+<div id="def-mc2e" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (MC2E)</strong></span> Sea <span class="math inline">\(P_Z = Z(Z'Z)^{-1}Z'\)</span>. El estimador de <strong>mínimos cuadrados en dos etapas</strong> es <span class="math display">\[
+\hat\beta_{\text{MC2E}} = (X'P_ZX)^{-1}X'P_Zy.
+\]</span></p>
+</div>
+<p>El nombre viene de la siguiente interpretación, que es un teorema:</p>
+<div id="thm-dos-etapas" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (MC2E son dos regresiones)</strong></span> Sea <span class="math inline">\(\hat X = P_ZX\)</span> la matriz de valores ajustados de regresar cada columna de <span class="math inline">\(X\)</span> sobre <span class="math inline">\(Z\)</span> (<strong>primera etapa</strong>). Entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(\hat\beta_{\text{MC2E}} = (\hat X'\hat X)^{-1}\hat X'y\)</span>: es MCO de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(\hat X\)</span> (<strong>segunda etapa</strong>).</li>
+<li><span class="math inline">\(\hat\beta_{\text{MC2E}} = (\hat X'X)^{-1}\hat X'y\)</span>: es VI con instrumentos <span class="math inline">\(\hat X\)</span>.</li>
+<li>Si <span class="math inline">\(\ell = k\)</span> y <span class="math inline">\(Z'X\)</span> es invertible, <span class="math inline">\(\hat\beta_{\text{MC2E}} = (Z'X)^{-1}Z'y = \hat\beta_{\text{VI}}\)</span>.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todo sale de que <span class="math inline">\(P_Z\)</span> es simétrica e idempotente (Clase 1). (1): <span class="math inline">\(\hat X'\hat X = X'P_Z'P_ZX = X'P_ZX\)</span> y <span class="math inline">\(\hat X'y = X'P_Zy\)</span>. (2): <span class="math inline">\(\hat X'X = X'P_Z'X = X'P_ZX\)</span>. (3): con <span class="math inline">\(\ell = k\)</span>, las matrices <span class="math inline">\(Z'X\)</span> y <span class="math inline">\(X'Z\)</span> son cuadradas e invertibles, así que puedo separar la inversa de un producto en producto de inversas y cancelar.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Como <span class="math inline">\(P_Z\)</span> es simétrica e idempotente, <span class="math inline">\(\hat X'\hat X = X'P_ZP_ZX = X'P_ZX\)</span>, <span class="math inline">\(\hat X'X = X'P_ZX\)</span> y <span class="math inline">\(\hat X'y = X'P_Zy\)</span>. Sustituyendo en la definición se obtienen (1) y (2).</p>
+<ol start="3" type="1">
+<li>Si <span class="math inline">\(\ell = k\)</span> y <span class="math inline">\(Z'X\)</span> es invertible (y por lo tanto también <span class="math inline">\(X'Z = (Z'X)'\)</span>), usando <span class="math inline">\((ABC)^{-1} = C^{-1}B^{-1}A^{-1}\)</span> para matrices cuadradas invertibles, <span class="math display">\[
+(X'Z(Z'Z)^{-1}Z'X)^{-1}X'Z(Z'Z)^{-1}Z'y = (Z'X)^{-1}(Z'Z)(X'Z)^{-1}X'Z(Z'Z)^{-1}Z'y = (Z'X)^{-1}Z'y.
+\]</span></li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="No hagas las dos etapas a mano">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>No hagas las dos etapas a mano
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aunque (1) dice que MC2E es “regresar <span class="math inline">\(y\)</span> sobre <span class="math inline">\(\hat X\)</span>”, los <strong>errores estándar</strong> de esa segunda regresión hecha a mano son incorrectos: el programa calcula los residuos como <span class="math inline">\(y - \hat X\hat\beta\)</span>, cuando los correctos son <span class="math inline">\(y - X\hat\beta\)</span> (con los regresores originales). Usa siempre el comando de VI/MC2E de tu software.</p>
+</div>
+</div>
+</section>
+<section id="propiedades-asintóticas" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Propiedades asintóticas</h1>
+<p>A diferencia de MCO, <strong>VI no es insesgado</strong> en muestras finitas (ni siquiera tiene media finita en el caso exactamente identificado con un instrumento, bajo normalidad). Su justificación es enteramente asintótica.</p>
+<div id="thm-consistencia-vi" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Consistencia de MC2E)</strong></span> Bajo VI1, VI2, VI3′ y momentos finitos, <span class="math inline">\(\hat\beta_{\text{MC2E}}\xrightarrow{p}\beta\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sustituyendo <span class="math inline">\(y = X\beta + u\)</span>, <span class="math display">\[
+\hat\beta_{\text{MC2E}} = \beta + (X'P_ZX)^{-1}X'P_Zu.
+\]</span> Escribimos todo en promedios, con <span class="math inline">\(\hat Q_{xz} = \frac1nX'Z\)</span>, <span class="math inline">\(\hat Q_{zz} = \frac1nZ'Z\)</span>, <span class="math inline">\(\hat Q_{zx} = \frac1nZ'X\)</span>: <span class="math display">\[
+\hat\beta_{\text{MC2E}} - \beta = \big(\hat Q_{xz}\hat Q_{zz}^{-1}\hat Q_{zx}\big)^{-1}\hat Q_{xz}\hat Q_{zz}^{-1}\Big(\frac1n\sum_iz_iu_i\Big).
+\]</span> (Los factores <span class="math inline">\(n\)</span> se cancelan: <span class="math inline">\(X'P_ZX = n\,\hat Q_{xz}\hat Q_{zz}^{-1}\hat Q_{zx}\)</span> y <span class="math inline">\(X'P_Zu = n\,\hat Q_{xz}\hat Q_{zz}^{-1}\frac1nZ'u\)</span>.) Por la LGN, <span class="math inline">\(\hat Q_{xz}\xrightarrow{p}Q_{xz}\)</span>, <span class="math inline">\(\hat Q_{zz}\xrightarrow{p}Q_{zz}\)</span>, <span class="math inline">\(\hat Q_{zx}\xrightarrow{p}Q_{zx}\)</span> y <span class="math inline">\(\frac1n\sum z_iu_i\xrightarrow{p}\mathbb{E}[z_iu_i] = 0\)</span> por VI2.</p>
+<p>La matriz <span class="math inline">\(Q_{xz}Q_{zz}^{-1}Q_{zx}\)</span> es invertible: es de la forma <span class="math inline">\(C'AC\)</span> con <span class="math inline">\(A = Q_{zz}^{-1}\succ0\)</span> y <span class="math inline">\(C = Q_{zx}\)</span> de rango columna completo <span class="math inline">\(k\)</span> (VI3′), así que es definida positiva (Clase 1). Por el teorema de la función continua, <span class="math display">\[
+\hat\beta_{\text{MC2E}} - \beta\xrightarrow{p}(Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}Q_{xz}Q_{zz}^{-1}\cdot0 = 0.
+\]</span></p>
+</div>
+<p>Nota exactamente dónde entra cada supuesto: <strong>exogeneidad</strong> hace que el último factor tienda a cero; <strong>relevancia</strong> (la condición de rango) hace que la inversa del frente exista en el límite. Si el instrumento es irrelevante, estamos dividiendo por algo que tiende a cero, y todo se descontrola (sección de instrumentos débiles).</p>
+<div id="thm-normalidad-vi" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Distribución asintótica de MC2E)</strong></span> Bajo los supuestos anteriores, con <span class="math inline">\(\Omega_z = \mathbb{E}[u_i^2z_iz_i']\)</span> finita, <span class="math display">\[
+\sqrt n(\hat\beta_{\text{MC2E}} - \beta)\xrightarrow{d}N(0, V), \qquad V = A\,\Omega_z\,A', \quad A = (Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}Q_{xz}Q_{zz}^{-1}.
+\]</span> Bajo homocedasticidad (<span class="math inline">\(\mathbb{E}[u_i^2\mid z_i] = \sigma^2\)</span>), <span class="math inline">\(\Omega_z = \sigma^2Q_{zz}\)</span> y <span class="math inline">\(V = \sigma^2(Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>De la demostración anterior, <span class="math inline">\(\sqrt n(\hat\beta_{\text{MC2E}} - \beta) = \hat A\cdot\frac{1}{\sqrt n}\sum_iz_iu_i\)</span> con <span class="math inline">\(\hat A = (\hat Q_{xz}\hat Q_{zz}^{-1}\hat Q_{zx})^{-1}\hat Q_{xz}\hat Q_{zz}^{-1}\xrightarrow{p}A\)</span>. Los <span class="math inline">\(z_iu_i\)</span> son i.i.d. con media cero (VI2) y varianza <span class="math inline">\(\Omega_z\)</span>, así que por el TCL, <span class="math inline">\(\frac{1}{\sqrt n}\sum_iz_iu_i\xrightarrow{d}N(0,\Omega_z)\)</span>. Por Slutsky, <span class="math inline">\(\sqrt n(\hat\beta - \beta)\xrightarrow{d}N(0, A\Omega_zA')\)</span>.</p>
+<p>Bajo homocedasticidad, por la LEI, <span class="math inline">\(\Omega_z = \mathbb{E}[\mathbb{E}[u_i^2\mid z_i]z_iz_i'] = \sigma^2Q_{zz}\)</span>. Sea <span class="math inline">\(H = Q_{xz}Q_{zz}^{-1}Q_{zx}\)</span>. Entonces <span class="math display">\[
+A\Omega_zA' = \sigma^2H^{-1}Q_{xz}Q_{zz}^{-1}Q_{zz}Q_{zz}^{-1}Q_{zx}H^{-1} = \sigma^2H^{-1}HH^{-1} = \sigma^2H^{-1}.
+\]</span></p>
+</div>
+<p>La varianza se estima por analogía, con <span class="math inline">\(\hat u_i = y_i - x_i'\hat\beta_{\text{MC2E}}\)</span> (¡con <span class="math inline">\(x_i\)</span>, no con <span class="math inline">\(\hat x_i\)</span>!) y <span class="math inline">\(\hat\sigma^2 = \frac1n\sum\hat u_i^2\)</span>, o con la versión robusta <span class="math inline">\(\hat\Omega_z = \frac1n\sum\hat u_i^2z_iz_i'\)</span>. En la práctica, con <span class="math inline">\(\ell = k = 1\)</span> y constante, la varianza homocedástica de la pendiente es <span class="math inline">\(\sigma^2\operatorname{Var}(z)/\operatorname{Cov}(z,x)^2 = \dfrac{\sigma^2}{\operatorname{Var}(x)\,\rho_{xz}^2}\)</span>: es la varianza de MCO <strong>dividida por la correlación al cuadrado entre instrumento y regresor</strong>. Con <span class="math inline">\(\rho_{xz} = 0{,}1\)</span>, la varianza es 100 veces la de MCO. <strong>VI es caro.</strong></p>
+</section>
+<section id="instrumentos-débiles" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Instrumentos débiles</h1>
+<p>La fórmula anterior ya advierte el problema: si <span class="math inline">\(\operatorname{Cov}(z,x)\)</span> es chica, VI es muy impreciso. Pero el problema es peor que una varianza grande: <strong>la aproximación asintótica deja de funcionar</strong>. Con un instrumento débil, en muestras de tamaño realista:</p>
+<ul>
+<li>MC2E está <strong>sesgado hacia MCO</strong>. Con muchos instrumentos débiles, el sesgo puede ser casi tan grande como el de MCO.</li>
+<li>La distribución de <span class="math inline">\(\hat\beta\)</span> está lejos de ser normal, con colas muy gordas.</li>
+<li>Los tests <span class="math inline">\(t\)</span> rechazan con probabilidad mucho mayor que el nivel nominal.</li>
+</ul>
+<div id="fig-iv-debil" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-iv-debil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/iv_debil.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-iv-debil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Distribución de VI simulada con un instrumento fuerte y uno débil, junto con MCO. Con el instrumento débil, VI está desplazado hacia MCO y extremadamente disperso.
+</figcaption>
+</figure>
+</div>
+<p>La intuición del sesgo hacia MCO: la primera etapa <span class="math inline">\(\hat X = P_ZX\)</span> se estima con error. Cuando el instrumento es débil, la mayor parte de la variación de <span class="math inline">\(\hat X\)</span> es ruido de estimación, y ese ruido es un ajuste de <span class="math inline">\(X\)</span> que incluye la parte endógena. En el extremo en que el instrumento es completamente irrelevante, <span class="math inline">\(\hat X\)</span> es “puro ajuste por azar” de <span class="math inline">\(X\)</span>, y MC2E se comporta como MCO.</p>
+<p><strong>Diagnóstico.</strong> Con un regresor endógeno, se reporta el estadístico <span class="math inline">\(F\)</span> de la primera etapa (el test de que los coeficientes de los instrumentos excluidos son cero en la regresión de <span class="math inline">\(x\)</span> sobre <span class="math inline">\(z\)</span>). La regla práctica de Staiger y Stock (1997) es desconfiar si <span class="math inline">\(F&lt;10\)</span>. Trabajos más recientes (Lee, McCrary, Moreira y Porter, 2022) muestran que, para que un test <span class="math inline">\(t\)</span> al 5 % tenga el tamaño correcto con la regla usual de <span class="math inline">\(\pm1{,}96\)</span>, el umbral debería ser mucho mayor (del orden de <span class="math inline">\(104\)</span>), y proponen ajustar los valores críticos en función del <span class="math inline">\(F\)</span>. Con instrumentos débiles conviene usar procedimientos robustos, como el test de Anderson–Rubin, cuyo tamaño es correcto sin importar la fuerza del instrumento.</p>
+</section>
+<section id="postgrado-optimalidad-de-mc2e-hausman-y-sobreidentificación" class="level1 page-columns page-full" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: optimalidad de MC2E, Hausman y sobreidentificación</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mostramos que MC2E es el mejor estimador de VI bajo homocedasticidad, construimos el test de Hausman de endogeneidad y el test de Sargan de restricciones de sobreidentificación.</p>
+</div>
+</div>
+<section id="mc2e-es-el-mejor-uso-lineal-de-los-instrumentos" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="mc2e-es-el-mejor-uso-lineal-de-los-instrumentos"><span class="header-section-number">7.1</span> MC2E es el mejor uso lineal de los instrumentos</h2>
+<p>Con <span class="math inline">\(\ell&gt;k\)</span> instrumentos, cualquier combinación lineal <span class="math inline">\(W'z_i\)</span> (con <span class="math inline">\(W\)</span> fija de <span class="math inline">\(\ell\times k\)</span> y <span class="math inline">\(W'Q_{zx}\)</span> invertible) da un instrumento válido de dimensión <span class="math inline">\(k\)</span>. El estimador de VI correspondiente, <span class="math inline">\(\hat\beta_W = (W'Z'X)^{-1}W'Z'y\)</span>, es consistente y, bajo homocedasticidad, su varianza asintótica es (mismo argumento que <a href="#thm-normalidad-vi" class="quarto-xref">Teorema&nbsp;4</a>) <span class="math display">\[
+V_W = \sigma^2(W'Q_{zx})^{-1}W'Q_{zz}W(Q_{xz}W)^{-1}.
+\]</span></p>
+<div id="thm-mc2e-optimo" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Optimalidad de MC2E)</strong></span> Bajo homocedasticidad, <span class="math inline">\(V_W\succeq\sigma^2(Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}\)</span> para toda <span class="math inline">\(W\)</span> admisible, con igualdad si <span class="math inline">\(W = Q_{zz}^{-1}Q_{zx}\)</span> (que es la <span class="math inline">\(W\)</span> implícita en MC2E).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(G = Q_{zz}^{1/2}W(Q_{xz}W)^{-1}\)</span> (<span class="math inline">\(\ell\times k\)</span>) y <span class="math inline">\(F = Q_{zz}^{-1/2}Q_{zx}\)</span> (<span class="math inline">\(\ell\times k\)</span>). Entonces <span class="math inline">\(V_W/\sigma^2 = G'G\)</span> (usando que <span class="math inline">\((W'Q_{zx})^{-1} = ((Q_{xz}W)^{-1})'\)</span>), <span class="math inline">\(F'F = Q_{xz}Q_{zz}^{-1}Q_{zx}\)</span> y <span class="math display">\[
+F'G = Q_{xz}Q_{zz}^{-1/2}Q_{zz}^{1/2}W(Q_{xz}W)^{-1} = I_k.
+\]</span> Sea <span class="math inline">\(P_F = F(F'F)^{-1}F'\)</span>, la proyección sobre <span class="math inline">\(\operatorname{col}(F)\)</span>. Como <span class="math inline">\(I - P_F\)</span> es simétrica e idempotente, <span class="math display">\[
+0\preceq G'(I - P_F)G = G'G - G'F(F'F)^{-1}F'G = G'G - (F'F)^{-1},
+\]</span> usando <span class="math inline">\(G'F = (F'G)' = I\)</span>. Luego <span class="math inline">\(V_W/\sigma^2 = G'G\succeq(F'F)^{-1} = (Q_{xz}Q_{zz}^{-1}Q_{zx})^{-1}\)</span>. Si <span class="math inline">\(W = Q_{zz}^{-1}Q_{zx}\)</span>, entonces <span class="math inline">\(G = Q_{zz}^{-1/2}Q_{zx}(F'F)^{-1} = F(F'F)^{-1}\in\operatorname{col}(F)\)</span> y la desigualdad es igualdad.</p>
+</div>
+<p>Es, una vez más, la estructura de Gauss–Markov: una proyección ortogonal y un término semidefinido positivo que sobra.</p>
+</section>
+<section id="el-test-de-hausman" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="el-test-de-hausman"><span class="header-section-number">7.2</span> El test de Hausman</h2>
+<p>¿Cómo sabemos si <span class="math inline">\(x\)</span> es endógeno? Si es exógeno, MCO y MC2E son ambos consistentes, y MCO es más eficiente (bajo homocedasticidad, MCO es el caso de MC2E con los instrumentos “óptimos” <span class="math inline">\(x\)</span>). Si es endógeno, solo MC2E es consistente. Hausman (1978) propuso comparar ambos: <span class="math display">\[
+H = n(\hat\beta_{\text{MC2E}} - \hat\beta_{\text{MCO}})'\big(\hat V_{\text{MC2E}} - \hat V_{\text{MCO}}\big)^{-}(\hat\beta_{\text{MC2E}} - \hat\beta_{\text{MCO}})\xrightarrow{d}\chi^2_{r}
+\]</span> bajo <span class="math inline">\(H_0\)</span> (exogeneidad), donde <span class="math inline">\((\cdot)^-\)</span> es una inversa generalizada y <span class="math inline">\(r\)</span> el número de regresores endógenos sospechosos. La razón de que la varianza de la diferencia sea la <strong>diferencia</strong> de varianzas es un resultado general, el “lema de Hausman”: si <span class="math inline">\(\hat\theta_e\)</span> es asintóticamente eficiente y <span class="math inline">\(\hat\theta_c\)</span> es otro estimador consistente, entonces <span class="math inline">\(\operatorname{Cov}_a(\hat\theta_e, \hat\theta_c - \hat\theta_e) = 0\)</span>; si no lo fuera, alguna combinación de ambos le ganaría a <span class="math inline">\(\hat\theta_e\)</span> (Ejercicio 10.7). Así, <span class="math inline">\(\operatorname{Var}_a(\hat\theta_c - \hat\theta_e) = \operatorname{Var}_a(\hat\theta_c) - \operatorname{Var}_a(\hat\theta_e)\)</span>.</p>
+<p>Una versión equivalente y más práctica (el <strong>test de regresión aumentada</strong> de Durbin–Wu–Hausman): estimar la primera etapa, guardar sus residuos <span class="math inline">\(\hat v\)</span>, agregarlos como regresor en la ecuación estructural estimada por MCO, y testear (con errores robustos) si su coeficiente es cero. La lógica: <span class="math inline">\(\hat v\)</span> es la parte de <span class="math inline">\(x\)</span> no explicada por los instrumentos, que es la parte potencialmente endógena.</p>
+</section>
+<section id="restricciones-de-sobreidentificación" class="level2 page-columns page-full" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="restricciones-de-sobreidentificación"><span class="header-section-number">7.3</span> Restricciones de sobreidentificación</h2>
+<p>Con <span class="math inline">\(\ell&gt;k\)</span>, tenemos <span class="math inline">\(\ell - k\)</span> condiciones de momentos “de sobra”, y podemos testear si son compatibles entre sí. El <strong>test de Sargan</strong> (homocedástico) es: regresar los residuos de MC2E <span class="math inline">\(\hat u\)</span> sobre todos los instrumentos <span class="math inline">\(Z\)</span> y calcular <span class="math display">\[
+S = nR^2\xrightarrow{d}\chi^2_{\ell - k}
+\]</span> bajo <span class="math inline">\(H_0:\mathbb{E}[z_iu_i] = 0\)</span>. (La versión robusta es el test <span class="math inline">\(J\)</span> de Hansen, que veremos en Econometría 2 con el método generalizado de momentos.) <strong>Advertencia importante:</strong> el test solo tiene poder si algunos instrumentos son válidos y otros no, y <em>supone</em> que al menos <span class="math inline">\(k\)</span> son válidos. Si todos los instrumentos son inválidos de la misma manera, el test no lo detecta. No reemplaza al argumento económico sobre la exogeneidad, que es, al final del día, lo que hace creíble a un instrumento.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Esta es la lección más importante de la clase y quizás del curso. La exogeneidad de un instrumento <strong>no se puede testear</strong> con los datos (con <span class="math inline">\(\ell = k\)</span> es literalmente imposible: el estimador fuerza <span class="math inline">\(\frac1n\sum z_i\hat u_i = 0\)</span>). Se defiende con conocimiento del problema: por qué el sorteo es aleatorio, por qué la distancia a la universidad no afecta el salario por otras vías, por qué la lluvia afecta la oferta de café pero no su demanda. La econometría te da la matemática; la credibilidad la pones tú.</p></div></div></section>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>Si <span class="math inline">\(\mathbb{E}[x_iu_i]\ne0\)</span>, MCO converge a <span class="math inline">\(\beta + Q^{-1}\mathbb{E}[x_iu_i]\)</span> (<a href="#thm-inconsistencia" class="quarto-xref">Teorema&nbsp;1</a>). Fuentes: omitidas, error de medida, simultaneidad.</li>
+<li>Un instrumento debe ser exógeno (<span class="math inline">\(\mathbb{E}[zu] = 0\)</span>) y relevante (<span class="math inline">\(\operatorname{rango}\mathbb{E}[zx'] = k\)</span>).</li>
+<li>Caso simple: <span class="math inline">\(\beta = \operatorname{Cov}(z,y)/\operatorname{Cov}(z,x)\)</span> = forma reducida / primera etapa.</li>
+<li>MC2E <span class="math inline">\(= (X'P_ZX)^{-1}X'P_Zy\)</span>: MCO de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(\hat X = P_ZX\)</span> (<a href="#thm-dos-etapas" class="quarto-xref">Teorema&nbsp;2</a>).</li>
+<li>MC2E es consistente y asintóticamente normal (<a href="#thm-consistencia-vi" class="quarto-xref">Teorema&nbsp;3</a>, <a href="#thm-normalidad-vi" class="quarto-xref">Teorema&nbsp;4</a>), pero no insesgado; con instrumentos débiles, la aproximación asintótica falla.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 10.1.</strong> En el modelo de oferta y demanda de esta clase, con <span class="math inline">\(u^d\)</span> y <span class="math inline">\(u^s\)</span> no correlacionados de varianzas <span class="math inline">\(\sigma_d^2\)</span> y <span class="math inline">\(\sigma_s^2\)</span>, demuestra que la pendiente de MCO de <span class="math inline">\(q\)</span> sobre <span class="math inline">\(p\)</span> converge a <span class="math display">\[
+\frac{\beta_d\sigma_s^2 + \beta_s\sigma_d^2}{\sigma_s^2 + \sigma_d^2}.
+\]</span> Interpreta los casos <span class="math inline">\(\sigma_d^2 = 0\)</span> y <span class="math inline">\(\sigma_s^2 = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sea <span class="math inline">\(\Delta = \beta_d - \beta_s\)</span>. Entonces <span class="math inline">\(p = (\text{cte} + u^s - u^d)/\Delta\)</span> y <span class="math inline">\(\operatorname{Var}(p) = (\sigma_s^2 + \sigma_d^2)/\Delta^2\)</span>. Usando la ecuación de demanda, <span class="math inline">\(\operatorname{Cov}(p,q) = \beta_d\operatorname{Var}(p) + \operatorname{Cov}(p,u^d) = \beta_d\operatorname{Var}(p) - \sigma_d^2/\Delta\)</span>. Luego el límite es <span class="math inline">\(\beta_d - \dfrac{\sigma_d^2/\Delta}{(\sigma_s^2 + \sigma_d^2)/\Delta^2} = \beta_d - \dfrac{\sigma_d^2(\beta_d - \beta_s)}{\sigma_s^2 + \sigma_d^2} = \dfrac{\beta_d\sigma_s^2 + \beta_s\sigma_d^2}{\sigma_s^2 + \sigma_d^2}\)</span>. Si <span class="math inline">\(\sigma_d^2 = 0\)</span> (solo se mueve la oferta), los equilibrios trazan la curva de demanda y MCO estima <span class="math inline">\(\beta_d\)</span>. Si <span class="math inline">\(\sigma_s^2 = 0\)</span>, estima la oferta. En general, un promedio ponderado. Por eso un instrumento para la demanda es un “desplazador de la oferta” (lluvia, costos): mueve la oferta a lo largo de una demanda fija.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.2.</strong> Demuestra que en el caso simple con constante, <span class="math inline">\(\hat\beta_{\text{VI}}\xrightarrow{p}\beta + \dfrac{\operatorname{Cov}(z,u)}{\operatorname{Cov}(z,x)}\)</span> si se relaja la exogeneidad. Compara con el sesgo de MCO, <span class="math inline">\(\operatorname{Cov}(x,u)/\operatorname{Var}(x)\)</span>, y argumenta por qué un instrumento “casi exógeno” pero débil puede ser peor que MCO.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por la LGN, <span class="math inline">\(\hat\beta_{\text{VI}}\xrightarrow{p}\operatorname{Cov}(z,y)/\operatorname{Cov}(z,x) = \beta + \operatorname{Cov}(z,u)/\operatorname{Cov}(z,x)\)</span>. Escribiendo en correlaciones: sesgo de VI <span class="math inline">\(= \dfrac{\rho_{zu}}{\rho_{zx}}\dfrac{\sigma_u}{\sigma_x}\)</span> y sesgo de MCO <span class="math inline">\(= \rho_{xu}\dfrac{\sigma_u}{\sigma_x}\)</span>. VI tiene menor sesgo asintótico solo si <span class="math inline">\(|\rho_{zu}/\rho_{zx}|&lt;|\rho_{xu}|\)</span>. Con <span class="math inline">\(\rho_{zx}\)</span> chico (instrumento débil), una violación minúscula de la exogeneidad se amplifica enormemente. Por ejemplo, con <span class="math inline">\(\rho_{zu} = 0{,}02\)</span>, <span class="math inline">\(\rho_{zx} = 0{,}05\)</span> y <span class="math inline">\(\rho_{xu} = 0{,}3\)</span>: VI tiene sesgo proporcional a <span class="math inline">\(0{,}4\)</span> y MCO a <span class="math inline">\(0{,}3\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.3.</strong> Demuestra la fórmula del estimador de Wald (<a href="#exm-wald" class="quarto-xref">Ejemplo&nbsp;1</a>) a partir de <a href="#eq-beta-vi" class="quarto-xref">Ecuación&nbsp;1</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(z\)</span> binaria y <span class="math inline">\(p = P(z = 1)\)</span>: <span class="math inline">\(\operatorname{Cov}(z,y) = \mathbb{E}[zy] - \mathbb{E}[z]\mathbb{E}[y] = p\,\mathbb{E}[y\mid z = 1] - p(p\mathbb{E}[y\mid z = 1] + (1 - p)\mathbb{E}[y\mid z = 0]) = p(1-p)(\mathbb{E}[y\mid z = 1] - \mathbb{E}[y\mid z = 0])\)</span>. Lo mismo con <span class="math inline">\(x\)</span>. El factor <span class="math inline">\(p(1-p)\)</span> se cancela en el cociente.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.4.</strong> En <span class="math inline">\(y = \beta_0 + \beta_1x_1 + \beta_2x_2 + u\)</span>, con <span class="math inline">\(x_1\)</span> exógeno, <span class="math inline">\(x_2\)</span> endógeno, y dos instrumentos excluidos <span class="math inline">\(z_1, z_2\)</span>: ¿cuál es la matriz <span class="math inline">\(Z\)</span>? ¿Cuántas restricciones de sobreidentificación hay? Escribe la primera etapa.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(Z = [\iota\;\;x_1\;\;z_1\;\;z_2]\)</span> (<span class="math inline">\(\ell = 4\)</span>), <span class="math inline">\(X = [\iota\;\;x_1\;\;x_2]\)</span> (<span class="math inline">\(k = 3\)</span>). Hay <span class="math inline">\(\ell - k = 1\)</span> restricción de sobreidentificación. La primera etapa relevante es <span class="math inline">\(x_2 = \pi_0 + \pi_1x_1 + \pi_2z_1 + \pi_3z_2 + v\)</span>: los exógenos incluidos <strong>siempre</strong> van en la primera etapa. (Las columnas <span class="math inline">\(\iota\)</span> y <span class="math inline">\(x_1\)</span> de <span class="math inline">\(X\)</span> se “proyectan” sobre sí mismas.) La relevancia exige <span class="math inline">\((\pi_2,\pi_3)\ne(0,0)\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.5.</strong> Muestra que si en la primera etapa se omite el regresor exógeno <span class="math inline">\(x_1\)</span> (es decir, se regresa <span class="math inline">\(x_2\)</span> solo sobre <span class="math inline">\((1, z_1, z_2)\)</span>) y luego se hace la segunda etapa de <span class="math inline">\(y\)</span> sobre <span class="math inline">\((1, x_1, \hat x_2)\)</span>, el estimador resultante es en general inconsistente. (Es el error de la “regresión prohibida” en su versión más simple.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sea <span class="math inline">\(\hat x_2\)</span> la proyección sobre <span class="math inline">\((1,z_1,z_2)\)</span> y <span class="math inline">\(x_2 = \hat x_2 + \hat v\)</span>. La ecuación es <span class="math inline">\(y = \beta_0 + \beta_1x_1 + \beta_2\hat x_2 + (\beta_2\hat v + u)\)</span>. Para consistencia, el nuevo error debe ser ortogonal a <span class="math inline">\(x_1\)</span>. Pero <span class="math inline">\(\hat v\)</span> es ortogonal a <span class="math inline">\((1,z_1,z_2)\)</span>, <strong>no</strong> a <span class="math inline">\(x_1\)</span>: si <span class="math inline">\(x_1\)</span> y <span class="math inline">\(x_2\)</span> están correlacionados después de controlar por los <span class="math inline">\(z\)</span>, entonces <span class="math inline">\(\mathbb{E}[x_1\hat v]\ne0\)</span> y el estimador es inconsistente. Con <span class="math inline">\(x_1\)</span> en la primera etapa, <span class="math inline">\(\hat v\)</span> es ortogonal a <span class="math inline">\(x_1\)</span> por construcción.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.6 ★.</strong> Supón que el instrumento es <strong>irrelevante</strong>: <span class="math inline">\(\operatorname{Cov}(z,x) = 0\)</span>. Con <span class="math inline">\(y = \beta x + u\)</span>, <span class="math inline">\(x = \pi z + v\)</span> con <span class="math inline">\(\pi = 0\)</span>, y <span class="math inline">\((z_i, u_i, v_i)\)</span> normales con <span class="math inline">\(z\)</span> independiente de <span class="math inline">\((u,v)\)</span>, <span class="math inline">\(\operatorname{Var}(z) = \operatorname{Var}(u) = \operatorname{Var}(v) = 1\)</span> y <span class="math inline">\(\operatorname{Corr}(u,v) = \rho\)</span>, muestra que <span class="math inline">\(\hat\beta_{\text{VI}} - \beta\)</span> converge en distribución a un cociente de normales, centrado en <span class="math inline">\(\rho\)</span> (el sesgo de MCO).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.6 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.6 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\beta_{\text{VI}} - \beta = \dfrac{n^{-1/2}\sum z_iu_i}{n^{-1/2}\sum z_ix_i} = \dfrac{n^{-1/2}\sum z_iu_i}{n^{-1/2}\sum z_iv_i}\)</span> (sin constante, por simplicidad). Por el TCL, <span class="math inline">\((n^{-1/2}\sum z_iu_i, n^{-1/2}\sum z_iv_i)\xrightarrow{d}(\xi_u,\xi_v)\)</span> normal bivariada con varianzas 1 y correlación <span class="math inline">\(\rho\)</span>. Por la función continua (el cociente es continuo salvo en un conjunto de probabilidad cero), <span class="math inline">\(\hat\beta_{\text{VI}} - \beta\xrightarrow{d}\xi_u/\xi_v\)</span>. Escribiendo <span class="math inline">\(\xi_u = \rho\xi_v + \sqrt{1 - \rho^2}\,\eta\)</span> con <span class="math inline">\(\eta\)</span> independiente, <span class="math inline">\(\xi_u/\xi_v = \rho + \sqrt{1 - \rho^2}\,\eta/\xi_v\)</span>: el sesgo de MCO más una <strong>Cauchy</strong> escalada. No converge a <span class="math inline">\(\beta\)</span>, está centrado (en mediana) en el sesgo de MCO, y no tiene media. Es el villano de la Clase 6.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.7 ★.</strong> (Lema de Hausman.) Sean <span class="math inline">\(\hat\theta_e\)</span> y <span class="math inline">\(\hat\theta_c\)</span> dos estimadores escalares con <span class="math inline">\(\sqrt n(\hat\theta_e - \theta, \hat\theta_c - \theta)\)</span> asintóticamente normal, y <span class="math inline">\(\hat\theta_e\)</span> con la menor varianza asintótica entre todas las combinaciones <span class="math inline">\(\hat\theta_\lambda = \hat\theta_e + \lambda(\hat\theta_c - \hat\theta_e)\)</span>. Demuestra que <span class="math inline">\(\operatorname{Cov}_a(\hat\theta_e, \hat\theta_c - \hat\theta_e) = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sea <span class="math inline">\(d = \hat\theta_c - \hat\theta_e\)</span>. <span class="math inline">\(\operatorname{Var}_a(\hat\theta_\lambda) = \operatorname{Var}_a(\hat\theta_e) + 2\lambda\operatorname{Cov}_a(\hat\theta_e, d) + \lambda^2\operatorname{Var}_a(d)\)</span>. Es una parábola en <span class="math inline">\(\lambda\)</span> con mínimo en <span class="math inline">\(\lambda = 0\)</span> (por eficiencia de <span class="math inline">\(\hat\theta_e\)</span>), así que su derivada en <span class="math inline">\(0\)</span>, <span class="math inline">\(2\operatorname{Cov}_a(\hat\theta_e,d)\)</span>, debe ser cero. (Si fuera positiva, un <span class="math inline">\(\lambda\)</span> negativo pequeño reduciría la varianza; si fuera negativa, uno positivo.) Todos los <span class="math inline">\(\hat\theta_\lambda\)</span> son consistentes, así que compiten legítimamente con <span class="math inline">\(\hat\theta_e\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-1/clase-09.html" class="pagination-link" aria-label="Clase 9 · Mínimos cuadrados generalizados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 9 · Mínimos cuadrados generalizados</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

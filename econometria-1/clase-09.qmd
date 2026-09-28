@@ -1,0 +1,323 @@
+---
+title: "Clase 9 · Mínimos cuadrados generalizados"
+subtitle: "Heterocedasticidad, autocorrelación y el teorema de Aitken"
+description: "MCO con errores no esféricos, el estimador de MCG y el teorema de Aitken, mínimos cuadrados ponderados, errores AR(1) y Prais–Winsten, MCG factible, tests de Breusch–Pagan y Durbin–Watson, y el teorema de Kruskal."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando los errores no son esféricos
+
+En la Clase 4, el supuesto RL4 decía $\operatorname{Var}(u\mid X) = \sigma^2I$: todos los errores con la misma varianza y sin correlación entre ellos. Hay dos formas típicas de romperlo:
+
+- **Heterocedasticidad:** $\operatorname{Var}(u_i\mid X)$ cambia con $i$. El gasto en alimentación varía mucho más entre familias ricas que entre familias pobres; el error de pronóstico de las ventas es mayor en empresas grandes.
+- **Autocorrelación:** $\operatorname{Cov}(u_t, u_s\mid X)\ne0$ para $t\ne s$. En series de tiempo, un shock que eleva el PIB este trimestre suele seguir elevándolo el próximo.
+
+En la Clase 7 vimos una respuesta: seguir usando MCO pero corregir los errores estándar (White). Es una respuesta segura pero conformista: MCO sigue siendo insesgado y consistente, pero **ya no es el mejor**. Esta clase estudia la respuesta ambiciosa: usar la estructura de la varianza para construir un estimador más eficiente.
+
+A lo largo de la clase supondremos:
+
+::: {.callout-caution title="Modelo de regresión generalizado"}
+- **RL1–RL3** como en la Clase 4.
+- **RL4′:** $\operatorname{Var}(u\mid X) = \sigma^2\Omega$, con $\Omega$ una matriz $n\times n$ **conocida** (puede depender de $X$), simétrica y definida positiva.
+:::
+
+El "conocida" es irreal. Lo relajaremos al final (MCG factible), pero primero hay que entender el caso ideal.
+
+# Qué le pasa a MCO
+
+::: {#thm-mco-no-esferico}
+## MCO bajo errores no esféricos
+Bajo RL1–RL3 y RL4′:
+
+1. $\hat\beta = (X'X)^{-1}X'y$ sigue siendo insesgado.
+2. $\operatorname{Var}(\hat\beta\mid X) = \sigma^2(X'X)^{-1}X'\Omega X(X'X)^{-1}$.
+3. $\mathbb{E}[s^2\mid X] = \sigma^2\operatorname{tr}(M\Omega)/(n-k)$, que en general es distinto de $\sigma^2$.
+:::
+
+::: {.proof}
+(1) El insesgamiento de la Clase 4 solo usó RL1–RL3.
+
+(2) $\hat\beta - \beta = (X'X)^{-1}X'u$, así que por la regla de la varianza de transformaciones lineales,
+$\operatorname{Var}(\hat\beta\mid X) = (X'X)^{-1}X'(\sigma^2\Omega)X(X'X)^{-1}$.
+
+(3) $(n-k)s^2 = u'Mu$ y, por la esperanza de una forma cuadrática (Clase 1), $\mathbb{E}[u'Mu\mid X] = \operatorname{tr}(M\sigma^2\Omega)$.
+:::
+
+Así que la fórmula de manual $s^2(X'X)^{-1}$ está doblemente equivocada: la forma de la matriz es incorrecta (falta el sándwich) y $s^2$ está sesgado. Los tests $t$ y $F$ de la Clase 5 dejan de tener la distribución que dicen tener.
+
+# El estimador de MCG
+
+La idea es simple y bonita: **transformar el modelo para que los errores se vuelvan esféricos, y después aplicar MCO**. Como $\Omega\succ0$, existe su raíz cuadrada inversa $\Omega^{-1/2}$ (Clase 1, sección ★), simétrica, con $\Omega^{-1/2}\Omega\Omega^{-1/2} = I$ y $\Omega^{-1/2}\Omega^{-1/2} = \Omega^{-1}$. Premultiplicando el modelo por ella:
+$$
+\underbrace{\Omega^{-1/2}y}_{y^*} = \underbrace{\Omega^{-1/2}X}_{X^*}\beta + \underbrace{\Omega^{-1/2}u}_{u^*}.
+$$
+El modelo transformado $y^* = X^*\beta + u^*$ cumple todos los supuestos clásicos:
+
+- $\mathbb{E}[u^*\mid X] = \Omega^{-1/2}\mathbb{E}[u\mid X] = 0$;
+- $\operatorname{Var}(u^*\mid X) = \Omega^{-1/2}(\sigma^2\Omega)\Omega^{-1/2} = \sigma^2I$;
+- $\operatorname{rango}(X^*) = \operatorname{rango}(X) = k$, porque $\Omega^{-1/2}$ es invertible.
+
+¡Es un modelo de regresión clásico con los mismos $\beta$! Su estimador MCO es
+$$
+\tilde\beta = (X^{*\prime}X^*)^{-1}X^{*\prime}y^* = (X'\Omega^{-1/2}\Omega^{-1/2}X)^{-1}X'\Omega^{-1/2}\Omega^{-1/2}y = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y.
+$$
+
+::: {#def-mcg}
+## Mínimos cuadrados generalizados
+El estimador de **MCG** (o GLS, por *generalized least squares*) es
+$$
+\tilde\beta = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y.
+$$
+Equivalentemente, minimiza la suma de cuadrados ponderada $(y - Xb)'\Omega^{-1}(y - Xb)$.
+:::
+
+La equivalencia se ve porque $(y^* - X^*b)'(y^* - X^*b) = (y - Xb)'\Omega^{-1/2}\Omega^{-1/2}(y - Xb) = (y - Xb)'\Omega^{-1}(y - Xb)$. Nota además que $\tilde\beta$ no depende de la raíz cuadrada elegida: cualquier matriz $P$ con $P'P = \Omega^{-1}$ da el mismo estimador (lo usaremos con Prais–Winsten).
+
+::: {#thm-aitken}
+## Aitken
+Bajo RL1–RL3 y RL4′:
+
+1. $\tilde\beta$ es insesgado y $\operatorname{Var}(\tilde\beta\mid X) = \sigma^2(X'\Omega^{-1}X)^{-1}$.
+2. $\tilde\beta$ es el mejor estimador lineal insesgado: para todo estimador lineal insesgado $\bar\beta = Ay$, $\operatorname{Var}(\bar\beta\mid X)\succeq\operatorname{Var}(\tilde\beta\mid X)$.
+3. En particular, $\operatorname{Var}(\hat\beta_{\text{MCO}}\mid X)\succeq\operatorname{Var}(\tilde\beta\mid X)$.
+:::
+
+::: {.callout-note title="Borrador"}
+Todo sale de Gauss–Markov en el modelo transformado. (1) es la Clase 4 aplicada a $(y^*,X^*)$: insesgado con varianza $\sigma^2(X^{*\prime}X^*)^{-1} = \sigma^2(X'\Omega^{-1}X)^{-1}$.
+
+Para (2), el truco es ver que **cualquier estimador lineal en $y$ también es lineal en $y^*$**: como $y = \Omega^{1/2}y^*$, se tiene $Ay = (A\Omega^{1/2})y^*$. Y si es insesgado en un modelo, lo es en el otro (son el mismo modelo escrito de otra forma). Así que compite en el torneo de Gauss–Markov del modelo transformado, y ahí gana MCO transformado, que es MCG.
+:::
+
+::: {.proof}
+(1) El modelo transformado satisface RL1–RL4 (lo verificamos arriba), y $\tilde\beta$ es su estimador de MCO. Por la Clase 4, $\tilde\beta$ es insesgado y $\operatorname{Var}(\tilde\beta\mid X) = \sigma^2(X^{*\prime}X^*)^{-1} = \sigma^2(X'\Omega^{-1}X)^{-1}$.
+
+(2) Sea $\bar\beta = Ay$ lineal (con $A$ función de $X$) e insesgado. Como $y = \Omega^{1/2}y^*$, se tiene $\bar\beta = (A\Omega^{1/2})y^*$, que es un estimador lineal en $y^*$ con matriz $A^* = A\Omega^{1/2}$ que depende solo de $X$. Es insesgado (la esperanza de $\bar\beta$ no depende de cómo lo escribamos). Por Gauss–Markov en el modelo transformado, cuyo MCO es $\tilde\beta$, $\operatorname{Var}(\bar\beta\mid X)\succeq\operatorname{Var}(\tilde\beta\mid X)$.
+
+(3) MCO es lineal e insesgado; se aplica (2).
+:::
+
+En la sección ★ damos una demostración directa de (3) que muestra *cuánto* se pierde con MCO.
+
+# Heterocedasticidad: mínimos cuadrados ponderados
+
+El caso más simple: $\Omega = \operatorname{diag}(\omega_1,\dots,\omega_n)$, es decir, errores no correlacionados con $\operatorname{Var}(u_i\mid X) = \sigma^2\omega_i$. Entonces $\Omega^{-1/2} = \operatorname{diag}(\omega_i^{-1/2})$ y la transformación es dividir cada observación por $\sqrt{\omega_i}$:
+$$
+\frac{y_i}{\sqrt{\omega_i}} = \frac{x_i'}{\sqrt{\omega_i}}\beta + \frac{u_i}{\sqrt{\omega_i}}.
+$$
+El estimador resultante minimiza $\sum_i(y_i - x_i'b)^2/\omega_i$ y se llama **mínimos cuadrados ponderados** (MCP, o WLS). Cada observación pesa inversamente a su varianza: **las observaciones ruidosas cuentan menos**. Tiene todo el sentido: si una medición es poco confiable, no deberías darle el mismo peso que a una precisa.[^pesos]
+
+[^pesos]: Esta es exactamente la misma idea que usarías para combinar dos termómetros, uno bueno y uno malo: promediar las lecturas dándole más peso al bueno. El promedio óptimo pondera por $1/\text{varianza}$. MCP es eso con regresores.
+
+::: {#exm-mcp}
+## Varianza proporcional a un regresor
+Si $\operatorname{Var}(u_i\mid x_i) = \sigma^2z_i$ con $z_i>0$ observado (por ejemplo, el ingreso en una regresión de gasto), entonces $\omega_i = z_i$ y se divide todo por $\sqrt{z_i}$. En el modelo $y_i = \alpha + \beta z_i + u_i$, el transformado es
+$$
+\frac{y_i}{\sqrt{z_i}} = \alpha\frac{1}{\sqrt{z_i}} + \beta\sqrt{z_i} + u_i^*,
+$$
+una regresión **sin constante** sobre dos regresores nuevos. Un error común es olvidar que la constante original se transforma en $1/\sqrt{z_i}$.
+:::
+
+# Autocorrelación: errores AR(1)
+
+En series de tiempo ($i = t = 1,\dots,T$), el modelo de autocorrelación más usado es el **autorregresivo de orden 1**:
+$$
+u_t = \rho u_{t-1} + \varepsilon_t, \qquad |\rho|<1,
+$$
+donde $\{\varepsilon_t\}$ son no correlacionados entre sí, con media cero y varianza $\sigma_\varepsilon^2$, y $\varepsilon_t$ no está correlacionado con $u_{t-1}, u_{t-2},\dots$ Suponemos además que el proceso es **estacionario**: $\operatorname{Var}(u_t)$ no depende de $t$ (todo condicional en $X$, que omitimos de la notación).
+
+::: {#lem-ar1}
+## Covarianzas del AR(1)
+Bajo los supuestos anteriores, para todo $t$ y $s\ge0$,
+$$
+\operatorname{Var}(u_t) = \frac{\sigma_\varepsilon^2}{1 - \rho^2}, \qquad \operatorname{Cov}(u_t, u_{t-s}) = \rho^s\,\frac{\sigma_\varepsilon^2}{1 - \rho^2}.
+$$
+Es decir, $\operatorname{Var}(u) = \sigma_\varepsilon^2\,\Omega$ con $\Omega_{ts} = \rho^{|t-s|}/(1 - \rho^2)$.
+:::
+
+::: {.proof}
+*Varianza.* Sea $\gamma_0 = \operatorname{Var}(u_t)$, igual para todo $t$ por estacionariedad. Como $\varepsilon_t$ no está correlacionado con $u_{t-1}$,
+$$
+\gamma_0 = \operatorname{Var}(\rho u_{t-1} + \varepsilon_t) = \rho^2\operatorname{Var}(u_{t-1}) + \operatorname{Var}(\varepsilon_t) = \rho^2\gamma_0 + \sigma_\varepsilon^2.
+$$
+Despejando (posible porque $\rho^2<1$), $\gamma_0 = \sigma_\varepsilon^2/(1 - \rho^2)$.
+
+*Covarianzas, por inducción en $s$.* Para $s = 0$ es lo anterior. Si vale para $s - 1$, entonces, como $\varepsilon_t$ no está correlacionado con $u_{t-s}$ (para $s\ge1$),
+$$
+\operatorname{Cov}(u_t, u_{t-s}) = \operatorname{Cov}(\rho u_{t-1} + \varepsilon_t,\; u_{t-s}) = \rho\operatorname{Cov}(u_{t-1}, u_{(t-1)-(s-1)}) = \rho\cdot\rho^{s-1}\gamma_0 = \rho^s\gamma_0.
+$$
+:::
+
+La correlación entre errores separados por $s$ períodos es $\rho^s$: decae geométricamente. Con $\rho = 0{,}9$, dos errores separados por 10 trimestres todavía tienen correlación $0{,}35$.
+
+## La transformación de Prais–Winsten
+
+Calcular $\Omega^{-1/2}$ para una matriz $T\times T$ no es necesario. Basta con cualquier $P$ tal que $\operatorname{Var}(Pu) = \sigma_\varepsilon^2I$ (entonces $P\Omega P' = I$, luego $P'P = \Omega^{-1}$ y el estimador es el mismo). Para el AR(1) hay una $P$ muy natural:
+$$
+(Pu)_1 = \sqrt{1 - \rho^2}\,u_1, \qquad (Pu)_t = u_t - \rho u_{t-1}\quad(t\ge2).
+$$
+
+::: {#thm-prais-winsten}
+## Prais–Winsten
+Con la $P$ anterior, $\operatorname{Var}(Pu) = \sigma_\varepsilon^2I_T$. Por lo tanto, MCG en el modelo AR(1) es MCO en el modelo transformado
+$$
+\sqrt{1 - \rho^2}\,y_1 = \sqrt{1 - \rho^2}\,x_1'\beta + \text{error}, \qquad y_t - \rho y_{t-1} = (x_t - \rho x_{t-1})'\beta + \varepsilon_t\quad(t\ge2).
+$$
+:::
+
+::: {.proof}
+Para $t\ge2$, $(Pu)_t = u_t - \rho u_{t-1} = \varepsilon_t$, con varianza $\sigma_\varepsilon^2$. Para $t = 1$, $\operatorname{Var}(\sqrt{1 - \rho^2}u_1) = (1 - \rho^2)\gamma_0 = \sigma_\varepsilon^2$ por @lem-ar1. Covarianzas: para $2\le s<t$, $\operatorname{Cov}(\varepsilon_t, \varepsilon_s) = 0$ por supuesto. Para $t\ge2$, $\operatorname{Cov}(\varepsilon_t, u_1) = 0$ porque $\varepsilon_t$ no está correlacionado con los errores pasados $u_{t-1}, u_{t-2},\dots$, entre los que está $u_1$. Luego $\operatorname{Var}(Pu) = \sigma_\varepsilon^2I$. Como $P$ es invertible (es triangular inferior con diagonal no nula), $P\Omega P' = I$ implica $\Omega^{-1} = P'P$, y MCO sobre $(Py, PX)$ es $(X'P'PX)^{-1}X'P'Py = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y$.
+:::
+
+La versión que descarta la primera observación se llama **Cochrane–Orcutt**. Es más simple, pero pierde eficiencia (a veces bastante, si $T$ es chico o los regresores tienen tendencia).
+
+# MCG factible
+
+En la práctica $\Omega$ no es conocida. El procedimiento de **MCG factible** (MCGF) es:
+
+1. Estimar el modelo por MCO y obtener los residuos $\hat u$.
+2. Usar $\hat u$ para estimar los parámetros de $\Omega$ (por ejemplo, $\hat\rho$ regresando $\hat u_t$ sobre $\hat u_{t-1}$; o una función $\hat\omega_i$ regresando $\log\hat u_i^2$ sobre variables $z_i$).
+3. Calcular $\hat\beta_{\text{MCGF}} = (X'\hat\Omega^{-1}X)^{-1}X'\hat\Omega^{-1}y$.
+
+MCGF **no** es lineal ni, en general, insesgado ($\hat\Omega$ depende de $y$), así que Aitken no se aplica. Su justificación es asintótica: bajo condiciones de regularidad (que el modelo para $\Omega$ esté bien especificado y sus parámetros se estimen consistentemente), MCGF tiene la misma distribución asintótica que MCG con $\Omega$ conocida (sección ★).
+
+::: {.callout-warning title="MCG versus MCO robusto: la práctica moderna"}
+Si el modelo para $\Omega$ está mal especificado, MCGF sigue siendo consistente (bajo exogeneidad estricta) pero sus errores estándar "de manual" son incorrectos, y la ganancia de eficiencia puede desaparecer. Por eso la práctica moderna suele preferir **MCO con errores estándar robustos** (Clase 7): renuncia a la eficiencia a cambio de no depender de un modelo para la varianza. Una solución intermedia, recomendada por Romano y Wolf (2017), es usar MCP con pesos estimados *y* errores estándar robustos: si el modelo de pesos es bueno ganas eficiencia, y si es malo la inferencia sigue siendo válida.
+
+Hay además un peligro específico en series de tiempo: MCG con errores AR(1) usa $y_{t-1}$ y $x_{t-1}$, y requiere exogeneidad estricta. Si $x_t$ está correlacionado con $u_{t-1}$ (por ejemplo, si $x_t$ es un rezago de $y$), MCG puede ser inconsistente aunque MCO no lo sea.
+:::
+
+# Detectar el problema: tests
+
+## Heterocedasticidad: Breusch–Pagan y White
+
+Si $\operatorname{Var}(u_i\mid x_i) = \sigma^2h(\alpha_0 + z_i'\alpha)$ para alguna función $h$ y variables $z_i$ (de dimensión $p$), la hipótesis de homocedasticidad es $H_0:\alpha = 0$. El test de **Breusch–Pagan** (en la versión de Koenker, robusta a no normalidad) es:
+
+1. Estimar por MCO y obtener $\hat u_i$.
+2. Regresar $\hat u_i^2$ sobre $(1, z_i)$ y obtener el $R^2$ de esa regresión auxiliar.
+3. Rechazar si $\text{LM} = nR^2$ supera el cuantil de la $\chi^2_p$.
+
+La lógica: bajo $H_0$, $\mathbb{E}[u_i^2\mid z_i]$ no depende de $z_i$, así que $z_i$ no debería predecir $\hat u_i^2$. El test de **White** es el caso particular en que $z_i$ contiene los regresores, sus cuadrados y sus productos cruzados, y así detecta cualquier heterocedasticidad correlacionada con los segundos momentos de $x_i$, que es justamente la que invalida los errores estándar clásicos (Clase 7).
+
+## Autocorrelación: Durbin–Watson
+
+El estadístico clásico de **Durbin–Watson** es
+$$
+d = \frac{\sum_{t=2}^T(\hat u_t - \hat u_{t-1})^2}{\sum_{t=1}^T\hat u_t^2}.
+$$
+Expandiendo el numerador,
+$$
+d = \frac{\sum_{t=2}^T\hat u_t^2 + \sum_{t=2}^T\hat u_{t-1}^2 - 2\sum_{t=2}^T\hat u_t\hat u_{t-1}}{\sum_{t=1}^T\hat u_t^2}\approx 2 - 2\hat\rho = 2(1 - \hat\rho),
+$$
+donde $\hat\rho = \sum_{t\ge2}\hat u_t\hat u_{t-1}/\sum_t\hat u_t^2$ y la aproximación es que las dos primeras sumas del numerador difieren del denominador en un solo término cada una ($\hat u_1^2$ y $\hat u_T^2$), despreciable con $T$ grande. Así, $d\approx2$ indica ausencia de autocorrelación de primer orden, $d\approx0$ autocorrelación positiva fuerte y $d\approx4$ negativa fuerte. Su distribución exacta depende de $X$ (por eso las tablas de Durbin–Watson traen cotas inferior y superior), y no es válido si hay variables dependientes rezagadas entre los regresores. Hoy suele preferirse el test de Breusch–Godfrey: regresar $\hat u_t$ sobre $x_t$ y $\hat u_{t-1},\dots,\hat u_{t-p}$, y usar $nR^2\sim\chi^2_p$ asintóticamente.
+
+# ★ Postgrado: cuánto pierde MCO, y cuándo no pierde nada
+
+::: {.callout-important title="★ Postgrado"}
+Una demostración directa de la ineficiencia de MCO que da una fórmula explícita para la pérdida, el teorema de Kruskal sobre cuándo MCO y MCG coinciden, y el enunciado de la equivalencia asintótica de MCGF.
+:::
+
+::: {#thm-perdida-mco}
+## La pérdida de eficiencia de MCO
+Sean $G = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}$ (MCG) y $A_0 = (X'X)^{-1}X'$ (MCO), y $D = A_0 - G$. Entonces $DX = 0$ y
+$$
+\operatorname{Var}(\hat\beta_{\text{MCO}}\mid X) = \operatorname{Var}(\tilde\beta\mid X) + \sigma^2D\Omega D'.
+$$
+:::
+
+::: {.proof}
+$DX = A_0X - GX = I - I = 0$. Como $\hat\beta_{\text{MCO}} = A_0y = Gy + Dy$,
+$$
+\operatorname{Var}(A_0y\mid X) = \operatorname{Var}(Gy\mid X) + \operatorname{Var}(Dy\mid X) + \operatorname{Cov}(Gy, Dy\mid X) + \operatorname{Cov}(Dy,Gy\mid X).
+$$
+La covarianza cruzada es
+$$
+\operatorname{Cov}(Gy, Dy\mid X) = G(\sigma^2\Omega)D' = \sigma^2(X'\Omega^{-1}X)^{-1}X'\Omega^{-1}\Omega D' = \sigma^2(X'\Omega^{-1}X)^{-1}(DX)' = 0.
+$$
+Y $\operatorname{Var}(Dy\mid X) = \sigma^2D\Omega D'\succeq0$.
+:::
+
+Es la misma estructura que en la demostración de Gauss–Markov de la Clase 4: MCO es MCG más una perturbación no correlacionada con MCG. MCO no pierde nada exactamente cuando $D\Omega D' = 0$, es decir (como $\Omega\succ0$), cuando $D = 0$.
+
+::: {#thm-kruskal}
+## Kruskal
+MCO y MCG coinciden para todo $y$ si y solo si $\operatorname{col}(\Omega X)\subseteq\operatorname{col}(X)$, es decir, si $\Omega X = XC$ para alguna matriz $C$ de $k\times k$.
+:::
+
+::: {.proof}
+($\Leftarrow$) Supongamos $\Omega X = XC$. Como $\Omega$ es invertible, $\operatorname{rango}(\Omega X) = k$, y como $\operatorname{rango}(XC)\le\operatorname{rango}(C)$, $C$ tiene rango $k$ y es invertible. Entonces $X = \Omega^{-1}XC$, es decir, $\Omega^{-1}X = XC^{-1}$, y trasponiendo (con $\Omega$ simétrica), $X'\Omega^{-1} = C^{-1\prime}X'$. Luego
+$$
+\tilde\beta = (C^{-1\prime}X'X)^{-1}C^{-1\prime}X'y = (X'X)^{-1}C'C^{-1\prime}X'y = (X'X)^{-1}X'y.
+$$
+($\Rightarrow$) Si $G = A_0$, entonces $(X'\Omega^{-1}X)^{-1}X'\Omega^{-1} = (X'X)^{-1}X'$. Trasponiendo, $\Omega^{-1}X(X'\Omega^{-1}X)^{-1} = X(X'X)^{-1}$, así que $\Omega^{-1}X = X(X'X)^{-1}(X'\Omega^{-1}X) = XB$ con $B$ invertible, y $\Omega X = XB^{-1}$.
+:::
+
+::: {#exm-equicorrelacion}
+## Errores equicorrelacionados
+Si todos los errores tienen varianza $\sigma^2$ y correlación común $r$ ($\Omega = (1 - r)I + r\iota\iota'$, un modelo típico de "efecto de grupo") y $X$ incluye una constante, entonces $\Omega X = (1 - r)X + r\iota(\iota'X)$. El segundo término está en $\operatorname{col}(X)$ porque $\iota$ es una columna de $X$. Por Kruskal, **MCO es MCG**: no hay nada que ganar. (Pero ¡cuidado!: los errores estándar de MCO siguen siendo incorrectos, porque $\operatorname{Var}(\hat\beta\mid X) = \sigma^2(X'X)^{-1}X'\Omega X(X'X)^{-1}\ne\sigma^2(X'X)^{-1}$. Esta es la raíz del problema de los "errores agrupados", Moulton, 1990.)
+:::
+
+**Equivalencia asintótica de MCGF.** Supongamos $\Omega = \Omega(\theta)$ con $\theta$ de dimensión fija, $\hat\theta\xrightarrow{p}\theta$, y condiciones de regularidad que garanticen $\frac1nX'\hat\Omega^{-1}X - \frac1nX'\Omega^{-1}X\xrightarrow{p}0$ y $\frac{1}{\sqrt n}X'(\hat\Omega^{-1} - \Omega^{-1})u\xrightarrow{p}0$. Entonces
+$$
+\sqrt n(\hat\beta_{\text{MCGF}} - \tilde\beta)\xrightarrow{p}0,
+$$
+y MCGF hereda la distribución asintótica $N\big(0,\sigma^2\operatorname{plim}(X'\Omega^{-1}X/n)^{-1}\big)$ de MCG. La segunda condición es la delicada: necesita que el error de estimación de $\hat\theta$ no esté "demasiado" correlacionado con $u$, lo que típicamente se verifica con una expansión de Taylor de $\hat\Omega^{-1}$ en torno a $\theta$ y la exogeneidad estricta. Los detalles están en Amemiya (1985, cap. 6) o Hansen (2022, cap. 17).
+
+# Resumen
+
+- Con $\operatorname{Var}(u\mid X) = \sigma^2\Omega$, MCO es insesgado pero no eficiente, y sus errores estándar clásicos son incorrectos (@thm-mco-no-esferico).
+- MCG $= (X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y$ es MCO en el modelo transformado por $\Omega^{-1/2}$ y es MELI (@thm-aitken).
+- Heterocedasticidad: MCP pondera por $1/\omega_i$. AR(1): Prais–Winsten (@thm-prais-winsten).
+- MCGF estima $\Omega$ primero; su justificación es asintótica.
+- Tests: Breusch–Pagan/White ($nR^2$) para heterocedasticidad; Durbin–Watson ($d\approx2(1 - \hat\rho)$) y Breusch–Godfrey para autocorrelación.
+
+# Ejercicios
+
+**Ejercicio 9.1.** En el modelo sin constante $y_i = \beta x_i + u_i$ con $\operatorname{Var}(u_i\mid x) = \sigma^2x_i^2$ ($x_i>0$), encuentra el estimador de MCP y muestra que es el promedio de los cocientes $y_i/x_i$. Calcula su varianza y compárala con la de MCO.
+
+::: {.callout-tip collapse="true" title="Solución 9.1"}
+Dividiendo por $x_i$: $y_i/x_i = \beta + u_i/x_i$, con errores homocedásticos. MCO del transformado sobre una constante es $\tilde\beta = \frac1n\sum_iy_i/x_i$, con varianza $\sigma^2/n$. MCO original: $\operatorname{Var} = \sum x_i^2\sigma^2x_i^2/(\sum x_i^2)^2 = \sigma^2\sum x_i^4/(\sum x_i^2)^2$. Por Cauchy–Schwarz, $(\sum x_i^2)^2\le n\sum x_i^4$, así que $\sigma^2\sum x_i^4/(\sum x_i^2)^2\ge\sigma^2/n$, con igualdad solo si todos los $x_i$ son iguales.
+:::
+
+**Ejercicio 9.2.** Verifica numéricamente el @lem-ar1 para $\rho = 0{,}5$ y $\sigma_\varepsilon^2 = 1$: escribe la matriz $\operatorname{Var}(u)$ para $T = 3$ y comprueba que $P\operatorname{Var}(u)P' = I$ con la $P$ de Prais–Winsten.
+
+::: {.callout-tip collapse="true" title="Solución 9.2"}
+$\gamma_0 = 1/0{,}75 = 4/3$. $\operatorname{Var}(u) = \frac43\begin{pmatrix}1 & 0{,}5 & 0{,}25\\ 0{,}5 & 1 & 0{,}5\\ 0{,}25 & 0{,}5 & 1\end{pmatrix}$. $P = \begin{pmatrix}\sqrt{0{,}75} & 0 & 0\\ -0{,}5 & 1 & 0\\ 0 & -0{,}5 & 1\end{pmatrix}$. Por ejemplo, entrada $(2,2)$ de $P\operatorname{Var}(u)P'$: $\frac43[(-0{,}5)^2\cdot1 + 2(-0{,}5)(1)(0{,}5) + 1] = \frac43[0{,}25 - 0{,}5 + 1] = 1$. Entrada $(1,2)$: $\frac43\sqrt{0{,}75}[1\cdot(-0{,}5) + 0{,}5\cdot1] = 0$. Las demás se verifican igual.
+:::
+
+**Ejercicio 9.3.** Demuestra que el estimador de MCG minimiza $(y - Xb)'\Omega^{-1}(y - Xb)$ completando el cuadrado, como en la Clase 3.
+
+::: {.callout-tip collapse="true" title="Solución 9.3"}
+Sea $\tilde u = y - X\tilde\beta$; entonces $X'\Omega^{-1}\tilde u = 0$ (ecuaciones normales generalizadas). Para cualquier $b$: $y - Xb = \tilde u + X(\tilde\beta - b)$ y
+$(y - Xb)'\Omega^{-1}(y - Xb) = \tilde u'\Omega^{-1}\tilde u + (\tilde\beta - b)'X'\Omega^{-1}X(\tilde\beta - b)$, pues el término cruzado es $2(\tilde\beta - b)'X'\Omega^{-1}\tilde u = 0$. Como $X'\Omega^{-1}X\succ0$, el mínimo es único en $b = \tilde\beta$.
+:::
+
+**Ejercicio 9.4.** En el @exm-mcp, supón que por error el investigador divide por $z_i$ en lugar de por $\sqrt{z_i}$. ¿Sigue siendo insesgado el estimador? ¿Es eficiente?
+
+::: {.callout-tip collapse="true" title="Solución 9.4"}
+Dividir por $z_i$ es MCP con pesos $1/z_i^2$ en vez de $1/z_i$. Sigue siendo lineal e insesgado (cualquier MCP con pesos que dependan solo de $X$ lo es, bajo RL3), pero no es el MELI: el error transformado $u_i/z_i$ tiene varianza $\sigma^2/z_i$, que no es constante. Por Aitken, su varianza es mayor o igual que la de MCG.
+:::
+
+**Ejercicio 9.5.** ¿Por qué el test de Durbin–Watson no es válido en el modelo $y_t = \alpha + \gamma y_{t-1} + \beta x_t + u_t$ con $u_t$ AR(1)? ¿Qué le pasa a MCO en ese modelo?
+
+::: {.callout-tip collapse="true" title="Solución 9.5"}
+Con $y_{t-1}$ como regresor y $u_t = \rho u_{t-1} + \varepsilon_t$, se tiene $\operatorname{Cov}(y_{t-1}, u_t) = \rho\operatorname{Cov}(y_{t-1}, u_{t-1})\ne0$ si $\rho\ne0$: el regresor está correlacionado con el error contemporáneo. MCO es **inconsistente**, y sus residuos subestiman la autocorrelación, sesgando $d$ hacia 2. Durbin propuso para este caso el estadístico $h$; hoy se usa Breusch–Godfrey, que es válido con regresores rezagados.
+:::
+
+**Ejercicio 9.6 ★.** Usa @thm-perdida-mco para mostrar que, en la regresión sobre una constante ($X = \iota$) con $\Omega = \operatorname{diag}(\omega_i)$, la varianza de la media muestral excede la del promedio ponderado óptimo en $\sigma^2\big(\frac{\sum\omega_i}{n^2} - \frac{1}{\sum1/\omega_i}\big)$, y verifica que esto es $\ge0$.
+
+::: {.callout-tip collapse="true" title="Solución 9.6 ★"}
+MCO: $\bar y$, varianza $\sigma^2\sum\omega_i/n^2$. MCG: $\sum(y_i/\omega_i)/\sum(1/\omega_i)$, varianza $\sigma^2/\sum(1/\omega_i)$. La diferencia es la del enunciado. Es $\ge0$ porque $\frac1n\sum\omega_i\ge\frac{n}{\sum1/\omega_i}$: la media aritmética es mayor o igual que la media armónica.
+:::
+
+**Ejercicio 9.7 ★.** Usa Kruskal para mostrar que si $\Omega = \operatorname{diag}(\omega_1 I_{n_1}, \omega_2I_{n_2})$ (dos grupos con varianzas distintas) y $X$ contiene dummies de cada grupo *interactuadas* con todos los regresores, entonces MCO = MCG. Interpreta.
+
+::: {.callout-tip collapse="true" title="Solución 9.7 ★"}
+Con $X = \operatorname{diag}(X_1, X_2)$ (regresiones separadas por grupo, que es lo que producen las interacciones completas), $\Omega X = \operatorname{diag}(\omega_1X_1, \omega_2X_2) = XC$ con $C = \operatorname{diag}(\omega_1I, \omega_2I)$. Interpretación: si estimas un modelo separado para cada grupo, dentro de cada grupo los errores son homocedásticos y no hay nada que ponderar. MCG solo gana cuando la ponderación cambia cómo se combina información *entre* observaciones con varianzas distintas que comparten parámetros.
+:::

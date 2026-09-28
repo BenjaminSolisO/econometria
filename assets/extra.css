@@ -1,0 +1,167 @@
+/* ---------- Teoremas y demostraciones ---------- */
+.theorem, .lemma, .corollary, .proposition, .definition {
+  background: #ffffff;
+  border: 1px solid #e3dccb;
+  border-left: 4px solid #0f5e6b;
+  border-radius: 6px;
+  padding: .85rem 1.1rem .35rem;
+  margin: 1.4rem 0;
+  box-shadow: 0 1px 0 rgba(31,36,48,.04);
+}
+.definition { border-left-color: #b8892b; }
+.lemma, .corollary { border-left-color: #5b7f95; }
+.theorem-title, .lemma-title, .corollary-title, .proposition-title, .definition-title {
+  font-family: "Fraunces", serif;
+}
+.proof {
+  border-left: 2px solid #cfc6b2;
+  padding: .2rem 0 .2rem 1rem;
+  margin: 1rem 0 1.6rem;
+}
+.proof-title { font-family: "Fraunces", serif; font-style: italic; }
+.example, .exercise { margin: 1.2rem 0; }
+
+/* ---------- Callouts con rol pedagógico ---------- */
+/* Borrador (scratch work) */
+.callout-note.callout {
+  border-left-color: #8a8577 !important;
+  background: repeating-linear-gradient(0deg, #fdfcf8, #fdfcf8 27px, #eef2f5 28px);
+}
+.callout-note .callout-header { background: #efece4 !important; }
+/* Postgrado */
+.callout-important.callout { border-left-color: #b5452f !important; }
+.callout-important .callout-header { background: #f8e9e4 !important; }
+/* Intuición */
+.callout-caution.callout { border-left-color: #b8892b !important; }
+.callout-caution .callout-header { background: #f7efdc !important; }
+/* Solución */
+.callout-tip.callout { border-left-color: #0f5e6b !important; }
+.callout-tip .callout-header { background: #e4f0ef !important; }
+
+/* Notas al margen: pequeñas y en cursiva suave */
+.margin-aside, .column-margin, section.footnotes, .aside-footnotes, div.csl-entry {
+  font-size: .82rem;
+  line-height: 1.4;
+  color: #4a4f5c;
+}
+
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+
+/* ---------- Landing ---------- */
+.hero {
+  padding: 4.5rem 0 3rem;
+  border-bottom: 1px solid #e3dccb;
+  position: relative;
+}
+.hero .eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #b5452f;
+}
+.hero h1 {
+  font-family: "Fraunces", serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 1;
+  margin: .6rem 0 1.2rem;
+  border: 0;
+}
+.hero p.lead { max-width: 40rem; font-size: 1.2rem; color: #3b4050; }
+.hero .formula {
+  font-size: 1.3rem;
+  color: #0f5e6b;
+  margin-top: 1.6rem;
+}
+.cursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.3rem;
+  margin: 2.8rem 0;
+}
+.curso {
+  background: #fff;
+  border: 1px solid #e3dccb;
+  border-radius: 10px;
+  padding: 1.5rem 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.curso:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(31,36,48,.08); }
+.curso .num {
+  font-family: "Fraunces", serif;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1;
+  color: #0f5e6b;
+}
+.curso.pronto .num { color: #b9b1a0; }
+.curso h3 { font-family: "Fraunces", serif; margin: .5rem 0 .4rem; border: 0; }
+.curso p { font-size: .98rem; color: #3b4050; flex-grow: 1; }
+.curso .estado {
+  font-family: "JetBrains Mono", monospace;
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.curso .estado.activo { color: #0f5e6b; }
+.curso .estado.proximo { color: #9a927f; }
+.curso a.boton {
+  display: inline-block;
+  margin-top: .8rem;
+  padding: .45rem .9rem;
+  border-radius: 6px;
+  background: #1f2430;
+  color: #f3ede0;
+  text-decoration: none;
+  font-size: .92rem;
+  align-self: flex-start;
+}
+.curso a.boton:hover { background: #0f5e6b; }
+.principios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.6rem;
+  margin: 1rem 0 3rem;
+}
+.principios h4 { font-family: "Fraunces", serif; font-size: 1.1rem; margin-bottom: .3rem; }
+.principios p { font-size: .96rem; color: #3b4050; }
+
+/* Índice de clases */
+.clases { list-style: none; padding: 0; counter-reset: c; }
+.clases li {
+  border-bottom: 1px dashed #e3dccb;
+  padding: .9rem 0;
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: .6rem;
+}
+.clases li .n {
+  font-family: "Fraunces", serif; font-weight: 800; font-size: 1.6rem; color: #0f5e6b; line-height: 1.1;
+}
+.clases li a { font-weight: 600; font-size: 1.08rem; }
+.clases li .d { display: block; font-size: .94rem; color: #4a4f5c; }
+
+.curso .estado { display: block; margin-top: auto; padding-top: .6rem; }
+a.descarga-pdf {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid #0f5e6b;
+  border-radius: 5px;
+  padding: .3rem .7rem;
+  margin-bottom: .5rem;
+}
+a.descarga-pdf::before { content: "↓ "; }
+a.descarga-pdf:hover { background: #0f5e6b; color: #fbf8f1; }
+
+@media (max-width: 600px) {
+  .hero { padding-top: 2.5rem; }
+  .hero .formula { font-size: 1rem; }
+  .hero .eyebrow { letter-spacing: .08em; }
+}

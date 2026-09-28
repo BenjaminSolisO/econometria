@@ -1,0 +1,305 @@
+---
+title: "Clase 7 · MCO en muestras grandes"
+subtitle: "Consistencia, normalidad asintótica y errores estándar robustos"
+description: "Consistencia y normalidad asintótica de MCO sin normalidad ni homocedasticidad, la varianza sándwich, el estimador de White, y los tests t y de Wald asintóticos."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Qué cambia
+
+Hasta ahora, la teoría de MCO descansó en supuestos que rara vez se cumplen: la CEF es lineal (RL1 + RL3), los errores son homocedásticos (RL4) y normales (RL5). Hoy los botamos casi todos. A cambio, pedimos $n$ grande y usamos las herramientas de la Clase 6. El resultado es la teoría que la econometría aplicada usa todos los días: la de los **errores estándar robustos**.
+
+El mensaje central, que vale la pena escribir antes de empezar:
+
+::: {.callout-caution title="El mensaje de la clase"}
+Con muestreo i.i.d. y momentos finitos, MCO es un estimador consistente y asintóticamente normal **del coeficiente de proyección lineal** $\beta = \mathbb{E}[xx']^{-1}\mathbb{E}[xy]$, sin importar si la CEF es lineal, si hay heterocedasticidad o si los errores son normales. Lo único que cambia es la fórmula de la varianza: hay que usar la versión "sándwich".
+:::
+
+# Supuestos
+
+::: {.callout-caution title="Supuestos asintóticos (A)"}
+- **A1 (muestreo):** $\{(y_i, x_i)\}_{i=1}^n$ son i.i.d.
+- **A2 (proyección):** $\beta = \mathbb{E}[x_ix_i']^{-1}\mathbb{E}[x_iy_i]$ y $u_i = y_i - x_i'\beta$, de modo que $\mathbb{E}[x_iu_i] = 0$.
+- **A3 (rango):** $Q = \mathbb{E}[x_ix_i']$ es finita y definida positiva.
+- **A4 (momentos):** $\mathbb{E}[y_i^4]<\infty$, $\mathbb{E}\|x_i\|^4<\infty$, y $\Omega = \mathbb{E}[u_i^2x_ix_i']$ es definida positiva.
+:::
+
+Compara con la Clase 4. A2 no es un supuesto de "exogeneidad" en el sentido causal: es la **definición** de $\beta$ como coeficiente de proyección (Clase 2). La propiedad $\mathbb{E}[x_iu_i] = 0$ es automática. Es mucho más débil que RL3 ($\mathbb{E}[u\mid X] = 0$), que pedía que la CEF fuera lineal. A4 pide cuartos momentos, que usaremos para estimar la varianza.[^cuartos]
+
+[^cuartos]: Los cuartos momentos son la forma técnica de decir "no hay outliers demasiado extremos". Si tus datos tienen colas tan gordas que $\mathbb{E}[y^4] = \infty$ (ingresos de multimillonarios, tamaños de ciudades, pérdidas de seguros), los errores estándar pueden ser poco confiables incluso con $n$ grande.
+
+# Consistencia
+
+Todo parte, como siempre, de la identidad del error muestral (Clase 4), ahora escrita con promedios:
+$$
+\hat\beta = \Big(\frac1n\sum_{i=1}^nx_ix_i'\Big)^{-1}\Big(\frac1n\sum_{i=1}^nx_iy_i\Big) = \beta + \hat Q^{-1}\Big(\frac1n\sum_{i=1}^nx_iu_i\Big),
+\qquad \hat Q = \frac1n\sum_{i=1}^nx_ix_i'.
+$$ {#eq-mco-promedios}
+(Multiplicar y dividir por $n$ no cambia nada: $(X'X)^{-1}X'y = (X'X/n)^{-1}(X'y/n)$. Y la segunda igualdad es $y_i = x_i'\beta + u_i$, que vale por la definición de $u_i$.) Escrito así, $\hat\beta$ es una función continua de promedios, y los promedios son justo lo que la LGN sabe manejar.
+
+::: {#thm-consistencia-mco}
+## Consistencia de MCO
+Bajo A1–A3 (y $\mathbb{E}[y_i^2]<\infty$), $\hat\beta\xrightarrow{p}\beta$.
+:::
+
+::: {.callout-note title="Borrador"}
+$\hat Q\to Q$ por LGN (entrada por entrada). $\frac1n\sum x_iu_i\to\mathbb{E}[x_iu_i] = 0$ por LGN. La función $(A, b)\mapsto A^{-1}b$ es continua donde $A$ es invertible, y $Q$ es invertible. Función continua $\Rightarrow$ $\hat\beta\to\beta + Q^{-1}\cdot0$. Detalle: $\hat Q$ podría no ser invertible para algún $n$; pero como $\hat Q\to Q$ invertible, la probabilidad de eso tiende a cero, y en ese evento podemos definir $\hat\beta$ como queramos sin afectar límites en probabilidad.
+:::
+
+::: {.proof}
+*Paso 1: $\hat Q\xrightarrow{p}Q$.* La entrada $(j,l)$ de $\hat Q$ es $\frac1n\sum_ix_{ij}x_{il}$, un promedio de variables i.i.d. (por A1) con media $Q_{jl}$, finita por A3. Por la LGN (Khinchine), converge a $Q_{jl}$.
+
+*Paso 2: $\frac1n\sum_ix_iu_i\xrightarrow{p}0$.* Los $x_iu_i$ son i.i.d. (funciones de $(y_i, x_i)$) con media $\mathbb{E}[x_iu_i] = 0$ por A2. Su esperanza existe porque $\mathbb{E}|x_{ij}u_i|\le(\mathbb{E}x_{ij}^2)^{1/2}(\mathbb{E}u_i^2)^{1/2}<\infty$ por Cauchy–Schwarz ($u_i$ tiene segundo momento porque $y_i$ y $x_i$ lo tienen). Por la LGN, el promedio converge a $0$.
+
+*Paso 3: función continua.* La función $g(A, b) = A^{-1}b$ es continua en todo par con $A$ invertible, en particular en $(Q, 0)$ por A3. Por el teorema de la función continua (Clase 6),
+$$
+\hat\beta - \beta = \hat Q^{-1}\Big(\frac1n\sum_ix_iu_i\Big)\xrightarrow{p}Q^{-1}\cdot0 = 0.
+$$
+(El evento en que $\hat Q$ no es invertible tiene probabilidad que tiende a cero, pues el determinante es continuo y $\det\hat Q\xrightarrow{p}\det Q\ne0$.)
+:::
+
+::: {.callout-warning title="Consistente para qué"}
+MCO es consistente para el $\beta$ de la **proyección lineal**. Si la CEF es lineal, eso coincide con la CEF. Si además la CEF tiene interpretación causal, $\beta$ es un efecto causal. Pero ninguna de esas dos cosas se sigue de A1–A4. La econometría no puede darte causalidad gratis; las Clases 8 y 10 tratan de cuándo $\beta$ no es lo que quieres y qué hacer al respecto.
+:::
+
+# Normalidad asintótica
+
+::: {#thm-normalidad-asintotica}
+## Distribución asintótica de MCO
+Bajo A1–A4,
+$$
+\sqrt n\,(\hat\beta - \beta)\xrightarrow{d}N(0,\;V), \qquad V = Q^{-1}\Omega Q^{-1},
+$$
+con $Q = \mathbb{E}[x_ix_i']$ y $\Omega = \mathbb{E}[u_i^2x_ix_i']$.
+:::
+
+::: {.callout-note title="Borrador"}
+Multiplico @eq-mco-promedios por $\sqrt n$:
+$$
+\sqrt n(\hat\beta - \beta) = \hat Q^{-1}\cdot\frac{1}{\sqrt n}\sum_ix_iu_i.
+$$
+El segundo factor es $\sqrt n$ por el promedio de $x_iu_i$, que tiene media cero: ¡TCL! Converge a $N(0,\operatorname{Var}(x_iu_i))$, y $\operatorname{Var}(x_iu_i) = \mathbb{E}[x_ix_i'u_i^2] = \Omega$ (porque la media es cero). El primer factor converge en probabilidad a $Q^{-1}$. Slutsky: $Q^{-1}N(0,\Omega) = N(0, Q^{-1}\Omega Q^{-1})$.
+:::
+
+::: {.proof}
+Por @eq-mco-promedios,
+$$
+\sqrt n(\hat\beta - \beta) = \hat Q^{-1}\,\frac{1}{\sqrt n}\sum_{i=1}^nx_iu_i.
+$$
+*El factor derecho.* Los vectores $x_iu_i$ son i.i.d. con media $0$ (A2) y varianza $\mathbb{E}[(x_iu_i)(x_iu_i)'] = \mathbb{E}[u_i^2x_ix_i'] = \Omega$, que es finita: por Cauchy–Schwarz, $\mathbb{E}|u_i^2x_{ij}x_{il}|\le(\mathbb{E}u_i^4)^{1/2}(\mathbb{E}x_{ij}^2x_{il}^2)^{1/2}$, y ambos factores son finitos por A4. Por el TCL multivariado,
+$$
+\frac{1}{\sqrt n}\sum_{i=1}^nx_iu_i = \sqrt n\Big(\frac1n\sum_ix_iu_i - 0\Big)\xrightarrow{d}Z\sim N(0,\Omega).
+$$
+*El factor izquierdo.* Por el Paso 1 de @thm-consistencia-mco y la continuidad de la inversa, $\hat Q^{-1}\xrightarrow{p}Q^{-1}$.
+
+*Slutsky.* Por el teorema de Slutsky (versión matricial), $\hat Q^{-1}\frac{1}{\sqrt n}\sum_ix_iu_i\xrightarrow{d}Q^{-1}Z$, y por la regla de transformaciones lineales de normales (Clase 5), $Q^{-1}Z\sim N(0, Q^{-1}\Omega Q^{-1'}) = N(0, Q^{-1}\Omega Q^{-1})$, porque $Q^{-1}$ es simétrica.
+:::
+
+La matriz $V = Q^{-1}\Omega Q^{-1}$ se llama **varianza sándwich**: $Q^{-1}$ es el pan y $\Omega$ es el relleno.[^sandwich] Es la versión asintótica del sándwich $(X'X)^{-1}X'\operatorname{Var}(u\mid X)X(X'X)^{-1}$ de la Clase 4.
+
+[^sandwich]: El nombre se atribuye a Kauermann y Carroll, aunque la idea es de Huber (1967), Eicker (1963) y White (1980). Por eso a veces verás "errores estándar de Eicker–Huber–White". Es un sándwich con tres chefs.
+
+## El caso homocedástico
+
+::: {#cor-homocedastico}
+## Varianza bajo homocedasticidad
+Si además $\mathbb{E}[u_i^2\mid x_i] = \sigma^2$ (homocedasticidad condicional), entonces $\Omega = \sigma^2Q$ y
+$$
+V = \sigma^2Q^{-1}.
+$$
+:::
+
+::: {.proof}
+Por la LEI y "lo conocido sale" (Clase 2),
+$$
+\Omega = \mathbb{E}[u_i^2x_ix_i'] = \mathbb{E}\big[\mathbb{E}[u_i^2\mid x_i]\,x_ix_i'\big] = \mathbb{E}[\sigma^2x_ix_i'] = \sigma^2Q.
+$$
+Entonces $V = Q^{-1}\sigma^2QQ^{-1} = \sigma^2Q^{-1}$.
+:::
+
+Esta es la versión asintótica de $\sigma^2(X'X)^{-1}$: en efecto, $\frac1n\cdot\sigma^2\hat Q^{-1} = \sigma^2(X'X)^{-1}$. Bajo homocedasticidad, la fórmula clásica sigue siendo correcta en muestras grandes **aunque los errores no sean normales**. Sin homocedasticidad, no.
+
+# Estimando la varianza
+
+Para usar @thm-normalidad-asintotica en la práctica necesitamos estimar $V$. El pan es fácil: $\hat Q\xrightarrow{p}Q$. Para el relleno, el principio de analogía sugiere reemplazar la esperanza por un promedio y los errores (que no vemos) por los residuos.
+
+::: {#def-white}
+## Estimador de White (HC0)
+$$
+\hat V = \hat Q^{-1}\hat\Omega\hat Q^{-1}, \qquad \hat\Omega = \frac1n\sum_{i=1}^n\hat u_i^2x_ix_i'.
+$$
+En notación matricial, el estimador de $\operatorname{Var}(\hat\beta)$ es $\frac1n\hat V = (X'X)^{-1}\Big(\sum_i\hat u_i^2x_ix_i'\Big)(X'X)^{-1}$.
+:::
+
+::: {#thm-white}
+## Consistencia del estimador de White
+Bajo A1–A4, $\hat\Omega\xrightarrow{p}\Omega$ y, por lo tanto, $\hat V\xrightarrow{p}V$.
+:::
+
+La demostración está en la sección ★. La idea es simple: si usáramos los errores verdaderos, $\tilde\Omega = \frac1n\sum u_i^2x_ix_i'\xrightarrow{p}\Omega$ por la LGN. La dificultad es mostrar que reemplazar $u_i$ por $\hat u_i$ no importa en el límite, porque $\hat u_i - u_i = -x_i'(\hat\beta - \beta)$ y $\hat\beta - \beta\to0$.
+
+Para el caso homocedástico necesitamos estimar $\sigma^2 = \mathbb{E}[u_i^2]$:
+
+::: {#thm-s2-consistente}
+## Consistencia de $s^2$
+Bajo A1–A3 y $\mathbb{E}[y_i^2]<\infty$, $\hat\sigma^2 = \frac1n\sum_i\hat u_i^2\xrightarrow{p}\sigma^2 = \mathbb{E}[u_i^2]$, y lo mismo vale para $s^2 = \frac{n}{n-k}\hat\sigma^2$.
+:::
+
+::: {.proof}
+Como $\hat u_i = y_i - x_i'\hat\beta = u_i - x_i'(\hat\beta - \beta)$,
+$$
+\hat u_i^2 = u_i^2 - 2u_ix_i'(\hat\beta - \beta) + (\hat\beta - \beta)'x_ix_i'(\hat\beta - \beta).
+$$
+Promediando,
+$$
+\hat\sigma^2 = \underbrace{\frac1n\sum_iu_i^2}_{\xrightarrow{p}\,\sigma^2} - 2\underbrace{\Big(\frac1n\sum_iu_ix_i\Big)'}_{\xrightarrow{p}\,0}\underbrace{(\hat\beta - \beta)}_{\xrightarrow{p}\,0} + \underbrace{(\hat\beta - \beta)'}_{\xrightarrow{p}\,0}\underbrace{\hat Q}_{\xrightarrow{p}\,Q}\underbrace{(\hat\beta - \beta)}_{\xrightarrow{p}\,0}.
+$$
+Los límites indicados salen de la LGN y de @thm-consistencia-mco. Por el teorema de la función continua, $\hat\sigma^2\xrightarrow{p}\sigma^2 - 0 + 0 = \sigma^2$. Finalmente, $n/(n-k)\to1$.
+:::
+
+# Inferencia asintótica
+
+Con $\hat V$ en mano, todo se arma con Slutsky. Definimos el **error estándar robusto** de $\hat\beta_j$ como $\operatorname{ee}_R(\hat\beta_j) = \sqrt{\hat V_{jj}/n}$.
+
+::: {#thm-t-asintotico}
+## Test $t$ robusto
+Bajo A1–A4 y $H_0:\beta_j = \beta_j^0$,
+$$
+t_j = \frac{\hat\beta_j - \beta_j^0}{\operatorname{ee}_R(\hat\beta_j)}\xrightarrow{d}N(0,1).
+$$
+:::
+
+::: {.proof}
+$t_j = \dfrac{\sqrt n(\hat\beta_j - \beta_j^0)}{\sqrt{\hat V_{jj}}}$. Bajo $H_0$, el numerador es la coordenada $j$ de $\sqrt n(\hat\beta - \beta)$, que converge a $N(0, V_{jj})$ por @thm-normalidad-asintotica y el teorema de la función continua (la proyección a una coordenada es continua). El denominador converge en probabilidad a $\sqrt{V_{jj}}>0$ por @thm-white y continuidad de la raíz ($V_{jj}>0$ porque $V\succ0$). Por Slutsky, $t_j\xrightarrow{d}N(0,V_{jj})/\sqrt{V_{jj}} = N(0,1)$.
+:::
+
+::: {#thm-wald}
+## Test de Wald
+Sea $H_0: R\beta = r$ con $R$ de $q\times k$ y rango $q$. Bajo A1–A4 y $H_0$,
+$$
+W = n\,(R\hat\beta - r)'\big(R\hat VR'\big)^{-1}(R\hat\beta - r)\xrightarrow{d}\chi^2_q.
+$$
+:::
+
+::: {.proof}
+Bajo $H_0$, $\sqrt n(R\hat\beta - r) = R\sqrt n(\hat\beta - \beta)\xrightarrow{d}Z_R\sim N(0, RVR')$, por @thm-normalidad-asintotica y la función continua. Además $RVR'\succ0$ (Clase 1, pues $V\succ0$ y $R'$ tiene rango columna $q$) y $R\hat VR'\xrightarrow{p}RVR'$, así que $(R\hat VR')^{-1}\xrightarrow{p}(RVR')^{-1}$. Escribimos
+$$
+W = \big(\sqrt n(R\hat\beta - r)\big)'(R\hat VR')^{-1}\big(\sqrt n(R\hat\beta - r)\big).
+$$
+La función $(z, A)\mapsto z'Az$ es continua, así que por Slutsky y la función continua, $W\xrightarrow{d}Z_R'(RVR')^{-1}Z_R$. Por el lema de la Clase 5 ("$z\sim N(0,\Sigma)\Rightarrow z'\Sigma^{-1}z\sim\chi^2_q$"), el límite es $\chi^2_q$.
+:::
+
+**Conexión con el test $F$.** Si en lugar de $\hat V$ se usa el estimador homocedástico $s^2\hat Q^{-1}$, entonces
+$$
+W = n(R\hat\beta - r)'\big(Rs^2(X'X/n)^{-1}R'\big)^{-1}(R\hat\beta - r) = \frac{(R\hat\beta - r)'\big[R(X'X)^{-1}R'\big]^{-1}(R\hat\beta - r)}{s^2} = qF.
+$$
+Es decir, **$qF$ es exactamente el estadístico de Wald homocedástico**. Como $qF_{q,n-k}\xrightarrow{d}\chi^2_q$ cuando $n\to\infty$, el test $F$ de la Clase 5 es asintóticamente válido bajo homocedasticidad, sin normalidad. Bajo heterocedasticidad hay que usar $W$ con $\hat V$ robusto.
+
+## Hipótesis no lineales
+
+Para $H_0: h(\beta) = 0$ con $h:\mathbb{R}^k\to\mathbb{R}^q$ diferenciable y jacobiano $H = \partial h/\partial\beta'$ de rango $q$, el método delta (Clase 6) da $\sqrt n\,h(\hat\beta)\xrightarrow{d}N(0, HVH')$ bajo $H_0$, y el mismo argumento de @thm-wald muestra que
+$$
+W = n\,h(\hat\beta)'\big(\hat H\hat V\hat H'\big)^{-1}h(\hat\beta)\xrightarrow{d}\chi^2_q, \qquad \hat H = \frac{\partial h}{\partial\beta'}(\hat\beta).
+$$
+
+## Correcciones de muestra finita
+
+HC0 tiende a subestimar la varianza en muestras chicas, por la misma razón que $\hat\sigma^2$ subestima $\sigma^2$: los residuos son más chicos que los errores. Las variantes usuales, que usan el leverage $h_{ii}$ de la Clase 3, son:
+
+| Nombre | Peso de $x_ix_i'$ en $\hat\Omega$ | Comentario |
+|---|---|---|
+| HC0 | $\hat u_i^2$ | White (1980) |
+| HC1 | $\frac{n}{n-k}\hat u_i^2$ | Por defecto en Stata con `robust` |
+| HC2 | $\hat u_i^2/(1 - h_{ii})$ | Insesgado bajo homocedasticidad |
+| HC3 | $\hat u_i^2/(1 - h_{ii})^2$ | Aproxima el jackknife; recomendado con $n$ chico |
+
+Todas son asintóticamente equivalentes (porque $\max_ih_{ii}\to0$ bajo condiciones regulares), así que @thm-white vale para todas.
+
+# ★ Postgrado: demostración de la consistencia de White
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos @thm-white. La dificultad es controlar la diferencia entre usar $\hat u_i$ y $u_i$ en un promedio de productos de cuarto orden.
+:::
+
+::: {.proof}
+**(de @thm-white).** Sea $\tilde\Omega = \frac1n\sum_iu_i^2x_ix_i'$. Sus entradas son promedios i.i.d. con media finita (A4), así que $\tilde\Omega\xrightarrow{p}\Omega$ por la LGN de Khinchine. Basta probar que $\hat\Omega - \tilde\Omega\xrightarrow{p}0$.
+
+Sea $\delta = \hat\beta - \beta$. Como $\hat u_i = u_i - x_i'\delta$,
+$$
+\hat u_i^2 - u_i^2 = -2u_ix_i'\delta + (x_i'\delta)^2.
+$$
+Usando la norma matricial $\|A\| = (\sum_{jl}A_{jl}^2)^{1/2}$, para la cual $\|x_ix_i'\| = \|x_i\|^2$, y la desigualdad de Cauchy–Schwarz $|x_i'\delta|\le\|x_i\|\|\delta\|$,
+$$
+\begin{aligned}
+\|\hat\Omega - \tilde\Omega\| &= \Big\|\frac1n\sum_i(\hat u_i^2 - u_i^2)x_ix_i'\Big\|
+\le\frac1n\sum_i|\hat u_i^2 - u_i^2|\,\|x_i\|^2\\
+&\le 2\|\delta\|\cdot\frac1n\sum_i|u_i|\,\|x_i\|^3 + \|\delta\|^2\cdot\frac1n\sum_i\|x_i\|^4.
+\end{aligned}
+$$
+Ahora:
+
+- $\frac1n\sum_i\|x_i\|^4\xrightarrow{p}\mathbb{E}\|x_i\|^4<\infty$ por la LGN y A4; en particular es $O_p(1)$.
+- Por Hölder con exponentes $4$ y $4/3$, $\mathbb{E}\big[|u_i|\|x_i\|^3\big]\le(\mathbb{E}u_i^4)^{1/4}(\mathbb{E}\|x_i\|^4)^{3/4}<\infty$ (y $\mathbb{E}u_i^4<\infty$ porque $u_i = y_i - x_i'\beta$ y $y_i$, $x_i$ tienen cuartos momentos). Luego $\frac1n\sum_i|u_i|\|x_i\|^3 = O_p(1)$ por la LGN.
+- $\|\delta\| = o_p(1)$ por @thm-consistencia-mco.
+
+Por las reglas $o_p(1)O_p(1) = o_p(1)$ de la Clase 6, $\|\hat\Omega - \tilde\Omega\| = o_p(1)$. Finalmente, $\hat V = \hat Q^{-1}\hat\Omega\hat Q^{-1}\xrightarrow{p}Q^{-1}\Omega Q^{-1} = V$ por la función continua.
+:::
+
+Dos comentarios finales para el nivel de postgrado:
+
+1. **Mala especificación genera heterocedasticidad.** Si la CEF no es lineal, el error de proyección es $u_i = e_i + (m(x_i) - x_i'\beta)$, y $\mathbb{E}[u_i^2\mid x_i] = \operatorname{Var}(y_i\mid x_i) + (m(x_i) - x_i'\beta)^2$ depende de $x_i$ aunque $\operatorname{Var}(y_i\mid x_i)$ sea constante. Esta es una razón de fondo para usar siempre errores robustos: aun si crees que los errores son homocedásticos, la aproximación lineal casi nunca es exacta.
+
+2. **Eficiencia.** Bajo heterocedasticidad, MCO sigue siendo consistente, pero ya no es eficiente: si $\mathbb{E}[u_i\mid x_i] = 0$ y $\sigma^2(x) = \mathbb{E}[u_i^2\mid x_i = x]$ es conocida, el estimador ponderado por $1/\sigma^2(x_i)$ tiene varianza asintótica $\big(\mathbb{E}[x_ix_i'/\sigma^2(x_i)]\big)^{-1}\preceq Q^{-1}\Omega Q^{-1}$. Eso es mínimos cuadrados generalizados, el tema de la Clase 9.
+
+# Resumen
+
+- MCO es consistente para el coeficiente de proyección lineal bajo A1–A3 (@thm-consistencia-mco).
+- $\sqrt n(\hat\beta - \beta)\xrightarrow{d}N(0, Q^{-1}\Omega Q^{-1})$ sin normalidad ni homocedasticidad (@thm-normalidad-asintotica).
+- Bajo homocedasticidad, $V = \sigma^2Q^{-1}$ (@cor-homocedastico).
+- El estimador de White $\hat V = \hat Q^{-1}\hat\Omega\hat Q^{-1}$ es consistente (@thm-white). Con él se arman tests $t$ y de Wald asintóticos (@thm-t-asintotico, @thm-wald).
+- $qF$ es el Wald homocedástico: el test $F$ es asintóticamente válido bajo homocedasticidad.
+
+# Ejercicios
+
+**Ejercicio 7.1.** En la regresión simple $y_i = \alpha + \gamma z_i + u_i$ bajo A1–A4, demuestra que $\sqrt n(\hat\gamma - \gamma)\xrightarrow{d}N\Big(0,\;\dfrac{\mathbb{E}[(z_i - \mu_z)^2u_i^2]}{\operatorname{Var}(z_i)^2}\Big)$.
+
+::: {.callout-tip collapse="true" title="Solución 7.1"}
+Por FWL, $\hat\gamma - \gamma = \dfrac{\frac1n\sum(z_i - \bar z)u_i}{\frac1n\sum(z_i - \bar z)^2}$ (el término con $\bar u$ desaparece porque $\sum(z_i - \bar z) = 0$). Escribimos $\frac{1}{\sqrt n}\sum(z_i - \bar z)u_i = \frac{1}{\sqrt n}\sum(z_i - \mu_z)u_i - (\bar z - \mu_z)\sqrt n\bar u$. El primer término converge a $N(0,\mathbb{E}[(z_i - \mu_z)^2u_i^2])$ por el TCL (media cero porque $\mathbb{E}[u_i] = 0$ y $\mathbb{E}[z_iu_i] = 0$). El segundo es $o_p(1)\cdot O_p(1) = o_p(1)$. El denominador converge a $\operatorname{Var}(z_i)$. Slutsky.
+:::
+
+**Ejercicio 7.2.** Sea $y_i = \beta x_i + u_i$ con $x_i\sim N(0,1)$, $u_i = x_i\varepsilon_i$ y $\varepsilon_i\sim N(0,1)$ independiente de $x_i$. Calcula la varianza asintótica correcta de $\sqrt n(\hat\beta - \beta)$ y la que reportaría la fórmula homocedástica. ¿Cuál es el cociente?
+
+::: {.callout-tip collapse="true" title="Solución 7.2"}
+$Q = \mathbb{E}x^2 = 1$, $\Omega = \mathbb{E}[x^2u^2] = \mathbb{E}[x^4\varepsilon^2] = 3$. Varianza correcta: $3$. Homocedástica: $\sigma^2Q^{-1}$ con $\sigma^2 = \mathbb{E}[u^2] = \mathbb{E}[x^2]\mathbb{E}[\varepsilon^2] = 1$: da $1$. La fórmula clásica subestima la varianza a un tercio; los errores estándar clásicos son $\sqrt3\approx1{,}73$ veces más chicos de lo que deberían. Un test "al 5 %" rechazaría $H_0$ verdadera con probabilidad $P(|N(0,1)|>1{,}96/\sqrt3)\approx P(|N(0,1)|>1{,}13)\approx0{,}26$, es decir, alrededor de un 26 %.
+:::
+
+**Ejercicio 7.3.** Demuestra que si $\mathbb{E}[u_i^2\mid x_i] = \sigma^2$, entonces $V_{\text{robusta}} = V_{\text{homocedástica}}$, pero que en general ninguna domina a la otra: da un ejemplo en que la varianza robusta sea *menor* que la homocedástica.
+
+::: {.callout-tip collapse="true" title="Solución 7.3"}
+La primera parte es @cor-homocedastico. Para el ejemplo, regresión sin constante con $x_i\in\{1, 3\}$ equiprobable y $\mathbb{E}[u^2\mid x = 1] = 2$, $\mathbb{E}[u^2\mid x = 3] = 0{,}5$ (varianza alta donde $x$ es chico). $Q = (1 + 9)/2 = 5$, $\Omega = (1\cdot2 + 9\cdot0{,}5)/2 = 3{,}25$, $V_R = 3{,}25/25 = 0{,}13$. $\sigma^2 = (2 + 0{,}5)/2 = 1{,}25$, $V_H = 1{,}25/5 = 0{,}25$. La robusta es menor. La fórmula homocedástica falla en ambas direcciones.
+:::
+
+**Ejercicio 7.4.** En $\log Q_i = \beta_1 + \beta_2\log K_i + \beta_3\log L_i + u_i$, escribe el estadístico de Wald robusto para $H_0:\beta_2/\beta_3 = 1/2$, de dos maneras: como hipótesis no lineal y como hipótesis lineal equivalente. ¿Dan el mismo valor?
+
+::: {.callout-tip collapse="true" title="Solución 7.4"}
+No lineal: $h(\beta) = \beta_2/\beta_3 - 1/2$, $H = (0,\; 1/\beta_3,\; -\beta_2/\beta_3^2)$, $W_1 = n\,h(\hat\beta)^2/(\hat H\hat V\hat H')$. Lineal: $2\beta_2 - \beta_3 = 0$, $R = (0, 2, -1)$, $W_2 = n(2\hat\beta_2 - \hat\beta_3)^2/(R\hat VR')$. Ambos son asintóticamente $\chi^2_1$ bajo $H_0$, pero **no** son numéricamente iguales en muestras finitas: el test de Wald no es invariante a reparametrizaciones de la hipótesis. Es un defecto conocido (Gregory y Veall, 1985); en la práctica conviene la forma lineal cuando existe.
+:::
+
+**Ejercicio 7.5 ★.** Demuestra que $\max_{1\le i\le n}h_{ii}\xrightarrow{p}0$ bajo A1–A4, y deduce que HC0 y HC2 son asintóticamente equivalentes.
+
+::: {.callout-tip collapse="true" title="Solución 7.5 ★"}
+$h_{ii} = \frac1nx_i'\hat Q^{-1}x_i\le\frac1n\|x_i\|^2\lambda_{\max}(\hat Q^{-1})$. $\lambda_{\max}(\hat Q^{-1})\xrightarrow{p}\lambda_{\min}(Q)^{-1}<\infty$. Y $\frac1n\max_i\|x_i\|^2\xrightarrow{p}0$: para $\varepsilon>0$, por la unión y Markov, $P(\max_i\|x_i\|^2>n\varepsilon)\le nP(\|x_1\|^4>n^2\varepsilon^2)\le\mathbb{E}[\|x_1\|^4\mathbb{1}\{\|x_1\|^4>n^2\varepsilon^2\}]/(n\varepsilon^2)\to0$. Entonces $\|\hat\Omega_{HC2} - \hat\Omega_{HC0}\|\le\max_i\big|\frac{1}{1-h_{ii}} - 1\big|\cdot\frac1n\sum_i\hat u_i^2\|x_i\|^2 = o_p(1)O_p(1)$.
+:::
+
+**Ejercicio 7.6 ★.** Supón que la CEF es $m(x) = x^2$ con $x\sim U(-1,2)$ y $\operatorname{Var}(y\mid x) = 1$ (el ejemplo de la Clase 2). Para la proyección de $y$ sobre $(1,x)$, calcula $\mathbb{E}[u^2\mid x]$ y muestra que hay heterocedasticidad aunque $\operatorname{Var}(y\mid x)$ sea constante.
+
+::: {.callout-tip collapse="true" title="Solución 7.6 ★"}
+La proyección es $\frac12 + x$ (Clase 2). $u = e + x^2 - x - \frac12$, con $\mathbb{E}[e\mid x] = 0$, así que $\mathbb{E}[u^2\mid x] = 1 + (x^2 - x - \tfrac12)^2$, que varía con $x$ (vale $1{,}25$ en $x = 0$ y $1 + 0{,}5^2 = 1{,}25$ en $x = 1$, pero $1 + 1{,}5^2 = 3{,}25$ en $x = 2$). El error de aproximación lineal es parte del error de proyección, y depende de $x$.
+:::
