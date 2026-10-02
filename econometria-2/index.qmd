@@ -15,14 +15,14 @@ Este curso todavía no está publicado. Abajo está el temario tentativo; seguir
 2. **Máxima verosimilitud:** identificación, información de Fisher, cota de Cramér–Rao, eficiencia asintótica.
 3. **Tests de la trinidad:** Wald, razón de verosimilitud y multiplicador de Lagrange.
 4. **Método generalizado de momentos:** matriz de pesos óptima, test $J$ de Hansen.
-5. **Elección discreta:** probit, logit y efectos marginales.
-6. **Datos censurados y selección:** tobit y el modelo de Heckman.
-7. **Datos de panel I:** efectos fijos, efectos aleatorios y el test de Hausman.
-8. **Datos de panel II:** paneles dinámicos, Arellano–Bond.
-9. **Conteo y duración:** Poisson, binomial negativa, QMLE de Poisson, función de riesgo y modelo de Cox.
-10. **Regresión cuantílica:** función *check*, M-estimador no suave y normalidad asintótica sin diferenciabilidad.
-11. **Elección discreta II:** logit multinomial y ordenado, IIA, logit anidado.
-12. **Paneles no lineales:** probit y logit con efectos fijos, parámetros incidentales, enfoque de Chamberlain.
+5. **Elección discreta I:** probit, logit y efectos marginales.
+6. **Elección discreta II:** logit multinomial y ordenado, IIA, logit anidado.
+7. **Conteo y duración:** Poisson, binomial negativa, QMLE de Poisson, función de riesgo y modelo de Cox.
+8. **Datos censurados y selección:** tobit y el modelo de Heckman.
+9. **Datos de panel I:** efectos fijos, efectos aleatorios y el test de Hausman.
+10. **Datos de panel II:** paneles dinámicos, Arellano–Bond.
+11. **Paneles no lineales:** probit y logit con efectos fijos, parámetros incidentales, enfoque de Chamberlain.
+12. **Regresión cuantílica:** función *check*, M-estimador no suave y normalidad asintótica sin diferenciabilidad.
 13. **Estimación por simulación:** método de momentos simulado, inferencia indirecta y máxima verosimilitud simulada.
 
 Mientras tanto, puedes empezar (o repasar) con [Econometría 1](../econometria-1/index.qmd).

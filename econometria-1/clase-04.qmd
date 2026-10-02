@@ -48,7 +48,7 @@ Si $\{(y_i, x_i)\}_{i=1}^n$ son independientes entre observaciones y $\mathbb{E}
 Fijemos $i$. Como $(u_i, x_i)$ es independiente de $\{x_j\}_{j\ne i}$ (porque $u_i = y_i - x_i'\beta$ es función de $(y_i, x_i)$), condicionar adicionalmente en los $x_j$ de otras observaciones no cambia la esperanza condicional de $u_i$: $\mathbb{E}[u_i\mid X] = \mathbb{E}[u_i\mid x_i] = 0$.
 :::
 
-En series de tiempo, en cambio, RL3 casi siempre falla: si $x_t = y_{t-1}$ (un rezago), entonces $u_{t-1}$ afecta a $y_{t-1} = x_t$, y $\mathbb{E}[u_{t-1}\mid X] \neq 0$. Por eso la econometría de series de tiempo (Econometría 2) usa otras herramientas.[^series]
+En series de tiempo, en cambio, RL3 casi siempre falla: si $x_t = y_{t-1}$ (un rezago), entonces $u_{t-1}$ afecta a $y_{t-1} = x_t$, y $\mathbb{E}[u_{t-1}\mid X] \neq 0$. Por eso la econometría de series de tiempo (Econometría 3) usa otras herramientas.[^series]
 
 [^series]: Mucha gente aprende esto de la peor manera: corre un AR(1) por MCO, pregunta si es insesgado, y descubre que no. MCO en un AR(1) está sesgado hacia abajo en muestras finitas (el sesgo de Hurwicz, de 1950). Consistente, sí; insesgado, no.
 
