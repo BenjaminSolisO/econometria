@@ -33,7 +33,7 @@ format:
 <div class="curso pronto">
 <div class="num">2</div>
 <h3>Econometría 2</h3>
-<p>Más allá del modelo lineal: método generalizado de momentos, máxima verosimilitud, modelos de elección discreta, datos de panel y series de tiempo.</p>
+<p>Más allá del modelo lineal: estimación por extremos, máxima verosimilitud, método generalizado de momentos, elección discreta, conteo y duración, regresión cuantílica, datos de panel y estimación por simulación. Trece clases.</p>
 <span class="estado proximo">○ En preparación</span>
 <a class="boton" href="econometria-2/index.qmd">Ver temario →</a>
 </div>
@@ -41,7 +41,7 @@ format:
 <div class="curso pronto">
 <div class="num">3</div>
 <h3>Econometría 3</h3>
-<p>Temas avanzados: inferencia causal moderna, métodos no paramétricos, alta dimensión y aprendizaje automático para econometría, bootstrap e inferencia robusta.</p>
+<p>Temas avanzados: inferencia causal moderna, métodos no paramétricos, alta dimensión y aprendizaje automático para econometría, bootstrap, inferencia robusta y series de tiempo. Trece clases.</p>
 <span class="estado proximo">○ En preparación</span>
 <a class="boton" href="econometria-3/index.qmd">Ver temario →</a>
 </div>

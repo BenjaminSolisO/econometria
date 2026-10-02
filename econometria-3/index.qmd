@@ -21,5 +21,8 @@ Este curso todavía no está publicado. Abajo está el temario tentativo; seguir
 8. **Aprendizaje automático para inferencia causal:** *double/debiased machine learning*.
 9. **Bootstrap:** validez, refinamientos asintóticos y bootstrap salvaje.
 10. **Inferencia robusta:** errores agrupados, pocos clusters e inferencia con instrumentos débiles.
+11. **Series de tiempo I:** estacionariedad, ARMA, ergodicidad y LGN/TCL con dependencia.
+12. **Series de tiempo II:** raíces unitarias y cointegración.
+13. **Series de tiempo III:** VAR, funciones impulso-respuesta e identificación estructural.
 
 Mientras tanto, puedes empezar (o repasar) con [Econometría 1](../econometria-1/index.qmd).
