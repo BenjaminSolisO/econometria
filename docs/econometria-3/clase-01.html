@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Una serie de tiempo como realización de un proceso estocástico: estacionariedad estricta y débil, función de autocovarianza, ergodicidad, varianza del promedio, varianza de largo plazo y la autocorrelación muestral.">
+
+<title>Clase 1 · Procesos estocásticos y estacionariedad – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-01.html">Clase 1 · Procesos estocásticos y estacionariedad</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#el-problema-de-una-sola-historia" id="toc-el-problema-de-una-sola-historia" class="nav-link active" data-scroll-target="#el-problema-de-una-sola-historia"><span class="header-section-number">1</span> El problema de una sola historia</a></li>
+  <li><a href="#procesos-estocásticos" id="toc-procesos-estocásticos" class="nav-link" data-scroll-target="#procesos-estocásticos"><span class="header-section-number">2</span> Procesos estocásticos</a>
+  <ul class="collapse">
+  <li><a href="#la-función-de-autocovarianza" id="toc-la-función-de-autocovarianza" class="nav-link" data-scroll-target="#la-función-de-autocovarianza"><span class="header-section-number">2.1</span> La función de autocovarianza</a></li>
+  <li><a href="#ejemplos" id="toc-ejemplos" class="nav-link" data-scroll-target="#ejemplos"><span class="header-section-number">2.2</span> Ejemplos</a></li>
+  </ul></li>
+  <li><a href="#ergodicidad-y-la-ley-de-los-grandes-números" id="toc-ergodicidad-y-la-ley-de-los-grandes-números" class="nav-link" data-scroll-target="#ergodicidad-y-la-ley-de-los-grandes-números"><span class="header-section-number">3</span> Ergodicidad y la ley de los grandes números</a>
+  <ul class="collapse">
+  <li><a href="#la-varianza-del-promedio" id="toc-la-varianza-del-promedio" class="nav-link" data-scroll-target="#la-varianza-del-promedio"><span class="header-section-number">3.1</span> La varianza del promedio</a></li>
+  <li><a href="#ergodicidad" id="toc-ergodicidad" class="nav-link" data-scroll-target="#ergodicidad"><span class="header-section-number">3.2</span> Ergodicidad</a></li>
+  </ul></li>
+  <li><a href="#estimación-de-la-media-de-la-autocovarianza-y-de-la-acf" id="toc-estimación-de-la-media-de-la-autocovarianza-y-de-la-acf" class="nav-link" data-scroll-target="#estimación-de-la-media-de-la-autocovarianza-y-de-la-acf"><span class="header-section-number">4</span> Estimación de la media, de la autocovarianza y de la ACF</a>
+  <ul class="collapse">
+  <li><a href="#la-acf-de-un-ruido-blanco" id="toc-la-acf-de-un-ruido-blanco" class="nav-link" data-scroll-target="#la-acf-de-un-ruido-blanco"><span class="header-section-number">4.1</span> La ACF de un ruido blanco</a></li>
+  </ul></li>
+  <li><a href="#postgrado-la-densidad-espectral" id="toc-postgrado-la-densidad-espectral" class="nav-link" data-scroll-target="#postgrado-la-densidad-espectral"><span class="header-section-number">5</span> ★ Postgrado: la densidad espectral</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">6</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">7</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 1 · Procesos estocásticos y estacionariedad</h1>
+<p class="subtitle lead">Autocovarianza, ergodicidad y la ley de los grandes números con dependencia</p>
+</div>
+
+<div>
+  <div class="description">
+    Una serie de tiempo como realización de un proceso estocástico: estacionariedad estricta y débil, función de autocovarianza, ergodicidad, varianza del promedio, varianza de largo plazo y la autocorrelación muestral.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a></p>
+<section id="el-problema-de-una-sola-historia" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> El problema de una sola historia</h1>
+<p>En Econometría 1 y 2 trabajamos con muestras de <span class="math inline">\(n\)</span> observaciones <strong>independientes</strong> de una misma distribución. Cada observación era una nueva “tirada”, y la ley de los grandes números decía que promediar tiradas recupera la esperanza. Una serie de tiempo es otra cosa. Observamos <span class="math inline">\(y_1,\dots,y_T\)</span>: el PIB de Chile trimestre a trimestre, el tipo de cambio día a día. Esas observaciones <strong>no son independientes</strong> (el PIB de hoy se parece al de ayer) y, además, el mundo no repite la historia: tenemos <strong>una sola realización</strong> del proceso que generó los datos. No podemos “volver a correr” 2008 para ver otra trayectoria.</p>
+<p>Para hacer inferencia con una sola trayectoria necesitamos dos ideas:</p>
+<ol type="1">
+<li><strong>Estacionariedad:</strong> las propiedades del proceso no dependen de la fecha. Sin esto, cada observación vendría de una distribución distinta y no habría nada que promediar.</li>
+<li><strong>Ergodicidad:</strong> los promedios <em>a lo largo del tiempo</em> (de una sola trayectoria) convergen a las esperanzas <em>de ensamble</em> (sobre todas las trayectorias posibles). Es el sustituto de la ley de los grandes números.</li>
+</ol>
+<p>Esta clase define ambas, calcula las cantidades básicas (autocovarianzas, varianza del promedio) y muestra qué cambia respecto del mundo i.i.d. El mensaje: <strong>la dependencia no impide aprender, pero cambia la varianza</strong> de todo lo que se estima.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;George Box y Gwilym Jenkins publicaron en 1970 <em>Time Series Analysis: Forecasting and Control</em>, el libro que convirtió el análisis de series de tiempo en una metodología sistemática para la práctica (identificar, estimar, diagnosticar, pronosticar). Gran parte de lo que estudiaremos en las Clases 2 a 4 se llama aún “metodología Box–Jenkins”.</p></div></div></section>
+<section id="procesos-estocásticos" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Procesos estocásticos</h1>
+<div id="def-proceso" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Proceso estocástico)</strong></span> Un <strong>proceso estocástico</strong> es una colección de variables aleatorias <span class="math inline">\(\{y_t\}_{t\in\mathbb{Z}}\)</span> definidas sobre un mismo espacio de probabilidad. Una <strong>serie de tiempo</strong> es una <strong>realización</strong> (una trayectoria) del proceso, observada en <span class="math inline">\(t = 1,\dots,T\)</span>.</p>
+</div>
+<p>Cada <span class="math inline">\(y_t\)</span> es una variable aleatoria con su propia distribución, y para describir el proceso hay que describir las distribuciones <strong>conjuntas</strong> de <span class="math inline">\((y_{t_1},\dots,y_{t_k})\)</span> para cualquier colección de fechas. En la práctica nos conformamos con los dos primeros momentos: <span class="math display">\[
+\mu_t = \mathbb{E}[y_t],\qquad\gamma(t,s) = \operatorname{Cov}(y_t,y_s) = \mathbb{E}\big[(y_t - \mu_t)(y_s - \mu_s)\big].
+\]</span> Sin restricciones, un proceso tendría una media distinta en cada fecha y una covarianza distinta para cada par <span class="math inline">\((t,s)\)</span>: infinitos parámetros y una sola observación de cada uno. La estacionariedad es la restricción que lo hace manejable.</p>
+<div id="def-estacionario" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Estacionariedad)</strong></span> &nbsp;</p>
+<ul>
+<li><span class="math inline">\(\{y_t\}\)</span> es <strong>estrictamente estacionario</strong> si para todo <span class="math inline">\(k\)</span>, toda colección de fechas <span class="math inline">\(t_1,\dots,t_k\)</span> y todo desplazamiento <span class="math inline">\(h\)</span>, la distribución conjunta de <span class="math inline">\((y_{t_1},\dots,y_{t_k})\)</span> es la misma que la de <span class="math inline">\((y_{t_1 + h},\dots,y_{t_k + h})\)</span>.</li>
+<li><span class="math inline">\(\{y_t\}\)</span> es <strong>débilmente estacionario</strong> (o <em>estacionario en covarianza</em>) si <span class="math inline">\(\mathbb{E}[y_t^2]&lt;\infty\)</span>, <span class="math inline">\(\mathbb{E}[y_t] = \mu\)</span> no depende de <span class="math inline">\(t\)</span>, y <span class="math inline">\(\operatorname{Cov}(y_t,y_{t+h}) = \gamma(h)\)</span> depende <strong>solo del rezago <span class="math inline">\(h\)</span></strong>, no de <span class="math inline">\(t\)</span>.</li>
+</ul>
+</div>
+<p>La estacionariedad estricta dice que <em>toda</em> la distribución es invariante a traslaciones temporales; la débil, que lo son los dos primeros momentos. Si hay segundos momentos finitos, <strong>estricta implica débil</strong> (una distribución que no cambia tiene momentos que no cambian). El recíproco es falso en general (se puede tener media y covarianzas constantes con colas que cambian en el tiempo), salvo en un caso importante.</p>
+<div id="prp-gaussiano" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Débil implica estricta si el proceso es gaussiano)</strong></span> Si <span class="math inline">\(\{y_t\}\)</span> es un proceso gaussiano (toda colección finita es normal multivariada) y débilmente estacionario, entonces es estrictamente estacionario.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La distribución normal multivariada queda determinada por su vector de medias y su matriz de covarianzas. Para <span class="math inline">\((y_{t_1},\dots,y_{t_k})\)</span> las medias son <span class="math inline">\(\mu\)</span> y las covarianzas <span class="math inline">\(\gamma(t_i - t_j)\)</span>; para <span class="math inline">\((y_{t_1 + h},\dots,y_{t_k + h})\)</span> son las mismas. Dos normales con los mismos parámetros son la misma distribución.</p>
+</div>
+<p>De aquí en adelante, “estacionario” significará <strong>débilmente estacionario</strong>, salvo que se indique otra cosa. Es lo que se necesita para casi toda la teoría de estimación lineal.</p>
+<section id="la-función-de-autocovarianza" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="la-función-de-autocovarianza"><span class="header-section-number">2.1</span> La función de autocovarianza</h2>
+<p>Para un proceso estacionario, la <strong>función de autocovarianza</strong> es <span class="math inline">\(\gamma(h) = \operatorname{Cov}(y_t,y_{t+h})\)</span> y la <strong>función de autocorrelación</strong> (ACF) es <span class="math inline">\(\rho(h) = \gamma(h)/\gamma(0)\)</span>. Ambas satisfacen propiedades que usaremos todo el curso.</p>
+<div id="prp-gamma" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Propiedades de la autocovarianza)</strong></span> Sea <span class="math inline">\(\gamma(\cdot)\)</span> la autocovarianza de un proceso estacionario. Entonces:</p>
+<ol type="1">
+<li><span class="math inline">\(\gamma(0) = \operatorname{Var}(y_t)\ge0\)</span>.</li>
+<li><span class="math inline">\(|\gamma(h)|\le\gamma(0)\)</span> para todo <span class="math inline">\(h\)</span> (así <span class="math inline">\(|\rho(h)|\le1\)</span>).</li>
+<li><span class="math inline">\(\gamma(h) = \gamma(-h)\)</span> (simetría).</li>
+<li><span class="math inline">\(\gamma\)</span> es <strong>semidefinida positiva</strong>: para todo <span class="math inline">\(n\)</span> y todo <span class="math inline">\(a\in\mathbb{R}^n\)</span>, <span class="math inline">\(\sum_{i,j}a_ia_j\gamma(i - j)\ge0\)</span>; es decir, la matriz de Toeplitz <span class="math inline">\(\Gamma_n = [\gamma(i - j)]_{i,j = 1}^n\)</span> es semidefinida positiva.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li>es una varianza. (2) Por Cauchy–Schwarz, <span class="math inline">\(|\operatorname{Cov}(y_t,y_{t+h})|\le\sqrt{\operatorname{Var}(y_t)\operatorname{Var}(y_{t+h})} = \gamma(0)\)</span>. (3) <span class="math inline">\(\gamma(h) = \operatorname{Cov}(y_t,y_{t+h}) = \operatorname{Cov}(y_{t-h},y_t) = \gamma(-h)\)</span>, pues la covarianza es simétrica y el valor no depende de <span class="math inline">\(t\)</span>. (4) Con <span class="math inline">\(a = (a_1,\dots,a_n)'\)</span>, <span class="math inline">\(0\le\operatorname{Var}\big(\sum_ia_iy_i\big) = \sum_{i,j}a_ia_j\operatorname{Cov}(y_i,y_j) = a'\Gamma_na\)</span>.</li>
+</ol>
+</div>
+<p>La propiedad (4) es más profunda de lo que parece: <strong>no toda función simétrica con <span class="math inline">\(\gamma(0)\ge|\gamma(h)|\)</span> es una autocovarianza</strong>. Por ejemplo, <span class="math inline">\(\gamma(0) = 1\)</span>, <span class="math inline">\(\gamma(\pm1) = 0{,}9\)</span>, <span class="math inline">\(\gamma(\pm2) = 0\)</span> viola la semidefinición positiva (Ejercicio 1.7). La sección ★ muestra que esa condición es suficiente para que exista un proceso.</p>
+</section>
+<section id="ejemplos" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="ejemplos"><span class="header-section-number">2.2</span> Ejemplos</h2>
+<div id="exm-procesos" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un zoológico mínimo)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><strong>Ruido blanco:</strong> <span class="math inline">\(\varepsilon_t\)</span> con media cero, varianza <span class="math inline">\(\sigma^2\)</span> y <span class="math inline">\(\operatorname{Cov}(\varepsilon_t,\varepsilon_s) = 0\)</span> para <span class="math inline">\(t\ne s\)</span> (escribimos <span class="math inline">\(\varepsilon_t\sim WN(0,\sigma^2)\)</span>). Es estacionario con <span class="math inline">\(\gamma(0) = \sigma^2\)</span> y <span class="math inline">\(\gamma(h) = 0\)</span> si <span class="math inline">\(h\ne0\)</span>. Un i.i.d. es un caso particular, pero el ruido blanco <em>solo</em> exige no correlación, no independencia.</li>
+<li><strong>Media móvil de orden 1, MA(1):</strong> <span class="math inline">\(y_t = \varepsilon_t + \theta\varepsilon_{t-1}\)</span> con <span class="math inline">\(\varepsilon_t\sim WN(0,\sigma^2)\)</span>. Entonces <span class="math inline">\(\gamma(0) = \sigma^2(1 + \theta^2)\)</span>, <span class="math inline">\(\gamma(\pm1) = \theta\sigma^2\)</span> y <span class="math inline">\(\gamma(h) = 0\)</span> para <span class="math inline">\(|h|\ge2\)</span>. La autocorrelación es <span class="math inline">\(\rho(1) = \theta/(1 + \theta^2)\)</span>, que <strong>no puede superar <span class="math inline">\(\tfrac12\)</span></strong> (el máximo se alcanza en <span class="math inline">\(\theta = 1\)</span>).</li>
+<li><strong>Caminata aleatoria:</strong> <span class="math inline">\(y_t = y_{t-1} + \varepsilon_t\)</span>, <span class="math inline">\(y_0 = 0\)</span>. Entonces <span class="math inline">\(y_t = \sum_{s = 1}^t\varepsilon_s\)</span> tiene <span class="math inline">\(\operatorname{Var}(y_t) = t\sigma^2\)</span>, que depende de <span class="math inline">\(t\)</span>: <strong>no es estacionario</strong> (es el tema de la Clase 6).</li>
+<li><strong>Tendencia más ruido:</strong> <span class="math inline">\(y_t = a + bt + \varepsilon_t\)</span> tiene <span class="math inline">\(\mathbb{E}[y_t] = a + bt\)</span>, no constante: no es estacionario, pero <span class="math inline">\(y_t - bt\)</span> sí lo es (<strong>estacionario en tendencia</strong>).</li>
+<li><strong>Un nivel aleatorio:</strong> <span class="math inline">\(y_t = Z\)</span> para todo <span class="math inline">\(t\)</span>, con <span class="math inline">\(Z\)</span> aleatoria de media cero y varianza <span class="math inline">\(\sigma^2\)</span>. Es estacionario con <span class="math inline">\(\gamma(h) = \sigma^2\)</span> para todo <span class="math inline">\(h\)</span>: la “memoria” nunca se olvida. Como veremos, es el ejemplo de un proceso <strong>no ergódico</strong>.</li>
+</ol>
+</div>
+<p>Del ejemplo 2 sale una observación útil para la Clase 13 de Econometría 2: los valores <span class="math inline">\(\theta\)</span> y <span class="math inline">\(1/\theta\)</span> dan <strong>la misma autocorrelación</strong> <span class="math inline">\(\rho(1) = \theta/(1 + \theta^2)\)</span> (porque <span class="math inline">\(\frac{1/\theta}{1 + 1/\theta^2} = \frac{\theta}{\theta^2 + 1}\)</span>). Con solo la ACF no podemos distinguir un MA(1) con <span class="math inline">\(\theta = 0{,}5\)</span> de uno con <span class="math inline">\(\theta = 2\)</span>. De ahí la elección de la raíz <em>invertible</em> en esa clase (Clase 2 de este curso).</p>
+</section>
+</section>
+<section id="ergodicidad-y-la-ley-de-los-grandes-números" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Ergodicidad y la ley de los grandes números</h1>
+<p>Con una sola trayectoria, lo que podemos calcular es el <strong>promedio temporal</strong> <span class="math inline">\(\bar y_T = \frac1T\sum_{t = 1}^Ty_t\)</span>. Lo que nos interesa es la <strong>media de ensamble</strong> <span class="math inline">\(\mu = \mathbb{E}[y_t]\)</span>. ¿Cuándo <span class="math inline">\(\bar y_T\to\mu\)</span>? En el caso i.i.d. basta la LGN; con dependencia, la respuesta tiene dos caras: una elemental, en media cuadrática, y una general, el teorema ergódico.</p>
+<section id="la-varianza-del-promedio" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="la-varianza-del-promedio"><span class="header-section-number">3.1</span> La varianza del promedio</h2>
+<p>El primer paso es calcular la varianza de <span class="math inline">\(\bar y_T\)</span> para un proceso estacionario. Como <span class="math inline">\(\operatorname{Var}\big(\sum_ty_t\big) = \sum_{t,s}\gamma(t - s)\)</span>, y hay <span class="math inline">\(T - |h|\)</span> pares <span class="math inline">\((t,s)\)</span> con <span class="math inline">\(t - s = h\)</span>, <span id="eq-var-media"><span class="math display">\[
+\operatorname{Var}(\bar y_T) = \frac1{T^2}\sum_{t,s = 1}^T\gamma(t - s) = \frac1T\sum_{h = -(T - 1)}^{T - 1}\Big(1 - \frac{|h|}T\Big)\gamma(h).
+\tag{1}\]</span></span> En el caso i.i.d., <span class="math inline">\(\gamma(h) = 0\)</span> para <span class="math inline">\(h\ne0\)</span> y esto es <span class="math inline">\(\gamma(0)/T\)</span>. Con dependencia, hay términos adicionales. Cuando las autocovarianzas son <strong>absolutamente sumables</strong>, el efecto de la dependencia se resume en un solo número.</p>
+<div id="thm-lgn-ms" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (LGN en media cuadrática y varianza de largo plazo)</strong></span> Sea <span class="math inline">\(\{y_t\}\)</span> estacionario con <span class="math inline">\(\gamma(h)\to0\)</span> cuando <span class="math inline">\(h\to\infty\)</span>. Entonces <span class="math inline">\(\bar y_T\to\mu\)</span> en media cuadrática (y por lo tanto en probabilidad). Si además <span class="math inline">\(\sum_{h = -\infty}^\infty|\gamma(h)|&lt;\infty\)</span>, entonces <span class="math display">\[
+T\operatorname{Var}(\bar y_T)\ \longrightarrow\ \sigma^2_{LR} = \sum_{h = -\infty}^\infty\gamma(h) = \gamma(0) + 2\sum_{h = 1}^\infty\gamma(h).
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>De <a href="#eq-var-media" class="quarto-xref">Ecuación&nbsp;1</a>, <span class="math inline">\(\operatorname{Var}(\bar y_T)\)</span> es un promedio ponderado de <span class="math inline">\(\gamma(h)\)</span> con pesos <span class="math inline">\((1 - |h|/T)/T\)</span>. Para que tienda a cero basta que los <span class="math inline">\(\gamma(h)\)</span> lejanos sean chicos: la contribución de la parte “cercana” es del orden <span class="math inline">\(1/T\)</span> por el número finito de rezagos, y la de la parte “lejana” es chica porque <span class="math inline">\(\gamma(h)\to0\)</span>. Para el segundo resultado, multiplico por <span class="math inline">\(T\)</span>: queda <span class="math inline">\(\sum_h(1 - |h|/T)\gamma(h)\)</span>, y cada término converge a <span class="math inline">\(\gamma(h)\)</span> (porque <span class="math inline">\(1 - |h|/T\to1\)</span>), con una cota sumable que me deja intercambiar límite y suma (convergencia dominada).</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>(Primera parte.)</em> De <a href="#eq-var-media" class="quarto-xref">Ecuación&nbsp;1</a>, <span class="math inline">\(\operatorname{Var}(\bar y_T)\le\frac1T\sum_{|h|&lt;T}|\gamma(h)| = \frac{1}{T}\Big[|\gamma(0)| + 2\sum_{h = 1}^{T - 1}|\gamma(h)|\Big]\)</span>. Como <span class="math inline">\(\gamma(h)\to0\)</span>, la media de Cesàro <span class="math inline">\(\frac1T\sum_{h = 1}^{T-1}|\gamma(h)|\to0\)</span> (el promedio de los primeros <span class="math inline">\(T\)</span> términos de una sucesión que tiende a cero tiende a cero). Luego <span class="math inline">\(\operatorname{Var}(\bar y_T)\le\frac{\gamma(0)}T + \frac2T\cdot\Big[\sum_{h = 1}^{T - 1}|\gamma(h)|\Big]\to0\)</span>. Como <span class="math inline">\(\mathbb{E}[\bar y_T] = \mu\)</span>, <span class="math inline">\(\mathbb{E}(\bar y_T - \mu)^2 = \operatorname{Var}(\bar y_T)\to0\)</span>, y la convergencia en media cuadrática implica convergencia en probabilidad (desigualdad de Chebyshev).</p>
+<p><em>(Segunda parte.)</em> Multiplicando <a href="#eq-var-media" class="quarto-xref">Ecuación&nbsp;1</a> por <span class="math inline">\(T\)</span>, <span class="math inline">\(T\operatorname{Var}(\bar y_T) = \sum_{h}\mathbf{1}\{|h|&lt;T\}(1 - |h|/T)\gamma(h)\)</span>. Cada término converge a <span class="math inline">\(\gamma(h)\)</span> y está acotado en valor absoluto por <span class="math inline">\(|\gamma(h)|\)</span>, que es sumable. Por el teorema de convergencia dominada (para series), el límite es <span class="math inline">\(\sum_h\gamma(h)\)</span>.</p>
+</div>
+<p>El número <span class="math inline">\(\sigma^2_{LR} = \sum_h\gamma(h)\)</span> es la <strong>varianza de largo plazo</strong> del proceso. Es lo que reemplaza a <span class="math inline">\(\gamma(0)\)</span> en la varianza de <span class="math inline">\(\bar y_T\)</span>: <span class="math inline">\(\operatorname{Var}(\bar y_T)\approx\sigma_{LR}^2/T\)</span>. Con <strong>autocorrelación positiva</strong> (<span class="math inline">\(\gamma(h)&gt;0\)</span>), <span class="math inline">\(\sigma^2_{LR}&gt;\gamma(0)\)</span>: <strong>hay menos información</strong> de la que hay en una muestra i.i.d. del mismo tamaño, y los errores estándar que ignoran la dependencia son demasiado chicos. Es exactamente el mismo problema de la Clase 9 de Econometría 2 (efecto de diseño con clusters), aquí en el tiempo.</p>
+<div id="exm-lr-ma1" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (La varianza de largo plazo del MA(1))</strong></span> Para <span class="math inline">\(y_t = \varepsilon_t + \theta\varepsilon_{t-1}\)</span>: <span class="math inline">\(\sigma^2_{LR} = \gamma(0) + 2\gamma(1) = \sigma^2(1 + \theta^2) + 2\theta\sigma^2 = \sigma^2(1 + \theta)^2\)</span>. Con <span class="math inline">\(\theta = 0{,}5\)</span> y <span class="math inline">\(\sigma^2 = 1\)</span>, <span class="math inline">\(\sigma^2_{LR} = 2{,}25\)</span>, frente a <span class="math inline">\(\gamma(0) = 1{,}25\)</span>. Con <span class="math inline">\(T = 100\)</span>, el error estándar correcto de <span class="math inline">\(\bar y_T\)</span> es <span class="math inline">\(\sqrt{2{,}25/100} = 0{,}15\)</span>, y el que se obtendría ignorando la dependencia es <span class="math inline">\(\sqrt{1{,}25/100} = 0{,}112\)</span>: <strong>25 % demasiado chico</strong>. Con <span class="math inline">\(\theta = -1\)</span> ocurre lo contrario: <span class="math inline">\(\sigma^2_{LR} = 0\)</span> (el promedio converge más rápido que <span class="math inline">\(1/\sqrt T\)</span>). Es una <em>sobrediferencia</em>, un fenómeno que reaparece en la Clase 7.</p>
+</div>
+</section>
+<section id="ergodicidad" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="ergodicidad"><span class="header-section-number">3.2</span> Ergodicidad</h2>
+<p>La LGN en media cuadrática exige que las autocovarianzas se desvanezcan. Pero lo que realmente queremos, al estimar cualquier cosa por promedios temporales (no solo la media: autocovarianzas, momentos para GMM, scores de MV), es una propiedad más general.</p>
+<div id="def-ergodico" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 3 (Proceso ergódico)</strong></span> Un proceso estrictamente estacionario <span class="math inline">\(\{y_t\}\)</span> es <strong>ergódico</strong> si para toda función <span class="math inline">\(f\)</span> medible con <span class="math inline">\(\mathbb{E}|f(y_t,\dots,y_{t+k})|&lt;\infty\)</span>, <span class="math display">\[
+\frac1T\sum_{t = 1}^Tf(y_t,\dots,y_{t+k})\xrightarrow{c.s.}\mathbb{E}\big[f(y_t,\dots,y_{t+k})\big].
+\]</span></p>
+</div>
+<p>(La definición formal usa conjuntos invariantes bajo el desplazamiento temporal; esta es la consecuencia que importa. Que el proceso sea <em>ergódico</em> equivale a que sus promedios temporales de <strong>todas</strong> las funciones integrables converjan a la constante <span class="math inline">\(\mathbb{E}[f]\)</span>, no a una variable aleatoria.)</p>
+<div id="thm-ergodico" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Teorema ergódico (Birkhoff) — se toma prestado)</strong></span> Si <span class="math inline">\(\{y_t\}\)</span> es estrictamente estacionario y <span class="math inline">\(\mathbb{E}|y_t|&lt;\infty\)</span>, entonces <span class="math inline">\(\bar y_T\)</span> converge casi seguramente a una variable aleatoria <span class="math inline">\(\bar y\)</span> con <span class="math inline">\(\mathbb{E}[\bar y] = \mu\)</span>. Si además <span class="math inline">\(\{y_t\}\)</span> es <strong>ergódico</strong>, <span class="math inline">\(\bar y = \mu\)</span> es constante.</p>
+</div>
+<p>El teorema dice que, <strong>sin ergodicidad</strong>, el promedio temporal converge, pero <strong>a una variable aleatoria</strong>, no a <span class="math inline">\(\mu\)</span>: la trayectoria particular que nos tocó determina el límite. Con ergodicidad, el promedio temporal de una sola trayectoria <em>sí</em> aprende la media de ensamble. Es la condición que cumple todo lo que usaremos.</p>
+<div id="exm-no-ergodico" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Un proceso estacionario no ergódico)</strong></span> En <span class="math inline">\(y_t = Z\)</span> para todo <span class="math inline">\(t\)</span> (<a href="#exm-procesos" class="quarto-xref">Ejemplo&nbsp;1</a>, 5), el proceso es estrictamente estacionario con <span class="math inline">\(\mu = 0\)</span>, pero <span class="math inline">\(\bar y_T = Z\)</span> para todo <span class="math inline">\(T\)</span>: converge a la variable aleatoria <span class="math inline">\(Z\)</span>, <strong>no</strong> a <span class="math inline">\(0\)</span>. Por mucho que observes la serie, solo ves una “tirada” de <span class="math inline">\(Z\)</span> y nunca aprendes <span class="math inline">\(\mu\)</span>. Aquí <span class="math inline">\(\gamma(h) = \sigma^2\not\to0\)</span>, que es exactamente la condición del <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a> que falla.</p>
+</div>
+<p>Dos hechos prácticos, que se toman prestados:</p>
+<ul>
+<li><strong>Condición suficiente:</strong> un proceso estacionario que es <strong>mezclante</strong> (<em>mixing</em>: la dependencia entre <span class="math inline">\(y_t\)</span> e <span class="math inline">\(y_{t+h}\)</span> se desvanece cuando <span class="math inline">\(h\to\infty\)</span>) es ergódico. Los procesos ARMA estacionarios con innovaciones i.i.d. lo son (Clase 2).</li>
+<li><strong>En el caso gaussiano</strong>, un proceso estacionario es ergódico si y solo si <span class="math inline">\(\gamma(h)\to0\)</span> (en promedio de Cesàro). Es decir, para gaussianos, la condición del <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a> es <strong>necesaria y suficiente</strong>.</li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled" title="Por qué esto importa para todo el curso">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Por qué esto importa para todo el curso
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La <strong>teoría de M-estimadores de Econometría 2 (Clase 1) se extiende a procesos estacionarios y ergódicos</strong> reemplazando “i.i.d.” por “estacionario y ergódico” en la ley de los grandes números (incluida la versión uniforme). La consistencia de MCO, MV y GMM sigue funcionando. Lo que <strong>no</strong> se extiende directamente es la <strong>normalidad asintótica</strong>: el TCL para sumas de variables dependientes necesita condiciones adicionales y cambia la varianza (de <span class="math inline">\(\gamma(0)\)</span> a <span class="math inline">\(\sigma^2_{LR}\)</span>). Eso es la Clase 5.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="estimación-de-la-media-de-la-autocovarianza-y-de-la-acf" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Estimación de la media, de la autocovarianza y de la ACF</h1>
+<p>Dado <span class="math inline">\(y_1,\dots,y_T\)</span> de un proceso estacionario, los estimadores naturales son <span class="math display">\[
+\bar y_T = \frac1T\sum_{t = 1}^Ty_t,\qquad
+\hat\gamma(h) = \frac1T\sum_{t = 1}^{T - h}(y_t - \bar y_T)(y_{t + h} - \bar y_T),\quad
+\hat\rho(h) = \frac{\hat\gamma(h)}{\hat\gamma(0)},\quad 0\le h&lt;T.
+\]</span> Por la ergodicidad, bajo condiciones leves <span class="math inline">\(\hat\gamma(h)\to_p\gamma(h)\)</span> y <span class="math inline">\(\hat\rho(h)\to_p\rho(h)\)</span> para cada <span class="math inline">\(h\)</span> fijo. Hay un detalle sutil: el divisor de <span class="math inline">\(\hat\gamma(h)\)</span> es <span class="math inline">\(T\)</span>, <strong>no <span class="math inline">\(T - h\)</span></strong> (que daría un estimador insesgado, aproximadamente). Se usa <span class="math inline">\(T\)</span> porque garantiza que la matriz <span class="math inline">\(\hat\Gamma_n = [\hat\gamma(i - j)]\)</span> sea <strong>semidefinida positiva</strong>, como la verdadera.</p>
+<div id="prp-gamma-hat" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (La autocovarianza muestral es semidefinida positiva)</strong></span> Para todo <span class="math inline">\(n\le T\)</span>, la matriz <span class="math inline">\(\hat\Gamma_n = [\hat\gamma(i - j)]_{i,j = 1}^n\)</span> es semidefinida positiva.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\tilde y_t = y_t - \bar y_T\)</span>. Construimos la matriz <span class="math inline">\(M\)</span> de <span class="math inline">\(n\times(T + n - 1)\)</span> cuya fila <span class="math inline">\(i\)</span> es <span class="math inline">\((0,\dots,0,\tilde y_1,\dots,\tilde y_T,0,\dots,0)\)</span> con <span class="math inline">\(i - 1\)</span> ceros a la izquierda (cada fila es la serie desplazada). Entonces <span class="math inline">\((MM')_{ij} = \sum_t\tilde y_{t - i + 1}\tilde y_{t - j + 1}\)</span>, que es <span class="math inline">\(\sum_t\tilde y_t\tilde y_{t + (i - j)}\)</span> sumado sobre los índices válidos, es decir <span class="math inline">\(T\hat\gamma(i - j)\)</span>. Luego <span class="math inline">\(\hat\Gamma_n = \frac1TMM'\)</span>, que es semidefinida positiva (de la forma <span class="math inline">\(AA'\)</span>).</p>
+</div>
+<p>Con el divisor <span class="math inline">\(T - h\)</span> esa propiedad se pierde, y se pueden obtener “autocovarianzas” estimadas que no corresponden a ningún proceso (varianzas negativas en predicciones). Es el motivo del divisor <span class="math inline">\(T\)</span>.</p>
+<section id="la-acf-de-un-ruido-blanco" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="la-acf-de-un-ruido-blanco"><span class="header-section-number">4.1</span> La ACF de un ruido blanco</h2>
+<p>Un primer uso práctico: testear si una serie (o los residuos de un modelo) es ruido blanco, mirando si sus autocorrelaciones muestrales son cero.</p>
+<div id="prp-bartlett" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 4 (Autocorrelaciones muestrales de un ruido blanco)</strong></span> Si <span class="math inline">\(\{y_t\}\)</span> es i.i.d. con <span class="math inline">\(\mathbb{E}[y_t^2]&lt;\infty\)</span> y varianza positiva, entonces para cada <span class="math inline">\(h\ge1\)</span> fijo, <span class="math inline">\(\sqrt T\hat\rho(h)\xrightarrow{d}N(0,1)\)</span> y, para <span class="math inline">\(h\ne k\)</span>, <span class="math inline">\(\hat\rho(h)\)</span> y <span class="math inline">\(\hat\rho(k)\)</span> son asintóticamente independientes.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Esquema; el detalle usa un TCL para sucesiones dependientes, que veremos en la Clase 5.) Con <span class="math inline">\(\mu = 0\)</span> por simplicidad, <span class="math inline">\(\sqrt T\hat\gamma(h) = T^{-1/2}\sum_ty_ty_{t + h} + o_p(1)\)</span>. Los términos <span class="math inline">\(y_ty_{t + h}\)</span> tienen media cero (independencia), varianza <span class="math inline">\(\mathbb{E}[y_t^2]\mathbb{E}[y_{t + h}^2] = \sigma^4\)</span>, y son <strong>no correlacionados</strong> entre sí: <span class="math inline">\(\operatorname{Cov}(y_ty_{t + h},y_sy_{s + h}) = 0\)</span> si <span class="math inline">\(t\ne s\)</span> (algún <span class="math inline">\(y\)</span> queda sin pareja). Son una diferencia de martingala, y el TCL de la Clase 5 da <span class="math inline">\(\sqrt T\hat\gamma(h)\to_dN(0,\sigma^4)\)</span>. Como <span class="math inline">\(\hat\gamma(0)\to_p\sigma^2\)</span>, por Slutsky <span class="math inline">\(\sqrt T\hat\rho(h)\to_dN(0,1)\)</span>. La independencia asintótica entre rezagos sigue de que los términos de <span class="math inline">\(h\)</span> y de <span class="math inline">\(k\)</span> son también no correlacionados.</p>
+</div>
+<p>De aquí sale la <strong>banda estándar</strong> de los correlogramas: bajo ruido blanco, el 95 % de los <span class="math inline">\(\hat\rho(h)\)</span> deben caer en <span class="math inline">\(\pm1{,}96/\sqrt T\)</span>. Con <span class="math inline">\(T = 100\)</span>, la banda es <span class="math inline">\(\pm0{,}196\)</span>; con 20 rezagos, se espera que <strong>uno</strong> salga de ella por azar (Ejercicio 1.6). Una única autocorrelación “significativa” entre muchas no es evidencia de dependencia. Para testear <strong>conjuntamente</strong> muchos rezagos se usa el estadístico de Ljung–Box (Clase 4).</p>
+</section>
+</section>
+<section id="postgrado-la-densidad-espectral" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> ★ Postgrado: la densidad espectral</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La autocovarianza admite una representación en el dominio de las frecuencias. Es la forma natural de ver <strong>por qué</strong> la varianza de largo plazo <span class="math inline">\(\sigma^2_{LR}\)</span> es la que gobierna al promedio, y la base del estimador HAC de la Clase 5.</p>
+</div>
+</div>
+<p>Si <span class="math inline">\(\sum_h|\gamma(h)|&lt;\infty\)</span>, definimos la <strong>densidad espectral</strong> <span class="math display">\[
+f(\lambda) = \frac1{2\pi}\sum_{h = -\infty}^\infty\gamma(h)e^{-ih\lambda},\qquad\lambda\in[-\pi,\pi].
+\]</span> Es una función continua (la serie converge uniformemente) y, por la simetría <span class="math inline">\(\gamma(h) = \gamma(-h)\)</span>, <strong>real</strong>: <span class="math inline">\(f(\lambda) = \frac1{2\pi}\big[\gamma(0) + 2\sum_{h\ge1}\gamma(h)\cos(h\lambda)\big]\)</span>. Por inversión de Fourier, <span class="math inline">\(\gamma(h) = \int_{-\pi}^\pi e^{ih\lambda}f(\lambda)\,d\lambda\)</span>. La varianza de largo plazo es la densidad espectral <strong>en cero</strong>: <span class="math inline">\(\sigma^2_{LR} = 2\pi f(0)\)</span>.</p>
+<div id="prp-espectral" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 5 (La densidad espectral es no negativa)</strong></span> Si <span class="math inline">\(\sum_h|\gamma(h)|&lt;\infty\)</span>, entonces <span class="math inline">\(f(\lambda)\ge0\)</span> para todo <span class="math inline">\(\lambda\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para <span class="math inline">\(\lambda\)</span> fijo, sea <span class="math inline">\(S_T(\lambda) = \sum_{t = 1}^Ty_te^{-it\lambda}\)</span> (la transformada de Fourier discreta de la serie, con <span class="math inline">\(\mu = 0\)</span> por simplicidad). Entonces <span class="math display">\[
+0\le\frac1T\mathbb{E}|S_T(\lambda)|^2 = \frac1T\sum_{t,s = 1}^T\gamma(t - s)e^{-i(t - s)\lambda} = \sum_{|h|&lt;T}\Big(1 - \frac{|h|}T\Big)\gamma(h)e^{-ih\lambda}.
+\]</span> Es el mismo cálculo de <a href="#eq-var-media" class="quarto-xref">Ecuación&nbsp;1</a>, con el factor <span class="math inline">\(e^{-ih\lambda}\)</span>. Por convergencia dominada (como en el <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a>), el lado derecho tiende a <span class="math inline">\(2\pi f(\lambda)\)</span> cuando <span class="math inline">\(T\to\infty\)</span>, y el límite de números no negativos es no negativo.</p>
+</div>
+<p>Con <span class="math inline">\(\lambda = 0\)</span> esto <em>es</em> el <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a>: <span class="math inline">\(\frac1T\mathbb{E}|\sum y_t|^2 = T\operatorname{Var}(\bar y_T)\to2\pi f(0)\)</span>. La densidad espectral generaliza esa cantidad a todas las frecuencias y dice <strong>cuánta varianza aporta cada ciclo</strong> (frecuencia <span class="math inline">\(\lambda\)</span> corresponde a un período de <span class="math inline">\(2\pi/\lambda\)</span> observaciones). Para un MA(1), <span class="math inline">\(f(\lambda) = \frac{\sigma^2}{2\pi}(1 + \theta^2 + 2\theta\cos\lambda)\)</span>, que con <span class="math inline">\(\theta&gt;0\)</span> concentra la varianza en frecuencias bajas (series “suaves”) y con <span class="math inline">\(\theta&lt;0\)</span> en frecuencias altas (series “dentadas”).</p>
+<p>El <strong>teorema de Herglotz</strong> (que se toma prestado) completa el cuadro: una función <span class="math inline">\(\gamma\)</span> es la autocovarianza de algún proceso estacionario <strong>si y solo si</strong> es simétrica y semidefinida positiva, y entonces <span class="math inline">\(\gamma(h) = \int e^{ih\lambda}\,dF(\lambda)\)</span> para una medida <span class="math inline">\(F\)</span> no negativa (la <strong>distribución espectral</strong>). Eso resuelve el aviso que dimos tras la <a href="#prp-gamma" class="quarto-xref">Proposición&nbsp;2</a>: la semidefinición positiva no es una restricción cosmética sino el criterio exacto de qué funciones son autocovarianzas.</p>
+</section>
+<section id="resumen" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Resumen</h1>
+<ul>
+<li>Una serie de tiempo es <strong>una realización</strong> de un proceso estocástico. Para aprender de ella hace falta <strong>estacionariedad</strong> (<a href="#def-estacionario" class="quarto-xref">Definición&nbsp;2</a>) y <strong>ergodicidad</strong> (<a href="#def-ergodico" class="quarto-xref">Definición&nbsp;3</a>).</li>
+<li>La función de autocovarianza <span class="math inline">\(\gamma(h)\)</span> es simétrica, acotada por <span class="math inline">\(\gamma(0)\)</span> y <strong>semidefinida positiva</strong> (<a href="#prp-gamma" class="quarto-xref">Proposición&nbsp;2</a>). Ruido blanco, MA(1), caminata aleatoria y tendencia son los ejemplos de referencia.</li>
+<li><span class="math inline">\(\operatorname{Var}(\bar y_T) = \frac1T\sum_{|h|&lt;T}(1 - |h|/T)\gamma(h)\)</span>. Si <span class="math inline">\(\gamma(h)\to0\)</span>, <span class="math inline">\(\bar y_T\to\mu\)</span> (<a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a>), y con autocovarianzas sumables, <span class="math inline">\(T\operatorname{Var}(\bar y_T)\to\sigma^2_{LR} = \sum_h\gamma(h)\)</span>: la <strong>varianza de largo plazo</strong> reemplaza a <span class="math inline">\(\gamma(0)\)</span>.</li>
+<li>El <strong>teorema ergódico</strong> (<a href="#thm-ergodico" class="quarto-xref">Teorema&nbsp;2</a>) es la LGN general: para procesos ergódicos, los promedios temporales convergen a las esperanzas de ensamble. Sin ergodicidad convergen a una variable aleatoria (<a href="#exm-no-ergodico" class="quarto-xref">Ejemplo&nbsp;3</a>).</li>
+<li><span class="math inline">\(\hat\gamma(h)\)</span> (divisor <span class="math inline">\(T\)</span>) es semidefinida positiva (<a href="#prp-gamma-hat" class="quarto-xref">Proposición&nbsp;3</a>). Bajo ruido blanco, <span class="math inline">\(\sqrt T\hat\rho(h)\to N(0,1)\)</span> (<a href="#prp-bartlett" class="quarto-xref">Proposición&nbsp;4</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ejercicios</h1>
+<p><strong>Ejercicio 1.1.</strong> Determina si cada proceso es débilmente estacionario y calcula <span class="math inline">\(\gamma(h)\)</span> cuando corresponda. (a) <span class="math inline">\(y_t = \varepsilon_t + \varepsilon_{t-1}\)</span>, <span class="math inline">\(\varepsilon_t\sim WN(0,1)\)</span>. (b) <span class="math inline">\(y_t = (-1)^tZ\)</span> con <span class="math inline">\(Z\)</span> de media cero y varianza <span class="math inline">\(1\)</span>. (c) <span class="math inline">\(y_t = t\,\varepsilon_t\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li>MA(1) con <span class="math inline">\(\theta = 1\)</span>, <span class="math inline">\(\sigma^2 = 1\)</span>: estacionario, <span class="math inline">\(\gamma(0) = 2\)</span>, <span class="math inline">\(\gamma(\pm1) = 1\)</span>, <span class="math inline">\(\gamma(h) = 0\)</span> si <span class="math inline">\(|h|\ge2\)</span>; <span class="math inline">\(\rho(1) = 0{,}5\)</span> (el máximo posible). (b) <span class="math inline">\(\mathbb{E}[y_t] = 0\)</span> y <span class="math inline">\(\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h\)</span>: depende solo de <span class="math inline">\(h\)</span>, estacionario, con <span class="math inline">\(\gamma(h) = (-1)^h\)</span> (oscila entre <span class="math inline">\(+1\)</span> y <span class="math inline">\(-1\)</span>; no es ergódico, pues <span class="math inline">\(\gamma(h)\not\to0\)</span>). (c) <span class="math inline">\(\operatorname{Var}(y_t) = t^2\)</span> depende de <span class="math inline">\(t\)</span>: no estacionario (heterocedasticidad creciente).</li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.2.</strong> Calcula <span class="math inline">\(\rho(1)\)</span> de un MA(1) con <span class="math inline">\(\theta = 0{,}5\)</span> y con <span class="math inline">\(\theta = 2\)</span>. ¿Qué observas? ¿Por qué no se puede distinguir un caso del otro con la ACF?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\theta = 0{,}5\)</span>: <span class="math inline">\(\rho(1) = 0{,}5/1{,}25 = 0{,}4\)</span>. <span class="math inline">\(\theta = 2\)</span>: <span class="math inline">\(\rho(1) = 2/5 = 0{,}4\)</span>. <strong>Es la misma.</strong> En general, <span class="math inline">\(\theta/(1 + \theta^2)\)</span> es invariante a <span class="math inline">\(\theta\to1/\theta\)</span>. Como la ACF (y la autocovarianza, con la varianza <span class="math inline">\(\sigma^2\)</span> ajustada: <span class="math inline">\(\sigma^2(1 + \theta^2)\)</span> debe coincidir, o sea <span class="math inline">\(\sigma^2_{(2)} = \sigma^2_{(0{,}5)}\cdot0{,}25\)</span>) es lo único que identifican los dos primeros momentos, ambos modelos generan la <strong>misma ley de segundo orden</strong>. Se resuelve eligiendo la parametrización <em>invertible</em> <span class="math inline">\(|\theta|&lt;1\)</span> (Clase 2).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.3.</strong> Para un MA(1) con <span class="math inline">\(\theta = 0{,}5\)</span> y <span class="math inline">\(\sigma^2 = 1\)</span>, calcula <span class="math inline">\(T\operatorname{Var}(\bar y_T)\)</span> exacto para <span class="math inline">\(T = 10\)</span> y compáralo con el límite <span class="math inline">\(\sigma^2_{LR}\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(T\operatorname{Var}(\bar y_T) = \gamma(0) + 2\big(1 - \tfrac1T\big)\gamma(1) = 1{,}25 + 2(0{,}9)(0{,}5) = 1{,}25 + 0{,}9 = 2{,}15\)</span>. El límite es <span class="math inline">\(\sigma^2_{LR} = (1 + \theta)^2 = 2{,}25\)</span>. Para <span class="math inline">\(T = 10\)</span> ya está a <span class="math inline">\(4\)</span> % del límite, y converge a tasa <span class="math inline">\(1/T\)</span> (el término <span class="math inline">\(2\gamma(1)/T\)</span> es la corrección). Con i.i.d. se habría calculado <span class="math inline">\(1{,}25\)</span>: un error de 42 %.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.4.</strong> Un proceso <span class="math inline">\(y_t = \mu + Z\)</span> (nivel aleatorio con <span class="math inline">\(\operatorname{Var}(Z) = 4\)</span>) se observa en <span class="math inline">\(T = 1000\)</span> períodos. ¿Cuál es la distribución de <span class="math inline">\(\bar y_T\)</span> y cuál el error de estimar <span class="math inline">\(\mu\)</span>? Compara con un ruido blanco de varianza <span class="math inline">\(4\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\bar y_T = \mu + Z\)</span> para todo <span class="math inline">\(T\)</span> (promedio de <span class="math inline">\(T\)</span> copias de lo mismo): <span class="math inline">\(\operatorname{Var}(\bar y_T) = 4\)</span>, <strong>independiente de <span class="math inline">\(T\)</span></strong>. Con 1000 observaciones el error estándar sigue siendo <span class="math inline">\(2\)</span>, no mejora. Con un ruido blanco de varianza <span class="math inline">\(4\)</span>, <span class="math inline">\(\operatorname{Var}(\bar y_T) = 4/1000\)</span> (error estándar <span class="math inline">\(0{,}063\)</span>). La diferencia es la ergodicidad: la serie con nivel aleatorio contiene una sola realización de <span class="math inline">\(Z\)</span>, y no hay “información nueva” en cada observación. <span class="math inline">\(\gamma(h) = 4\)</span> constante: <span class="math inline">\(T\operatorname{Var}(\bar y_T) = 4T\to\infty\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.5.</strong> Un proceso estacionario cumple <span class="math inline">\(y_t = \phi y_{t-1} + \varepsilon_t\)</span> con <span class="math inline">\(|\phi|&lt;1\)</span>, <span class="math inline">\(\varepsilon_t\sim WN(0,\sigma^2)\)</span> no correlacionado con <span class="math inline">\(y_{t - s}\)</span> para <span class="math inline">\(s\ge1\)</span>. Deduce <span class="math inline">\(\gamma(h)\)</span> y la varianza de largo plazo. Para <span class="math inline">\(\phi = 0{,}8\)</span>, ¿por cuánto se subestima la varianza de <span class="math inline">\(\bar y_T\)</span> si se usa <span class="math inline">\(\gamma(0)/T\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\gamma(0) = \phi^2\gamma(0) + \sigma^2\Rightarrow\gamma(0) = \sigma^2/(1 - \phi^2)\)</span>. Para <span class="math inline">\(h\ge1\)</span>, multiplicando por <span class="math inline">\(y_{t - h}\)</span> y tomando esperanza, <span class="math inline">\(\gamma(h) = \phi\gamma(h - 1)\)</span> (el término <span class="math inline">\(\mathbb{E}[\varepsilon_ty_{t - h}] = 0\)</span>), luego <span class="math inline">\(\gamma(h) = \phi^{|h|}\gamma(0)\)</span>. La suma: <span class="math inline">\(\sigma^2_{LR} = \gamma(0)\sum_h\phi^{|h|} = \gamma(0)\dfrac{1 + \phi}{1 - \phi} = \dfrac{\sigma^2}{(1 - \phi)^2}\)</span>. Con <span class="math inline">\(\phi = 0{,}8\)</span>: <span class="math inline">\(\gamma(0) = \sigma^2/0{,}36 = 2{,}78\sigma^2\)</span> y <span class="math inline">\(\sigma^2_{LR} = 25\sigma^2\)</span>. El cociente <span class="math inline">\(\sigma^2_{LR}/\gamma(0) = (1 + \phi)/(1 - \phi) = 9\)</span>: <strong>ignorar la dependencia subestima la varianza de <span class="math inline">\(\bar y_T\)</span> en un factor 9</strong> (el error estándar, en 3). Una serie con <span class="math inline">\(\phi = 0{,}8\)</span> de <span class="math inline">\(T = 100\)</span> observaciones equivale, para estimar la media, a solo <span class="math inline">\(100/9\approx11\)</span> observaciones independientes.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.6.</strong> Con <span class="math inline">\(T = 100\)</span>, ¿cuál es la banda del 95 % para la ACF muestral de un ruido blanco? Si se miran <span class="math inline">\(20\)</span> rezagos, ¿cuántos se esperan fuera de la banda y cuál es la probabilidad de que <strong>al menos uno</strong> salga?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Banda: <span class="math inline">\(\pm1{,}96/\sqrt{100} = \pm0{,}196\)</span>. Con <span class="math inline">\(20\)</span> rezagos asintóticamente independientes, se esperan <span class="math inline">\(20\times0{,}05 = 1\)</span> fuera de la banda. <span class="math inline">\(P(\text{al menos uno}) = 1 - 0{,}95^{20} = 1 - 0{,}358 = 0{,}64\)</span>. <strong>Hay 64 % de probabilidad de ver al menos una autocorrelación “significativa” en un ruido blanco puro.</strong> Por eso no se interpreta un solo rezago aislado, y se usan pruebas conjuntas (Ljung–Box, Clase 4).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.7 ★.</strong> (a) Muestra que <span class="math inline">\(\gamma(0) = 1\)</span>, <span class="math inline">\(\gamma(\pm1) = 0{,}9\)</span>, <span class="math inline">\(\gamma(h) = 0\)</span> para <span class="math inline">\(|h|\ge2\)</span> <strong>no</strong> es una función de autocovarianza. (b) ¿Para qué valores de <span class="math inline">\(\rho(1)\)</span> y <span class="math inline">\(\gamma(h) = 0\)</span> si <span class="math inline">\(|h|\ge2\)</span> sí lo es?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li>Con <span class="math inline">\(\rho(1) = 0{,}9&gt;\tfrac12\)</span> y <span class="math inline">\(\rho(h) = 0\)</span> para <span class="math inline">\(|h|\ge2\)</span>: la matriz de Toeplitz <span class="math inline">\(3\times3\)</span> <span class="math inline">\(\begin{pmatrix}1&amp;0{,}9&amp;0\\0{,}9&amp;1&amp;0{,}9\\0&amp;0{,}9&amp;1\end{pmatrix}\)</span> tiene determinante <span class="math inline">\(1 - 2(0{,}81) = -0{,}62&lt;0\)</span>, así que no es semidefinida positiva: con <span class="math inline">\(a = (1,-\sqrt2,1)'\)</span> se obtiene <span class="math inline">\(a'\Gamma a = 4 - 4\sqrt2(0{,}9)\approx-1{,}09&lt;0\)</span>. Ninguna varianza puede ser negativa. (b) La densidad espectral <span class="math inline">\(f(\lambda) = \frac1{2\pi}[1 + 2\rho(1)\cos\lambda]\)</span> debe ser no negativa (<a href="#prp-espectral" class="quarto-xref">Proposición&nbsp;5</a>): <span class="math inline">\(1 + 2\rho(1)\cos\lambda\ge0\)</span> para todo <span class="math inline">\(\lambda\)</span>, es decir <span class="math inline">\(|\rho(1)|\le\tfrac12\)</span>. Es exactamente la cota del MA(1) (<a href="#exm-procesos" class="quarto-xref">Ejemplo&nbsp;1</a>): una autocorrelación de primer orden mayor que <span class="math inline">\(\tfrac12\)</span> con todas las demás nulas es imposible.</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/index.html" class="pagination-link" aria-label="Econometría 3">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Econometría 3</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

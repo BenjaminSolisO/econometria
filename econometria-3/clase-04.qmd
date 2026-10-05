@@ -1,0 +1,239 @@
+---
+title: "Clase 4 · Estimación e inferencia en modelos ARMA"
+subtitle: "MCO, Yule–Walker, máxima verosimilitud gaussiana, selección de orden y diagnóstico"
+description: "Estimación de modelos AR y ARMA: MCO condicional y su distribución asintótica, Yule–Walker, la verosimilitud gaussiana por descomposición del error de predicción, información de Fisher del ARMA, criterios AIC y BIC con su comportamiento asintótico y el test de Ljung–Box."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De la teoría a los datos
+
+La Clase 2 describió la familia ARMA y la Clase 3 mostró cómo pronosticar **si se conocen los parámetros**. En la práctica no se conocen. Dada una serie $y_1,\dots,y_T$ hay que: (1) **elegir** el orden $(p,q)$, (2) **estimar** $\beta = (\phi_1,\dots,\phi_p,\theta_1,\dots,\theta_q)$ y $\sigma^2$, y (3) **diagnosticar** si el modelo describe bien los datos. Es el ciclo de Box y Jenkins. Hoy lo recorremos con la maquinaria de Econometría 1 y 2: MCO y su teoría asintótica, y máxima verosimilitud (como M-estimador, Clases 1 y 2 de Econometría 2), con la novedad de que los datos son **dependientes**.
+
+Supondremos que la serie viene de un ARMA($p$,$q$) **causal e invertible** con innovaciones $\varepsilon_t$ i.i.d. $(0,\sigma^2)$, salvo que se diga lo contrario, y que ya se restó la media (o se incluye una constante).
+
+# Autorregresivos: MCO
+
+El AR($p$) tiene una ventaja decisiva: es un **modelo de regresión**. Con $x_t = (y_{t-1},\dots,y_{t-p})'$,
+$$
+y_t = x_t'\phi + \varepsilon_t,\qquad\hat\phi = \Big(\sum_{t = p + 1}^Tx_tx_t'\Big)^{-1}\sum_{t = p + 1}^Tx_ty_t.
+$$
+Es MCO usando las observaciones $t = p + 1,\dots,T$ (la **verosimilitud condicional** en los primeros $p$ valores, como veremos). Pero hay un problema que ya conocemos: los regresores son **rezagos** de la variable dependiente, de modo que el supuesto de exogeneidad estricta RL3 de Econometría 1 **falla** (Clase 4 de Econometría 1). Eso no destruye la consistencia, que solo necesita ortogonalidad contemporánea, y lo que se pierde es el **insesgamiento**.
+
+::: {#thm-ar-mco}
+## MCO en el AR($p$)
+Sea $y_t = x_t'\phi + \varepsilon_t$ un AR($p$) causal con innovaciones que forman una **diferencia de martingala**: $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = 0$ y $\mathbb{E}[\varepsilon_t^2\mid\mathcal{F}_{t-1}] = \sigma^2$, con $\mathcal{F}_{t-1} = \sigma(y_{t-1},y_{t-2},\dots)$ (por ejemplo, $\varepsilon_t$ i.i.d.). Entonces $\hat\phi\xrightarrow{p}\phi$ y
+$$
+\sqrt T(\hat\phi - \phi)\xrightarrow{d}N\big(0,\ \sigma^2\Gamma_p^{-1}\big),\qquad\Gamma_p = \mathbb{E}[x_tx_t'] = [\gamma(i - j)]_{i,j = 1}^p.
+$$
+El estimador de varianza usual de MCO, $\hat\sigma^2(\sum x_tx_t')^{-1}$, es consistente: **la inferencia de MCO es válida asintóticamente**.
+:::
+
+::: {.callout-note title="Borrador"}
+Es el mismo argumento de la Clase 7 de Econometría 1, con $x_t$ en lugar de $x_i$: $\hat\phi - \phi = (\frac1T\sum x_tx_t')^{-1}\frac1T\sum x_t\varepsilon_t$. La primera parte converge a $\Gamma_p^{-1}$ por la **ley de los grandes números ergódica** (Clase 1: $x_tx_t'$ es una función estacionaria ergódica de la serie). La segunda es un promedio de $x_t\varepsilon_t$, que son i.i.d. en el caso clásico pero aquí **no son independientes** (hay solapamiento de rezagos). Lo que sí tienen es que **no están correlacionados entre sí**: $x_t$ y $\varepsilon_t$ pertenecen a $\mathcal{F}_{t-1}$ y $\mathcal{F}_t$ respectivamente, de modo que $x_t\varepsilon_t$ es una **diferencia de martingala**, para la cual hay un TCL (Clase 5).
+:::
+
+::: {.proof}
+Por la causalidad, $y_t = \sum_j\psi_j\varepsilon_{t-j}$ y $\{x_t\}$ es estacionario y ergódico (función de $\{\varepsilon_s\}$ i.i.d.).
+
+*Consistencia.* $\frac1T\sum x_tx_t'\to_p\Gamma_p$ por el teorema ergódico de la Clase 1, con $\Gamma_p\succ0$ (el proceso no es determinístico; Clase 3). Además $\mathbb{E}[x_t\varepsilon_t] = 0$ (pues $x_t\in\mathcal{F}_{t-1}$ y $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = 0$), y $\frac1T\sum x_t\varepsilon_t\to_p0$ por el mismo teorema. Luego $\hat\phi - \phi\to_p\Gamma_p^{-1}\cdot0 = 0$.
+
+*Normalidad.* La sucesión $\xi_t = x_t\varepsilon_t$ es una diferencia de martingala ($\mathbb{E}[\xi_t\mid\mathcal{F}_{t-1}] = x_t\cdot0 = 0$), con $\mathbb{E}[\xi_t\xi_t'\mid\mathcal{F}_{t-1}] = x_tx_t'\sigma^2$, cuyo promedio converge a $\sigma^2\Gamma_p$. El TCL para diferencias de martingala (que se enuncia en la Clase 5) da $T^{-1/2}\sum\xi_t\to_dN(0,\sigma^2\Gamma_p)$, y por Slutsky $\sqrt T(\hat\phi - \phi)\to_d\Gamma_p^{-1}N(0,\sigma^2\Gamma_p) = N(0,\sigma^2\Gamma_p^{-1})$. Para el estimador de varianza, $\hat\sigma^2\to_p\sigma^2$ y $\frac1T\sum x_tx_t'\to_p\Gamma_p$.
+:::
+
+Para el **AR(1)**, $\Gamma_1 = \gamma(0) = \sigma^2/(1 - \phi^2)$, de modo que
+$$
+\sqrt T(\hat\phi - \phi)\xrightarrow{d}N\big(0,\ 1 - \phi^2\big).
+$$ {#eq-ar1-var}
+La varianza **no depende de $\sigma^2$** y es **menor cuanto más persistente** es la serie: con $\phi = 0{,}9$, $1 - \phi^2 = 0{,}19$. (Es la contraparte de $\operatorname{Var}(\hat\beta) = \sigma^2/\sum x^2$: una serie persistente tiene mucha variación en el regresor $y_{t-1}$.) En la Clase 6 veremos que **cuando $\phi\to1$ esta fórmula falla** y la distribución límite cambia por completo.
+
+## El sesgo de muestras finitas
+
+Aunque consistente, $\hat\phi$ está **sesgado** en muestras finitas. Para el AR(1) con constante, la aproximación de Kendall (1954) es (Hurwicz, 1950, obtuvo el caso sin constante, $-2\phi/T$)
+$$
+\mathbb{E}[\hat\phi] - \phi\ \approx\ -\frac{1 + 3\phi}{T}.
+$$
+Con $\phi = 0{,}9$ y $T = 50$: $-3{,}7/50 = -0{,}074$, el estimador subestima la persistencia en $0{,}074$ en promedio. Este es el sesgo de la nota a pie de la Clase 4 de Econometría 1. Es un sesgo hacia abajo (menos persistencia) que importa mucho cuando se usa $\hat\phi$ para calcular **cuánto tarda un shock en disiparse**: la vida media $\log(0{,}5)/\log\phi$ es muy sensible a $\phi$ cerca de uno.
+
+## El estimador de Yule–Walker
+
+Las ecuaciones de Yule–Walker (Clase 2) relacionan los parámetros del AR($p$) con las autocovarianzas: $\Gamma_p\phi = \gamma_p$ y $\sigma^2 = \gamma(0) - \phi'\gamma_p$. El **estimador de Yule–Walker** las resuelve con las autocovarianzas **muestrales**:
+$$
+\hat\phi_{YW} = \hat\Gamma_p^{-1}\hat\gamma_p,\qquad\hat\sigma^2_{YW} = \hat\gamma(0) - \hat\phi_{YW}'\hat\gamma_p.
+$$
+Es un **estimador de momentos** (el método de los momentos de Econometría 2, Clase 4, con $r = p$). Tiene dos propiedades:
+
+1. **Siempre produce un modelo causal** (se toma prestado): como $\hat\Gamma_p$ es semidefinida positiva (Clase 1, divisor $T$), las raíces de $\hat\phi_{YW}(z)$ quedan fuera del círculo unitario. MCO, en cambio, puede dar un AR no estacionario en muestras pequeñas.
+2. **Es asintóticamente equivalente a MCO:** misma distribución límite. Difiere en muestras finitas: con raíces cerca del círculo unitario, YW tiene **mayor sesgo** que MCO porque "fuerza" la estacionariedad.
+
+# Máxima verosimilitud gaussiana
+
+Para modelos con parte MA no hay forma de escribir una regresión: $\varepsilon_{t-1}$ no se observa. La solución estándar es la **máxima verosimilitud gaussiana**: suponer $\varepsilon_t\sim N(0,\sigma^2)$ y maximizar la densidad conjunta de $(y_1,\dots,y_T)\sim N(0,\Gamma_T)$, donde $\Gamma_T = [\gamma(i - j)]$ depende de $\beta$ y $\sigma^2$:
+$$
+\ell_T(\beta,\sigma^2) = -\frac T2\log(2\pi) - \frac12\log\det\Gamma_T - \frac12y'\Gamma_T^{-1}y.
+$$
+Invertir y calcular el determinante de una matriz $T\times T$ para cada valor de los parámetros es costoso. Pero la descomposición en **errores de predicción** de la Clase 3 los simplifica.
+
+::: {#prp-lik-innov}
+## Verosimilitud por innovaciones
+Sean $e_t = y_t - \hat y_{t|t-1}$ los errores de predicción a un paso (con las $t - 1$ observaciones previas) y $v_{t-1} = \mathbb{E}[e_t^2]$ sus varianzas (Durbin–Levinson, Clase 3). Entonces $\det\Gamma_T = \prod_{t = 1}^Tv_{t-1}$ y $y'\Gamma_T^{-1}y = \sum_{t = 1}^Te_t^2/v_{t-1}$, de modo que
+$$
+\ell_T = -\frac12\sum_{t = 1}^T\Big[\log(2\pi v_{t-1}) + \frac{e_t^2}{v_{t-1}}\Big].
+$$
+:::
+
+::: {.proof}
+El vector de errores de predicción es $e = Ay$ con $A$ una matriz **triangular inferior con unos en la diagonal** (el error $e_t = y_t - \sum_{j<t}\phi_{t-1,j}y_{t-j}$ involucra solo $y_t$ y sus valores pasados, con coeficiente 1 en $y_t$). Por la ortogonalidad del error de proyección con los datos pasados (Clase 3), los $e_t$ son **no correlacionados**, con $\operatorname{Var}(e) = D = \operatorname{diag}(v_0,\dots,v_{T-1})$. Entonces $A\Gamma_TA' = D$, es decir $\Gamma_T = A^{-1}DA^{-\prime}$. Como $\det A = 1$, $\det\Gamma_T = \det D = \prod v_{t-1}$, y $y'\Gamma_T^{-1}y = (Ay)'D^{-1}(Ay) = e'D^{-1}e$.
+:::
+
+Como $v_{t-1} = \sigma^2r_{t-1}$ con $r_{t-1}$ función de $\beta$ solamente, se puede **concentrar** $\sigma^2$: $\hat\sigma^2(\beta) = \frac1T\sum_te_t^2/r_{t-1}$ y se maximiza una verosimilitud perfilada en $\beta$. Con **innovaciones calculadas por el filtro de Kalman** (Clase 13) o por el algoritmo de innovaciones, esto se evalúa en $O(T)$.
+
+**Aproximaciones.** Para valores iniciales: (i) la **verosimilitud condicional** (CLS) fija los primeros $p$ datos (para el AR es exactamente MCO) y, para el MA, fija las innovaciones pre-muestra en cero y las calcula recursivamente, $\varepsilon_t = y_t - \sum_j\theta_j\varepsilon_{t-j}$; (ii) la **exacta** incluye todo. Con invertibilidad la diferencia desaparece geométricamente con $T$.
+
+## Cuasi-máxima verosimilitud
+
+No se necesita **normalidad**: el estimador $\hat\beta$ que maximiza la verosimilitud *gaussiana* es consistente y asintóticamente normal para $\beta$ aunque las innovaciones no sean gaussianas, siempre que sean i.i.d. con varianza finita (es un caso de cuasi-MV, Clase 2 de Econometría 2: la verosimilitud gaussiana depende de los datos solo a través de los dos primeros momentos, que son los que identifican a $\beta$). Eso explica por qué se usa en toda situación.
+
+## Distribución asintótica
+
+La información de Fisher del ARMA gaussiano se calcula con dos procesos auxiliares (sección ★). Los casos básicos son:
+
+::: {#thm-arma-mle}
+## Normalidad del MV gaussiano
+Para un ARMA($p$,$q$) causal e invertible con innovaciones i.i.d., $\sqrt T(\hat\beta - \beta)\to_dN\big(0,V(\beta)\big)$. En particular:
+
+- **AR(1):** $V = 1 - \phi^2$.
+- **MA(1):** $V = 1 - \theta^2$.
+- **ARMA(1,1):** $V_{\phi\phi} = \dfrac{(1 - \phi^2)(1 + \phi\theta)^2}{(\phi + \theta)^2}$, $V_{\theta\theta} = \dfrac{(1 - \theta^2)(1 + \phi\theta)^2}{(\phi + \theta)^2}$ y $V_{\phi\theta} = -\dfrac{(1 - \phi^2)(1 - \theta^2)(1 + \phi\theta)}{(\phi + \theta)^2}$.
+:::
+
+Tres lecciones. **(1) Dualidad:** el MA(1) con parámetro $\theta$ se estima con la misma precisión que el AR(1) con $\phi = \theta$. **(2) Cerca de la frontera** ($|\phi|$ o $|\theta|\to1$) la varianza se achica como $1 - \phi^2$, pero la aproximación normal es mala y la distribución es no estándar *en* la frontera (para un MA con $\theta = -1$, converge a tasa $T$ y no a $\sqrt T$). **(3) Casi cancelación de raíces** ($\phi + \theta\to0$): la varianza del ARMA(1,1) **explota**: el modelo se parece a un ruido blanco y ni $\phi$ ni $\theta$ están bien identificados (Ejercicio 4.7).
+
+::: {#exm-arma11-num}
+## Errores estándar en un ARMA(1,1)
+Con $\phi = 0{,}5$, $\theta = 0{,}4$ y $T = 200$: $(\phi + \theta)^2 = 0{,}81$ y $(1 + \phi\theta)^2 = 1{,}44$. $V_{\phi\phi} = 0{,}75\cdot1{,}44/0{,}81 = 1{,}333$, error estándar $\sqrt{1{,}333/200} = 0{,}082$; $V_{\theta\theta} = 0{,}84\cdot1{,}44/0{,}81 = 1{,}493$, error estándar $0{,}086$. Si el modelo fuera un AR(1) puro con $\phi = 0{,}5$, el error estándar sería $\sqrt{0{,}75/200} = 0{,}061$: **agregar el término MA cuesta un 34 % de precisión** en $\hat\phi$.
+:::
+
+# Selección del orden
+
+El orden $(p,q)$ no se conoce. Agregar parámetros siempre aumenta la verosimilitud (ajuste dentro de muestra) pero empeora el pronóstico (sobreajuste). Los **criterios de información** penalizan la complejidad: con $k = p + q$ parámetros y $\hat\ell$ la log-verosimilitud máxima,
+$$
+\text{AIC} = -2\hat\ell + 2k,\qquad\text{BIC} = -2\hat\ell + k\log T.
+$$
+Se elige el modelo con **menor** valor. Para un AR($p$) gaussiano, $-2\hat\ell\approx T\log\hat\sigma_p^2 + \text{cte}$.
+
+Los dos tienen propiedades distintas, que se pueden derivar con la teoría de razón de verosimilitud (Clase 3 de Econometría 2).
+
+::: {#prp-aic-bic}
+## Comportamiento asintótico de AIC y BIC
+Sea $\mathcal{M}_0$ el modelo verdadero y $\mathcal{M}_1$ uno que agrega **un parámetro** innecesario. Entonces la probabilidad de elegir erróneamente $\mathcal{M}_1$ converge a $P(\chi^2_1>2) = 0{,}157$ con **AIC** y a $0$ con **BIC**. Si en cambio $\mathcal{M}_1$ es el verdadero y $\mathcal{M}_0$ omite un parámetro relevante, ambos criterios eligen $\mathcal{M}_1$ con probabilidad que tiende a uno.
+:::
+
+::: {.proof}
+Con la **razón de verosimilitud** $LR = 2(\hat\ell_1 - \hat\ell_0)$, AIC elige $\mathcal{M}_1$ si $-2\hat\ell_1 + 2(k + 1)<-2\hat\ell_0 + 2k$, es decir $LR>2$; BIC la elige si $LR>\log T$. Si $\mathcal{M}_0$ es verdadero, $LR\to_d\chi^2_1$ (Clase 3 de Econometría 2), así que $P(LR>2)\to P(\chi^2_1>2) = 0{,}157$ (AIC), y $P(LR>\log T)\to0$ porque $\log T\to\infty$ y la distribución límite de $LR$ es acotada en probabilidad. Si $\mathcal{M}_1$ es verdadero y el parámetro adicional es distinto de cero, $LR$ crece como $T$ (la verosimilitud de un modelo mal especificado queda a distancia KL positiva, Clase 2 de Econometría 2), así que $P(LR>2)\to1$ y $P(LR>\log T)\to1$ (porque $T\gg\log T$).
+:::
+
+Moraleja: **BIC es consistente** (selecciona el orden verdadero con probabilidad uno si está en la clase de modelos candidatos) y **AIC no** (sobreajusta con probabilidad positiva, aproximadamente 16 % por parámetro extra). Pero AIC tiene ventajas para **pronóstico**: minimiza asintóticamente el error de predicción cuando el modelo verdadero es de orden infinito o no está en la clase. La regla práctica: BIC si el objetivo es identificar la estructura; AIC si el objetivo es pronosticar.
+
+# Diagnóstico
+
+Un modelo ARMA bien especificado deja residuos $\hat\varepsilon_t$ que parecen **ruido blanco**. Tres chequeos estándar:
+
+1. **Gráfico de los residuos y su correlograma:** la ACF muestral de $\hat\varepsilon_t$ debe caer dentro de la banda $\pm1{,}96/\sqrt T$ (Clase 1).
+2. **Prueba de Ljung–Box** (conjunta, sobre $m$ rezagos):
+$$
+Q_{LB} = T(T + 2)\sum_{k = 1}^m\frac{\hat\rho_k^2}{T - k}\ \overset{a}{\sim}\ \chi^2_{m - p - q}\quad\text{bajo }H_0:\text{residuos ruido blanco}.
+$$
+3. **Sobreajuste deliberado:** agregar un rezago AR o MA y testear su significancia (si el modelo está bien, el término extra no es significativo).
+
+::: {#prp-ljung-box}
+## Distribución de Ljung–Box
+Si $\{y_t\}$ es ruido blanco i.i.d., $Q_{BP} = T\sum_{k = 1}^m\hat\rho_k^2\to_d\chi^2_m$. Si los $\hat\rho_k$ provienen de los residuos de un ARMA($p$,$q$) estimado, el límite es $\chi^2_{m - p - q}$.
+:::
+
+::: {.proof}
+(Esquema.) Sin estimación, la proposición sobre autocorrelaciones muestrales de un ruido blanco (Clase 1) da $\sqrt T\hat\rho_k\to_dN(0,1)$ asintóticamente independientes, y la suma de $m$ cuadrados de normales estándar independientes es $\chi^2_m$ (Clase 5 de Econometría 1). Con residuos de un ARMA estimado, el vector $(\hat\rho_1,\dots,\hat\rho_m)$ queda restringido por las $p + q$ **condiciones de primer orden** del estimador (los scores del MV son combinaciones lineales de los residuos), de modo que solo $m - p - q$ direcciones son libres, lo que reduce los grados de libertad en $p + q$ (el mismo argumento que quita $k$ grados de libertad en $\hat u'\hat u/\sigma^2\sim\chi^2_{n-k}$ de Econometría 1). Ljung–Box reemplaza $T\hat\rho_k^2$ por $T(T + 2)\hat\rho_k^2/(T - k)$, que corrige $\operatorname{Var}(\hat\rho_k)\approx(T - k)/[T(T + 2)]$ bajo ruido blanco gaussiano: mejor aproximación en muestras pequeñas.
+:::
+
+Si el diagnóstico falla, el modelo omite dependencia: se aumenta el orden o se cambia la familia (por ejemplo, incorporando heterocedasticidad condicional, Clase 12, o raíces unitarias, Clase 6). Si sus residuos son ruido blanco **pero no independientes** (los cuadrados están correlacionados), el test de Ljung–Box sobre $\hat\varepsilon_t$ no rechaza, y el de Ljung–Box sobre $\hat\varepsilon_t^2$ sí: es la señal de ARCH.
+
+# ★ Postgrado: la información de Fisher del ARMA
+
+::: {.callout-important title="★ Postgrado"}
+Calculamos la matriz de información del ARMA gaussiano y deducimos los casos del @thm-arma-mle. La idea: las derivadas de las innovaciones respecto de los parámetros son **procesos autorregresivos** simples.
+:::
+
+En un ARMA causal e invertible, $\varepsilon_t(\beta) = \theta(L)^{-1}\phi(L)y_t$. Derivando respecto de $\phi_k$ y $\theta_k$ (con $y_t$ fijo):
+$$
+\frac{\partial\varepsilon_t}{\partial\phi_k} = -\frac1{\theta(L)}y_{t-k} = -U_{t-k},\qquad
+\frac{\partial\varepsilon_t}{\partial\theta_k} = -\frac{\phi(L)}{\theta(L)^2}y_{t-k} = -V_{t-k},
+$$
+donde, evaluando en el verdadero $\beta$ (donde $y = \theta\phi^{-1}\varepsilon$), $U_t = \varepsilon_t/\phi(L)$ y $V_t = \varepsilon_t/\theta(L)$ son procesos AR: $\phi(L)U_t = \varepsilon_t$ y $\theta(L)V_t = \varepsilon_t$. La log-verosimilitud gaussiana (para $T$ grande) es $-\frac12\sum\varepsilon_t(\beta)^2/\sigma^2 + \text{cte}$, de modo que el score es $-\sigma^{-2}\sum_t\varepsilon_t\,\partial\varepsilon_t/\partial\beta = \sigma^{-2}\sum_t\varepsilon_tw_t$ (con $w_t$ definido abajo) y la información por observación es
+$$
+\mathcal{I}(\beta) = \frac1{\sigma^2}\,\mathbb{E}\big[w_tw_t'\big],\qquad w_t = (U_{t-1},\dots,U_{t-p},V_{t-1},\dots,V_{t-q})'.
+$$
+(El score es una diferencia de martingala porque $\varepsilon_t$ es independiente del pasado, y la información es la varianza del score; la parte de $\sigma^2$ es asintóticamente ortogonal a $\beta$.) Entonces $V(\beta) = \sigma^2\big(\mathbb{E}[w_tw_t']\big)^{-1}$, que es **la misma fórmula del AR($p$)** del @thm-ar-mco con regresores $w_t$ en lugar de $x_t$.
+
+*Casos.* **AR(1):** $w_t = U_{t-1} = y_{t-1}$, $\mathbb{E}[w^2] = \sigma^2/(1 - \phi^2)$, y $V = 1 - \phi^2$. **MA(1):** $w_t = V_{t-1} = \sum_j(-\theta)^j\varepsilon_{t-1-j}$, $\mathbb{E}[w^2] = \sigma^2/(1 - \theta^2)$, $V = 1 - \theta^2$. **ARMA(1,1):** $w_t = (U_{t-1},V_{t-1})$ con $\mathbb{E}[U^2] = \sigma^2/(1 - \phi^2)$, $\mathbb{E}[V^2] = \sigma^2/(1 - \theta^2)$ y $\mathbb{E}[UV] = \sigma^2\sum_j\phi^j(-\theta)^j = \sigma^2/(1 + \phi\theta)$. La matriz $\mathbb{E}[ww']/\sigma^2$ es
+$$
+\begin{pmatrix}\frac1{1 - \phi^2}&\frac1{1 + \phi\theta}\\\frac1{1 + \phi\theta}&\frac1{1 - \theta^2}\end{pmatrix}
+$$
+tiene determinante $\dfrac{1}{(1 - \phi^2)(1 - \theta^2)} - \dfrac{1}{(1 + \phi\theta)^2} = \dfrac{(1 + \phi\theta)^2 - (1 - \phi^2)(1 - \theta^2)}{(1 - \phi^2)(1 - \theta^2)(1 + \phi\theta)^2} = \dfrac{(\phi + \theta)^2}{(1 - \phi^2)(1 - \theta^2)(1 + \phi\theta)^2}$ (el numerador se simplifica: $1 + 2\phi\theta + \phi^2\theta^2 - 1 + \phi^2 + \theta^2 - \phi^2\theta^2 = (\phi + \theta)^2$). Invirtiendo la matriz $2\times2$ se obtienen las expresiones del @thm-arma-mle. El determinante $(\phi + \theta)^2\to0$ cuando $\phi + \theta\to0$: la información se **degenera** y la varianza explota, que es la manifestación de la cancelación de raíces de la Clase 2.
+
+# Resumen
+
+- Un AR($p$) se estima por **MCO**: consistente y asintóticamente normal, $\sqrt T(\hat\phi - \phi)\to N(0,\sigma^2\Gamma_p^{-1})$ (@thm-ar-mco); para el AR(1), $V = 1 - \phi^2$. Está sesgado en muestras finitas ($\approx-(1 + 3\phi)/T$).
+- **Yule–Walker** es el estimador de momentos: siempre causal, asintóticamente equivalente a MCO.
+- El **MV gaussiano** usa la descomposición por innovaciones (@prp-lik-innov), sirve para cualquier ARMA y es una cuasi-MV consistente sin normalidad. Su distribución asintótica se obtiene de procesos autorregresivos auxiliares (@thm-arma-mle); explota cuando $\phi + \theta\to0$.
+- **BIC** es consistente; **AIC** sobreajusta con probabilidad $\approx0{,}157$ por parámetro extra pero es mejor para pronóstico (@prp-aic-bic).
+- **Diagnóstico:** residuos ruido blanco; **Ljung–Box** con $m - p - q$ grados de libertad (@prp-ljung-box).
+
+# Ejercicios
+
+**Ejercicio 4.1.** Se estima un AR(1) por MCO con $T = 100$ y $\hat\phi = 0{,}6$. Calcula el error estándar asintótico, un intervalo de confianza del 95 % y el sesgo aproximado de Kendall.
+
+::: {.callout-tip collapse="true" title="Solución 4.1"}
+$\sqrt{(1 - \hat\phi^2)/T} = \sqrt{0{,}64/100} = 0{,}08$. IC 95 %: $0{,}6\pm1{,}96(0{,}08) = (0{,}443;\,0{,}757)$. Sesgo: $-(1 + 3\cdot0{,}6)/100 = -0{,}028$: el valor "verdadero" probablemente está cerca de $0{,}63$. El sesgo ($0{,}028$) es un tercio del error estándar, no determinante aquí, pero con $T = 25$ el sesgo sería $-0{,}112$, mayor que un error estándar ($\sqrt{0{,}64/25} = 0{,}16$).
+:::
+
+**Ejercicio 4.2.** Verifica la @prp-lik-innov para un MA(1) con $\theta = 0{,}5$, $\sigma^2 = 1$ y $T = 2$: calcula $\det\Gamma_2$ y compáralo con $v_0v_1$ (de la Clase 3, ejercicio 3.2).
+
+::: {.callout-tip collapse="true" title="Solución 4.2"}
+$\Gamma_2 = \begin{pmatrix}1{,}25&0{,}5\\0{,}5&1{,}25\end{pmatrix}$, $\det\Gamma_2 = 1{,}5625 - 0{,}25 = 1{,}3125$. Por otro lado $v_0 = 1{,}25$ y $v_1 = 1{,}05$, y $v_0v_1 = 1{,}3125$. Coinciden. También $y'\Gamma_2^{-1}y = e_1^2/v_0 + e_2^2/v_1$ con $e_1 = y_1$ y $e_2 = y_2 - 0{,}4y_1$ (el BLP con $\phi_{1,1} = 0{,}4$). La verosimilitud exacta de una serie larga se evalúa con la misma lógica en $O(T)$ operaciones.
+:::
+
+**Ejercicio 4.3.** (a) Con AIC, ¿cuál es la probabilidad (asintótica) de elegir un AR($p + 2$) cuando el verdadero es AR($p$) y se comparan solo estos dos? (b) Con BIC y $T = 100$, ¿cuál es la probabilidad de elegir un parámetro de más? ¿Y con $T = 1000$?
+
+::: {.callout-tip collapse="true" title="Solución 4.3"}
+(a) El AR($p + 2$) tiene dos parámetros extra: AIC lo elige si $LR>4$, y $LR\to\chi^2_2$, con $P(\chi^2_2>4) = e^{-2} = 0{,}135$. (b) Para un parámetro extra, BIC lo elige si $LR>\log T$: con $T = 100$, $\log T = 4{,}605$ y $P(\chi^2_1>4{,}605) = 0{,}032$. Con $T = 1000$, $\log T = 6{,}908$ y $P(\chi^2_1>6{,}908) = 0{,}0086$. La probabilidad de sobreajustar baja a cero con $T$ (consistencia), pero con muestras de $100$ observaciones, BIC aún se equivoca 3 % de las veces.
+:::
+
+**Ejercicio 4.4.** Un MA(1) estimado da $\hat\theta = 0{,}9$ con $T = 100$. Calcula el error estándar asintótico y comenta por qué no es confiable.
+
+::: {.callout-tip collapse="true" title="Solución 4.4"}
+$V = 1 - \theta^2 = 0{,}19$, error estándar $\sqrt{0{,}19/100} = 0{,}0436$. Un IC 95 % sería $0{,}9\pm0{,}085 = (0{,}81;\,0{,}99)$. Es sospechosamente angosto: con $\theta$ cerca de la frontera de invertibilidad ($\theta = 1$), la aproximación normal es mala (la verdadera distribución de $\hat\theta$ es asimétrica y se acumula contra el borde, y puede incluso dar $\hat\theta = 1$ con probabilidad positiva). Además, un MA(1) con $\theta\approx1$ suele indicar **sobrediferenciación** de una serie que ya era estacionaria (Clase 7).
+:::
+
+**Ejercicio 4.5.** Con $T = 100$, los residuos de un AR(1) ajustado tienen autocorrelaciones $\hat\rho_1,\dots,\hat\rho_5 = 0{,}12;\,-0{,}05;\,0{,}08;\,0{,}02;\,-0{,}10$. Calcula Box–Pierce y Ljung–Box y concluye al 5 % (crítico $\chi^2_4 = 9{,}49$).
+
+::: {.callout-tip collapse="true" title="Solución 4.5"}
+$\sum\hat\rho_k^2 = 0{,}0144 + 0{,}0025 + 0{,}0064 + 0{,}0004 + 0{,}0100 = 0{,}0337$. Box–Pierce: $Q_{BP} = 100(0{,}0337) = 3{,}37$. Ljung–Box: $\sum\hat\rho_k^2/(T - k) = 0{,}000145 + 0{,}000026 + 0{,}000066 + 0{,}000004 + 0{,}000105 = 0{,}000346$, y $Q_{LB} = 100\cdot102\cdot0{,}000346 = 3{,}53$. Grados de libertad: $m - p - q = 5 - 1 - 0 = 4$. Como $3{,}53<9{,}49$: **no se rechaza** que los residuos sean ruido blanco; el AR(1) es adecuado. Ljung–Box es algo mayor que Box–Pierce, como siempre.
+:::
+
+**Ejercicio 4.6.** Una serie tiene $\hat\gamma(0) = 1$, $\hat\rho_1 = 0{,}5$ y $\hat\rho_2 = 0{,}3$. Estima un AR(2) por Yule–Walker y calcula $\hat\sigma^2$. ¿Es el modelo estimado causal?
+
+::: {.callout-tip collapse="true" title="Solución 4.6"}
+$\begin{pmatrix}1&0{,}5\\0{,}5&1\end{pmatrix}\hat\phi = \begin{pmatrix}0{,}5\\0{,}3\end{pmatrix}$ con determinante $0{,}75$: $\hat\phi_1 = (0{,}5 - 0{,}5\cdot0{,}3)/0{,}75 = 0{,}4667$ y $\hat\phi_2 = (0{,}3 - 0{,}5\cdot0{,}5)/0{,}75 = 0{,}0667$. $\hat\sigma^2 = \hat\gamma(0)(1 - \hat\phi_1\hat\rho_1 - \hat\phi_2\hat\rho_2) = 1 - 0{,}2333 - 0{,}0200 = 0{,}7467$. Causal: $\hat\phi_1 + \hat\phi_2 = 0{,}533<1$, $\hat\phi_2 - \hat\phi_1 = -0{,}4<1$ y $|\hat\phi_2|<1$ (triángulo de la Clase 2). Como dice la teoría, la solución de Yule–Walker siempre es causal.
+:::
+
+**Ejercicio 4.7 ★.** Para el ARMA(1,1) con $\phi = 0{,}5$ y $\theta = -0{,}4$ y $T = 200$, calcula el error estándar asintótico de $\hat\phi$ y compáralo con el caso $\theta = +0{,}4$ del @exm-arma11-num. ¿Qué pasa y por qué?
+
+::: {.callout-tip collapse="true" title="Solución 4.7 ★"}
+$(\phi + \theta)^2 = (0{,}1)^2 = 0{,}01$ y $1 + \phi\theta = 0{,}8$, $(1 + \phi\theta)^2 = 0{,}64$. $V_{\phi\phi} = 0{,}75\cdot0{,}64/0{,}01 = 48$ y el error estándar es $\sqrt{48/200} = 0{,}49$ (¡igual al valor del parámetro!). Con $\theta = +0{,}4$ era $0{,}082$: **seis veces menor**. La razón: con $\phi + \theta\approx0$ el factor $(1 - \phi L)$ casi se cancela con $(1 + \theta L)$ y el proceso es casi ruido blanco; los datos apenas contienen información sobre $\phi$ y $\theta$ por separado (la verosimilitud es casi plana a lo largo de la recta $\theta = -\phi$, Clase 2, ejercicio 2.6). El determinante de la información tiende a cero como $(\phi + \theta)^2$. En la práctica, si los parámetros de un ARMA(1,1) estimado tienen errores estándar enormes y $\hat\phi\approx-\hat\theta$, hay que reducir el modelo a ruido blanco.
+:::

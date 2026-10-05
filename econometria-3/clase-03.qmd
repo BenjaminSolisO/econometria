@@ -1,0 +1,226 @@
+---
+title: "Clase 3 · Pronóstico"
+subtitle: "El mejor predictor lineal, las innovaciones y la evaluación de pronósticos"
+description: "Pronosticar como proyectar en L²: ecuaciones normales, algoritmo de Durbin–Levinson, la PACF como último coeficiente, pronósticos a h pasos en procesos ARMA, el error de pronóstico y su varianza, y el test de Diebold–Mariano."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-03.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Para qué sirven los modelos de series de tiempo
+
+Buena parte de la econometría de series de tiempo existe para **pronosticar**: la inflación del próximo trimestre, la demanda de electricidad de mañana, el valor en riesgo de un portafolio. Un modelo ARMA tiene un uso inmediato: dado el pasado de la serie, produce un pronóstico y una medida de su incertidumbre. En esta clase respondemos tres preguntas:
+
+1. ¿**Cuál** es el mejor pronóstico (lineal) y cómo se calcula?
+2. ¿Qué **error** comete, y cómo crece con el horizonte?
+3. Si tengo dos pronósticos competidores, ¿cómo decido **cuál es mejor**?
+
+La respuesta a la primera es una **proyección**: la misma geometría de mínimos cuadrados de la Clase 3 de Econometría 1, ahora en el espacio de variables aleatorias.
+
+# El predictor óptimo
+
+Sea $I_T = \{y_T,y_{T-1},\dots\}$ la información disponible en $T$ y queremos pronosticar $y_{T + h}$ con un predictor $\hat y_{T + h|T}$ función de $I_T$. Con pérdida **cuadrática**, el mejor predictor es la **esperanza condicional**: $\hat y_{T + h|T} = \mathbb{E}[y_{T + h}\mid I_T]$ (el mismo resultado de la Clase 2 de Econometría 1: la CEF minimiza el error cuadrático medio). Pero calcularla exige conocer **toda la distribución** conjunta del proceso. Con solo los dos primeros momentos (lo que identifica un modelo ARMA), podemos obtener el **mejor predictor lineal**.
+
+::: {#def-blp}
+## Mejor predictor lineal (BLP)
+El mejor predictor lineal de $y_{n+1}$ dado $y_1,\dots,y_n$ en un proceso estacionario de media cero es $\hat y_{n + 1} = \sum_{j = 1}^n\phi_{n,j}\,y_{n + 1 - j}$, con coeficientes $\phi_n = (\phi_{n,1},\dots,\phi_{n,n})'$ que minimizan el error cuadrático medio (ECM) $\mathbb{E}\big[(y_{n + 1} - \sum_ja_jy_{n + 1 - j})^2\big]$ sobre $a\in\mathbb{R}^n$.
+:::
+
+::: {#thm-blp}
+## Ecuaciones normales del BLP
+Si $\Gamma_n = [\gamma(i - j)]_{i,j = 1}^n$ es invertible, el BLP tiene coeficientes y ECM
+$$
+\phi_n = \Gamma_n^{-1}\gamma_n,\qquad v_n = \gamma(0) - \gamma_n'\Gamma_n^{-1}\gamma_n,\qquad\gamma_n = \big(\gamma(1),\dots,\gamma(n)\big)'.
+$$
+Además, el error $y_{n + 1} - \hat y_{n+1}$ es **ortogonal** (no correlacionado) con $y_1,\dots,y_n$.
+:::
+
+::: {.proof}
+El ECM es $\mathbb{E}\big[(y_{n+1} - a'z)^2\big]$ con $z = (y_n,\dots,y_1)'$, que se expande en $\gamma(0) - 2a'\gamma_n + a'\Gamma_na$ (usando $\operatorname{Cov}(z) = \Gamma_n$ y $\operatorname{Cov}(z,y_{n+1}) = \gamma_n$). Es una forma cuadrática estrictamente convexa (si $\Gamma_n\succ0$) en $a$, y la CPO $-2\gamma_n + 2\Gamma_na = 0$ da $a = \Gamma_n^{-1}\gamma_n$. Sustituyendo, el ECM mínimo es $\gamma(0) - \gamma_n'\Gamma_n^{-1}\gamma_n$. La CPO es $\mathbb{E}\big[z(y_{n+1} - a'z)\big] = \gamma_n - \Gamma_na = 0$: ortogonalidad del error y los regresores.
+:::
+
+Es **exactamente MCO**, con $\Gamma_n$ y $\gamma_n$ en lugar de $X'X/n$ y $X'y/n$. La ortogonalidad del error con los datos usados es la *definición* de proyección (Clase 3 de Econometría 1), aquí en el espacio de variables aleatorias de segundo momento finito, $L^2$. Para calcular $\phi_n$ para cada $n$ sin invertir una matriz $n\times n$ cada vez se usa el algoritmo de **Durbin–Levinson** (sección ★), que además entrega la **PACF**:
+
+::: {#prp-dl}
+## Durbin–Levinson
+El último coeficiente $\phi_{n,n}$ es la autocorrelación parcial: $\alpha(n) = \phi_{n,n}$. Se calcula recursivamente con $v_0 = \gamma(0)$ y
+$$
+\phi_{n,n} = \frac{\gamma(n) - \sum_{j = 1}^{n - 1}\phi_{n - 1,j}\gamma(n - j)}{v_{n-1}},\quad\phi_{n,j} = \phi_{n-1,j} - \phi_{n,n}\phi_{n-1,n-j},\quad v_n = v_{n-1}\big(1 - \phi_{n,n}^2\big).
+$$
+:::
+
+La última fórmula es reveladora: **cada rezago adicional reduce el ECM en el factor $1 - \alpha(n)^2$**. La PACF mide cuánta mejora de predicción aporta el rezago $n$ una vez usados los $n - 1$ anteriores.
+
+## El AR($p$) y la PACF
+
+La propiedad de la Clase 2 (la PACF de un AR($p$) se corta en $p$) se demuestra ahora.
+
+::: {#prp-pacf-ar}
+## La PACF de un AR($p$) se anula para $h>p$
+Si $\{y_t\}$ es un AR($p$) causal, para $n\ge p$ el BLP de $y_{n+1}$ es $\hat y_{n+1} = \sum_{k = 1}^p\phi_ky_{n + 1 - k}$ con ECM $\sigma^2$. En particular $\alpha(h) = 0$ para $h>p$ y $\alpha(p) = \phi_p$.
+:::
+
+::: {.proof}
+Sea $\tilde y_{n+1} = \sum_{k = 1}^p\phi_ky_{n + 1 - k}$. El error es $y_{n+1} - \tilde y_{n+1} = \varepsilon_{n+1}$, que por causalidad es **no correlacionado** con $y_s$ para todo $s\le n$, o sea con el pasado entero. Cumple las condiciones de ortogonalidad del @thm-blp, y como la solución a las ecuaciones normales es única, es el BLP. Sus coeficientes son $(\phi_1,\dots,\phi_p,0,\dots,0)$, de modo que $\phi_{n,n} = 0$ para $n>p$, y $\phi_{p,p} = \phi_p$. El ECM es $\mathbb{E}[\varepsilon_{n+1}^2] = \sigma^2$.
+:::
+
+Observa que **el pronóstico a un paso de un AR($p$) es exacto con $p$ rezagos**: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los $\varepsilon$ pasados se "recuperan" mediante invertibilidad y esa recuperación mejora con más datos).
+
+# Las innovaciones y el pronóstico con pasado infinito
+
+Es más cómodo analizar el pronóstico con **todo el pasado** disponible, $H_t = \overline{\text{sp}}\{y_s: s\le t\}$ (el cierre en $L^2$ del espacio de combinaciones lineales de los datos hasta $t$). Para $T$ grande, la diferencia con usar solo $y_1,\dots,y_T$ es despreciable en procesos ARMA (el error decae geométricamente).
+
+::: {#def-innovacion}
+## Innovación
+La **innovación** de $y_t$ es el error de pronóstico lineal a un paso con todo el pasado: $\varepsilon_t = y_t - P_{H_{t-1}}y_t$, donde $P_{H_{t-1}}$ denota la proyección ortogonal sobre $H_{t-1}$. Su varianza es el **error cuadrático medio de pronóstico a un paso**, $\sigma^2 = \mathbb{E}[\varepsilon_t^2]$.
+:::
+
+Dos propiedades inmediatas: (i) $\varepsilon_t\perp H_{t-1}$ por construcción de la proyección, y (ii) $\varepsilon_s\in H_s\subset H_{t-1}$ para $s<t$. Entonces $\varepsilon_t$ es **no correlacionado** con $\varepsilon_s$ para $s<t$: la sucesión de innovaciones es un ruido blanco, **con varianza constante por estacionariedad**. Ese ruido blanco es el $\varepsilon_t$ de la descomposición de Wold de la Clase 2. Para un proceso invertible, la innovación coincide con el $\varepsilon_t$ del modelo ARMA; para uno no invertible, no (Ejercicio 3.7).
+
+::: {#thm-pronostico}
+## Pronóstico a $h$ pasos en un proceso causal e invertible
+Sea $y_t = \sum_{j\ge0}\psi_j\varepsilon_{t-j}$ (con $\psi_0 = 1$) un proceso causal e invertible, de modo que $\varepsilon_t\in H_t$ y $H_t = \overline{\text{sp}}\{\varepsilon_s:s\le t\}$. Entonces
+$$
+\hat y_{T + h|T} = \sum_{j = h}^\infty\psi_j\varepsilon_{T + h - j},\qquad
+e_{T + h|T} = y_{T + h} - \hat y_{T + h|T} = \sum_{j = 0}^{h - 1}\psi_j\varepsilon_{T + h - j},\qquad
+\operatorname{ECM}(h) = \sigma^2\sum_{j = 0}^{h - 1}\psi_j^2.
+$$
+El ECM es **creciente en $h$** y converge a $\gamma(0) = \sigma^2\sum_j\psi_j^2$ (la varianza incondicional) cuando $h\to\infty$, mientras $\hat y_{T + h|T}\to\mu = 0$.
+:::
+
+::: {.proof}
+Escribimos $y_{T + h} = \sum_{j = 0}^{h - 1}\psi_j\varepsilon_{T + h - j} + \sum_{j\ge h}\psi_j\varepsilon_{T + h - j}$. El segundo sumando pertenece a $H_T$ (involucra solo $\varepsilon_s$ con $s\le T$). El primero es una combinación de $\varepsilon_{T + 1},\dots,\varepsilon_{T + h}$, que son no correlacionados con $H_T$ (cada $\varepsilon_{s}$ con $s>T$ es ortogonal a $H_{s-1}\supset H_T$). Por la caracterización de la proyección por ortogonalidad, el segundo sumando es $P_{H_T}y_{T + h}$ y el primero es el error. Su varianza es $\sigma^2\sum_{j<h}\psi_j^2$ por la ortogonalidad entre los $\varepsilon$. El límite de $\operatorname{ECM}(h)$ es $\gamma(0)$ por la proposición de procesos lineales de la Clase 2, y $\hat y_{T + h|T}\to0$ porque su varianza $\sigma^2\sum_{j\ge h}\psi_j^2\to0$.
+:::
+
+Interpretación: el pronóstico a corto plazo aprovecha la **memoria** del proceso; a largo plazo, el pasado se olvida, el pronóstico **revierte a la media** y el error se vuelve tan grande como la varianza de la serie. Con un proceso **no estacionario** (raíz unitaria) esto cambia drásticamente: el ECM crece sin cota (Clase 6).
+
+::: {#exm-pronostico-ar1}
+## Pronóstico del AR(1)
+Para $y_t = \phi y_{t-1} + \varepsilon_t$: $\psi_j = \phi^j$, de modo que $\hat y_{T + h|T} = \phi^hy_T$ (decae geométricamente hacia $0$) y
+$$
+\operatorname{ECM}(h) = \sigma^2\sum_{j = 0}^{h - 1}\phi^{2j} = \sigma^2\frac{1 - \phi^{2h}}{1 - \phi^2}.
+$$
+Con $\phi = 0{,}8$, $\sigma^2 = 1$ y $y_T = 2$: $\hat y_{T + 1} = 1{,}6$, $\hat y_{T + 2} = 1{,}28$, $\hat y_{T + 3} = 1{,}024$, con ECM $1$, $1{,}64$ y $2{,}05$, que tiende a $\gamma(0) = 1/0{,}36 = 2{,}78$. Bajo normalidad, el intervalo de pronóstico al 95 % a dos pasos es $1{,}28\pm1{,}96\sqrt{1{,}64} = 1{,}28\pm2{,}51$.
+:::
+
+En la práctica los parámetros se **estiman**, y se usa el *pronóstico plug-in* $\hat y_{T + h|T}(\hat\theta)$. El error de estimación agrega un término de orden $1/T$ al ECM (que desaparece asintóticamente), pero en muestras pequeñas los intervalos que ignoran esto resultan demasiado angostos.
+
+## Pronósticos con una media móvil
+
+::: {#exm-pronostico-ma}
+## Pronóstico del MA(2)
+Para $y_t = \varepsilon_t + 0{,}6\varepsilon_{t-1} + 0{,}3\varepsilon_{t-2}$: $\hat y_{T + 1|T} = 0{,}6\varepsilon_T + 0{,}3\varepsilon_{T-1}$, $\hat y_{T + 2|T} = 0{,}3\varepsilon_T$ y $\hat y_{T + h|T} = 0$ para $h\ge3$ (el pasado deja de importar tras $q = 2$ pasos). ECM: $\sigma^2$, $1{,}36\sigma^2$, $1{,}45\sigma^2 = \gamma(0)$ para $h\ge3$. En la práctica los $\varepsilon_T,\varepsilon_{T-1}$ no se observan: se reconstruyen de los datos con la inversión $\varepsilon_t = \sum_j\pi_jy_{t-j}$ (invertibilidad).
+:::
+
+# Evaluar y comparar pronósticos
+
+Un modelo con buen ajuste dentro de la muestra puede pronosticar mal fuera de ella (sobreajuste). La evaluación honesta usa **pronósticos fuera de muestra**: se estima con datos hasta $\tau$, se pronostica $y_{\tau + h}$, se avanza $\tau$ (ventana creciente o rodante) y se acumulan los errores $e_{\tau + h|\tau}$ para $\tau = R,\dots,T - h$, con $P = T - h - R + 1$ pronósticos.
+
+Con dos pronósticos competidores y errores $e^{(1)}_t,e^{(2)}_t$, y una función de pérdida $L$ (cuadrática, absoluta, asimétrica), el **diferencial de pérdida** es $d_t = L(e_t^{(1)}) - L(e^{(2)}_t)$. La hipótesis de **igual precisión predictiva** es $H_0:\mathbb{E}[d_t] = 0$.
+
+::: {#prp-dm}
+## Test de Diebold–Mariano
+Si $\{d_t\}$ es estacionario y ergódico con varianza de largo plazo $\sigma^2_{d}>0$, bajo $H_0$,
+$$
+DM = \frac{\bar d}{\sqrt{\hat\sigma^2_d/P}}\xrightarrow{d}N(0,1),\qquad\bar d = \frac1P\sum_td_t,
+$$
+con $\hat\sigma^2_d$ un estimador consistente de la **varianza de largo plazo** de $d_t$ (por ejemplo, Newey–West, Clase 5).
+:::
+
+La demostración es el TCL para procesos dependientes (Clase 5): $\sqrt P\bar d\to N(0,\sigma^2_d)$ donde $\sigma^2_d = \sum_h\gamma_d(h)$ es la varianza de largo plazo de la Clase 1, y Slutsky hace el resto. El punto esencial es **por qué hay que usar la varianza de largo plazo y no la simple**: los errores de pronóstico a $h$ pasos son un **MA($h - 1$)** (por el @thm-pronostico), de modo que $d_t$ tiene autocorrelación hasta el rezago $h - 1$. Para $h = 1$ puede ser razonable ignorarla; para $h>1$ **ignorarla subestima la varianza y sobrerrechaza**.
+
+::: {#exm-dm}
+## Una aplicación numérica
+Se comparan dos modelos con $P = 100$ pronósticos a un paso, pérdida cuadrática. $\bar d = 0{,}05$ (el modelo 2 es algo mejor) y $\hat\sigma_d = 0{,}40$. Entonces $DM = 0{,}05/(0{,}40/\sqrt{100}) = 1{,}25<1{,}96$: **no se rechaza** igual precisión. Hay que notar que $\bar d>0$ no es evidencia de mejor pronóstico: con diferencias de ese tamaño y esa variabilidad, la diferencia es compatible con el azar.
+:::
+
+Dos advertencias. (i) La teoría del test supone que los **modelos no están anidados** y que los parámetros se estiman en una ventana de tamaño fijo (rodante); con modelos anidados y ventana creciente, el $DM$ ingenuo tiene distribución no estándar y es conservador (se usa el test de Clark–West). (ii) La elección de la **función de pérdida** importa: un pronosticador puede ser mejor en ECM y peor en error absoluto.
+
+Una verificación relacionada es el test de **eficiencia** de Mincer–Zarnowitz: regresar el valor realizado sobre el pronóstico, $y_{t + h} = a + b\,\hat y_{t + h|t} + u_t$, y testear $H_0:a = 0,\ b = 1$ (un pronóstico óptimo no deja predictibilidad en el error), con errores estándar HAC por la misma razón.
+
+::: {.callout-warning title="Pronosticar el nivel, pronosticar la varianza"}
+El mejor predictor **lineal** puede ser pobre cuando la dinámica relevante no es lineal. En un proceso con volatilidad cambiante (GARCH, Clase 12), $y_t$ puede ser **no correlacionado** con su pasado (el pronóstico lineal del nivel es $0$) y, sin embargo, su **varianza condicional** es muy predecible. El BLP no ve eso: solo usa los dos primeros momentos incondicionales. Para pronósticos de **densidad** o de riesgo hay que modelar la distribución condicional completa.
+:::
+
+# ★ Postgrado: Durbin–Levinson y la descomposición de Wold
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos la recursión de Durbin–Levinson (@prp-dl) y esbozamos la demostración del teorema de Wold con la geometría de proyecciones.
+:::
+
+## Demostración de Durbin–Levinson
+
+Sea $M = \text{sp}\{y_2,\dots,y_n\}$. El espacio $\text{sp}\{y_1,\dots,y_n\}$ es la suma ortogonal de $M$ y la recta generada por el **error de pronóstico hacia atrás** $b = y_1 - P_My_1$. Entonces
+$$
+P_{\text{sp}\{y_1,\dots,y_n\}}\,y_{n+1} = P_My_{n+1} + a\,b,\qquad a = \frac{\mathbb{E}\big[(y_{n+1} - P_My_{n+1})\,b\big]}{\mathbb{E}[b^2]}.
+$$
+Por estacionariedad, el problema de proyectar $y_{n+1}$ sobre $(y_2,\dots,y_n)$ ($n - 1$ rezagos) es idéntico al de proyectar $y_n$ sobre $(y_1,\dots,y_{n-1})$ desplazado en un período: $P_My_{n+1} = \sum_{j = 1}^{n - 1}\phi_{n-1,j}y_{n + 1 - j}$ con ECM $v_{n-1}$. Y como $\gamma(h) = \gamma(-h)$, el proceso invertido en el tiempo tiene las mismas autocovarianzas, de modo que la proyección **hacia atrás** de $y_1$ sobre $(y_2,\dots,y_n)$ usa los mismos coeficientes: $P_My_1 = \sum_{j = 1}^{n-1}\phi_{n-1,j}y_{1 + j}$, con el mismo ECM $\mathbb{E}[b^2] = v_{n-1}$. El numerador de $a$ es $\mathbb{E}[y_{n+1}b] = \gamma(n) - \sum_{j = 1}^{n - 1}\phi_{n-1,j}\gamma(n - j)$ (porque $P_My_{n+1}$ es ortogonal a $b$). Luego $a = \phi_{n,n}$ es el coeficiente de la recursión. Para el resto de los coeficientes, sustituyendo $b$:
+$$
+\sum_{j = 1}^n\phi_{n,j}y_{n + 1 - j} = \sum_{j = 1}^{n - 1}\phi_{n-1,j}y_{n + 1 - j} + \phi_{n,n}\Big(y_1 - \sum_{j = 1}^{n - 1}\phi_{n-1,j}y_{1 + j}\Big),
+$$
+y comparando coeficientes de $y_{n + 1 - j}$ (el término $y_{1 + k}$ es $y_{n + 1 - (n - k)}$): $\phi_{n,j} = \phi_{n - 1,j} - \phi_{n,n}\phi_{n - 1,n - j}$. Para el ECM, $v_n = \mathbb{E}[(y_{n+1} - P_My_{n+1})^2] - a^2\mathbb{E}[b^2] = v_{n-1} - \phi_{n,n}^2v_{n-1}$, por el teorema de Pitágoras en la suma ortogonal.
+
+## Esbozo de la demostración de Wold
+
+Sea $H_t$ como antes y $H_{-\infty} = \bigcap_tH_t$ (la parte "infinitamente remota" del pasado). Las innovaciones $\varepsilon_t = y_t - P_{H_{t-1}}y_t$ son un ruido blanco. Proyectando $y_t$ sobre el sistema ortogonal $\{\varepsilon_{t},\varepsilon_{t-1},\dots,\varepsilon_{t - n + 1}\}$ y sobre $H_{t - n}$ (que es ortogonal a todos ellos),
+$$
+y_t = \sum_{j = 0}^{n - 1}\psi_j\varepsilon_{t-j} + P_{H_{t-n}}y_t,\qquad\psi_j = \frac{\mathbb{E}[y_t\varepsilon_{t-j}]}{\sigma^2}.
+$$
+Los $\psi_j$ **no dependen de $t$** (por estacionariedad), y por la desigualdad de Bessel $\sigma^2\sum_{j<n}\psi_j^2\le\gamma(0)$ para todo $n$, así que $\sum_j\psi_j^2<\infty$. Por lo tanto $\sum_j\psi_j\varepsilon_{t-j}$ converge en $L^2$, y el resto $P_{H_{t - n}}y_t$ converge a $P_{H_{-\infty}}y_t =: V_t$, que es el **componente determinístico**: perfectamente predecible desde el pasado remoto. Entonces $y_t = \sum_j\psi_j\varepsilon_{t-j} + V_t$ con $V_t\perp\varepsilon_s$ para todo $s$. Si $H_{-\infty} = \{0\}$ (proceso **puramente no determinístico**), $V_t = 0$ y queda la representación de Wold. La parte que requiere cuidado técnico (que $\psi_0 = 1$ y que el sistema de $\varepsilon_t$ no se degenere) usa $\sigma^2>0$ y se omite aquí.
+
+# Resumen
+
+- El mejor predictor **lineal** de $y_{n+1}$ sobre los datos resuelve las **ecuaciones normales** $\Gamma_n\phi_n = \gamma_n$ (@thm-blp): es una proyección en $L^2$, el MCO del mundo de procesos.
+- **Durbin–Levinson** (@prp-dl) lo calcula recursivamente; $\phi_{n,n} = \alpha(n)$ es la PACF y $v_n = v_{n-1}(1 - \alpha(n)^2)$. La PACF de un AR($p$) se corta en $p$ (@prp-pacf-ar).
+- La **innovación** es el error de pronóstico a un paso con todo el pasado: es un ruido blanco y es la innovación de Wold.
+- En un proceso causal e invertible, el error a $h$ pasos es $\sum_{j<h}\psi_j\varepsilon_{T + h - j}$, un **MA($h - 1$)**, con ECM $\sigma^2\sum_{j<h}\psi_j^2$ creciente hasta $\gamma(0)$ (@thm-pronostico). Los pronósticos **revierten a la media**.
+- **Diebold–Mariano** (@prp-dm) compara pronósticos usando la **varianza de largo plazo** del diferencial de pérdida.
+
+# Ejercicios
+
+**Ejercicio 3.1.** Para un AR(1) con $\gamma(h) = \phi^h\gamma(0)$, resuelve las ecuaciones normales con $n = 2$ y comprueba que el BLP de $y_3$ sobre $(y_2,y_1)$ es $\phi y_2$, con ECM $\sigma^2 = \gamma(0)(1 - \phi^2)$.
+
+::: {.callout-tip collapse="true" title="Solución 3.1"}
+$\Gamma_2 = \gamma(0)\begin{pmatrix}1&\phi\\\phi&1\end{pmatrix}$, $\gamma_2 = \gamma(0)(\phi,\phi^2)'$. $\phi_2 = \Gamma_2^{-1}\gamma_2 = \dfrac1{1 - \phi^2}\begin{pmatrix}1&-\phi\\-\phi&1\end{pmatrix}\begin{pmatrix}\phi\\\phi^2\end{pmatrix} = \dfrac1{1 - \phi^2}\begin{pmatrix}\phi - \phi^3\\-\phi^2 + \phi^2\end{pmatrix} = \begin{pmatrix}\phi\\0\end{pmatrix}$. El BLP es $\phi y_2$ (el segundo rezago tiene coeficiente cero: $\alpha(2) = 0$). ECM: $v_2 = \gamma(0) - \gamma_2'\phi_2 = \gamma(0)(1 - \phi\cdot\phi) = \gamma(0)(1 - \phi^2) = \sigma^2$ (pues $\gamma(0) = \sigma^2/(1 - \phi^2)$).
+:::
+
+**Ejercicio 3.2.** Con un MA(1) con $\theta = 0{,}5$ y $\sigma^2 = 1$ ($\gamma(0) = 1{,}25$, $\gamma(1) = 0{,}5$, $\gamma(h) = 0$ si $h\ge2$), usa Durbin–Levinson para calcular $\phi_{1,1}$, $v_1$, $\phi_{2,2}$ y $v_2$. Compara con el ECM con pasado infinito.
+
+::: {.callout-tip collapse="true" title="Solución 3.2"}
+$v_0 = 1{,}25$. $\phi_{1,1} = \gamma(1)/v_0 = 0{,}4$ y $v_1 = 1{,}25(1 - 0{,}16) = 1{,}05$. $\phi_{2,2} = \big[\gamma(2) - \phi_{1,1}\gamma(1)\big]/v_1 = (0 - 0{,}2)/1{,}05 = -0{,}1905$ y $v_2 = 1{,}05(1 - 0{,}0363) = 1{,}0119$. Con pasado infinito el ECM es $\sigma^2 = 1$ (la innovación). Con $n = 1$ el ECM es 5 % mayor, con $n = 2$ solo 1,2 % mayor: converge a $\sigma^2$ geométricamente (a tasa $\theta^2$). La PACF del MA(1) **no** se corta: $\alpha(1) = 0{,}4$, $\alpha(2) = -0{,}19$, y así sigue alternando y decayendo.
+:::
+
+**Ejercicio 3.3.** Para el AR(1) con $\phi = 0{,}8$, $\sigma^2 = 1$ y $y_T = 2$, calcula el pronóstico a $h = 4$ pasos, su ECM y el intervalo de pronóstico al 95 %. Compara el ECM con la varianza incondicional.
+
+::: {.callout-tip collapse="true" title="Solución 3.3"}
+$\hat y_{T + 4} = 0{,}8^4\cdot2 = 0{,}4096\cdot2 = 0{,}819$. ECM$(4) = (1 - 0{,}8^8)/0{,}36 = (1 - 0{,}168)/0{,}36 = 2{,}311$. Intervalo: $0{,}819\pm1{,}96\sqrt{2{,}311} = 0{,}819\pm2{,}98$. La varianza incondicional es $2{,}78$: ya a $h = 4$ el ECM es el 83 % del máximo posible, y el pronóstico puntual casi es la media. El dato $y_T = 2$ ya aporta poca información a cuatro pasos con $\phi = 0{,}8$.
+:::
+
+**Ejercicio 3.4.** Para el ARMA(1,1) con $\phi = 0{,}5$ y $\theta = 0{,}4$ (Clase 2, ejercicio 2.2), calcula el ECM para $h = 1,2,3$ y el límite.
+
+::: {.callout-tip collapse="true" title="Solución 3.4"}
+$\psi_0 = 1$, $\psi_1 = 0{,}9$, $\psi_2 = 0{,}45$. ECM$(1) = \sigma^2$, ECM$(2) = \sigma^2(1 + 0{,}81) = 1{,}81\sigma^2$, ECM$(3) = \sigma^2(1 + 0{,}81 + 0{,}2025) = 2{,}0125\sigma^2$. Límite: $\gamma(0) = 2{,}08\sigma^2$. Cerca del límite ya a $h = 3$.
+:::
+
+**Ejercicio 3.5.** Verifica los pronósticos y ECM del @exm-pronostico-ma (MA(2)) y calcula $\gamma(0)$ directamente.
+
+::: {.callout-tip collapse="true" title="Solución 3.5"}
+$y_{T + 1} = \varepsilon_{T+1} + 0{,}6\varepsilon_T + 0{,}3\varepsilon_{T-1}$: el único término impredecible es $\varepsilon_{T+1}$, así que el ECM es $\sigma^2$. $y_{T+2} = \varepsilon_{T+2} + 0{,}6\varepsilon_{T+1} + 0{,}3\varepsilon_T$: impredecibles los dos primeros, ECM $(1 + 0{,}36)\sigma^2 = 1{,}36\sigma^2$. Para $h\ge3$, los tres términos son futuros: ECM $= (1 + 0{,}36 + 0{,}09)\sigma^2 = 1{,}45\sigma^2$ y el pronóstico es la media $0$. Directamente, $\gamma(0) = \sigma^2(1 + 0{,}6^2 + 0{,}3^2) = 1{,}45\sigma^2$. Coincide: cuando el horizonte excede $q$, el pronóstico no puede mejorar a la media incondicional.
+:::
+
+**Ejercicio 3.6.** Con $P = 120$ pronósticos a $h = 3$ pasos, $\bar d = -0{,}03$ y $\hat\sigma_d = 0{,}25$ (varianza de largo plazo estimada con 2 rezagos), calcula el $DM$. ¿Por qué usar 2 rezagos? ¿Qué pasaría si se usara la varianza simple $\hat\gamma_d(0) = 0{,}04$?
+
+::: {.callout-tip collapse="true" title="Solución 3.6"}
+$DM = -0{,}03/(0{,}25/\sqrt{120}) = -0{,}03/0{,}0228 = -1{,}31$: no se rechaza. Se usan $h - 1 = 2$ rezagos porque los errores de pronóstico a 3 pasos son un MA(2) y por tanto $d_t$ tiene autocorrelaciones hasta el rezago 2 (Newey–West con ventana $\ge h - 1$). Con la varianza simple $\sqrt{0{,}04} = 0{,}2$ en lugar de $0{,}25$ (menor si hay autocorrelación positiva), $DM = -0{,}03/(0{,}2/\sqrt{120}) = -1{,}64$: más cerca del rechazo. Aunque aquí no cruzaría 1,96, **el sesgo de ignorar la dependencia es hacia el sobrerrechazo**.
+:::
+
+**Ejercicio 3.7 ★.** Sea $y_t = \varepsilon_t + 2\varepsilon_{t-1}$ con $\varepsilon_t\sim WN(0,1)$ (MA(1) **no invertible**). Encuentra la innovación de Wold y calcula el ECM de pronóstico a un paso con todo el pasado. ¿Es $1$?
+
+::: {.callout-tip collapse="true" title="Solución 3.7 ★"}
+La representación invertible equivalente es $y_t = \varepsilon^*_t + \tfrac12\varepsilon^*_{t-1}$ con $\sigma^{*2} = \theta^2\sigma^2 = 4$ (Clase 2). Como es invertible, $\varepsilon^*_t\in H_t$ y es el error de pronóstico lineal con todo el pasado: **la innovación de Wold es $\varepsilon^*_t$**, con varianza $4$. El ECM a un paso óptimo es $4$, **no $1$**. El $\varepsilon_t$ original (varianza $1$) no es una función lineal de los $y$ pasados y presentes (no pertenece a $H_t$): sería un "oráculo" que usa información que el econometrista no tiene. Moraleja: para pronosticar (y para recuperar choques por identificación estructural) **la representación invertible es la que corresponde**; si la economía "verdadera" tiene una representación no invertible, los choques estructurales no se pueden recuperar de la historia observada de $y$ (problema de *fundamentalness* en VAR, Clase 10).
+:::

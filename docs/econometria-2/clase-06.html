@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-07.html" rel="next">
 <link href="../econometria-2/clase-05.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -208,6 +209,48 @@ window.Quarto = {
  <span class="menu-text">Clase 6 · Elección discreta II</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -341,7 +384,7 @@ P_{ij} = \int_0^\infty\exp(-S_ju)\,du = \frac1{S_j} = \frac{e^{V_{ij}}}{\sum_ke^
 </div>
 <section id="estimación-e-interpretación" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="estimación-e-interpretación"><span class="header-section-number">3.1</span> Estimación e interpretación</h2>
-<p>Sea <span class="math inline">\(d_{ij} = \mathbf{1}\{y_i = j\}\)</span>. La log-verosimilitud es <span class="math inline">\(\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}\)</span>. Para el logit multinomial con <span class="math inline">\(V_{ij} = x_i'\beta_j\)</span>, el score respecto de <span class="math inline">\(\beta_j\)</span> es <span class="math inline">\(\sum_i(d_{ij} - P_{ij})x_i\)</span>, las mismas “ecuaciones normales” del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el <strong>?@thm-concavidad-logit</strong> de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.</p>
+<p>Sea <span class="math inline">\(d_{ij} = \mathbf{1}\{y_i = j\}\)</span>. La log-verosimilitud es <span class="math inline">\(\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}\)</span>. Para el logit multinomial con <span class="math inline">\(V_{ij} = x_i'\beta_j\)</span>, el score respecto de <span class="math inline">\(\beta_j\)</span> es <span class="math inline">\(\sum_i(d_{ij} - P_{ij})x_i\)</span>, las mismas “ecuaciones normales” del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el teorema de concavidad del logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.</p>
 <p>¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:</p>
 <ol type="1">
 <li><strong>Razones de probabilidad relativa.</strong> Como <span class="math inline">\(P_{ij}/P_{i0} = \exp(x_i'\beta_j)\)</span>, el coeficiente <span class="math inline">\(\beta_{jl}\)</span> es el cambio en el log del cociente <span class="math inline">\(P_j/P_0\)</span> por unidad de <span class="math inline">\(x_l\)</span>. Es lo que reportan los programas.</li>
@@ -974,6 +1017,9 @@ P(y = j\mid x) = F(\kappa_j - x'\beta) - F(\kappa_{j-1} - x'\beta).
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-07.html" class="pagination-link" aria-label="Clase 7 · Conteo y duración">
+        <span class="nav-page-text">Clase 7 · Conteo y duración</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

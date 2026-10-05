@@ -1,0 +1,249 @@
+---
+title: "Clase 5 · Asintótica con dependencia y errores HAC"
+subtitle: "TCL para series dependientes, varianza de largo plazo y el estimador de Newey–West"
+description: "Diferencias de martingala, el TCL para procesos lineales por la descomposición de Beveridge–Nelson, estimación de la varianza de largo plazo con kernels, el estimador de Newey–West (positividad, sesgo, varianza, ancho de banda) y su uso en MCO, GMM y tests de pronóstico."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-05.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Lo que falta: la normalidad con dependencia
+
+En la Clase 1 demostramos que, con dependencia, la **ley de los grandes números** sigue valiendo (ergodicidad), pero la **varianza** de los promedios cambia: de $\gamma(0)/T$ a $\sigma^2_{LR}/T$ con $\sigma^2_{LR} = \sum_h\gamma(h)$. En la Clase 4 usamos sin demostrar un **TCL** para $T^{-1/2}\sum x_t\varepsilon_t$. Hoy completamos el cuadro:
+
+1. **¿Cuándo hay TCL** para sumas de variables dependientes, y con qué varianza?
+2. **¿Cómo se estima** esa varianza, $\sigma^2_{LR}$? (No se puede con $\hat\gamma(0)$, ni sumando todas las autocovarianzas muestrales: veremos por qué.)
+3. **¿Qué se corrige** en MCO, GMM y tests de pronóstico?
+
+La respuesta a la tercera es la misma en todas partes: cada vez que un **score** o un **momento** $\xi_t$ está serialmente correlacionado, la varianza del promedio es $\sigma^2_{LR}(\xi)$, y el sándwich de Econometría 1 y 2 se reemplaza por su versión **HAC** (*heteroskedasticity and autocorrelation consistent*).
+
+# Diferencias de martingala
+
+Muchos scores y momentos tienen una estructura más fuerte que "estacionario": son impredecibles dado el pasado.
+
+::: {#def-mds}
+## Diferencia de martingala
+Sea $\{\mathcal{F}_t\}$ una filtración (información acumulada hasta $t$). Una sucesión $\{\xi_t\}$ adaptada a $\mathcal{F}_t$ con $\mathbb{E}|\xi_t|<\infty$ es una **diferencia de martingala** (MDS) si
+$$
+\mathbb{E}[\xi_t\mid\mathcal{F}_{t-1}] = 0\qquad\text{para todo }t.
+$$
+:::
+
+Dos hechos inmediatos. (i) Una MDS con segundo momento finito es **no correlacionada**: para $s<t$, $\mathbb{E}[\xi_s\xi_t] = \mathbb{E}\big[\xi_s\mathbb{E}[\xi_t\mid\mathcal{F}_{t-1}]\big] = 0$ (porque $\xi_s\in\mathcal{F}_s\subset\mathcal{F}_{t-1}$). Es decir, es un ruido blanco, pero **más fuerte**: no solo no hay correlación lineal con el pasado; la esperanza condicional *completa* es cero. (ii) Su varianza de largo plazo es simplemente $\sigma^2_{LR} = \gamma(0) = \mathbb{E}[\xi_t^2]$: sin autocovarianzas que sumar.
+
+::: {#exm-mds}
+## Ejemplos
+1. $\varepsilon_t$ i.i.d. $(0,\sigma^2)$, con $\mathcal{F}_t = \sigma(\varepsilon_s:s\le t)$.
+2. $\xi_t = x_t\varepsilon_t$ en un AR con $x_t = (y_{t-1},\dots)$: $x_t\in\mathcal{F}_{t-1}$ y $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = 0$, de modo que $\mathbb{E}[\xi_t\mid\mathcal{F}_{t-1}] = 0$ (Clase 4).
+3. $\varepsilon_t = \sigma_tz_t$ en un **ARCH/GARCH** (Clase 12), con $\sigma_t\in\mathcal{F}_{t-1}$ y $z_t$ i.i.d. $(0,1)$: $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = 0$ aunque $\varepsilon_t^2$ sea predecible. Es MDS, **no** i.i.d.
+4. **No toda sucesión no correlacionada es MDS:** $\varepsilon_t = \eta_t + \eta_{t-1}\eta_{t-2}$ con $\eta_t$ i.i.d. $N(0,1)$ es ruido blanco (Ejercicio 5.1) pero $\mathbb{E}[\varepsilon_t\mid\eta_{t-1},\eta_{t-2},\dots] = \eta_{t-1}\eta_{t-2}\ne0$: hay un componente **predecible no linealmente**.
+:::
+
+::: {#thm-tcl-mds}
+## TCL para diferencias de martingala — se toma prestado
+Sea $\{\xi_t\}$ una MDS **estrictamente estacionaria y ergódica** con $\mathbb{E}[\xi_t^2] = \sigma^2<\infty$. Entonces
+$$
+\frac1{\sqrt T}\sum_{t = 1}^T\xi_t\xrightarrow{d}N(0,\sigma^2).
+$$
+El resultado vale en versión vectorial (por Cramér–Wold), con $\sigma^2$ reemplazada por $\mathbb{E}[\xi_t\xi_t']$.
+:::
+
+Es el teorema de Billingsley (1961) e Ibragimov (1963). No lo demostramos: su demostración usa la función característica y la ley de los grandes números ergódica para la **varianza condicional** $\mathbb{E}[\xi_t^2\mid\mathcal{F}_{t-1}]$. La idea es que, a pesar de que los $\xi_t$ no son independientes, **cada uno aporta una "tirada" nueva de media cero dado lo anterior**, y la acumulación de esas tiradas se comporta como una suma de normales independientes cuya varianza total es la suma de las varianzas condicionales (que el teorema ergódico lleva a $T\sigma^2$). Con él, queda justificado el uso en la Clase 4 (MCO en un AR) y en la Clase 1 (autocorrelaciones del ruido blanco).
+
+# TCL para procesos lineales: Beveridge–Nelson
+
+Para series que son procesos **lineales** (ARMA, y su límite MA($\infty$)), el TCL con dependencia fuerte se puede **demostrar completo** con un truco algebraico, la descomposición de Beveridge–Nelson, que será central en la Clase 6.
+
+::: {#thm-tcl-lineal}
+## TCL para procesos lineales
+Sea $y_t = \sum_{j = 0}^\infty\psi_j\varepsilon_{t-j}$ con $\varepsilon_t$ i.i.d. $(0,\sigma^2)$ y $\sum_{j = 0}^\infty j\,|\psi_j|<\infty$ (**1-sumabilidad**, más fuerte que la sumabilidad absoluta). Entonces
+$$
+\frac1{\sqrt T}\sum_{t = 1}^Ty_t\xrightarrow{d}N\big(0,\ \sigma^2\psi(1)^2\big),\qquad\psi(1) = \sum_j\psi_j.
+$$
+La varianza límite es la varianza de largo plazo $\sigma^2_{LR}$ de la Clase 2.
+:::
+
+::: {.callout-note title="Borrador"}
+Quiero reducir $\sum_ty_t$ a $\psi(1)\sum_t\varepsilon_t$, para el cual vale el TCL i.i.d. La diferencia debería ser pequeña. Si escribo $\psi(L) = \psi(1) + (L - 1)\tilde\psi(L)$ con coeficientes $\tilde\psi_j$ adecuados, entonces $y_t = \psi(1)\varepsilon_t + (L - 1)\tilde\psi(L)\varepsilon_t = \psi(1)\varepsilon_t + \eta_{t-1} - \eta_t$ con $\eta_t = \tilde\psi(L)\varepsilon_t$. Y sumar $\eta_{t-1} - \eta_t$ sobre $t$ **telescopa**: queda $\eta_0 - \eta_T$, que es $O_p(1)$ y desaparece al dividir por $\sqrt T$. Resta ver qué $\tilde\psi_j$ funciona: $\tilde\psi_j = \sum_{k>j}\psi_k$.
+:::
+
+::: {.proof}
+Definimos $\tilde\psi_j = \sum_{k = j + 1}^\infty\psi_k$ para $j\ge0$. Entonces $\sum_j|\tilde\psi_j|\le\sum_j\sum_{k>j}|\psi_k| = \sum_kk|\psi_k|<\infty$ por la 1-sumabilidad. Verificamos la **descomposición de Beveridge–Nelson** $\psi(L) = \psi(1) + (L - 1)\tilde\psi(L)$ comparando coeficientes: el de $L^0$ es $\psi(1) - \tilde\psi_0 = \sum_{k\ge0}\psi_k - \sum_{k\ge1}\psi_k = \psi_0$, y el de $L^j$ ($j\ge1$) es $\tilde\psi_{j-1} - \tilde\psi_j = \psi_j$. Luego
+$$
+y_t = \psi(1)\varepsilon_t + \eta_{t-1} - \eta_t,\qquad\eta_t = \sum_{j\ge0}\tilde\psi_j\varepsilon_{t-j},
+$$
+donde $\eta_t$ está bien definido (la sumabilidad de $\tilde\psi_j$ implica la de $\tilde\psi_j^2$, y la proposición de procesos lineales de la Clase 2 aplica) y es estacionario con $\operatorname{Var}(\eta_t) = \sigma^2\sum\tilde\psi_j^2<\infty$. Sumando,
+$$
+\frac1{\sqrt T}\sum_{t = 1}^Ty_t = \psi(1)\frac1{\sqrt T}\sum_{t = 1}^T\varepsilon_t + \frac{\eta_0 - \eta_T}{\sqrt T}.
+$$
+El último término tiene varianza $\le4\sigma^2\sum\tilde\psi_j^2/T\to0$, así que es $o_p(1)$. El primero converge a $N(0,\sigma^2\psi(1)^2)$ por el TCL i.i.d. Por Slutsky, el resultado sigue.
+:::
+
+La descomposición, **separar un proceso en una "parte permanente" ($\psi(1)\varepsilon_t$) y una "parte transitoria" ($\eta_{t-1} - \eta_t$)**, tiene un uso conceptual enorme: dice que **la acumulación de un proceso estacionario se comporta como la de un ruido blanco escalado por $\psi(1)$**. El efecto de la dependencia es entonces *solo* el factor $\psi(1)$ en la desviación estándar: la suma de coeficientes. Con $\psi(1) = 1/(1 - \phi)$ (AR(1)), una persistencia de $\phi = 0{,}8$ multiplica la desviación estándar del promedio por $5$. En la Clase 6 aplicaremos la misma descomposición a un proceso integrado (donde $\psi(1)\ne0$ hará aparecer una caminata aleatoria).
+
+# Estimación de la varianza de largo plazo
+
+El TCL dice que $\sqrt T\bar\xi\to N(0,\sigma^2_{LR})$ para un score/momento $\xi_t$ con $\sigma^2_{LR} = \sum_h\gamma_\xi(h)$. Para inferencia necesitamos un **estimador consistente** de $\sigma^2_{LR}$. Dos intentos obvios fracasan.
+
+- **$\hat\gamma(0)$ solo:** ignora las autocovarianzas, y es inconsistente para $\sigma^2_{LR}$ si hay dependencia.
+- **La suma de todas las autocovarianzas muestrales:** $\sum_{|h|<T}\hat\gamma(h)$ **no** es consistente. Si los datos están centrados (restada la media muestral), esta suma vale **exactamente cero** (Ejercicio 5.4), y si no se resta la media vale $T\bar\xi^2\to_d\sigma^2_{LR}\chi^2_1$, **una variable aleatoria que no se concentra** (§★).
+
+La razón es que las autocovarianzas de rezagos grandes se estiman con **pocas observaciones** ($T - h$) y su ruido no se promedia: cada $\hat\gamma(h)$ lejano tiene varianza $O(1/T)$ pero hay $O(T)$ de ellos. La solución es **truncar o ponderar**: sumar solo hasta un rezago $m$ que crece **más lento** que $T$.
+
+## El estimador de Newey–West
+
+::: {#def-hac}
+## Estimador HAC
+Para una sucesión $\xi_t$ con media estimada o cero,
+$$
+\hat\sigma^2_{HAC} = \sum_{h = -m}^m k\Big(\frac h{m + 1}\Big)\hat\gamma(h),\qquad\hat\gamma(h) = \frac1T\sum_{t = |h| + 1}^T\xi_t\xi_{t - |h|},
+$$
+con una **función kernel** $k(\cdot)$ simétrica, $k(0) = 1$, y un **ancho de banda** (o truncamiento) $m$. Con el **kernel de Bartlett** $k(u) = 1 - |u|$ para $|u|\le1$ se obtiene el estimador de **Newey y West** (1987).
+:::
+
+Con el kernel de Bartlett, $\hat\sigma^2_{HAC} = \hat\gamma(0) + 2\sum_{h = 1}^m\big(1 - \frac h{m + 1}\big)\hat\gamma(h)$: las autocovarianzas se incluyen con **pesos decrecientes** que llegan a cero en $h = m + 1$. Elegir pesos decrecientes (en vez de truncar bruscamente, kernel uniforme) tiene una razón de fondo.
+
+::: {#prp-nw-positivo}
+## El estimador de Newey–West es no negativo
+Con el kernel de Bartlett, $\hat\sigma^2_{HAC}\ge0$ siempre. (Con el kernel uniforme $k(u) = \mathbf{1}\{|u|\le1\}$ puede ser **negativo**.)
+:::
+
+::: {.proof}
+Rellenamos $\xi_t = 0$ fuera de $1,\dots,T$ y consideramos las $T + m$ sumas móviles $B_s = \sum_{j = 0}^m\xi_{s + j}$, $s = -m + 1,\dots,T$. Entonces
+$$
+\sum_sB_s^2 = \sum_{j,k = 0}^m\sum_s\xi_{s + j}\xi_{s + k} = \sum_{j,k = 0}^mT\hat\gamma(k - j) = T\sum_{|h|\le m}(m + 1 - |h|)\hat\gamma(h),
+$$
+porque para cada diferencia $h = k - j$ hay $m + 1 - |h|$ pares $(j,k)$, y $\sum_s\xi_{s + j}\xi_{s + k} = T\hat\gamma(k - j)$. Dividiendo por $T(m + 1)$ queda $\hat\sigma^2_{HAC} = \frac1{T(m + 1)}\sum_sB_s^2\ge0$.
+:::
+
+La no negatividad es indispensable: una "varianza" negativa produciría errores estándar imaginarios. Es el mismo motivo por el que se usa el divisor $T$ (no $T - h$) en $\hat\gamma(h)$ (Clase 1).
+
+## Consistencia, sesgo y varianza
+
+La idea de por qué el truncamiento funciona: es un **compromiso sesgo–varianza**. Con $m$ chico, se omiten autocovarianzas relevantes (**sesgo**); con $m$ grande, se estiman muchas con poco dato (**varianza**).
+
+::: {#prp-hac-sesgo}
+## Sesgo del estimador de Newey–West
+Si $\xi_t$ es estacionario con $\sum_h|h||\gamma(h)|<\infty$ y $m\to\infty$ con $m/T\to0$, entonces
+$$
+\mathbb{E}[\hat\sigma^2_{HAC}]\to\sigma^2_{LR},\qquad
+\mathbb{E}[\hat\sigma^2_{HAC}] - \sigma^2_{LR}\approx-\frac1{m + 1}\sum_{h = -\infty}^\infty|h|\gamma(h) + o\Big(\frac1m\Big).
+$$
+:::
+
+::: {.proof}
+Con $\mathbb{E}[\hat\gamma(h)] = (1 - |h|/T)\gamma(h)$ (para datos con media cero conocida),
+$$
+\mathbb{E}[\hat\sigma^2_{HAC}] - \sigma^2_{LR} = \sum_{|h|\le m}\Big[\Big(1 - \frac{|h|}{m + 1}\Big)\Big(1 - \frac{|h|}T\Big) - 1\Big]\gamma(h) - \sum_{|h|>m}\gamma(h).
+$$
+El corchete es $-\frac{|h|}{m + 1} - \frac{|h|}T + \frac{|h|^2}{(m + 1)T}$, cuya magnitud es $\le|h|\big(\frac1{m + 1} + \frac1T\big)$. Luego el sesgo está acotado por $\big(\frac1{m + 1} + \frac1T\big)\sum_h|h||\gamma(h)| + \sum_{|h|>m}|\gamma(h)|$, que tiende a cero. El término dominante, $-\frac1{m + 1}\sum_h|h|\gamma(h)$, da la aproximación.
+:::
+
+La **varianza** de $\hat\sigma^2_{HAC}$ crece con $m$: bajo condiciones de cuarto orden (que se toman prestadas; Andrews, 1991), $\operatorname{Var}(\hat\sigma^2_{HAC})\approx\frac43\frac mT\sigma^4_{LR}$ para el kernel de Bartlett. Entonces **el sesgo cae como $1/m$ y la varianza crece como $m/T$**. El ECM, $\text{sesgo}^2 + \text{varianza}\sim c_1/m^2 + c_2m/T$, se minimiza en
+$$
+m^*\propto T^{1/3}.
+$$
+Con esa tasa, $\hat\sigma^2_{HAC}\to\sigma^2_{LR}$ en probabilidad, a velocidad $T^{-1/3}$ (más lenta que la $T^{-1/2}$ habitual: es un problema **no paramétrico**, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es $m = \lfloor4(T/100)^{2/9}\rfloor$: da $m = 4$ para $T = 100$, $5$ para $T = 500$ y $6$ para $T = 1000$. (La potencia $2/9$ y no $1/3$ viene de un método basado en los datos para estimar las constantes $c_1,c_2$.)
+
+## Alternativas
+
+- **Otros kernels** (Parzen, *quadratic spectral*; Andrews, 1991): menor sesgo asintótico, no negatividad (QS), similar en la práctica.
+- **Preblanqueo** (Andrews y Monahan, 1992): ajustar primero un VAR/AR a $\xi_t$ para sacar la mayor parte de la dependencia y aplicar HAC a los residuos; mejora mucho el desempeño con serie persistente.
+- **Asintótica de ancho fijo** (*fixed-$b$*, Kiefer y Vogelsang, 2005): se deja $m/T = b$ fijo, con una distribución límite no estándar (pero tabulada) que corrige el sobrerrechazo en muestras finitas.
+- **Modelar el error** (MCGF, Cochrane–Orcutt; Clase 9 de Econometría 1): más eficiente si el modelo es correcto; HAC es **robusto** al precio de eficiencia.
+
+# Usos
+
+## MCO con errores correlacionados
+
+En $y_t = x_t'\beta + u_t$ con $\mathbb{E}[x_tu_t] = 0$ pero **$u_t$ serialmente correlacionado**, $\hat\beta$ sigue siendo consistente (Clase 7 de Econometría 1). La distribución cambia: $\sqrt T(\hat\beta - \beta)\to_dN(0,Q^{-1}\Omega Q^{-1})$ con $Q = \mathbb{E}[x_tx_t']$ y $\Omega = \sum_{h = -\infty}^\infty\mathbb{E}[x_tu_tu_{t-h}x_{t-h}']$, la **varianza de largo plazo de $\xi_t = x_tu_t$**. La estimación usa $\hat Q = \frac1T\sum x_tx_t'$ y $\hat\Omega$ = HAC de $\hat\xi_t = x_t\hat u_t$:
+$$
+\widehat{\operatorname{Avar}}(\hat\beta) = \frac1T\hat Q^{-1}\hat\Omega_{HAC}\hat Q^{-1}.
+$$
+Es la fórmula de White (Clase 7 de Econometría 1) con autocovarianzas. Cuando $\hat\Omega$ solo incluye el término $h = 0$ ($m = 0$) se recupera exactamente White.
+
+::: {#exm-sobrerrechazo}
+## El costo de ignorar la dependencia
+Sea $y_t = \beta x_t + u_t$ con $x_t$ y $u_t$ **independientes**, ambos AR(1) con coeficientes $\rho_x = \rho_u = 0{,}8$ (y $\beta = 0$). Entonces $\xi_t = x_tu_t$ tiene autocovarianza $\gamma_\xi(h) = \gamma_x(h)\gamma_u(h) = \sigma_x^2\sigma_u^2(\rho_x\rho_u)^{|h|}$, y su varianza de largo plazo es $\sigma_x^2\sigma_u^2\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$. Como $Q = \sigma_x^2$, la varianza asintótica real de $\hat\beta$ es $\dfrac{\sigma_u^2}{\sigma_x^2}\cdot\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$, mientras que la fórmula de MCO "clásica" da $\sigma_u^2/(T\sigma_x^2)$ (ignorando la dependencia). Con $\rho_x\rho_u = 0{,}64$ el factor es $1{,}64/0{,}36 = 4{,}56$: **los errores estándar clásicos son $\sqrt{4{,}56} = 2{,}13$ veces demasiado chicos**. Un test al 5 % con $t = \hat\beta/\text{ee}_{clásico}$ rechaza $H_0:\beta = 0$ con probabilidad $2(1 - \Phi(1{,}96/2{,}13)) = 36$ % **aunque $x$ y $y$ no tengan relación alguna**. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.
+:::
+
+## GMM, pronósticos y otros
+
+- **GMM** (Clase 4 de Econometría 2) con momentos serialmente correlacionados: la matriz óptima de pesos es $W = \Omega^{-1}$ con $\Omega$ la **varianza de largo plazo** de $g_t(\theta_0)$, estimada por HAC. Es lo que se usa en finanzas (ecuaciones de Euler, Hansen–Singleton) y en macro.
+- **Test de Diebold–Mariano** (Clase 3): el estadístico estandariza con la varianza de largo plazo del diferencial de pérdida $d_t$, estimada con Newey–West con al menos $h - 1$ rezagos.
+- **Tests de predictibilidad y de eficiencia** de mercado, con errores de pronóstico MA($h - 1$).
+
+Un cuidado importante: la **corrección HAC es asintótica** y en muestras pequeñas (o con series muy persistentes) tiende a **subestimar** la varianza (sesgo del $-\frac1m\sum|h|\gamma(h)$), de modo que los tests siguen **sobrerrechazando**. Por eso conviene preblanquear, usar $b$ fijo, o bootstrap por bloques.
+
+# ★ Postgrado: por qué la suma completa de autocovarianzas no sirve
+
+::: {.callout-important title="★ Postgrado"}
+La densidad espectral en cero, $2\pi f(0) = \sigma^2_{LR}$, **no** se estima consistentemente con el periodograma: se necesita suavizar. Esta es la razón estructural del truncamiento $m\ll T$.
+:::
+
+Sea $\xi_t$ de media cero con $\hat\gamma(h)$ calculado **sin** restar la media. Entonces
+$$
+\sum_{|h|<T}\hat\gamma(h) = \frac1T\sum_{t,s = 1}^T\xi_t\xi_s = \frac1T\Big(\sum_{t = 1}^T\xi_t\Big)^2 = T\bar\xi^2,
+$$
+porque cada par $(t,s)$ aparece exactamente una vez, con $|t - s| = |h|$. Es el **periodograma en frecuencia cero**, $I_T(0)$. Por el TCL, $\sqrt T\bar\xi\to_dN(0,\sigma^2_{LR})$, así que
+$$
+I_T(0) = T\bar\xi^2\xrightarrow{d}\sigma^2_{LR}\,\chi^2_1.
+$$
+Su **esperanza** converge a $\sigma^2_{LR}$ (es asintóticamente insesgado: coincide con $T\operatorname{Var}(\bar\xi)$ de la Clase 1), pero su **varianza no tiende a cero**: es $2\sigma^4_{LR}$ en el límite (la de una $\chi^2_1$ escalada). Un estimador cuya distribución asintótica es una variable aleatoria no degenerada **no es consistente**. Esto ocurre en cada frecuencia: el periodograma es un estimador insesgado pero inconsistente de la densidad espectral. Cualquier estimador consistente debe **promediar** valores del periodograma en frecuencias cercanas: $\hat f(0) = \frac1{2\pi}\sum_{|h|\le m}k(h/(m + 1))\hat\gamma(h)$ es exactamente un periodograma **suavizado con una ventana** de ancho $\sim1/m$ en el dominio de frecuencias (el kernel de Bartlett en tiempo es el **kernel de Fejér** en frecuencia, que es no negativo: otra forma de ver la @prp-nw-positivo). Con ancho $1/m\to0$ pero cada ventana conteniendo $T/m\to\infty$ frecuencias de Fourier, el promedio reduce la varianza a $O(m/T)$.
+
+# Resumen
+
+- Una **diferencia de martingala** es impredecible dado el pasado: es ruido blanco "fuerte". Su TCL (@thm-tcl-mds, tomado prestado) justifica la inferencia en AR por MCO (Clase 4). La varianza límite es simplemente $\mathbb{E}[\xi^2]$.
+- Para **procesos lineales**, el TCL se demuestra con la descomposición de **Beveridge–Nelson** (@thm-tcl-lineal): $\psi(L) = \psi(1) + (L - 1)\tilde\psi(L)$, de donde $T^{-1/2}\sum y_t\to N(0,\sigma^2\psi(1)^2)$.
+- La **varianza de largo plazo** $\sigma^2_{LR} = \sum_h\gamma(h)$ se estima con **HAC** (Newey–West): $\hat\gamma(0) + 2\sum_{h\le m}(1 - \frac h{m + 1})\hat\gamma(h)$, no negativo por construcción (@prp-nw-positivo). Sesgo $\sim1/m$, varianza $\sim m/T$, $m^*\propto T^{1/3}$.
+- La suma completa de autocovarianzas **no** sirve: equivale al periodograma, insesgado pero inconsistente.
+- **Usos:** MCO con errores correlacionados (sándwich HAC), GMM, Diebold–Mariano. Ignorar la dependencia sobrerrechaza (@exm-sobrerrechazo: 36 % al nominal 5 %).
+
+# Ejercicios
+
+**Ejercicio 5.1.** Sea $\varepsilon_t = \eta_t + \eta_{t-1}\eta_{t-2}$ con $\eta_t$ i.i.d. $N(0,1)$. Muestra que es ruido blanco (calcula $\gamma(0)$ y $\gamma(1),\gamma(2)$) pero **no** es una diferencia de martingala respecto de $\mathcal{F}_t = \sigma(\eta_s:s\le t)$.
+
+::: {.callout-tip collapse="true" title="Solución 5.1"}
+$\mathbb{E}[\varepsilon_t] = 0$. $\gamma(0) = \mathbb{E}[\eta_t^2] + \mathbb{E}[\eta_{t-1}^2\eta_{t-2}^2] + 2\mathbb{E}[\eta_t\eta_{t-1}\eta_{t-2}] = 1 + 1 + 0 = 2$. $\gamma(1) = \mathbb{E}[(\eta_t + \eta_{t-1}\eta_{t-2})(\eta_{t-1} + \eta_{t-2}\eta_{t-3})]$: los cuatro productos son $\eta_t\eta_{t-1}$, $\eta_t\eta_{t-2}\eta_{t-3}$, $\eta_{t-1}^2\eta_{t-2}$, $\eta_{t-1}\eta_{t-2}^2\eta_{t-3}$, y cada uno tiene esperanza cero (algún $\eta$ aparece una sola vez con media cero). Igual para $\gamma(2) = \mathbb{E}[(\eta_t + \eta_{t-1}\eta_{t-2})(\eta_{t-2} + \eta_{t-3}\eta_{t-4})] = 0$. Para $h\ge3$ las dos expresiones no comparten variables: $0$. Es ruido blanco. Pero $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = \mathbb{E}[\eta_t] + \eta_{t-1}\eta_{t-2} = \eta_{t-1}\eta_{t-2}\ne0$: el pasado predice el presente de manera **no lineal**. Un predictor lineal no lo ve (no hay correlación), pero la esperanza condicional sí. Esta distinción es la que hace falta para el TCL de martingalas.
+:::
+
+**Ejercicio 5.2.** Con $\hat\gamma(0) = 1$, $\hat\gamma(1) = 0{,}6$, $\hat\gamma(2) = 0{,}36$ (de un AR(1) con $\rho = 0{,}6$), calcula el estimador de Newey–West con $m = 2$ y compáralo con el valor verdadero $\sigma^2_{LR}/\gamma(0) = (1 + \rho)/(1 - \rho)$.
+
+::: {.callout-tip collapse="true" title="Solución 5.2"}
+Pesos de Bartlett: $w_1 = 1 - 1/3 = 2/3$, $w_2 = 1 - 2/3 = 1/3$. $\hat\sigma^2_{HAC} = 1 + 2(2/3)(0{,}6) + 2(1/3)(0{,}36) = 1 + 0{,}8 + 0{,}24 = 2{,}04$. Verdadero: $(1{,}6)/(0{,}4) = 4$. El estimador captura solo la mitad. La diferencia, $4 - 2{,}04 = 1{,}96$, tiene dos partes: las autocovarianzas omitidas con $h\ge3$ suman $2(0{,}6^3 + 0{,}6^4 + \dots) = 2\cdot0{,}216/0{,}4 = 1{,}08$, y los pesos decrecientes recortan las incluidas en $2(0{,}6/3) + 2(0{,}36\cdot2/3) = 0{,}88$. Es el sesgo $-\frac1{m + 1}\sum|h|\gamma(h)$ de la @prp-hac-sesgo, que con un proceso persistente exige $m$ grande. Con $\rho = 0{,}6$ y $T = 100$ la regla práctica da $m = 4$, aún bajo.
+:::
+
+**Ejercicio 5.3.** En el @exm-sobrerrechazo, calcula el factor de error estándar y la probabilidad de rechazo cuando $\rho_x = \rho_u = 0{,}5$. ¿Y con $\rho_x = 0{,}9$, $\rho_u = 0{,}5$?
+
+::: {.callout-tip collapse="true" title="Solución 5.3"}
+Factor de varianza $(1 + r)/(1 - r)$ con $r = \rho_x\rho_u$. Caso $0{,}5,0{,}5$: $r = 0{,}25$, factor $1{,}25/0{,}75 = 1{,}667$, error estándar $\times1{,}29$; rechazo: $2(1 - \Phi(1{,}96/1{,}29)) = 2(1 - \Phi(1{,}52)) = 0{,}129$ (13 %). Caso $0{,}9,0{,}5$: $r = 0{,}45$, factor $1{,}45/0{,}55 = 2{,}636$, $\times1{,}62$; rechazo $2(1 - \Phi(1{,}21)) = 0{,}226$ (23 %). El problema es **el producto** $\rho_x\rho_u$: si el error o el regresor no tienen persistencia, el efecto desaparece. En el segundo caso, basta con que un regresor muy persistente se combine con errores moderadamente persistentes.
+:::
+
+**Ejercicio 5.4.** Para los datos $\xi = (1,0,-1)$ (media muestral cero) calcula $\hat\gamma(0),\hat\gamma(1),\hat\gamma(2)$ y $\sum_{|h|<3}\hat\gamma(h)$. Comenta.
+
+::: {.callout-tip collapse="true" title="Solución 5.4"}
+$\hat\gamma(0) = (1 + 0 + 1)/3 = 0{,}667$; $\hat\gamma(1) = (1\cdot0 + 0\cdot(-1))/3 = 0$; $\hat\gamma(2) = (1\cdot(-1))/3 = -0{,}333$. Suma: $0{,}667 + 2(0) + 2(-0{,}333) = 0$. Es general: con datos centrados, $\sum_{|h|<T}\hat\gamma(h) = \frac1T(\sum_t\xi_t)^2 = 0$. Un estimador de $\sigma^2_{LR}$ que sume todas las autocovarianzas muestrales daría **cero**: claramente inconsistente.
+:::
+
+**Ejercicio 5.5.** Con $T = 4$, $\xi = (1,-1,1,-1)$ y $m = 1$, calcula el estimador con kernel uniforme (truncado) y el de Bartlett. ¿Qué observas?
+
+::: {.callout-tip collapse="true" title="Solución 5.5"}
+$\hat\gamma(0) = 4/4 = 1$ y $\hat\gamma(1) = [(-1) + (-1) + (-1)]/4 = -0{,}75$. Uniforme ($m = 1$): $\hat\gamma(0) + 2\hat\gamma(1) = 1 - 1{,}5 = -0{,}5<0$: **varianza estimada negativa**. Bartlett: $\hat\gamma(0) + 2(1 - \tfrac12)\hat\gamma(1) = 1 - 0{,}75 = 0{,}25\ge0$. Comprobación con las sumas móviles de la prueba: $B_s = \xi_s + \xi_{s+1}$ para $s = 0,\dots,4$: $(1,0,0,0,-1)$, con $\sum B_s^2 = 2$ y $2/(T(m + 1)) = 2/8 = 0{,}25$. ✓.
+:::
+
+**Ejercicio 5.6.** Calcula $m = \lfloor4(T/100)^{2/9}\rfloor$ para $T = 50,100,500,2000$. ¿Por qué crece tan despacio?
+
+::: {.callout-tip collapse="true" title="Solución 5.6"}
+$T = 50$: $4(0{,}5)^{0{,}222} = 4(0{,}857) = 3{,}43\to3$. $T = 100$: $4$. $T = 500$: $4(5)^{0{,}222} = 4(1{,}43) = 5{,}7\to5$. $T = 2000$: $4(20)^{0{,}222} = 4(1{,}945) = 7{,}8\to7$. Crece como $T^{2/9}$, **más despacio** que el óptimo teórico $T^{1/3}$, porque la constante se escala con las propias autocorrelaciones (más baja cuando la persistencia es moderada) y porque las ganancias son pequeñas: con $T = 2000$ un $m$ de $7$ ya captura casi todo salvo series muy persistentes. Es el costo de la tasa no paramétrica $T^{-1/3}$ en la precisión de $\hat\sigma^2_{HAC}$.
+:::
+
+**Ejercicio 5.7 ★.** Aplica la descomposición de Beveridge–Nelson a un MA(1), $\psi(L) = 1 + 0{,}5L$: calcula $\psi(1)$, los $\tilde\psi_j$, verifica $\psi(L) = \psi(1) + (L - 1)\tilde\psi(L)$ y escribe $\sum_{t = 1}^Ty_t$ en términos de $\varepsilon$.
+
+::: {.callout-tip collapse="true" title="Solución 5.7 ★"}
+$\psi_0 = 1$, $\psi_1 = 0{,}5$: $\psi(1) = 1{,}5$. $\tilde\psi_0 = \psi_1 = 0{,}5$ y $\tilde\psi_j = 0$ para $j\ge1$. Verificación: $1{,}5 + (L - 1)(0{,}5) = 1{,}5 - 0{,}5 + 0{,}5L = 1 + 0{,}5L$ ✓. Entonces $y_t = 1{,}5\varepsilon_t + 0{,}5\varepsilon_{t-1} - 0{,}5\varepsilon_t$, con $\eta_t = 0{,}5\varepsilon_t$. Sumando: $\sum_{t = 1}^Ty_t = 1{,}5\sum_t\varepsilon_t + 0{,}5(\varepsilon_0 - \varepsilon_T)$. Comprobación directa: $\sum y_t = \sum_t\varepsilon_t + 0{,}5\sum_t\varepsilon_{t-1} = \sum_{t = 1}^T\varepsilon_t + 0{,}5\big(\sum_{t = 1}^T\varepsilon_t + \varepsilon_0 - \varepsilon_T\big)$ ✓. La parte transitoria $0{,}5(\varepsilon_0 - \varepsilon_T)$ es $O_p(1)$ y el resto es $1{,}5\times$ una suma i.i.d.: $T\operatorname{Var}(\bar y)\to1{,}5^2\sigma^2 = 2{,}25\sigma^2 = \sigma^2(1 + \theta)^2$ (Clase 1, ejemplo MA(1)).
+:::

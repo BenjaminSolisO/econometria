@@ -1,0 +1,270 @@
+---
+title: "Clase 2 · Procesos lineales: MA, AR y ARMA"
+subtitle: "Operador de rezago, causalidad, invertibilidad y funciones de autocorrelación"
+description: "Procesos lineales de ruido blanco, la descomposición de Wold, los modelos AR(p), MA(q) y ARMA(p,q), las condiciones de causalidad e invertibilidad con demostración, las ecuaciones de Yule–Walker y la identificación por ACF y PACF."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Modelos para la dependencia
+
+La Clase 1 dejó claro qué hace falta para aprender de una sola serie: estacionariedad y ergodicidad. Ahora necesitamos **modelos**: familias de procesos estacionarios con pocos parámetros, que capturen la dependencia observada y permitan estimar y pronosticar. La familia más usada son los **procesos lineales**, que escriben $y_t$ como una combinación lineal de **innovaciones** $\varepsilon_t$ (ruido blanco): "lo nuevo que llegó en $t$".
+
+Hay tres formas de generar dependencia a partir de ruido blanco, y todas combinadas dan los modelos ARMA:
+
+- **Media móvil (MA):** $y_t$ es un promedio de las últimas innovaciones. Memoria **finita**: después de $q$ períodos, la dependencia se corta.
+- **Autorregresivo (AR):** $y_t$ depende de sus propios valores pasados. Memoria **infinita** (que decae).
+- **ARMA:** ambas a la vez, con pocos parámetros.
+
+Un tema recorre toda la clase: las condiciones de **causalidad** (¿se puede escribir $y_t$ en función del pasado de $\varepsilon$?) e **invertibilidad** (¿se puede recuperar $\varepsilon_t$ del pasado de $y$?). Sin ellas, el mismo proceso se escribe de varias maneras y los parámetros no se identifican (Clase 1: $\theta$ y $1/\theta$ daban la misma ACF).
+
+# El operador de rezago y los procesos lineales
+
+El **operador de rezago** $L$ desplaza una serie un período: $Ly_t = y_{t-1}$, y $L^jy_t = y_{t-j}$. Con él, un polinomio $\phi(L) = 1 - \phi_1L - \dots - \phi_pL^p$ es un operador: $\phi(L)y_t = y_t - \phi_1y_{t-1} - \dots - \phi_py_{t-p}$. Los polinomios en $L$ se multiplican e invierten igual que los polinomios en un número $z$ (mientras las series converjan).
+
+::: {#def-lineal}
+## Proceso lineal
+Sea $\varepsilon_t\sim WN(0,\sigma^2)$ y $\{\psi_j\}_{j\ge0}$ una sucesión con $\sum_j|\psi_j|<\infty$ (absolutamente sumable). El **proceso lineal** es
+$$
+y_t = \mu + \sum_{j = 0}^\infty\psi_j\varepsilon_{t-j} = \mu + \psi(L)\varepsilon_t,\qquad\psi(L) = \sum_{j = 0}^\infty\psi_jL^j.
+$$
+:::
+
+La suma infinita es un límite, y hay que decir en qué sentido existe.
+
+::: {#prp-lineal}
+## Un proceso lineal está bien definido y es estacionario
+La serie $\sum_j\psi_j\varepsilon_{t-j}$ converge en media cuadrática y casi seguramente. El proceso resultante es estacionario con media $\mu$ y
+$$
+\gamma(h) = \sigma^2\sum_{j = 0}^\infty\psi_j\psi_{j + |h|},\qquad\sum_h|\gamma(h)|<\infty,\qquad\sigma^2_{LR} = \sigma^2\,\psi(1)^2.
+$$
+:::
+
+::: {.proof}
+*Convergencia.* Sea $S_{m,n} = \sum_{m<j\le n}\psi_j\varepsilon_{t-j}$. Como los $\varepsilon$ son no correlacionados, $\mathbb{E}[S_{m,n}^2] = \sigma^2\sum_{m<j\le n}\psi_j^2\le\sigma^2\big(\sum_{m<j\le n}|\psi_j|\big)^2\to0$ cuando $m,n\to\infty$ (cola de una serie convergente). Las sumas parciales forman una sucesión de Cauchy en $L^2$, que converge porque $L^2$ es completo. (Casi segura: $\mathbb{E}\sum_j|\psi_j||\varepsilon_{t-j}|\le\sigma\sum_j|\psi_j|<\infty$, así que la serie converge absolutamente con probabilidad uno.)
+
+*Momentos.* Por continuidad del producto interno en $L^2$, $\mathbb{E}[y_t] = \mu$ y $\operatorname{Cov}(y_t,y_{t + h}) = \sum_{j,k}\psi_j\psi_k\mathbb{E}[\varepsilon_{t-j}\varepsilon_{t + h - k}] = \sigma^2\sum_j\psi_j\psi_{j + h}$ (solo sobreviven los términos con $k = j + h$). Esto no depende de $t$. La sumabilidad: $\sum_h|\gamma(h)|\le\sigma^2\sum_h\sum_j|\psi_j||\psi_{j + |h|}|\le2\sigma^2\big(\sum_j|\psi_j|\big)^2<\infty$. Finalmente, por el teorema de la LGN en media cuadrática de la Clase 1, $\sigma_{LR}^2 = \sum_h\gamma(h) = \sigma^2\big(\sum_j\psi_j\big)^2 = \sigma^2\psi(1)^2$ (cada par $(j,k)$ aparece una vez en el producto $(\sum\psi_j)(\sum\psi_k)$).
+:::
+
+El resultado final es muy útil: **la varianza de largo plazo de un proceso lineal es $\sigma^2\psi(1)^2$**, el cuadrado de la suma de los coeficientes. Reproduce lo de la Clase 1: para el MA(1), $\psi(1) = 1 + \theta$ y $\sigma^2_{LR} = \sigma^2(1 + \theta)^2$; para el AR(1), $\psi(1) = 1/(1 - \phi)$ y $\sigma^2_{LR} = \sigma^2/(1 - \phi)^2$.
+
+## ¿Es una restricción pensar en procesos lineales? El teorema de Wold
+
+Podría parecer que los procesos lineales son una familia particular. El **teorema de Wold** (1938) dice que, en cuanto a los dos primeros momentos, **no lo son**.
+
+::: {#thm-wold}
+## Descomposición de Wold — se toma prestado
+Todo proceso débilmente estacionario $\{y_t\}$ con media cero y **puramente no determinístico** (sin componente perfectamente predecible a partir de su pasado) puede escribirse como
+$$
+y_t = \sum_{j = 0}^\infty\psi_j\varepsilon_{t-j},\qquad\psi_0 = 1,\quad\sum_j\psi_j^2<\infty,
+$$
+donde $\varepsilon_t$ es el **error de pronóstico lineal** de $y_t$ dado su pasado, un ruido blanco (no necesariamente i.i.d.), y $\psi_j$ son coeficientes únicos.
+:::
+
+En la Clase 3 veremos de dónde sale $\varepsilon_t$ (es la proyección residual). La conclusión práctica: **los modelos ARMA no pierden generalidad en segundo orden**: cualquier proceso estacionario tiene una representación MA($\infty$), y ARMA aproxima ese $\psi(L)$ con un cociente de polinomios de pocos parámetros. (Ojo: Wold no dice que $\varepsilon_t$ sea i.i.d. ni que el proceso sea *lineal en distribución*; un GARCH, Clase 12, tiene representación de Wold y es muy no lineal.)
+
+# Procesos autorregresivos
+
+## El AR(1)
+
+$$
+y_t = \phi y_{t-1} + \varepsilon_t,\qquad\varepsilon_t\sim WN(0,\sigma^2).
+$$ {#eq-ar1}
+Es una ecuación en diferencias estocástica: no define un proceso hasta que decimos **cuál solución** queremos. La respuesta depende de $|\phi|$.
+
+::: {#thm-ar1}
+## Soluciones estacionarias del AR(1)
+1. Si $|\phi|<1$, @eq-ar1 tiene una **única** solución estacionaria, $y_t = \sum_{j = 0}^\infty\phi^j\varepsilon_{t-j}$, que es **causal** (depende solo de $\varepsilon_t,\varepsilon_{t-1},\dots$).
+2. Si $|\phi|>1$, hay una única solución estacionaria, pero **no causal**: $y_t = -\sum_{j = 1}^\infty\phi^{-j}\varepsilon_{t + j}$ (depende del futuro).
+3. Si $|\phi| = 1$, **no existe** solución estacionaria.
+:::
+
+::: {.callout-note title="Borrador"}
+Itero la ecuación hacia atrás: $y_t = \phi y_{t-1} + \varepsilon_t = \phi^2y_{t-2} + \phi\varepsilon_{t-1} + \varepsilon_t = \dots = \phi^ny_{t-n} + \sum_{j<n}\phi^j\varepsilon_{t-j}$. Si $|\phi|<1$, el término $\phi^ny_{t-n}$ se desvanece (el pasado lejano se olvida) y queda la suma. Si $|\phi|>1$, ese término explota, y la salida es iterar hacia **adelante**: $y_t = \phi^{-1}y_{t+1} - \phi^{-1}\varepsilon_{t + 1}$. Con $|\phi| = 1$ no hay ni olvido ni explosión: la varianza crece linealmente (caminata aleatoria).
+:::
+
+::: {.proof}
+(1) *Existencia:* $\sum_j|\phi^j|<\infty$, así que por la @prp-lineal $y_t = \sum_j\phi^j\varepsilon_{t-j}$ está bien definido y es estacionario. Verificación: $y_t - \phi y_{t-1} = \sum_{j\ge0}\phi^j\varepsilon_{t-j} - \sum_{j\ge0}\phi^{j + 1}\varepsilon_{t - 1 - j} = \varepsilon_t$. *Unicidad:* si $\{y_t\}$ es *cualquier* solución estacionaria, iterando $n$ veces, $y_t - \sum_{j<n}\phi^j\varepsilon_{t-j} = \phi^ny_{t-n}$, cuyo segundo momento es $\phi^{2n}(\gamma(0) + \mu^2)\to0$. Luego $y_t = \sum_j\phi^j\varepsilon_{t-j}$ en media cuadrática.
+
+(2) Despejando, $y_t = \phi^{-1}y_{t + 1} - \phi^{-1}\varepsilon_{t + 1}$, y como $|\phi^{-1}|<1$ el mismo argumento hacia adelante da $y_t = -\sum_{j\ge1}\phi^{-j}\varepsilon_{t + j}$ como única solución estacionaria. Verificación: $y_t - \phi y_{t-1} = -\sum_{j\ge1}\phi^{-j}\varepsilon_{t + j} + \sum_{j\ge1}\phi^{1 - j}\varepsilon_{t - 1 + j} = -\sum_{j\ge1}\phi^{-j}\varepsilon_{t + j} + \sum_{k\ge0}\phi^{-k}\varepsilon_{t + k} = \varepsilon_t$.
+
+(3) Con $\phi = 1$, iterando, $y_t - y_{t-n} = \sum_{j<n}\varepsilon_{t-j}$ con varianza $n\sigma^2$. Pero si $y$ fuera estacionario, $\operatorname{Var}(y_t - y_{t-n})\le4\gamma(0)$ para todo $n$: contradicción. (El caso $\phi = -1$ es análogo con $y_t - (-1)^ny_{t-n}$.)
+:::
+
+La solución no causal del caso (2) es matemáticamente legítima pero **inútil como modelo**: pide que el proceso de hoy dependa de shocks que aún no ocurren. Por convención se trabaja con la solución causal, y se pide $|\phi|<1$. Además, el caso $|\phi|>1$ **no agrega nada**: tiene la misma autocovarianza que un AR(1) causal con parámetro $1/\phi$ y otra varianza de innovación (como el MA(1) con $\theta$ y $1/\theta$). Bajo $|\phi|<1$, la autocovarianza es $\gamma(h) = \sigma^2\phi^{|h|}/(1 - \phi^2)$ (Ejercicio 1.5 de la Clase 1). Con $\phi>0$ la serie es "suave" y persistente (la ACF decae geométricamente); con $\phi<0$ oscila.
+
+## El AR($p$) y la condición de estacionariedad
+
+$$
+\phi(L)y_t = \varepsilon_t,\qquad\phi(z) = 1 - \phi_1z - \dots - \phi_pz^p.
+$$
+La generalización natural del $|\phi|<1$ es que **todas las raíces del polinomio $\phi(z)$ estén fuera del círculo unitario**: $\phi(z)\ne0$ para $|z|\le1$. (Para $p = 1$, la única raíz es $1/\phi$, y $|1/\phi|>1\iff|\phi|<1$.) Es el contenido del teorema general que sigue. Condiciones para $p = 2$ en el Ejercicio 2.5.
+
+# Media móvil e invertibilidad
+
+El MA($q$) es $y_t = \theta(L)\varepsilon_t$ con $\theta(z) = 1 + \theta_1z + \dots + \theta_qz^q$. Siempre es estacionario (suma finita). El problema es otro: **la identificación**.
+
+::: {#prp-ma1-inv}
+## Invertibilidad del MA(1)
+Sea $y_t = \varepsilon_t + \theta\varepsilon_{t-1}$.
+
+1. Si $|\theta|<1$, $\varepsilon_t = \sum_{j = 0}^\infty(-\theta)^jy_{t-j}$: el proceso es **invertible** (las innovaciones se recuperan del pasado de $y$).
+2. Si $|\theta|>1$, $\varepsilon_t$ no es una función del pasado de $y$. Pero existe una **representación invertible equivalente**: $y_t = \varepsilon^*_t + \theta^*\varepsilon^*_{t-1}$ con $\theta^* = 1/\theta$ y $\sigma^{*2} = \theta^2\sigma^2$, que tiene **exactamente la misma autocovarianza**.
+:::
+
+::: {.proof}
+(1) Despejando, $\varepsilon_t = y_t - \theta\varepsilon_{t-1}$ e iterando, $\varepsilon_t = \sum_{j<n}(-\theta)^jy_{t-j} + (-\theta)^n\varepsilon_{t-n}$. El último término tiene segundo momento $\theta^{2n}\sigma^2\to0$ si $|\theta|<1$, y $\varepsilon_t = \sum_j(-\theta)^jy_{t-j}$ en media cuadrática. (2) Calculamos las autocovarianzas del proceso con $(\theta^*,\sigma^{*2})$: $\gamma^*(0) = \sigma^{*2}(1 + \theta^{*2}) = \theta^2\sigma^2(1 + \theta^{-2}) = \sigma^2(\theta^2 + 1) = \gamma(0)$ y $\gamma^*(1) = \theta^*\sigma^{*2} = \theta^{-1}\theta^2\sigma^2 = \theta\sigma^2 = \gamma(1)$. Mismos momentos de segundo orden.
+:::
+
+La conclusión de (2) es importante: sin la condición de invertibilidad, **los parámetros no están identificados** a partir de la ley de segundo orden. Se **elige** la raíz invertible, $|\theta|\le1$, como convención (es lo que hicimos con $\hat\theta = 0{,}5$ y no $2$ en la Clase 13 de Econometría 2). Para el invertible, $\varepsilon_t$ coincide con el **error de pronóstico lineal** de la representación de Wold; con la no invertible, en cambio, $\varepsilon_t$ no es una innovación "genuina". Además, invertibilidad permite escribir el MA($q$) como un AR($\infty$), lo que justifica el pronóstico con datos pasados (Clase 3).
+
+# ARMA($p$, $q$)
+
+::: {#def-arma}
+## Proceso ARMA
+$\{y_t\}$ es un proceso **ARMA($p$,$q$)** si es estacionario y satisface
+$$
+\phi(L)y_t = \theta(L)\varepsilon_t,\qquad\varepsilon_t\sim WN(0,\sigma^2),
+$$
+con $\phi(z) = 1 - \phi_1z - \dots - \phi_pz^p$ y $\theta(z) = 1 + \theta_1z + \dots + \theta_qz^q$ sin raíces comunes.
+:::
+
+La condición "sin raíces comunes" evita una redundancia trivial: $(1 - \phi L)y_t = (1 - \phi L)\varepsilon_t$ es ruido blanco, no un ARMA(1,1) genuino (Ejercicio 2.6).
+
+::: {#thm-arma}
+## Causalidad e invertibilidad del ARMA
+Sea $\phi(L)y_t = \theta(L)\varepsilon_t$ con $\phi$ y $\theta$ sin raíces comunes.
+
+1. Si $\phi(z)\ne0$ para todo $|z|\le1$, existe una **única** solución estacionaria, y es causal: $y_t = \psi(L)\varepsilon_t$, con $\psi(z) = \theta(z)/\phi(z) = \sum_{j\ge0}\psi_jz^j$ y $|\psi_j|\le Kr^{j}$ para algún $r<1$ (decaimiento **geométrico**).
+2. Si además $\theta(z)\ne0$ para todo $|z|\le1$, el proceso es **invertible**: $\varepsilon_t = \pi(L)y_t$ con $\pi(z) = \phi(z)/\theta(z) = \sum_{j\ge0}\pi_jz^j$ también con decaimiento geométrico.
+:::
+
+::: {.proof}
+(1) Como $\phi$ es un polinomio sin raíces en el disco cerrado $|z|\le1$, la función $1/\phi(z)$ es analítica en un disco **más grande** $|z|<R$, con $R>1$ (la raíz más cercana al origen tiene módulo mayor que 1). Su serie de Taylor $\sum_j\xi_jz^j$ converge en ese disco, de modo que $|\xi_j|\le Kr^j$ para algún $r\in(1/R,1)$ (criterio de Cauchy–Hadamard). Entonces $\xi(L) = 1/\phi(L)$ tiene coeficientes absolutamente sumables. Multiplicando por $\theta(z)$ (polinomio de grado $q$), $\psi(z) = \theta(z)\xi(z)$ conserva el decaimiento geométrico. Por la @prp-lineal, $y_t = \psi(L)\varepsilon_t$ es estacionario, y satisface la ecuación porque $\phi(L)\psi(L) = \theta(L)$ como series de potencias. *Unicidad:* si $\{y_t\}$ es otra solución estacionaria, aplicamos el operador $\xi(L)$ (de coeficientes sumables, que preserva la estacionariedad) a $\phi(L)y_t = \theta(L)\varepsilon_t$ y obtenemos $y_t = \xi(L)\theta(L)\varepsilon_t = \psi(L)\varepsilon_t$.
+
+(2) Es el mismo argumento intercambiando los papeles de $\phi$ y $\theta$: $1/\theta(z)$ es analítica en un disco mayor que el unitario, y $\varepsilon_t = \theta(L)^{-1}\phi(L)y_t$.
+:::
+
+Los coeficientes $\psi_j$ (la **respuesta a un impulso**: efecto en $y_{t + j}$ de una innovación unitaria en $t$) se calculan **recursivamente** igualando coeficientes en $\phi(z)\psi(z) = \theta(z)$: $\psi_0 = 1$ y $\psi_j = \theta_j + \sum_{k = 1}^{\min(j,p)}\phi_k\psi_{j-k}$ (con $\theta_j = 0$ para $j>q$).
+
+::: {#exm-arma11}
+## El ARMA(1,1)
+Para $(1 - \phi L)y_t = (1 + \theta L)\varepsilon_t$, $\psi(z) = \dfrac{1 + \theta z}{1 - \phi z} = \sum_j\phi^jz^j + \theta\sum_j\phi^jz^{j+1}$, de donde $\psi_0 = 1$ y $\psi_j = \phi^{j-1}(\phi + \theta)$ para $j\ge1$. El efecto de un shock decae geométricamente a tasa $\phi$, pero **parte** de un nivel distinto ($\phi + \theta$ en lugar de $\phi$ en el primer rezago): el MA permite flexibilizar la respuesta en los primeros períodos. La varianza de largo plazo es $\sigma^2\psi(1)^2 = \sigma^2\Big(\dfrac{1 + \theta}{1 - \phi}\Big)^2$.
+:::
+
+# Autocorrelación y autocorrelación parcial
+
+El análisis Box–Jenkins elige el modelo mirando dos funciones. La primera es la ACF, $\rho(h)$. La segunda es la **autocorrelación parcial**.
+
+::: {#def-pacf}
+## Autocorrelación parcial (PACF)
+La PACF en el rezago $h$, $\alpha(h)$, es la correlación entre $y_t$ e $y_{t-h}$ **después de quitar el efecto lineal de los valores intermedios** $y_{t-1},\dots,y_{t-h + 1}$. Equivalentemente, es el último coeficiente $\phi_{hh}$ de la mejor predicción lineal de $y_t$ sobre $y_{t-1},\dots,y_{t-h}$ (la proyección de la Clase 3).
+:::
+
+Las dos funciones tienen firmas características que dan el nombre al método de identificación.
+
+| Modelo | ACF $\rho(h)$ | PACF $\alpha(h)$ |
+|---|---|---|
+| **MA($q$)** | **se corta** a cero para $h>q$ | decae (geométrica o mezcla de oscilaciones) |
+| **AR($p$)** | decae geométricamente | **se corta** a cero para $h>p$ |
+| **ARMA($p$,$q$)** | decae geométricamente desde $h>q - p$ | decae desde $h>p - q$ |
+
+Para el **MA($q$)**, la @prp-lineal da $\gamma(h) = \sigma^2\sum_j\theta_j\theta_{j+h} = 0$ si $h>q$. Para el **AR($p$)**, la PACF se corta porque, si el proceso es AR($p$), la mejor predicción lineal de $y_t$ sobre los últimos $h\ge p$ valores usa exactamente los coeficientes $(\phi_1,\dots,\phi_p,0,\dots,0)$, y el último coeficiente es cero para $h>p$.
+
+## Las ecuaciones de Yule–Walker
+
+Para un AR($p$) causal podemos obtener la ACF sin calcular $\psi_j$. Multiplicando $y_t = \sum_{k = 1}^p\phi_ky_{t-k} + \varepsilon_t$ por $y_{t-h}$ y tomando esperanza (con $\mu = 0$), usando $\mathbb{E}[\varepsilon_ty_{t-h}] = 0$ si $h\ge1$ (causalidad) y $= \sigma^2$ si $h = 0$:
+$$
+\gamma(h) = \sum_{k = 1}^p\phi_k\gamma(h - k)\ \ (h\ge1),\qquad\gamma(0) = \sum_{k = 1}^p\phi_k\gamma(k) + \sigma^2.
+$$ {#eq-yw}
+Son las **ecuaciones de Yule–Walker**. Con $\gamma(0),\dots,\gamma(p)$ se pueden resolver para $(\phi_1,\dots,\phi_p,\sigma^2)$ y, al revés, dados los parámetros, determinan las autocovarianzas. Son la base del estimador de Yule–Walker (Clase 4).
+
+::: {#exm-ar2}
+## ACF de un AR(2)
+Dividiendo @eq-yw por $\gamma(0)$ para $h = 1,2$: $\rho(1) = \phi_1 + \phi_2\rho(1)$, es decir $\rho(1) = \dfrac{\phi_1}{1 - \phi_2}$, y $\rho(2) = \phi_1\rho(1) + \phi_2$; para $h\ge3$, $\rho(h) = \phi_1\rho(h-1) + \phi_2\rho(h-2)$. Con $\phi_1 = 0{,}5$ y $\phi_2 = 0{,}3$: $\rho(1) = 0{,}5/0{,}7 = 0{,}714$, $\rho(2) = 0{,}5(0{,}714) + 0{,}3 = 0{,}657$, $\rho(3) = 0{,}5(0{,}657) + 0{,}3(0{,}714) = 0{,}543$. La ACF decae lentamente, y la PACF vale $\alpha(1) = \rho(1) = 0{,}714$, $\alpha(2) = \phi_2 = 0{,}3$ y se anula para $h\ge3$.
+:::
+
+# ★ Postgrado: la función generatriz y la factorización espectral
+
+::: {.callout-important title="★ Postgrado"}
+Todo proceso lineal tiene una densidad espectral que se calcula **directamente** del polinomio $\psi(z)$, y esto explica por qué la elección de la raíz invertible no pierde generalidad.
+:::
+
+Para $y_t = \psi(L)\varepsilon_t$ con $\sum|\psi_j|<\infty$ definimos la **función generatriz de autocovarianzas** $g(z) = \sum_h\gamma(h)z^h$. De $\gamma(h) = \sigma^2\sum_j\psi_j\psi_{j + |h|}$ (@prp-lineal),
+$$
+g(z) = \sigma^2\sum_{j,k}\psi_j\psi_kz^{k - j} = \sigma^2\psi(z)\psi(z^{-1}),\qquad f(\lambda) = \frac1{2\pi}g(e^{-i\lambda}) = \frac{\sigma^2}{2\pi}\big|\psi(e^{-i\lambda})\big|^2.
+$$
+Con $z = 1$ se recupera $\sigma^2_{LR} = \sigma^2\psi(1)^2 = 2\pi f(0)$.
+
+::: {#prp-reflexion}
+## Reflejar una raíz no cambia la densidad espectral
+Sea $|a|<1$ (de modo que el factor $(1 - aL)$ tiene su raíz $1/a$ **fuera** del círculo unitario). Entonces, para todo $\lambda$,
+$$
+\big|1 - a^{-1}e^{-i\lambda}\big|^2\cdot|a|^2 = \big|1 - ae^{-i\lambda}\big|^2.
+$$
+En consecuencia, reemplazar un factor $(1 - a^{-1}L)$ (raíz **dentro** del círculo) por $(1 - aL)$ y multiplicar la varianza de la innovación por $|a|^{-2}$ deja intacta la densidad espectral, y por tanto la autocovarianza.
+:::
+
+::: {.proof}
+Sea $z = e^{-i\lambda}$, con $|z| = 1$ y $\bar z = 1/z$. Entonces $|a|\,|1 - a^{-1}z| = |a - z| = |z|\,|a\bar z - 1| = |1 - a\bar z| = |1 - ae^{i\lambda}|$. Para $a$ real, el módulo de un complejo y el de su conjugado coinciden, y el conjugado de $1 - ae^{i\lambda}$ es $1 - ae^{-i\lambda}$; luego $|1 - ae^{i\lambda}| = |1 - ae^{-i\lambda}|$ y elevando al cuadrado queda la igualdad enunciada. (Para $a$ complejo, las raíces de un polinomio con coeficientes reales vienen en pares conjugados $a,\bar a$, y el producto de los dos factores correspondientes cumple la misma identidad.)
+:::
+
+La proposición es la versión general de $\theta\leftrightarrow1/\theta$: **todo ARMA con raíces de $\theta(z)$ dentro del círculo unitario tiene un ARMA invertible con el mismo espectro** (sustituir cada raíz $z_k$ con $|z_k|<1$ por $1/\bar z_k$ y reescalar $\sigma^2$). Como la ley de segundo orden es lo único que los datos pueden identificar (mientras no se suponga no normalidad), **no se pierde nada al imponer invertibilidad**. Lo que sí se pierde, si el verdadero proceso es no invertible y no gaussiano, es la capacidad de recuperar las innovaciones *estructurales* (un problema serio en el análisis de VAR estructurales, Clase 10).
+
+# Resumen
+
+- Un **proceso lineal** $y_t = \psi(L)\varepsilon_t$ con $\sum|\psi_j|<\infty$ está bien definido, es estacionario, con $\gamma(h) = \sigma^2\sum_j\psi_j\psi_{j + h}$ y $\sigma^2_{LR} = \sigma^2\psi(1)^2$ (@prp-lineal).
+- **Wold** (@thm-wold): todo proceso estacionario no determinístico es lineal en segundo orden: los ARMA no pierden generalidad.
+- **AR(1):** causal y estacionario si y solo si $|\phi|<1$ (@thm-ar1). **MA(1):** invertible si $|\theta|<1$; $\theta$ y $1/\theta$ dan la misma ACF (@prp-ma1-inv).
+- **ARMA($p$,$q$):** raíces de $\phi$ fuera del círculo unitario $\Rightarrow$ estacionario causal con $\psi = \theta/\phi$ (@thm-arma); raíces de $\theta$ fuera $\Rightarrow$ invertible.
+- **Identificación Box–Jenkins:** MA($q$) tiene ACF que se corta; AR($p$) tiene PACF que se corta. Las **ecuaciones de Yule–Walker** (@eq-yw) ligan parámetros y autocovarianzas.
+
+# Ejercicios
+
+**Ejercicio 2.1.** Determina si cada ecuación tiene solución estacionaria causal: (a) $y_t = 0{,}9y_{t-1} + \varepsilon_t$; (b) $y_t = -1{,}2y_{t-1} + \varepsilon_t$; (c) $y_t = y_{t-1} + \varepsilon_t$; (d) $y_t = 0{,}5y_{t-1} + 0{,}3y_{t-2} + \varepsilon_t$.
+
+::: {.callout-tip collapse="true" title="Solución 2.1"}
+(a) $|\phi| = 0{,}9<1$: sí. (b) $|\phi| = 1{,}2>1$: solo la solución **no causal** (adelantada). (c) $\phi = 1$: no hay solución estacionaria (caminata aleatoria). (d) $\phi(z) = 1 - 0{,}5z - 0{,}3z^2$; las raíces de $0{,}3z^2 + 0{,}5z - 1 = 0$ son $z = \dfrac{-0{,}5\pm\sqrt{0{,}25 + 1{,}2}}{0{,}6} = \dfrac{-0{,}5\pm1{,}204}{0{,}6}$, es decir $z_1 = 1{,}173$ y $z_2 = -2{,}840$, ambas con $|z|>1$: sí es estacionario y causal.
+:::
+
+**Ejercicio 2.2.** Para un ARMA(1,1) con $\phi = 0{,}5$ y $\theta = 0{,}4$, calcula $\psi_1,\psi_2,\psi_3$, $\gamma(0)/\sigma^2$ y $\sigma^2_{LR}/\sigma^2$.
+
+::: {.callout-tip collapse="true" title="Solución 2.2"}
+$\psi_j = \phi^{j-1}(\phi + \theta)$: $\psi_1 = 0{,}9$, $\psi_2 = 0{,}45$, $\psi_3 = 0{,}225$. $\gamma(0)/\sigma^2 = \sum_j\psi_j^2 = 1 + \dfrac{(\phi + \theta)^2}{1 - \phi^2} = 1 + \dfrac{0{,}81}{0{,}75} = 2{,}08$. $\psi(1) = \dfrac{1 + \theta}{1 - \phi} = \dfrac{1{,}4}{0{,}5} = 2{,}8$ (también $1 + \sum_{j\ge1}\psi_j = 1 + 0{,}9/0{,}5 = 2{,}8$) y $\sigma^2_{LR}/\sigma^2 = 7{,}84$. La varianza de largo plazo es casi cuatro veces $\gamma(0)$: la serie es muy persistente.
+:::
+
+**Ejercicio 2.3.** Un MA(1) tiene $\theta = -1{,}5$ y $\sigma^2 = 1$. Encuentra la representación invertible equivalente y verifica que da las mismas autocovarianzas.
+
+::: {.callout-tip collapse="true" title="Solución 2.3"}
+$\theta^* = 1/\theta = -2/3$ y $\sigma^{*2} = \theta^2\sigma^2 = 2{,}25$. Original: $\gamma(0) = \sigma^2(1 + \theta^2) = 3{,}25$ y $\gamma(1) = \theta\sigma^2 = -1{,}5$. Invertible: $\gamma^*(0) = 2{,}25(1 + 4/9) = 2{,}25\cdot13/9 = 3{,}25$ y $\gamma^*(1) = (-2/3)(2{,}25) = -1{,}5$. Coinciden. Si el investigador estima un MA(1) por máxima verosimilitud gaussiana, obtendrá $\hat\theta = -2/3$ (en la región invertible) aunque el "verdadero" generador fuera $-1{,}5$.
+:::
+
+**Ejercicio 2.4.** Para el AR(2) del @exm-ar2 calcula $\rho(4)$ y la varianza $\gamma(0)/\sigma^2$ usando @eq-yw.
+
+::: {.callout-tip collapse="true" title="Solución 2.4"}
+$\rho(4) = 0{,}5\rho(3) + 0{,}3\rho(2) = 0{,}5(0{,}543) + 0{,}3(0{,}657) = 0{,}271 + 0{,}197 = 0{,}469$. Varianza: $\gamma(0) = \phi_1\gamma(1) + \phi_2\gamma(2) + \sigma^2 = \gamma(0)[\phi_1\rho(1) + \phi_2\rho(2)] + \sigma^2$, así que $\gamma(0)/\sigma^2 = 1/[1 - \phi_1\rho(1) - \phi_2\rho(2)] = 1/[1 - 0{,}357 - 0{,}197] = 1/0{,}446 = 2{,}24$.
+:::
+
+**Ejercicio 2.5.** Verifica con las raíces que el AR(2) con $\phi_1 = 1{,}2$ y $\phi_2 = -0{,}5$ es estacionario, y calcula el período aproximado de su ciclo. (Pista: escribe $\phi(z) = (1 - \lambda_1z)(1 - \lambda_2z)$, de modo que $\phi_1 = \lambda_1 + \lambda_2$, $\phi_2 = -\lambda_1\lambda_2$; la condición es $|\lambda_i|<1$.)
+
+::: {.callout-tip collapse="true" title="Solución 2.5"}
+$\lambda^2 - 1{,}2\lambda + 0{,}5 = 0$ da $\lambda = 0{,}6\pm0{,}4i$ (raíces complejas conjugadas). $|\lambda| = \sqrt{0{,}36 + 0{,}16} = 0{,}721<1$: estacionario (en general, para raíces complejas $|\lambda|^2 = -\phi_2<1$). El argumento es $\arctan(0{,}4/0{,}6) = 0{,}588$ rad, y el período del ciclo estocástico es $2\pi/0{,}588\approx10{,}7$ períodos. La ACF oscila amortiguada con ese período. Las condiciones generales de estacionariedad del AR(2) (el "triángulo") son $\phi_1 + \phi_2<1$, $\phi_2 - \phi_1<1$ y $|\phi_2|<1$; aquí $0{,}7<1$, $-1{,}7<1$ y $0{,}5<1$ se cumplen.
+:::
+
+**Ejercicio 2.6.** Muestra que $(1 - 0{,}5L)y_t = (1 - 0{,}5L)\varepsilon_t$ es simplemente ruido blanco, y explica el problema de **redundancia de parámetros** en el ARMA(1,1) cuando $\theta = -\phi$.
+
+::: {.callout-tip collapse="true" title="Solución 2.6"}
+El factor $(1 - 0{,}5L)$ aparece en ambos lados y es invertible (la raíz $z = 2$ está fuera del círculo unitario): $y_t = \varepsilon_t$. En general, con $\theta = -\phi$, $\psi(z) = (1 - \phi z)/(1 - \phi z) = 1$: la autocovarianza es la del ruido blanco cualquiera sea $\phi$. Entonces la verosimilitud es **constante en la recta $\theta = -\phi$**: no hay información para identificar $\phi$ (y $\theta$ por separado), y los errores estándar de un ARMA(1,1) ajustado a datos que son casi ruido blanco son enormes. Es la razón por la que se exige "sin raíces comunes" y por la que sobreajustar el orden $(p,q)$ degrada la estimación.
+:::
+
+**Ejercicio 2.7 ★.** Calcula la densidad espectral de un MA(1) con $\theta$ y con $1/\theta$ (con $\sigma^2$ ajustada) y comprueba que son iguales. ¿Para qué $\theta$ se maximiza $f(0)$ relativa a $\gamma(0)$?
+
+::: {.callout-tip collapse="true" title="Solución 2.7 ★"}
+$f(\lambda) = \dfrac{\sigma^2}{2\pi}|1 + \theta e^{-i\lambda}|^2 = \dfrac{\sigma^2}{2\pi}(1 + \theta^2 + 2\theta\cos\lambda)$. Con $\theta^* = 1/\theta$ y $\sigma^{*2} = \theta^2\sigma^2$: $\dfrac{\theta^2\sigma^2}{2\pi}(1 + \theta^{-2} + 2\theta^{-1}\cos\lambda) = \dfrac{\sigma^2}{2\pi}(\theta^2 + 1 + 2\theta\cos\lambda)$: idéntica. El cociente $2\pi f(0)/\gamma(0) = \sigma^2_{LR}/\gamma(0) = (1 + \theta)^2/(1 + \theta^2) = 1 + 2\rho(1)\le2$, con máximo $2$ en $\theta = 1$ (que corresponde a $\rho(1) = 0{,}5$) y mínimo $0$ en $\theta = -1$ (donde $\rho(1) = -0{,}5$ y la varianza de largo plazo es cero: la serie "sobrediferenciada").
+:::

@@ -79,7 +79,7 @@ $P_{ij}$ no cambia si sumamos la misma constante (o cualquier función de $i$) a
 
 ## Estimación e interpretación
 
-Sea $d_{ij} = \mathbf{1}\{y_i = j\}$. La log-verosimilitud es $\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}$. Para el logit multinomial con $V_{ij} = x_i'\beta_j$, el score respecto de $\beta_j$ es $\sum_i(d_{ij} - P_{ij})x_i$, las mismas "ecuaciones normales" del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el @thm-concavidad-logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.
+Sea $d_{ij} = \mathbf{1}\{y_i = j\}$. La log-verosimilitud es $\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}$. Para el logit multinomial con $V_{ij} = x_i'\beta_j$, el score respecto de $\beta_j$ es $\sum_i(d_{ij} - P_{ij})x_i$, las mismas "ecuaciones normales" del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el teorema de concavidad del logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.
 
 ¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:
 

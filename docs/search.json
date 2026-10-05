@@ -827,7 +827,7 @@
     "href": "econometria-2/clase-06.html#estimación-e-interpretación",
     "title": "Clase 6 · Elección discreta II",
     "section": "3.1 Estimación e interpretación",
-    "text": "3.1 Estimación e interpretación\nSea \\(d_{ij} = \\mathbf{1}\\{y_i = j\\}\\). La log-verosimilitud es \\(\\ell_n = \\sum_i\\sum_jd_{ij}\\log P_{ij}\\). Para el logit multinomial con \\(V_{ij} = x_i'\\beta_j\\), el score respecto de \\(\\beta_j\\) es \\(\\sum_i(d_{ij} - P_{ij})x_i\\), las mismas “ecuaciones normales” del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el ?@thm-concavidad-logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.\n¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:\n\nRazones de probabilidad relativa. Como \\(P_{ij}/P_{i0} = \\exp(x_i'\\beta_j)\\), el coeficiente \\(\\beta_{jl}\\) es el cambio en el log del cociente \\(P_j/P_0\\) por unidad de \\(x_l\\). Es lo que reportan los programas.\nEfecto marginal sobre las probabilidades. Derivando \\(P_j = e^{x'\\beta_j}/\\sum_ke^{x'\\beta_k}\\), \\[\n\\frac{\\partial P_j}{\\partial x} = P_j\\Big(\\beta_j - \\sum_{k=0}^JP_k\\beta_k\\Big).\n\\tag{1}\\] (Se obtiene derivando \\(\\log P_j = x'\\beta_j - \\log\\sum_ke^{x'\\beta_k}\\), cuyo gradiente es \\(\\beta_j - \\sum_kP_k\\beta_k\\), y multiplicando por \\(P_j\\).) El signo del efecto marginal no tiene por qué coincidir con el de \\(\\beta_j\\): depende de si \\(\\beta_j\\) está por encima o por debajo del promedio ponderado \\(\\sum_kP_k\\beta_k\\). Una alternativa con \\(\\beta_{j}&gt;0\\) puede ver caer su probabilidad si otra alternativa con \\(\\beta\\) aún mayor atrae más gente.\nEfectos sobre probabilidades promedio (AME) con error estándar por el método delta, como en la Clase 5.",
+    "text": "3.1 Estimación e interpretación\nSea \\(d_{ij} = \\mathbf{1}\\{y_i = j\\}\\). La log-verosimilitud es \\(\\ell_n = \\sum_i\\sum_jd_{ij}\\log P_{ij}\\). Para el logit multinomial con \\(V_{ij} = x_i'\\beta_j\\), el score respecto de \\(\\beta_j\\) es \\(\\sum_i(d_{ij} - P_{ij})x_i\\), las mismas “ecuaciones normales” del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el teorema de concavidad del logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.\n¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:\n\nRazones de probabilidad relativa. Como \\(P_{ij}/P_{i0} = \\exp(x_i'\\beta_j)\\), el coeficiente \\(\\beta_{jl}\\) es el cambio en el log del cociente \\(P_j/P_0\\) por unidad de \\(x_l\\). Es lo que reportan los programas.\nEfecto marginal sobre las probabilidades. Derivando \\(P_j = e^{x'\\beta_j}/\\sum_ke^{x'\\beta_k}\\), \\[\n\\frac{\\partial P_j}{\\partial x} = P_j\\Big(\\beta_j - \\sum_{k=0}^JP_k\\beta_k\\Big).\n\\tag{1}\\] (Se obtiene derivando \\(\\log P_j = x'\\beta_j - \\log\\sum_ke^{x'\\beta_k}\\), cuyo gradiente es \\(\\beta_j - \\sum_kP_k\\beta_k\\), y multiplicando por \\(P_j\\).) El signo del efecto marginal no tiene por qué coincidir con el de \\(\\beta_j\\): depende de si \\(\\beta_j\\) está por encima o por debajo del promedio ponderado \\(\\sum_kP_k\\beta_k\\). Una alternativa con \\(\\beta_{j}&gt;0\\) puede ver caer su probabilidad si otra alternativa con \\(\\beta\\) aún mayor atrae más gente.\nEfectos sobre probabilidades promedio (AME) con error estándar por el método delta, como en la Clase 5.",
     "crumbs": [
       "Inicio",
       "Clase 6 · Elección discreta II"
@@ -1205,6 +1205,303 @@
     "crumbs": [
       "Inicio",
       "Econometría 2"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html",
+    "href": "econometria-3/clase-01.html",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html#la-función-de-autocovarianza",
+    "href": "econometria-3/clase-01.html#la-función-de-autocovarianza",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "2.1 La función de autocovarianza",
+    "text": "2.1 La función de autocovarianza\nPara un proceso estacionario, la función de autocovarianza es \\(\\gamma(h) = \\operatorname{Cov}(y_t,y_{t+h})\\) y la función de autocorrelación (ACF) es \\(\\rho(h) = \\gamma(h)/\\gamma(0)\\). Ambas satisfacen propiedades que usaremos todo el curso.\n\nProposición 2 (Propiedades de la autocovarianza) Sea \\(\\gamma(\\cdot)\\) la autocovarianza de un proceso estacionario. Entonces:\n\n\\(\\gamma(0) = \\operatorname{Var}(y_t)\\ge0\\).\n\\(|\\gamma(h)|\\le\\gamma(0)\\) para todo \\(h\\) (así \\(|\\rho(h)|\\le1\\)).\n\\(\\gamma(h) = \\gamma(-h)\\) (simetría).\n\\(\\gamma\\) es semidefinida positiva: para todo \\(n\\) y todo \\(a\\in\\mathbb{R}^n\\), \\(\\sum_{i,j}a_ia_j\\gamma(i - j)\\ge0\\); es decir, la matriz de Toeplitz \\(\\Gamma_n = [\\gamma(i - j)]_{i,j = 1}^n\\) es semidefinida positiva.\n\n\n\nDemostración. \n\nes una varianza. (2) Por Cauchy–Schwarz, \\(|\\operatorname{Cov}(y_t,y_{t+h})|\\le\\sqrt{\\operatorname{Var}(y_t)\\operatorname{Var}(y_{t+h})} = \\gamma(0)\\). (3) \\(\\gamma(h) = \\operatorname{Cov}(y_t,y_{t+h}) = \\operatorname{Cov}(y_{t-h},y_t) = \\gamma(-h)\\), pues la covarianza es simétrica y el valor no depende de \\(t\\). (4) Con \\(a = (a_1,\\dots,a_n)'\\), \\(0\\le\\operatorname{Var}\\big(\\sum_ia_iy_i\\big) = \\sum_{i,j}a_ia_j\\operatorname{Cov}(y_i,y_j) = a'\\Gamma_na\\).\n\n\nLa propiedad (4) es más profunda de lo que parece: no toda función simétrica con \\(\\gamma(0)\\ge|\\gamma(h)|\\) es una autocovarianza. Por ejemplo, \\(\\gamma(0) = 1\\), \\(\\gamma(\\pm1) = 0{,}9\\), \\(\\gamma(\\pm2) = 0\\) viola la semidefinición positiva (Ejercicio 1.7). La sección ★ muestra que esa condición es suficiente para que exista un proceso.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html#ejemplos",
+    "href": "econometria-3/clase-01.html#ejemplos",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "2.2 Ejemplos",
+    "text": "2.2 Ejemplos\n\nEjemplo 1 (Un zoológico mínimo)  \n\nRuido blanco: \\(\\varepsilon_t\\) con media cero, varianza \\(\\sigma^2\\) y \\(\\operatorname{Cov}(\\varepsilon_t,\\varepsilon_s) = 0\\) para \\(t\\ne s\\) (escribimos \\(\\varepsilon_t\\sim WN(0,\\sigma^2)\\)). Es estacionario con \\(\\gamma(0) = \\sigma^2\\) y \\(\\gamma(h) = 0\\) si \\(h\\ne0\\). Un i.i.d. es un caso particular, pero el ruido blanco solo exige no correlación, no independencia.\nMedia móvil de orden 1, MA(1): \\(y_t = \\varepsilon_t + \\theta\\varepsilon_{t-1}\\) con \\(\\varepsilon_t\\sim WN(0,\\sigma^2)\\). Entonces \\(\\gamma(0) = \\sigma^2(1 + \\theta^2)\\), \\(\\gamma(\\pm1) = \\theta\\sigma^2\\) y \\(\\gamma(h) = 0\\) para \\(|h|\\ge2\\). La autocorrelación es \\(\\rho(1) = \\theta/(1 + \\theta^2)\\), que no puede superar \\(\\tfrac12\\) (el máximo se alcanza en \\(\\theta = 1\\)).\nCaminata aleatoria: \\(y_t = y_{t-1} + \\varepsilon_t\\), \\(y_0 = 0\\). Entonces \\(y_t = \\sum_{s = 1}^t\\varepsilon_s\\) tiene \\(\\operatorname{Var}(y_t) = t\\sigma^2\\), que depende de \\(t\\): no es estacionario (es el tema de la Clase 6).\nTendencia más ruido: \\(y_t = a + bt + \\varepsilon_t\\) tiene \\(\\mathbb{E}[y_t] = a + bt\\), no constante: no es estacionario, pero \\(y_t - bt\\) sí lo es (estacionario en tendencia).\nUn nivel aleatorio: \\(y_t = Z\\) para todo \\(t\\), con \\(Z\\) aleatoria de media cero y varianza \\(\\sigma^2\\). Es estacionario con \\(\\gamma(h) = \\sigma^2\\) para todo \\(h\\): la “memoria” nunca se olvida. Como veremos, es el ejemplo de un proceso no ergódico.\n\n\nDel ejemplo 2 sale una observación útil para la Clase 13 de Econometría 2: los valores \\(\\theta\\) y \\(1/\\theta\\) dan la misma autocorrelación \\(\\rho(1) = \\theta/(1 + \\theta^2)\\) (porque \\(\\frac{1/\\theta}{1 + 1/\\theta^2} = \\frac{\\theta}{\\theta^2 + 1}\\)). Con solo la ACF no podemos distinguir un MA(1) con \\(\\theta = 0{,}5\\) de uno con \\(\\theta = 2\\). De ahí la elección de la raíz invertible en esa clase (Clase 2 de este curso).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html#la-varianza-del-promedio",
+    "href": "econometria-3/clase-01.html#la-varianza-del-promedio",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "3.1 La varianza del promedio",
+    "text": "3.1 La varianza del promedio\nEl primer paso es calcular la varianza de \\(\\bar y_T\\) para un proceso estacionario. Como \\(\\operatorname{Var}\\big(\\sum_ty_t\\big) = \\sum_{t,s}\\gamma(t - s)\\), y hay \\(T - |h|\\) pares \\((t,s)\\) con \\(t - s = h\\), \\[\n\\operatorname{Var}(\\bar y_T) = \\frac1{T^2}\\sum_{t,s = 1}^T\\gamma(t - s) = \\frac1T\\sum_{h = -(T - 1)}^{T - 1}\\Big(1 - \\frac{|h|}T\\Big)\\gamma(h).\n\\tag{1}\\] En el caso i.i.d., \\(\\gamma(h) = 0\\) para \\(h\\ne0\\) y esto es \\(\\gamma(0)/T\\). Con dependencia, hay términos adicionales. Cuando las autocovarianzas son absolutamente sumables, el efecto de la dependencia se resume en un solo número.\n\nTeorema 1 (LGN en media cuadrática y varianza de largo plazo) Sea \\(\\{y_t\\}\\) estacionario con \\(\\gamma(h)\\to0\\) cuando \\(h\\to\\infty\\). Entonces \\(\\bar y_T\\to\\mu\\) en media cuadrática (y por lo tanto en probabilidad). Si además \\(\\sum_{h = -\\infty}^\\infty|\\gamma(h)|&lt;\\infty\\), entonces \\[\nT\\operatorname{Var}(\\bar y_T)\\ \\longrightarrow\\ \\sigma^2_{LR} = \\sum_{h = -\\infty}^\\infty\\gamma(h) = \\gamma(0) + 2\\sum_{h = 1}^\\infty\\gamma(h).\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nDe Ecuación 1, \\(\\operatorname{Var}(\\bar y_T)\\) es un promedio ponderado de \\(\\gamma(h)\\) con pesos \\((1 - |h|/T)/T\\). Para que tienda a cero basta que los \\(\\gamma(h)\\) lejanos sean chicos: la contribución de la parte “cercana” es del orden \\(1/T\\) por el número finito de rezagos, y la de la parte “lejana” es chica porque \\(\\gamma(h)\\to0\\). Para el segundo resultado, multiplico por \\(T\\): queda \\(\\sum_h(1 - |h|/T)\\gamma(h)\\), y cada término converge a \\(\\gamma(h)\\) (porque \\(1 - |h|/T\\to1\\)), con una cota sumable que me deja intercambiar límite y suma (convergencia dominada).\n\n\n\nDemostración. (Primera parte.) De Ecuación 1, \\(\\operatorname{Var}(\\bar y_T)\\le\\frac1T\\sum_{|h|&lt;T}|\\gamma(h)| = \\frac{1}{T}\\Big[|\\gamma(0)| + 2\\sum_{h = 1}^{T - 1}|\\gamma(h)|\\Big]\\). Como \\(\\gamma(h)\\to0\\), la media de Cesàro \\(\\frac1T\\sum_{h = 1}^{T-1}|\\gamma(h)|\\to0\\) (el promedio de los primeros \\(T\\) términos de una sucesión que tiende a cero tiende a cero). Luego \\(\\operatorname{Var}(\\bar y_T)\\le\\frac{\\gamma(0)}T + \\frac2T\\cdot\\Big[\\sum_{h = 1}^{T - 1}|\\gamma(h)|\\Big]\\to0\\). Como \\(\\mathbb{E}[\\bar y_T] = \\mu\\), \\(\\mathbb{E}(\\bar y_T - \\mu)^2 = \\operatorname{Var}(\\bar y_T)\\to0\\), y la convergencia en media cuadrática implica convergencia en probabilidad (desigualdad de Chebyshev).\n(Segunda parte.) Multiplicando Ecuación 1 por \\(T\\), \\(T\\operatorname{Var}(\\bar y_T) = \\sum_{h}\\mathbf{1}\\{|h|&lt;T\\}(1 - |h|/T)\\gamma(h)\\). Cada término converge a \\(\\gamma(h)\\) y está acotado en valor absoluto por \\(|\\gamma(h)|\\), que es sumable. Por el teorema de convergencia dominada (para series), el límite es \\(\\sum_h\\gamma(h)\\).\n\nEl número \\(\\sigma^2_{LR} = \\sum_h\\gamma(h)\\) es la varianza de largo plazo del proceso. Es lo que reemplaza a \\(\\gamma(0)\\) en la varianza de \\(\\bar y_T\\): \\(\\operatorname{Var}(\\bar y_T)\\approx\\sigma_{LR}^2/T\\). Con autocorrelación positiva (\\(\\gamma(h)&gt;0\\)), \\(\\sigma^2_{LR}&gt;\\gamma(0)\\): hay menos información de la que hay en una muestra i.i.d. del mismo tamaño, y los errores estándar que ignoran la dependencia son demasiado chicos. Es exactamente el mismo problema de la Clase 9 de Econometría 2 (efecto de diseño con clusters), aquí en el tiempo.\n\nEjemplo 2 (La varianza de largo plazo del MA(1)) Para \\(y_t = \\varepsilon_t + \\theta\\varepsilon_{t-1}\\): \\(\\sigma^2_{LR} = \\gamma(0) + 2\\gamma(1) = \\sigma^2(1 + \\theta^2) + 2\\theta\\sigma^2 = \\sigma^2(1 + \\theta)^2\\). Con \\(\\theta = 0{,}5\\) y \\(\\sigma^2 = 1\\), \\(\\sigma^2_{LR} = 2{,}25\\), frente a \\(\\gamma(0) = 1{,}25\\). Con \\(T = 100\\), el error estándar correcto de \\(\\bar y_T\\) es \\(\\sqrt{2{,}25/100} = 0{,}15\\), y el que se obtendría ignorando la dependencia es \\(\\sqrt{1{,}25/100} = 0{,}112\\): 25 % demasiado chico. Con \\(\\theta = -1\\) ocurre lo contrario: \\(\\sigma^2_{LR} = 0\\) (el promedio converge más rápido que \\(1/\\sqrt T\\)). Es una sobrediferencia, un fenómeno que reaparece en la Clase 7.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html#ergodicidad",
+    "href": "econometria-3/clase-01.html#ergodicidad",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "3.2 Ergodicidad",
+    "text": "3.2 Ergodicidad\nLa LGN en media cuadrática exige que las autocovarianzas se desvanezcan. Pero lo que realmente queremos, al estimar cualquier cosa por promedios temporales (no solo la media: autocovarianzas, momentos para GMM, scores de MV), es una propiedad más general.\n\nDefinición 3 (Proceso ergódico) Un proceso estrictamente estacionario \\(\\{y_t\\}\\) es ergódico si para toda función \\(f\\) medible con \\(\\mathbb{E}|f(y_t,\\dots,y_{t+k})|&lt;\\infty\\), \\[\n\\frac1T\\sum_{t = 1}^Tf(y_t,\\dots,y_{t+k})\\xrightarrow{c.s.}\\mathbb{E}\\big[f(y_t,\\dots,y_{t+k})\\big].\n\\]\n\n(La definición formal usa conjuntos invariantes bajo el desplazamiento temporal; esta es la consecuencia que importa. Que el proceso sea ergódico equivale a que sus promedios temporales de todas las funciones integrables converjan a la constante \\(\\mathbb{E}[f]\\), no a una variable aleatoria.)\n\nTeorema 2 (Teorema ergódico (Birkhoff) — se toma prestado) Si \\(\\{y_t\\}\\) es estrictamente estacionario y \\(\\mathbb{E}|y_t|&lt;\\infty\\), entonces \\(\\bar y_T\\) converge casi seguramente a una variable aleatoria \\(\\bar y\\) con \\(\\mathbb{E}[\\bar y] = \\mu\\). Si además \\(\\{y_t\\}\\) es ergódico, \\(\\bar y = \\mu\\) es constante.\n\nEl teorema dice que, sin ergodicidad, el promedio temporal converge, pero a una variable aleatoria, no a \\(\\mu\\): la trayectoria particular que nos tocó determina el límite. Con ergodicidad, el promedio temporal de una sola trayectoria sí aprende la media de ensamble. Es la condición que cumple todo lo que usaremos.\n\nEjemplo 3 (Un proceso estacionario no ergódico) En \\(y_t = Z\\) para todo \\(t\\) (Ejemplo 1, 5), el proceso es estrictamente estacionario con \\(\\mu = 0\\), pero \\(\\bar y_T = Z\\) para todo \\(T\\): converge a la variable aleatoria \\(Z\\), no a \\(0\\). Por mucho que observes la serie, solo ves una “tirada” de \\(Z\\) y nunca aprendes \\(\\mu\\). Aquí \\(\\gamma(h) = \\sigma^2\\not\\to0\\), que es exactamente la condición del Teorema 1 que falla.\n\nDos hechos prácticos, que se toman prestados:\n\nCondición suficiente: un proceso estacionario que es mezclante (mixing: la dependencia entre \\(y_t\\) e \\(y_{t+h}\\) se desvanece cuando \\(h\\to\\infty\\)) es ergódico. Los procesos ARMA estacionarios con innovaciones i.i.d. lo son (Clase 2).\nEn el caso gaussiano, un proceso estacionario es ergódico si y solo si \\(\\gamma(h)\\to0\\) (en promedio de Cesàro). Es decir, para gaussianos, la condición del Teorema 1 es necesaria y suficiente.\n\n\n\n\n\n\n\nPrecauciónPor qué esto importa para todo el curso\n\n\n\nLa teoría de M-estimadores de Econometría 2 (Clase 1) se extiende a procesos estacionarios y ergódicos reemplazando “i.i.d.” por “estacionario y ergódico” en la ley de los grandes números (incluida la versión uniforme). La consistencia de MCO, MV y GMM sigue funcionando. Lo que no se extiende directamente es la normalidad asintótica: el TCL para sumas de variables dependientes necesita condiciones adicionales y cambia la varianza (de \\(\\gamma(0)\\) a \\(\\sigma^2_{LR}\\)). Eso es la Clase 5.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-01.html#la-acf-de-un-ruido-blanco",
+    "href": "econometria-3/clase-01.html#la-acf-de-un-ruido-blanco",
+    "title": "Clase 1 · Procesos estocásticos y estacionariedad",
+    "section": "4.1 La ACF de un ruido blanco",
+    "text": "4.1 La ACF de un ruido blanco\nUn primer uso práctico: testear si una serie (o los residuos de un modelo) es ruido blanco, mirando si sus autocorrelaciones muestrales son cero.\n\nProposición 4 (Autocorrelaciones muestrales de un ruido blanco) Si \\(\\{y_t\\}\\) es i.i.d. con \\(\\mathbb{E}[y_t^2]&lt;\\infty\\) y varianza positiva, entonces para cada \\(h\\ge1\\) fijo, \\(\\sqrt T\\hat\\rho(h)\\xrightarrow{d}N(0,1)\\) y, para \\(h\\ne k\\), \\(\\hat\\rho(h)\\) y \\(\\hat\\rho(k)\\) son asintóticamente independientes.\n\n\nDemostración. (Esquema; el detalle usa un TCL para sucesiones dependientes, que veremos en la Clase 5.) Con \\(\\mu = 0\\) por simplicidad, \\(\\sqrt T\\hat\\gamma(h) = T^{-1/2}\\sum_ty_ty_{t + h} + o_p(1)\\). Los términos \\(y_ty_{t + h}\\) tienen media cero (independencia), varianza \\(\\mathbb{E}[y_t^2]\\mathbb{E}[y_{t + h}^2] = \\sigma^4\\), y son no correlacionados entre sí: \\(\\operatorname{Cov}(y_ty_{t + h},y_sy_{s + h}) = 0\\) si \\(t\\ne s\\) (algún \\(y\\) queda sin pareja). Son una diferencia de martingala, y el TCL de la Clase 5 da \\(\\sqrt T\\hat\\gamma(h)\\to_dN(0,\\sigma^4)\\). Como \\(\\hat\\gamma(0)\\to_p\\sigma^2\\), por Slutsky \\(\\sqrt T\\hat\\rho(h)\\to_dN(0,1)\\). La independencia asintótica entre rezagos sigue de que los términos de \\(h\\) y de \\(k\\) son también no correlacionados.\n\nDe aquí sale la banda estándar de los correlogramas: bajo ruido blanco, el 95 % de los \\(\\hat\\rho(h)\\) deben caer en \\(\\pm1{,}96/\\sqrt T\\). Con \\(T = 100\\), la banda es \\(\\pm0{,}196\\); con 20 rezagos, se espera que uno salga de ella por azar (Ejercicio 1.6). Una única autocorrelación “significativa” entre muchas no es evidencia de dependencia. Para testear conjuntamente muchos rezagos se usa el estadístico de Ljung–Box (Clase 4).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Procesos estocásticos y estacionariedad"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-02.html",
+    "href": "econometria-3/clase-02.html",
+    "title": "Clase 2 · Procesos lineales: MA, AR y ARMA",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Procesos lineales: MA, AR y ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-02.html#es-una-restricción-pensar-en-procesos-lineales-el-teorema-de-wold",
+    "href": "econometria-3/clase-02.html#es-una-restricción-pensar-en-procesos-lineales-el-teorema-de-wold",
+    "title": "Clase 2 · Procesos lineales: MA, AR y ARMA",
+    "section": "2.1 ¿Es una restricción pensar en procesos lineales? El teorema de Wold",
+    "text": "2.1 ¿Es una restricción pensar en procesos lineales? El teorema de Wold\nPodría parecer que los procesos lineales son una familia particular. El teorema de Wold (1938) dice que, en cuanto a los dos primeros momentos, no lo son.\n\nTeorema 1 (Descomposición de Wold — se toma prestado) Todo proceso débilmente estacionario \\(\\{y_t\\}\\) con media cero y puramente no determinístico (sin componente perfectamente predecible a partir de su pasado) puede escribirse como \\[\ny_t = \\sum_{j = 0}^\\infty\\psi_j\\varepsilon_{t-j},\\qquad\\psi_0 = 1,\\quad\\sum_j\\psi_j^2&lt;\\infty,\n\\] donde \\(\\varepsilon_t\\) es el error de pronóstico lineal de \\(y_t\\) dado su pasado, un ruido blanco (no necesariamente i.i.d.), y \\(\\psi_j\\) son coeficientes únicos.\n\nEn la Clase 3 veremos de dónde sale \\(\\varepsilon_t\\) (es la proyección residual). La conclusión práctica: los modelos ARMA no pierden generalidad en segundo orden: cualquier proceso estacionario tiene una representación MA(\\(\\infty\\)), y ARMA aproxima ese \\(\\psi(L)\\) con un cociente de polinomios de pocos parámetros. (Ojo: Wold no dice que \\(\\varepsilon_t\\) sea i.i.d. ni que el proceso sea lineal en distribución; un GARCH, Clase 12, tiene representación de Wold y es muy no lineal.)",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Procesos lineales: MA, AR y ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-02.html#el-ar1",
+    "href": "econometria-3/clase-02.html#el-ar1",
+    "title": "Clase 2 · Procesos lineales: MA, AR y ARMA",
+    "section": "3.1 El AR(1)",
+    "text": "3.1 El AR(1)\n\\[\ny_t = \\phi y_{t-1} + \\varepsilon_t,\\qquad\\varepsilon_t\\sim WN(0,\\sigma^2).\n\\tag{1}\\] Es una ecuación en diferencias estocástica: no define un proceso hasta que decimos cuál solución queremos. La respuesta depende de \\(|\\phi|\\).\n\nTeorema 2 (Soluciones estacionarias del AR(1))  \n\nSi \\(|\\phi|&lt;1\\), Ecuación 1 tiene una única solución estacionaria, \\(y_t = \\sum_{j = 0}^\\infty\\phi^j\\varepsilon_{t-j}\\), que es causal (depende solo de \\(\\varepsilon_t,\\varepsilon_{t-1},\\dots\\)).\nSi \\(|\\phi|&gt;1\\), hay una única solución estacionaria, pero no causal: \\(y_t = -\\sum_{j = 1}^\\infty\\phi^{-j}\\varepsilon_{t + j}\\) (depende del futuro).\nSi \\(|\\phi| = 1\\), no existe solución estacionaria.\n\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nItero la ecuación hacia atrás: \\(y_t = \\phi y_{t-1} + \\varepsilon_t = \\phi^2y_{t-2} + \\phi\\varepsilon_{t-1} + \\varepsilon_t = \\dots = \\phi^ny_{t-n} + \\sum_{j&lt;n}\\phi^j\\varepsilon_{t-j}\\). Si \\(|\\phi|&lt;1\\), el término \\(\\phi^ny_{t-n}\\) se desvanece (el pasado lejano se olvida) y queda la suma. Si \\(|\\phi|&gt;1\\), ese término explota, y la salida es iterar hacia adelante: \\(y_t = \\phi^{-1}y_{t+1} - \\phi^{-1}\\varepsilon_{t + 1}\\). Con \\(|\\phi| = 1\\) no hay ni olvido ni explosión: la varianza crece linealmente (caminata aleatoria).\n\n\n\nDemostración. \n\nExistencia: \\(\\sum_j|\\phi^j|&lt;\\infty\\), así que por la Proposición 1 \\(y_t = \\sum_j\\phi^j\\varepsilon_{t-j}\\) está bien definido y es estacionario. Verificación: \\(y_t - \\phi y_{t-1} = \\sum_{j\\ge0}\\phi^j\\varepsilon_{t-j} - \\sum_{j\\ge0}\\phi^{j + 1}\\varepsilon_{t - 1 - j} = \\varepsilon_t\\). Unicidad: si \\(\\{y_t\\}\\) es cualquier solución estacionaria, iterando \\(n\\) veces, \\(y_t - \\sum_{j&lt;n}\\phi^j\\varepsilon_{t-j} = \\phi^ny_{t-n}\\), cuyo segundo momento es \\(\\phi^{2n}(\\gamma(0) + \\mu^2)\\to0\\). Luego \\(y_t = \\sum_j\\phi^j\\varepsilon_{t-j}\\) en media cuadrática.\nDespejando, \\(y_t = \\phi^{-1}y_{t + 1} - \\phi^{-1}\\varepsilon_{t + 1}\\), y como \\(|\\phi^{-1}|&lt;1\\) el mismo argumento hacia adelante da \\(y_t = -\\sum_{j\\ge1}\\phi^{-j}\\varepsilon_{t + j}\\) como única solución estacionaria. Verificación: \\(y_t - \\phi y_{t-1} = -\\sum_{j\\ge1}\\phi^{-j}\\varepsilon_{t + j} + \\sum_{j\\ge1}\\phi^{1 - j}\\varepsilon_{t - 1 + j} = -\\sum_{j\\ge1}\\phi^{-j}\\varepsilon_{t + j} + \\sum_{k\\ge0}\\phi^{-k}\\varepsilon_{t + k} = \\varepsilon_t\\).\nCon \\(\\phi = 1\\), iterando, \\(y_t - y_{t-n} = \\sum_{j&lt;n}\\varepsilon_{t-j}\\) con varianza \\(n\\sigma^2\\). Pero si \\(y\\) fuera estacionario, \\(\\operatorname{Var}(y_t - y_{t-n})\\le4\\gamma(0)\\) para todo \\(n\\): contradicción. (El caso \\(\\phi = -1\\) es análogo con \\(y_t - (-1)^ny_{t-n}\\).)\n\n\nLa solución no causal del caso (2) es matemáticamente legítima pero inútil como modelo: pide que el proceso de hoy dependa de shocks que aún no ocurren. Por convención se trabaja con la solución causal, y se pide \\(|\\phi|&lt;1\\). Además, el caso \\(|\\phi|&gt;1\\) no agrega nada: tiene la misma autocovarianza que un AR(1) causal con parámetro \\(1/\\phi\\) y otra varianza de innovación (como el MA(1) con \\(\\theta\\) y \\(1/\\theta\\)). Bajo \\(|\\phi|&lt;1\\), la autocovarianza es \\(\\gamma(h) = \\sigma^2\\phi^{|h|}/(1 - \\phi^2)\\) (Ejercicio 1.5 de la Clase 1). Con \\(\\phi&gt;0\\) la serie es “suave” y persistente (la ACF decae geométricamente); con \\(\\phi&lt;0\\) oscila.",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Procesos lineales: MA, AR y ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-02.html#el-arp-y-la-condición-de-estacionariedad",
+    "href": "econometria-3/clase-02.html#el-arp-y-la-condición-de-estacionariedad",
+    "title": "Clase 2 · Procesos lineales: MA, AR y ARMA",
+    "section": "3.2 El AR(\\(p\\)) y la condición de estacionariedad",
+    "text": "3.2 El AR(\\(p\\)) y la condición de estacionariedad\n\\[\n\\phi(L)y_t = \\varepsilon_t,\\qquad\\phi(z) = 1 - \\phi_1z - \\dots - \\phi_pz^p.\n\\] La generalización natural del \\(|\\phi|&lt;1\\) es que todas las raíces del polinomio \\(\\phi(z)\\) estén fuera del círculo unitario: \\(\\phi(z)\\ne0\\) para \\(|z|\\le1\\). (Para \\(p = 1\\), la única raíz es \\(1/\\phi\\), y \\(|1/\\phi|&gt;1\\iff|\\phi|&lt;1\\).) Es el contenido del teorema general que sigue. Condiciones para \\(p = 2\\) en el Ejercicio 2.5.",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Procesos lineales: MA, AR y ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-02.html#las-ecuaciones-de-yulewalker",
+    "href": "econometria-3/clase-02.html#las-ecuaciones-de-yulewalker",
+    "title": "Clase 2 · Procesos lineales: MA, AR y ARMA",
+    "section": "6.1 Las ecuaciones de Yule–Walker",
+    "text": "6.1 Las ecuaciones de Yule–Walker\nPara un AR(\\(p\\)) causal podemos obtener la ACF sin calcular \\(\\psi_j\\). Multiplicando \\(y_t = \\sum_{k = 1}^p\\phi_ky_{t-k} + \\varepsilon_t\\) por \\(y_{t-h}\\) y tomando esperanza (con \\(\\mu = 0\\)), usando \\(\\mathbb{E}[\\varepsilon_ty_{t-h}] = 0\\) si \\(h\\ge1\\) (causalidad) y \\(= \\sigma^2\\) si \\(h = 0\\): \\[\n\\gamma(h) = \\sum_{k = 1}^p\\phi_k\\gamma(h - k)\\ \\ (h\\ge1),\\qquad\\gamma(0) = \\sum_{k = 1}^p\\phi_k\\gamma(k) + \\sigma^2.\n\\tag{2}\\] Son las ecuaciones de Yule–Walker. Con \\(\\gamma(0),\\dots,\\gamma(p)\\) se pueden resolver para \\((\\phi_1,\\dots,\\phi_p,\\sigma^2)\\) y, al revés, dados los parámetros, determinan las autocovarianzas. Son la base del estimador de Yule–Walker (Clase 4).\n\nEjemplo 2 (ACF de un AR(2)) Dividiendo Ecuación 2 por \\(\\gamma(0)\\) para \\(h = 1,2\\): \\(\\rho(1) = \\phi_1 + \\phi_2\\rho(1)\\), es decir \\(\\rho(1) = \\dfrac{\\phi_1}{1 - \\phi_2}\\), y \\(\\rho(2) = \\phi_1\\rho(1) + \\phi_2\\); para \\(h\\ge3\\), \\(\\rho(h) = \\phi_1\\rho(h-1) + \\phi_2\\rho(h-2)\\). Con \\(\\phi_1 = 0{,}5\\) y \\(\\phi_2 = 0{,}3\\): \\(\\rho(1) = 0{,}5/0{,}7 = 0{,}714\\), \\(\\rho(2) = 0{,}5(0{,}714) + 0{,}3 = 0{,}657\\), \\(\\rho(3) = 0{,}5(0{,}657) + 0{,}3(0{,}714) = 0{,}543\\). La ACF decae lentamente, y la PACF vale \\(\\alpha(1) = \\rho(1) = 0{,}714\\), \\(\\alpha(2) = \\phi_2 = 0{,}3\\) y se anula para \\(h\\ge3\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Procesos lineales: MA, AR y ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-03.html",
+    "href": "econometria-3/clase-03.html",
+    "title": "Clase 3 · Pronóstico",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Pronóstico"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-03.html#el-arp-y-la-pacf",
+    "href": "econometria-3/clase-03.html#el-arp-y-la-pacf",
+    "title": "Clase 3 · Pronóstico",
+    "section": "2.1 El AR(\\(p\\)) y la PACF",
+    "text": "2.1 El AR(\\(p\\)) y la PACF\nLa propiedad de la Clase 2 (la PACF de un AR(\\(p\\)) se corta en \\(p\\)) se demuestra ahora.\n\nProposición 2 (La PACF de un AR(\\(p\\)) se anula para \\(h&gt;p\\)) Si \\(\\{y_t\\}\\) es un AR(\\(p\\)) causal, para \\(n\\ge p\\) el BLP de \\(y_{n+1}\\) es \\(\\hat y_{n+1} = \\sum_{k = 1}^p\\phi_ky_{n + 1 - k}\\) con ECM \\(\\sigma^2\\). En particular \\(\\alpha(h) = 0\\) para \\(h&gt;p\\) y \\(\\alpha(p) = \\phi_p\\).\n\n\nDemostración. Sea \\(\\tilde y_{n+1} = \\sum_{k = 1}^p\\phi_ky_{n + 1 - k}\\). El error es \\(y_{n+1} - \\tilde y_{n+1} = \\varepsilon_{n+1}\\), que por causalidad es no correlacionado con \\(y_s\\) para todo \\(s\\le n\\), o sea con el pasado entero. Cumple las condiciones de ortogonalidad del Teorema 1, y como la solución a las ecuaciones normales es única, es el BLP. Sus coeficientes son \\((\\phi_1,\\dots,\\phi_p,0,\\dots,0)\\), de modo que \\(\\phi_{n,n} = 0\\) para \\(n&gt;p\\), y \\(\\phi_{p,p} = \\phi_p\\). El ECM es \\(\\mathbb{E}[\\varepsilon_{n+1}^2] = \\sigma^2\\).\n\nObserva que el pronóstico a un paso de un AR(\\(p\\)) es exacto con \\(p\\) rezagos: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los \\(\\varepsilon\\) pasados se “recuperan” mediante invertibilidad y esa recuperación mejora con más datos).",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Pronóstico"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-03.html#pronósticos-con-una-media-móvil",
+    "href": "econometria-3/clase-03.html#pronósticos-con-una-media-móvil",
+    "title": "Clase 3 · Pronóstico",
+    "section": "3.1 Pronósticos con una media móvil",
+    "text": "3.1 Pronósticos con una media móvil\n\nEjemplo 2 (Pronóstico del MA(2)) Para \\(y_t = \\varepsilon_t + 0{,}6\\varepsilon_{t-1} + 0{,}3\\varepsilon_{t-2}\\): \\(\\hat y_{T + 1|T} = 0{,}6\\varepsilon_T + 0{,}3\\varepsilon_{T-1}\\), \\(\\hat y_{T + 2|T} = 0{,}3\\varepsilon_T\\) y \\(\\hat y_{T + h|T} = 0\\) para \\(h\\ge3\\) (el pasado deja de importar tras \\(q = 2\\) pasos). ECM: \\(\\sigma^2\\), \\(1{,}36\\sigma^2\\), \\(1{,}45\\sigma^2 = \\gamma(0)\\) para \\(h\\ge3\\). En la práctica los \\(\\varepsilon_T,\\varepsilon_{T-1}\\) no se observan: se reconstruyen de los datos con la inversión \\(\\varepsilon_t = \\sum_j\\pi_jy_{t-j}\\) (invertibilidad).",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Pronóstico"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-03.html#demostración-de-durbinlevinson",
+    "href": "econometria-3/clase-03.html#demostración-de-durbinlevinson",
+    "title": "Clase 3 · Pronóstico",
+    "section": "5.1 Demostración de Durbin–Levinson",
+    "text": "5.1 Demostración de Durbin–Levinson\nSea \\(M = \\text{sp}\\{y_2,\\dots,y_n\\}\\). El espacio \\(\\text{sp}\\{y_1,\\dots,y_n\\}\\) es la suma ortogonal de \\(M\\) y la recta generada por el error de pronóstico hacia atrás \\(b = y_1 - P_My_1\\). Entonces \\[\nP_{\\text{sp}\\{y_1,\\dots,y_n\\}}\\,y_{n+1} = P_My_{n+1} + a\\,b,\\qquad a = \\frac{\\mathbb{E}\\big[(y_{n+1} - P_My_{n+1})\\,b\\big]}{\\mathbb{E}[b^2]}.\n\\] Por estacionariedad, el problema de proyectar \\(y_{n+1}\\) sobre \\((y_2,\\dots,y_n)\\) (\\(n - 1\\) rezagos) es idéntico al de proyectar \\(y_n\\) sobre \\((y_1,\\dots,y_{n-1})\\) desplazado en un período: \\(P_My_{n+1} = \\sum_{j = 1}^{n - 1}\\phi_{n-1,j}y_{n + 1 - j}\\) con ECM \\(v_{n-1}\\). Y como \\(\\gamma(h) = \\gamma(-h)\\), el proceso invertido en el tiempo tiene las mismas autocovarianzas, de modo que la proyección hacia atrás de \\(y_1\\) sobre \\((y_2,\\dots,y_n)\\) usa los mismos coeficientes: \\(P_My_1 = \\sum_{j = 1}^{n-1}\\phi_{n-1,j}y_{1 + j}\\), con el mismo ECM \\(\\mathbb{E}[b^2] = v_{n-1}\\). El numerador de \\(a\\) es \\(\\mathbb{E}[y_{n+1}b] = \\gamma(n) - \\sum_{j = 1}^{n - 1}\\phi_{n-1,j}\\gamma(n - j)\\) (porque \\(P_My_{n+1}\\) es ortogonal a \\(b\\)). Luego \\(a = \\phi_{n,n}\\) es el coeficiente de la recursión. Para el resto de los coeficientes, sustituyendo \\(b\\): \\[\n\\sum_{j = 1}^n\\phi_{n,j}y_{n + 1 - j} = \\sum_{j = 1}^{n - 1}\\phi_{n-1,j}y_{n + 1 - j} + \\phi_{n,n}\\Big(y_1 - \\sum_{j = 1}^{n - 1}\\phi_{n-1,j}y_{1 + j}\\Big),\n\\] y comparando coeficientes de \\(y_{n + 1 - j}\\) (el término \\(y_{1 + k}\\) es \\(y_{n + 1 - (n - k)}\\)): \\(\\phi_{n,j} = \\phi_{n - 1,j} - \\phi_{n,n}\\phi_{n - 1,n - j}\\). Para el ECM, \\(v_n = \\mathbb{E}[(y_{n+1} - P_My_{n+1})^2] - a^2\\mathbb{E}[b^2] = v_{n-1} - \\phi_{n,n}^2v_{n-1}\\), por el teorema de Pitágoras en la suma ortogonal.",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Pronóstico"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-03.html#esbozo-de-la-demostración-de-wold",
+    "href": "econometria-3/clase-03.html#esbozo-de-la-demostración-de-wold",
+    "title": "Clase 3 · Pronóstico",
+    "section": "5.2 Esbozo de la demostración de Wold",
+    "text": "5.2 Esbozo de la demostración de Wold\nSea \\(H_t\\) como antes y \\(H_{-\\infty} = \\bigcap_tH_t\\) (la parte “infinitamente remota” del pasado). Las innovaciones \\(\\varepsilon_t = y_t - P_{H_{t-1}}y_t\\) son un ruido blanco. Proyectando \\(y_t\\) sobre el sistema ortogonal \\(\\{\\varepsilon_{t},\\varepsilon_{t-1},\\dots,\\varepsilon_{t - n + 1}\\}\\) y sobre \\(H_{t - n}\\) (que es ortogonal a todos ellos), \\[\ny_t = \\sum_{j = 0}^{n - 1}\\psi_j\\varepsilon_{t-j} + P_{H_{t-n}}y_t,\\qquad\\psi_j = \\frac{\\mathbb{E}[y_t\\varepsilon_{t-j}]}{\\sigma^2}.\n\\] Los \\(\\psi_j\\) no dependen de \\(t\\) (por estacionariedad), y por la desigualdad de Bessel \\(\\sigma^2\\sum_{j&lt;n}\\psi_j^2\\le\\gamma(0)\\) para todo \\(n\\), así que \\(\\sum_j\\psi_j^2&lt;\\infty\\). Por lo tanto \\(\\sum_j\\psi_j\\varepsilon_{t-j}\\) converge en \\(L^2\\), y el resto \\(P_{H_{t - n}}y_t\\) converge a \\(P_{H_{-\\infty}}y_t =: V_t\\), que es el componente determinístico: perfectamente predecible desde el pasado remoto. Entonces \\(y_t = \\sum_j\\psi_j\\varepsilon_{t-j} + V_t\\) con \\(V_t\\perp\\varepsilon_s\\) para todo \\(s\\). Si \\(H_{-\\infty} = \\{0\\}\\) (proceso puramente no determinístico), \\(V_t = 0\\) y queda la representación de Wold. La parte que requiere cuidado técnico (que \\(\\psi_0 = 1\\) y que el sistema de \\(\\varepsilon_t\\) no se degenere) usa \\(\\sigma^2&gt;0\\) y se omite aquí.",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Pronóstico"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-04.html",
+    "href": "econometria-3/clase-04.html",
+    "title": "Clase 4 · Estimación e inferencia en modelos ARMA",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Estimación e inferencia en modelos ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-04.html#el-sesgo-de-muestras-finitas",
+    "href": "econometria-3/clase-04.html#el-sesgo-de-muestras-finitas",
+    "title": "Clase 4 · Estimación e inferencia en modelos ARMA",
+    "section": "2.1 El sesgo de muestras finitas",
+    "text": "2.1 El sesgo de muestras finitas\nAunque consistente, \\(\\hat\\phi\\) está sesgado en muestras finitas. Para el AR(1) con constante, la aproximación de Kendall (1954) es (Hurwicz, 1950, obtuvo el caso sin constante, \\(-2\\phi/T\\)) \\[\n\\mathbb{E}[\\hat\\phi] - \\phi\\ \\approx\\ -\\frac{1 + 3\\phi}{T}.\n\\] Con \\(\\phi = 0{,}9\\) y \\(T = 50\\): \\(-3{,}7/50 = -0{,}074\\), el estimador subestima la persistencia en \\(0{,}074\\) en promedio. Este es el sesgo de la nota a pie de la Clase 4 de Econometría 1. Es un sesgo hacia abajo (menos persistencia) que importa mucho cuando se usa \\(\\hat\\phi\\) para calcular cuánto tarda un shock en disiparse: la vida media \\(\\log(0{,}5)/\\log\\phi\\) es muy sensible a \\(\\phi\\) cerca de uno.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Estimación e inferencia en modelos ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-04.html#el-estimador-de-yulewalker",
+    "href": "econometria-3/clase-04.html#el-estimador-de-yulewalker",
+    "title": "Clase 4 · Estimación e inferencia en modelos ARMA",
+    "section": "2.2 El estimador de Yule–Walker",
+    "text": "2.2 El estimador de Yule–Walker\nLas ecuaciones de Yule–Walker (Clase 2) relacionan los parámetros del AR(\\(p\\)) con las autocovarianzas: \\(\\Gamma_p\\phi = \\gamma_p\\) y \\(\\sigma^2 = \\gamma(0) - \\phi'\\gamma_p\\). El estimador de Yule–Walker las resuelve con las autocovarianzas muestrales: \\[\n\\hat\\phi_{YW} = \\hat\\Gamma_p^{-1}\\hat\\gamma_p,\\qquad\\hat\\sigma^2_{YW} = \\hat\\gamma(0) - \\hat\\phi_{YW}'\\hat\\gamma_p.\n\\] Es un estimador de momentos (el método de los momentos de Econometría 2, Clase 4, con \\(r = p\\)). Tiene dos propiedades:\n\nSiempre produce un modelo causal (se toma prestado): como \\(\\hat\\Gamma_p\\) es semidefinida positiva (Clase 1, divisor \\(T\\)), las raíces de \\(\\hat\\phi_{YW}(z)\\) quedan fuera del círculo unitario. MCO, en cambio, puede dar un AR no estacionario en muestras pequeñas.\nEs asintóticamente equivalente a MCO: misma distribución límite. Difiere en muestras finitas: con raíces cerca del círculo unitario, YW tiene mayor sesgo que MCO porque “fuerza” la estacionariedad.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Estimación e inferencia en modelos ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-04.html#cuasi-máxima-verosimilitud",
+    "href": "econometria-3/clase-04.html#cuasi-máxima-verosimilitud",
+    "title": "Clase 4 · Estimación e inferencia en modelos ARMA",
+    "section": "3.1 Cuasi-máxima verosimilitud",
+    "text": "3.1 Cuasi-máxima verosimilitud\nNo se necesita normalidad: el estimador \\(\\hat\\beta\\) que maximiza la verosimilitud gaussiana es consistente y asintóticamente normal para \\(\\beta\\) aunque las innovaciones no sean gaussianas, siempre que sean i.i.d. con varianza finita (es un caso de cuasi-MV, Clase 2 de Econometría 2: la verosimilitud gaussiana depende de los datos solo a través de los dos primeros momentos, que son los que identifican a \\(\\beta\\)). Eso explica por qué se usa en toda situación.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Estimación e inferencia en modelos ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-04.html#distribución-asintótica",
+    "href": "econometria-3/clase-04.html#distribución-asintótica",
+    "title": "Clase 4 · Estimación e inferencia en modelos ARMA",
+    "section": "3.2 Distribución asintótica",
+    "text": "3.2 Distribución asintótica\nLa información de Fisher del ARMA gaussiano se calcula con dos procesos auxiliares (sección ★). Los casos básicos son:\n\nTeorema 2 (Normalidad del MV gaussiano) Para un ARMA(\\(p\\),\\(q\\)) causal e invertible con innovaciones i.i.d., \\(\\sqrt T(\\hat\\beta - \\beta)\\to_dN\\big(0,V(\\beta)\\big)\\). En particular:\n\nAR(1): \\(V = 1 - \\phi^2\\).\nMA(1): \\(V = 1 - \\theta^2\\).\nARMA(1,1): \\(V_{\\phi\\phi} = \\dfrac{(1 - \\phi^2)(1 + \\phi\\theta)^2}{(\\phi + \\theta)^2}\\), \\(V_{\\theta\\theta} = \\dfrac{(1 - \\theta^2)(1 + \\phi\\theta)^2}{(\\phi + \\theta)^2}\\) y \\(V_{\\phi\\theta} = -\\dfrac{(1 - \\phi^2)(1 - \\theta^2)(1 + \\phi\\theta)}{(\\phi + \\theta)^2}\\).\n\n\nTres lecciones. (1) Dualidad: el MA(1) con parámetro \\(\\theta\\) se estima con la misma precisión que el AR(1) con \\(\\phi = \\theta\\). (2) Cerca de la frontera (\\(|\\phi|\\) o \\(|\\theta|\\to1\\)) la varianza se achica como \\(1 - \\phi^2\\), pero la aproximación normal es mala y la distribución es no estándar en la frontera (para un MA con \\(\\theta = -1\\), converge a tasa \\(T\\) y no a \\(\\sqrt T\\)). (3) Casi cancelación de raíces (\\(\\phi + \\theta\\to0\\)): la varianza del ARMA(1,1) explota: el modelo se parece a un ruido blanco y ni \\(\\phi\\) ni \\(\\theta\\) están bien identificados (Ejercicio 4.7).\n\nEjemplo 1 (Errores estándar en un ARMA(1,1)) Con \\(\\phi = 0{,}5\\), \\(\\theta = 0{,}4\\) y \\(T = 200\\): \\((\\phi + \\theta)^2 = 0{,}81\\) y \\((1 + \\phi\\theta)^2 = 1{,}44\\). \\(V_{\\phi\\phi} = 0{,}75\\cdot1{,}44/0{,}81 = 1{,}333\\), error estándar \\(\\sqrt{1{,}333/200} = 0{,}082\\); \\(V_{\\theta\\theta} = 0{,}84\\cdot1{,}44/0{,}81 = 1{,}493\\), error estándar \\(0{,}086\\). Si el modelo fuera un AR(1) puro con \\(\\phi = 0{,}5\\), el error estándar sería \\(\\sqrt{0{,}75/200} = 0{,}061\\): agregar el término MA cuesta un 34 % de precisión en \\(\\hat\\phi\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Estimación e inferencia en modelos ARMA"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html",
+    "href": "econometria-3/clase-05.html",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html#el-estimador-de-neweywest",
+    "href": "econometria-3/clase-05.html#el-estimador-de-neweywest",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "4.1 El estimador de Newey–West",
+    "text": "4.1 El estimador de Newey–West\n\nDefinición 2 (Estimador HAC) Para una sucesión \\(\\xi_t\\) con media estimada o cero, \\[\n\\hat\\sigma^2_{HAC} = \\sum_{h = -m}^m k\\Big(\\frac h{m + 1}\\Big)\\hat\\gamma(h),\\qquad\\hat\\gamma(h) = \\frac1T\\sum_{t = |h| + 1}^T\\xi_t\\xi_{t - |h|},\n\\] con una función kernel \\(k(\\cdot)\\) simétrica, \\(k(0) = 1\\), y un ancho de banda (o truncamiento) \\(m\\). Con el kernel de Bartlett \\(k(u) = 1 - |u|\\) para \\(|u|\\le1\\) se obtiene el estimador de Newey y West (1987).\n\nCon el kernel de Bartlett, \\(\\hat\\sigma^2_{HAC} = \\hat\\gamma(0) + 2\\sum_{h = 1}^m\\big(1 - \\frac h{m + 1}\\big)\\hat\\gamma(h)\\): las autocovarianzas se incluyen con pesos decrecientes que llegan a cero en \\(h = m + 1\\). Elegir pesos decrecientes (en vez de truncar bruscamente, kernel uniforme) tiene una razón de fondo.\n\nProposición 1 (El estimador de Newey–West es no negativo) Con el kernel de Bartlett, \\(\\hat\\sigma^2_{HAC}\\ge0\\) siempre. (Con el kernel uniforme \\(k(u) = \\mathbf{1}\\{|u|\\le1\\}\\) puede ser negativo.)\n\n\nDemostración. Rellenamos \\(\\xi_t = 0\\) fuera de \\(1,\\dots,T\\) y consideramos las \\(T + m\\) sumas móviles \\(B_s = \\sum_{j = 0}^m\\xi_{s + j}\\), \\(s = -m + 1,\\dots,T\\). Entonces \\[\n\\sum_sB_s^2 = \\sum_{j,k = 0}^m\\sum_s\\xi_{s + j}\\xi_{s + k} = \\sum_{j,k = 0}^mT\\hat\\gamma(k - j) = T\\sum_{|h|\\le m}(m + 1 - |h|)\\hat\\gamma(h),\n\\] porque para cada diferencia \\(h = k - j\\) hay \\(m + 1 - |h|\\) pares \\((j,k)\\), y \\(\\sum_s\\xi_{s + j}\\xi_{s + k} = T\\hat\\gamma(k - j)\\). Dividiendo por \\(T(m + 1)\\) queda \\(\\hat\\sigma^2_{HAC} = \\frac1{T(m + 1)}\\sum_sB_s^2\\ge0\\).\n\nLa no negatividad es indispensable: una “varianza” negativa produciría errores estándar imaginarios. Es el mismo motivo por el que se usa el divisor \\(T\\) (no \\(T - h\\)) en \\(\\hat\\gamma(h)\\) (Clase 1).",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html#consistencia-sesgo-y-varianza",
+    "href": "econometria-3/clase-05.html#consistencia-sesgo-y-varianza",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "4.2 Consistencia, sesgo y varianza",
+    "text": "4.2 Consistencia, sesgo y varianza\nLa idea de por qué el truncamiento funciona: es un compromiso sesgo–varianza. Con \\(m\\) chico, se omiten autocovarianzas relevantes (sesgo); con \\(m\\) grande, se estiman muchas con poco dato (varianza).\n\nProposición 2 (Sesgo del estimador de Newey–West) Si \\(\\xi_t\\) es estacionario con \\(\\sum_h|h||\\gamma(h)|&lt;\\infty\\) y \\(m\\to\\infty\\) con \\(m/T\\to0\\), entonces \\[\n\\mathbb{E}[\\hat\\sigma^2_{HAC}]\\to\\sigma^2_{LR},\\qquad\n\\mathbb{E}[\\hat\\sigma^2_{HAC}] - \\sigma^2_{LR}\\approx-\\frac1{m + 1}\\sum_{h = -\\infty}^\\infty|h|\\gamma(h) + o\\Big(\\frac1m\\Big).\n\\]\n\n\nDemostración. Con \\(\\mathbb{E}[\\hat\\gamma(h)] = (1 - |h|/T)\\gamma(h)\\) (para datos con media cero conocida), \\[\n\\mathbb{E}[\\hat\\sigma^2_{HAC}] - \\sigma^2_{LR} = \\sum_{|h|\\le m}\\Big[\\Big(1 - \\frac{|h|}{m + 1}\\Big)\\Big(1 - \\frac{|h|}T\\Big) - 1\\Big]\\gamma(h) - \\sum_{|h|&gt;m}\\gamma(h).\n\\] El corchete es \\(-\\frac{|h|}{m + 1} - \\frac{|h|}T + \\frac{|h|^2}{(m + 1)T}\\), cuya magnitud es \\(\\le|h|\\big(\\frac1{m + 1} + \\frac1T\\big)\\). Luego el sesgo está acotado por \\(\\big(\\frac1{m + 1} + \\frac1T\\big)\\sum_h|h||\\gamma(h)| + \\sum_{|h|&gt;m}|\\gamma(h)|\\), que tiende a cero. El término dominante, \\(-\\frac1{m + 1}\\sum_h|h|\\gamma(h)\\), da la aproximación.\n\nLa varianza de \\(\\hat\\sigma^2_{HAC}\\) crece con \\(m\\): bajo condiciones de cuarto orden (que se toman prestadas; Andrews, 1991), \\(\\operatorname{Var}(\\hat\\sigma^2_{HAC})\\approx\\frac43\\frac mT\\sigma^4_{LR}\\) para el kernel de Bartlett. Entonces el sesgo cae como \\(1/m\\) y la varianza crece como \\(m/T\\). El ECM, \\(\\text{sesgo}^2 + \\text{varianza}\\sim c_1/m^2 + c_2m/T\\), se minimiza en \\[\nm^*\\propto T^{1/3}.\n\\] Con esa tasa, \\(\\hat\\sigma^2_{HAC}\\to\\sigma^2_{LR}\\) en probabilidad, a velocidad \\(T^{-1/3}\\) (más lenta que la \\(T^{-1/2}\\) habitual: es un problema no paramétrico, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es \\(m = \\lfloor4(T/100)^{2/9}\\rfloor\\): da \\(m = 4\\) para \\(T = 100\\), \\(5\\) para \\(T = 500\\) y \\(6\\) para \\(T = 1000\\). (La potencia \\(2/9\\) y no \\(1/3\\) viene de un método basado en los datos para estimar las constantes \\(c_1,c_2\\).)",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html#alternativas",
+    "href": "econometria-3/clase-05.html#alternativas",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "4.3 Alternativas",
+    "text": "4.3 Alternativas\n\nOtros kernels (Parzen, quadratic spectral; Andrews, 1991): menor sesgo asintótico, no negatividad (QS), similar en la práctica.\nPreblanqueo (Andrews y Monahan, 1992): ajustar primero un VAR/AR a \\(\\xi_t\\) para sacar la mayor parte de la dependencia y aplicar HAC a los residuos; mejora mucho el desempeño con serie persistente.\nAsintótica de ancho fijo (fixed-\\(b\\), Kiefer y Vogelsang, 2005): se deja \\(m/T = b\\) fijo, con una distribución límite no estándar (pero tabulada) que corrige el sobrerrechazo en muestras finitas.\nModelar el error (MCGF, Cochrane–Orcutt; Clase 9 de Econometría 1): más eficiente si el modelo es correcto; HAC es robusto al precio de eficiencia.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html#mco-con-errores-correlacionados",
+    "href": "econometria-3/clase-05.html#mco-con-errores-correlacionados",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "5.1 MCO con errores correlacionados",
+    "text": "5.1 MCO con errores correlacionados\nEn \\(y_t = x_t'\\beta + u_t\\) con \\(\\mathbb{E}[x_tu_t] = 0\\) pero \\(u_t\\) serialmente correlacionado, \\(\\hat\\beta\\) sigue siendo consistente (Clase 7 de Econometría 1). La distribución cambia: \\(\\sqrt T(\\hat\\beta - \\beta)\\to_dN(0,Q^{-1}\\Omega Q^{-1})\\) con \\(Q = \\mathbb{E}[x_tx_t']\\) y \\(\\Omega = \\sum_{h = -\\infty}^\\infty\\mathbb{E}[x_tu_tu_{t-h}x_{t-h}']\\), la varianza de largo plazo de \\(\\xi_t = x_tu_t\\). La estimación usa \\(\\hat Q = \\frac1T\\sum x_tx_t'\\) y \\(\\hat\\Omega\\) = HAC de \\(\\hat\\xi_t = x_t\\hat u_t\\): \\[\n\\widehat{\\operatorname{Avar}}(\\hat\\beta) = \\frac1T\\hat Q^{-1}\\hat\\Omega_{HAC}\\hat Q^{-1}.\n\\] Es la fórmula de White (Clase 7 de Econometría 1) con autocovarianzas. Cuando \\(\\hat\\Omega\\) solo incluye el término \\(h = 0\\) (\\(m = 0\\)) se recupera exactamente White.\n\nEjemplo 2 (El costo de ignorar la dependencia) Sea \\(y_t = \\beta x_t + u_t\\) con \\(x_t\\) y \\(u_t\\) independientes, ambos AR(1) con coeficientes \\(\\rho_x = \\rho_u = 0{,}8\\) (y \\(\\beta = 0\\)). Entonces \\(\\xi_t = x_tu_t\\) tiene autocovarianza \\(\\gamma_\\xi(h) = \\gamma_x(h)\\gamma_u(h) = \\sigma_x^2\\sigma_u^2(\\rho_x\\rho_u)^{|h|}\\), y su varianza de largo plazo es \\(\\sigma_x^2\\sigma_u^2\\dfrac{1 + \\rho_x\\rho_u}{1 - \\rho_x\\rho_u}\\). Como \\(Q = \\sigma_x^2\\), la varianza asintótica real de \\(\\hat\\beta\\) es \\(\\dfrac{\\sigma_u^2}{\\sigma_x^2}\\cdot\\dfrac{1 + \\rho_x\\rho_u}{1 - \\rho_x\\rho_u}\\), mientras que la fórmula de MCO “clásica” da \\(\\sigma_u^2/(T\\sigma_x^2)\\) (ignorando la dependencia). Con \\(\\rho_x\\rho_u = 0{,}64\\) el factor es \\(1{,}64/0{,}36 = 4{,}56\\): los errores estándar clásicos son \\(\\sqrt{4{,}56} = 2{,}13\\) veces demasiado chicos. Un test al 5 % con \\(t = \\hat\\beta/\\text{ee}_{clásico}\\) rechaza \\(H_0:\\beta = 0\\) con probabilidad \\(2(1 - \\Phi(1{,}96/2{,}13)) = 36\\) % aunque \\(x\\) y \\(y\\) no tengan relación alguna. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-05.html#gmm-pronósticos-y-otros",
+    "href": "econometria-3/clase-05.html#gmm-pronósticos-y-otros",
+    "title": "Clase 5 · Asintótica con dependencia y errores HAC",
+    "section": "5.2 GMM, pronósticos y otros",
+    "text": "5.2 GMM, pronósticos y otros\n\nGMM (Clase 4 de Econometría 2) con momentos serialmente correlacionados: la matriz óptima de pesos es \\(W = \\Omega^{-1}\\) con \\(\\Omega\\) la varianza de largo plazo de \\(g_t(\\theta_0)\\), estimada por HAC. Es lo que se usa en finanzas (ecuaciones de Euler, Hansen–Singleton) y en macro.\nTest de Diebold–Mariano (Clase 3): el estadístico estandariza con la varianza de largo plazo del diferencial de pérdida \\(d_t\\), estimada con Newey–West con al menos \\(h - 1\\) rezagos.\nTests de predictibilidad y de eficiencia de mercado, con errores de pronóstico MA(\\(h - 1\\)).\n\nUn cuidado importante: la corrección HAC es asintótica y en muestras pequeñas (o con series muy persistentes) tiende a subestimar la varianza (sesgo del \\(-\\frac1m\\sum|h|\\gamma(h)\\)), de modo que los tests siguen sobrerrechazando. Por eso conviene preblanquear, usar \\(b\\) fijo, o bootstrap por bloques.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Asintótica con dependencia y errores HAC"
     ]
   }
 ]

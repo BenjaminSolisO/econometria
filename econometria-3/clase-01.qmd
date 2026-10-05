@@ -1,0 +1,280 @@
+---
+title: "Clase 1 · Procesos estocásticos y estacionariedad"
+subtitle: "Autocovarianza, ergodicidad y la ley de los grandes números con dependencia"
+description: "Una serie de tiempo como realización de un proceso estocástico: estacionariedad estricta y débil, función de autocovarianza, ergodicidad, varianza del promedio, varianza de largo plazo y la autocorrelación muestral."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a>
+:::
+
+# El problema de una sola historia
+
+En Econometría 1 y 2 trabajamos con muestras de $n$ observaciones **independientes** de una misma distribución. Cada observación era una nueva "tirada", y la ley de los grandes números decía que promediar tiradas recupera la esperanza. Una serie de tiempo es otra cosa. Observamos $y_1,\dots,y_T$: el PIB de Chile trimestre a trimestre, el tipo de cambio día a día. Esas observaciones **no son independientes** (el PIB de hoy se parece al de ayer) y, además, el mundo no repite la historia: tenemos **una sola realización** del proceso que generó los datos. No podemos "volver a correr" 2008 para ver otra trayectoria.
+
+Para hacer inferencia con una sola trayectoria necesitamos dos ideas:
+
+1. **Estacionariedad:** las propiedades del proceso no dependen de la fecha. Sin esto, cada observación vendría de una distribución distinta y no habría nada que promediar.
+2. **Ergodicidad:** los promedios *a lo largo del tiempo* (de una sola trayectoria) convergen a las esperanzas *de ensamble* (sobre todas las trayectorias posibles). Es el sustituto de la ley de los grandes números.
+
+Esta clase define ambas, calcula las cantidades básicas (autocovarianzas, varianza del promedio) y muestra qué cambia respecto del mundo i.i.d. El mensaje: **la dependencia no impide aprender, pero cambia la varianza** de todo lo que se estima.[^box]
+
+[^box]: George Box y Gwilym Jenkins publicaron en 1970 *Time Series Analysis: Forecasting and Control*, el libro que convirtió el análisis de series de tiempo en una metodología sistemática para la práctica (identificar, estimar, diagnosticar, pronosticar). Gran parte de lo que estudiaremos en las Clases 2 a 4 se llama aún "metodología Box–Jenkins".
+
+# Procesos estocásticos
+
+::: {#def-proceso}
+## Proceso estocástico
+Un **proceso estocástico** es una colección de variables aleatorias $\{y_t\}_{t\in\mathbb{Z}}$ definidas sobre un mismo espacio de probabilidad. Una **serie de tiempo** es una **realización** (una trayectoria) del proceso, observada en $t = 1,\dots,T$.
+:::
+
+Cada $y_t$ es una variable aleatoria con su propia distribución, y para describir el proceso hay que describir las distribuciones **conjuntas** de $(y_{t_1},\dots,y_{t_k})$ para cualquier colección de fechas. En la práctica nos conformamos con los dos primeros momentos:
+$$
+\mu_t = \mathbb{E}[y_t],\qquad\gamma(t,s) = \operatorname{Cov}(y_t,y_s) = \mathbb{E}\big[(y_t - \mu_t)(y_s - \mu_s)\big].
+$$
+Sin restricciones, un proceso tendría una media distinta en cada fecha y una covarianza distinta para cada par $(t,s)$: infinitos parámetros y una sola observación de cada uno. La estacionariedad es la restricción que lo hace manejable.
+
+::: {#def-estacionario}
+## Estacionariedad
+- $\{y_t\}$ es **estrictamente estacionario** si para todo $k$, toda colección de fechas $t_1,\dots,t_k$ y todo desplazamiento $h$, la distribución conjunta de $(y_{t_1},\dots,y_{t_k})$ es la misma que la de $(y_{t_1 + h},\dots,y_{t_k + h})$.
+- $\{y_t\}$ es **débilmente estacionario** (o *estacionario en covarianza*) si $\mathbb{E}[y_t^2]<\infty$, $\mathbb{E}[y_t] = \mu$ no depende de $t$, y $\operatorname{Cov}(y_t,y_{t+h}) = \gamma(h)$ depende **solo del rezago $h$**, no de $t$.
+:::
+
+La estacionariedad estricta dice que *toda* la distribución es invariante a traslaciones temporales; la débil, que lo son los dos primeros momentos. Si hay segundos momentos finitos, **estricta implica débil** (una distribución que no cambia tiene momentos que no cambian). El recíproco es falso en general (se puede tener media y covarianzas constantes con colas que cambian en el tiempo), salvo en un caso importante.
+
+::: {#prp-gaussiano}
+## Débil implica estricta si el proceso es gaussiano
+Si $\{y_t\}$ es un proceso gaussiano (toda colección finita es normal multivariada) y débilmente estacionario, entonces es estrictamente estacionario.
+:::
+
+::: {.proof}
+La distribución normal multivariada queda determinada por su vector de medias y su matriz de covarianzas. Para $(y_{t_1},\dots,y_{t_k})$ las medias son $\mu$ y las covarianzas $\gamma(t_i - t_j)$; para $(y_{t_1 + h},\dots,y_{t_k + h})$ son las mismas. Dos normales con los mismos parámetros son la misma distribución.
+:::
+
+De aquí en adelante, "estacionario" significará **débilmente estacionario**, salvo que se indique otra cosa. Es lo que se necesita para casi toda la teoría de estimación lineal.
+
+## La función de autocovarianza
+
+Para un proceso estacionario, la **función de autocovarianza** es $\gamma(h) = \operatorname{Cov}(y_t,y_{t+h})$ y la **función de autocorrelación** (ACF) es $\rho(h) = \gamma(h)/\gamma(0)$. Ambas satisfacen propiedades que usaremos todo el curso.
+
+::: {#prp-gamma}
+## Propiedades de la autocovarianza
+Sea $\gamma(\cdot)$ la autocovarianza de un proceso estacionario. Entonces:
+
+1. $\gamma(0) = \operatorname{Var}(y_t)\ge0$.
+2. $|\gamma(h)|\le\gamma(0)$ para todo $h$ (así $|\rho(h)|\le1$).
+3. $\gamma(h) = \gamma(-h)$ (simetría).
+4. $\gamma$ es **semidefinida positiva**: para todo $n$ y todo $a\in\mathbb{R}^n$, $\sum_{i,j}a_ia_j\gamma(i - j)\ge0$; es decir, la matriz de Toeplitz $\Gamma_n = [\gamma(i - j)]_{i,j = 1}^n$ es semidefinida positiva.
+:::
+
+::: {.proof}
+(1) es una varianza. (2) Por Cauchy–Schwarz, $|\operatorname{Cov}(y_t,y_{t+h})|\le\sqrt{\operatorname{Var}(y_t)\operatorname{Var}(y_{t+h})} = \gamma(0)$. (3) $\gamma(h) = \operatorname{Cov}(y_t,y_{t+h}) = \operatorname{Cov}(y_{t-h},y_t) = \gamma(-h)$, pues la covarianza es simétrica y el valor no depende de $t$. (4) Con $a = (a_1,\dots,a_n)'$, $0\le\operatorname{Var}\big(\sum_ia_iy_i\big) = \sum_{i,j}a_ia_j\operatorname{Cov}(y_i,y_j) = a'\Gamma_na$.
+:::
+
+La propiedad (4) es más profunda de lo que parece: **no toda función simétrica con $\gamma(0)\ge|\gamma(h)|$ es una autocovarianza**. Por ejemplo, $\gamma(0) = 1$, $\gamma(\pm1) = 0{,}9$, $\gamma(\pm2) = 0$ viola la semidefinición positiva (Ejercicio 1.7). La sección ★ muestra que esa condición es suficiente para que exista un proceso.
+
+## Ejemplos
+
+::: {#exm-procesos}
+## Un zoológico mínimo
+1. **Ruido blanco:** $\varepsilon_t$ con media cero, varianza $\sigma^2$ y $\operatorname{Cov}(\varepsilon_t,\varepsilon_s) = 0$ para $t\ne s$ (escribimos $\varepsilon_t\sim WN(0,\sigma^2)$). Es estacionario con $\gamma(0) = \sigma^2$ y $\gamma(h) = 0$ si $h\ne0$. Un i.i.d. es un caso particular, pero el ruido blanco *solo* exige no correlación, no independencia.
+2. **Media móvil de orden 1, MA(1):** $y_t = \varepsilon_t + \theta\varepsilon_{t-1}$ con $\varepsilon_t\sim WN(0,\sigma^2)$. Entonces $\gamma(0) = \sigma^2(1 + \theta^2)$, $\gamma(\pm1) = \theta\sigma^2$ y $\gamma(h) = 0$ para $|h|\ge2$. La autocorrelación es $\rho(1) = \theta/(1 + \theta^2)$, que **no puede superar $\tfrac12$** (el máximo se alcanza en $\theta = 1$).
+3. **Caminata aleatoria:** $y_t = y_{t-1} + \varepsilon_t$, $y_0 = 0$. Entonces $y_t = \sum_{s = 1}^t\varepsilon_s$ tiene $\operatorname{Var}(y_t) = t\sigma^2$, que depende de $t$: **no es estacionario** (es el tema de la Clase 6).
+4. **Tendencia más ruido:** $y_t = a + bt + \varepsilon_t$ tiene $\mathbb{E}[y_t] = a + bt$, no constante: no es estacionario, pero $y_t - bt$ sí lo es (**estacionario en tendencia**).
+5. **Un nivel aleatorio:** $y_t = Z$ para todo $t$, con $Z$ aleatoria de media cero y varianza $\sigma^2$. Es estacionario con $\gamma(h) = \sigma^2$ para todo $h$: la "memoria" nunca se olvida. Como veremos, es el ejemplo de un proceso **no ergódico**.
+:::
+
+Del ejemplo 2 sale una observación útil para la Clase 13 de Econometría 2: los valores $\theta$ y $1/\theta$ dan **la misma autocorrelación** $\rho(1) = \theta/(1 + \theta^2)$ (porque $\frac{1/\theta}{1 + 1/\theta^2} = \frac{\theta}{\theta^2 + 1}$). Con solo la ACF no podemos distinguir un MA(1) con $\theta = 0{,}5$ de uno con $\theta = 2$. De ahí la elección de la raíz *invertible* en esa clase (Clase 2 de este curso).
+
+# Ergodicidad y la ley de los grandes números
+
+Con una sola trayectoria, lo que podemos calcular es el **promedio temporal** $\bar y_T = \frac1T\sum_{t = 1}^Ty_t$. Lo que nos interesa es la **media de ensamble** $\mu = \mathbb{E}[y_t]$. ¿Cuándo $\bar y_T\to\mu$? En el caso i.i.d. basta la LGN; con dependencia, la respuesta tiene dos caras: una elemental, en media cuadrática, y una general, el teorema ergódico.
+
+## La varianza del promedio
+
+El primer paso es calcular la varianza de $\bar y_T$ para un proceso estacionario. Como $\operatorname{Var}\big(\sum_ty_t\big) = \sum_{t,s}\gamma(t - s)$, y hay $T - |h|$ pares $(t,s)$ con $t - s = h$,
+$$
+\operatorname{Var}(\bar y_T) = \frac1{T^2}\sum_{t,s = 1}^T\gamma(t - s) = \frac1T\sum_{h = -(T - 1)}^{T - 1}\Big(1 - \frac{|h|}T\Big)\gamma(h).
+$$ {#eq-var-media}
+En el caso i.i.d., $\gamma(h) = 0$ para $h\ne0$ y esto es $\gamma(0)/T$. Con dependencia, hay términos adicionales. Cuando las autocovarianzas son **absolutamente sumables**, el efecto de la dependencia se resume en un solo número.
+
+::: {#thm-lgn-ms}
+## LGN en media cuadrática y varianza de largo plazo
+Sea $\{y_t\}$ estacionario con $\gamma(h)\to0$ cuando $h\to\infty$. Entonces $\bar y_T\to\mu$ en media cuadrática (y por lo tanto en probabilidad). Si además $\sum_{h = -\infty}^\infty|\gamma(h)|<\infty$, entonces
+$$
+T\operatorname{Var}(\bar y_T)\ \longrightarrow\ \sigma^2_{LR} = \sum_{h = -\infty}^\infty\gamma(h) = \gamma(0) + 2\sum_{h = 1}^\infty\gamma(h).
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+De @eq-var-media, $\operatorname{Var}(\bar y_T)$ es un promedio ponderado de $\gamma(h)$ con pesos $(1 - |h|/T)/T$. Para que tienda a cero basta que los $\gamma(h)$ lejanos sean chicos: la contribución de la parte "cercana" es del orden $1/T$ por el número finito de rezagos, y la de la parte "lejana" es chica porque $\gamma(h)\to0$. Para el segundo resultado, multiplico por $T$: queda $\sum_h(1 - |h|/T)\gamma(h)$, y cada término converge a $\gamma(h)$ (porque $1 - |h|/T\to1$), con una cota sumable que me deja intercambiar límite y suma (convergencia dominada).
+:::
+
+::: {.proof}
+*(Primera parte.)* De @eq-var-media, $\operatorname{Var}(\bar y_T)\le\frac1T\sum_{|h|<T}|\gamma(h)| = \frac{1}{T}\Big[|\gamma(0)| + 2\sum_{h = 1}^{T - 1}|\gamma(h)|\Big]$. Como $\gamma(h)\to0$, la media de Cesàro $\frac1T\sum_{h = 1}^{T-1}|\gamma(h)|\to0$ (el promedio de los primeros $T$ términos de una sucesión que tiende a cero tiende a cero). Luego $\operatorname{Var}(\bar y_T)\le\frac{\gamma(0)}T + \frac2T\cdot\Big[\sum_{h = 1}^{T - 1}|\gamma(h)|\Big]\to0$. Como $\mathbb{E}[\bar y_T] = \mu$, $\mathbb{E}(\bar y_T - \mu)^2 = \operatorname{Var}(\bar y_T)\to0$, y la convergencia en media cuadrática implica convergencia en probabilidad (desigualdad de Chebyshev).
+
+*(Segunda parte.)* Multiplicando @eq-var-media por $T$, $T\operatorname{Var}(\bar y_T) = \sum_{h}\mathbf{1}\{|h|<T\}(1 - |h|/T)\gamma(h)$. Cada término converge a $\gamma(h)$ y está acotado en valor absoluto por $|\gamma(h)|$, que es sumable. Por el teorema de convergencia dominada (para series), el límite es $\sum_h\gamma(h)$.
+:::
+
+El número $\sigma^2_{LR} = \sum_h\gamma(h)$ es la **varianza de largo plazo** del proceso. Es lo que reemplaza a $\gamma(0)$ en la varianza de $\bar y_T$: $\operatorname{Var}(\bar y_T)\approx\sigma_{LR}^2/T$. Con **autocorrelación positiva** ($\gamma(h)>0$), $\sigma^2_{LR}>\gamma(0)$: **hay menos información** de la que hay en una muestra i.i.d. del mismo tamaño, y los errores estándar que ignoran la dependencia son demasiado chicos. Es exactamente el mismo problema de la Clase 9 de Econometría 2 (efecto de diseño con clusters), aquí en el tiempo.
+
+::: {#exm-lr-ma1}
+## La varianza de largo plazo del MA(1)
+Para $y_t = \varepsilon_t + \theta\varepsilon_{t-1}$: $\sigma^2_{LR} = \gamma(0) + 2\gamma(1) = \sigma^2(1 + \theta^2) + 2\theta\sigma^2 = \sigma^2(1 + \theta)^2$. Con $\theta = 0{,}5$ y $\sigma^2 = 1$, $\sigma^2_{LR} = 2{,}25$, frente a $\gamma(0) = 1{,}25$. Con $T = 100$, el error estándar correcto de $\bar y_T$ es $\sqrt{2{,}25/100} = 0{,}15$, y el que se obtendría ignorando la dependencia es $\sqrt{1{,}25/100} = 0{,}112$: **25 % demasiado chico**. Con $\theta = -1$ ocurre lo contrario: $\sigma^2_{LR} = 0$ (el promedio converge más rápido que $1/\sqrt T$). Es una *sobrediferencia*, un fenómeno que reaparece en la Clase 7.
+:::
+
+## Ergodicidad
+
+La LGN en media cuadrática exige que las autocovarianzas se desvanezcan. Pero lo que realmente queremos, al estimar cualquier cosa por promedios temporales (no solo la media: autocovarianzas, momentos para GMM, scores de MV), es una propiedad más general.
+
+::: {#def-ergodico}
+## Proceso ergódico
+Un proceso estrictamente estacionario $\{y_t\}$ es **ergódico** si para toda función $f$ medible con $\mathbb{E}|f(y_t,\dots,y_{t+k})|<\infty$,
+$$
+\frac1T\sum_{t = 1}^Tf(y_t,\dots,y_{t+k})\xrightarrow{c.s.}\mathbb{E}\big[f(y_t,\dots,y_{t+k})\big].
+$$
+:::
+
+(La definición formal usa conjuntos invariantes bajo el desplazamiento temporal; esta es la consecuencia que importa. Que el proceso sea *ergódico* equivale a que sus promedios temporales de **todas** las funciones integrables converjan a la constante $\mathbb{E}[f]$, no a una variable aleatoria.)
+
+::: {#thm-ergodico}
+## Teorema ergódico (Birkhoff) — se toma prestado
+Si $\{y_t\}$ es estrictamente estacionario y $\mathbb{E}|y_t|<\infty$, entonces $\bar y_T$ converge casi seguramente a una variable aleatoria $\bar y$ con $\mathbb{E}[\bar y] = \mu$. Si además $\{y_t\}$ es **ergódico**, $\bar y = \mu$ es constante.
+:::
+
+El teorema dice que, **sin ergodicidad**, el promedio temporal converge, pero **a una variable aleatoria**, no a $\mu$: la trayectoria particular que nos tocó determina el límite. Con ergodicidad, el promedio temporal de una sola trayectoria *sí* aprende la media de ensamble. Es la condición que cumple todo lo que usaremos.
+
+::: {#exm-no-ergodico}
+## Un proceso estacionario no ergódico
+En $y_t = Z$ para todo $t$ (@exm-procesos, 5), el proceso es estrictamente estacionario con $\mu = 0$, pero $\bar y_T = Z$ para todo $T$: converge a la variable aleatoria $Z$, **no** a $0$. Por mucho que observes la serie, solo ves una "tirada" de $Z$ y nunca aprendes $\mu$. Aquí $\gamma(h) = \sigma^2\not\to0$, que es exactamente la condición del @thm-lgn-ms que falla.
+:::
+
+Dos hechos prácticos, que se toman prestados:
+
+- **Condición suficiente:** un proceso estacionario que es **mezclante** (*mixing*: la dependencia entre $y_t$ e $y_{t+h}$ se desvanece cuando $h\to\infty$) es ergódico. Los procesos ARMA estacionarios con innovaciones i.i.d. lo son (Clase 2).
+- **En el caso gaussiano**, un proceso estacionario es ergódico si y solo si $\gamma(h)\to0$ (en promedio de Cesàro). Es decir, para gaussianos, la condición del @thm-lgn-ms es **necesaria y suficiente**.
+
+::: {.callout-caution title="Por qué esto importa para todo el curso"}
+La **teoría de M-estimadores de Econometría 2 (Clase 1) se extiende a procesos estacionarios y ergódicos** reemplazando "i.i.d." por "estacionario y ergódico" en la ley de los grandes números (incluida la versión uniforme). La consistencia de MCO, MV y GMM sigue funcionando. Lo que **no** se extiende directamente es la **normalidad asintótica**: el TCL para sumas de variables dependientes necesita condiciones adicionales y cambia la varianza (de $\gamma(0)$ a $\sigma^2_{LR}$). Eso es la Clase 5.
+:::
+
+# Estimación de la media, de la autocovarianza y de la ACF
+
+Dado $y_1,\dots,y_T$ de un proceso estacionario, los estimadores naturales son
+$$
+\bar y_T = \frac1T\sum_{t = 1}^Ty_t,\qquad
+\hat\gamma(h) = \frac1T\sum_{t = 1}^{T - h}(y_t - \bar y_T)(y_{t + h} - \bar y_T),\quad
+\hat\rho(h) = \frac{\hat\gamma(h)}{\hat\gamma(0)},\quad 0\le h<T.
+$$
+Por la ergodicidad, bajo condiciones leves $\hat\gamma(h)\to_p\gamma(h)$ y $\hat\rho(h)\to_p\rho(h)$ para cada $h$ fijo. Hay un detalle sutil: el divisor de $\hat\gamma(h)$ es $T$, **no $T - h$** (que daría un estimador insesgado, aproximadamente). Se usa $T$ porque garantiza que la matriz $\hat\Gamma_n = [\hat\gamma(i - j)]$ sea **semidefinida positiva**, como la verdadera.
+
+::: {#prp-gamma-hat}
+## La autocovarianza muestral es semidefinida positiva
+Para todo $n\le T$, la matriz $\hat\Gamma_n = [\hat\gamma(i - j)]_{i,j = 1}^n$ es semidefinida positiva.
+:::
+
+::: {.proof}
+Sea $\tilde y_t = y_t - \bar y_T$. Construimos la matriz $M$ de $n\times(T + n - 1)$ cuya fila $i$ es $(0,\dots,0,\tilde y_1,\dots,\tilde y_T,0,\dots,0)$ con $i - 1$ ceros a la izquierda (cada fila es la serie desplazada). Entonces $(MM')_{ij} = \sum_t\tilde y_{t - i + 1}\tilde y_{t - j + 1}$, que es $\sum_t\tilde y_t\tilde y_{t + (i - j)}$ sumado sobre los índices válidos, es decir $T\hat\gamma(i - j)$. Luego $\hat\Gamma_n = \frac1TMM'$, que es semidefinida positiva (de la forma $AA'$).
+:::
+
+Con el divisor $T - h$ esa propiedad se pierde, y se pueden obtener "autocovarianzas" estimadas que no corresponden a ningún proceso (varianzas negativas en predicciones). Es el motivo del divisor $T$.
+
+## La ACF de un ruido blanco
+
+Un primer uso práctico: testear si una serie (o los residuos de un modelo) es ruido blanco, mirando si sus autocorrelaciones muestrales son cero.
+
+::: {#prp-bartlett}
+## Autocorrelaciones muestrales de un ruido blanco
+Si $\{y_t\}$ es i.i.d. con $\mathbb{E}[y_t^2]<\infty$ y varianza positiva, entonces para cada $h\ge1$ fijo, $\sqrt T\hat\rho(h)\xrightarrow{d}N(0,1)$ y, para $h\ne k$, $\hat\rho(h)$ y $\hat\rho(k)$ son asintóticamente independientes.
+:::
+
+::: {.proof}
+(Esquema; el detalle usa un TCL para sucesiones dependientes, que veremos en la Clase 5.) Con $\mu = 0$ por simplicidad, $\sqrt T\hat\gamma(h) = T^{-1/2}\sum_ty_ty_{t + h} + o_p(1)$. Los términos $y_ty_{t + h}$ tienen media cero (independencia), varianza $\mathbb{E}[y_t^2]\mathbb{E}[y_{t + h}^2] = \sigma^4$, y son **no correlacionados** entre sí: $\operatorname{Cov}(y_ty_{t + h},y_sy_{s + h}) = 0$ si $t\ne s$ (algún $y$ queda sin pareja). Son una diferencia de martingala, y el TCL de la Clase 5 da $\sqrt T\hat\gamma(h)\to_dN(0,\sigma^4)$. Como $\hat\gamma(0)\to_p\sigma^2$, por Slutsky $\sqrt T\hat\rho(h)\to_dN(0,1)$. La independencia asintótica entre rezagos sigue de que los términos de $h$ y de $k$ son también no correlacionados.
+:::
+
+De aquí sale la **banda estándar** de los correlogramas: bajo ruido blanco, el 95 % de los $\hat\rho(h)$ deben caer en $\pm1{,}96/\sqrt T$. Con $T = 100$, la banda es $\pm0{,}196$; con 20 rezagos, se espera que **uno** salga de ella por azar (Ejercicio 1.6). Una única autocorrelación "significativa" entre muchas no es evidencia de dependencia. Para testear **conjuntamente** muchos rezagos se usa el estadístico de Ljung–Box (Clase 4).
+
+# ★ Postgrado: la densidad espectral
+
+::: {.callout-important title="★ Postgrado"}
+La autocovarianza admite una representación en el dominio de las frecuencias. Es la forma natural de ver **por qué** la varianza de largo plazo $\sigma^2_{LR}$ es la que gobierna al promedio, y la base del estimador HAC de la Clase 5.
+:::
+
+Si $\sum_h|\gamma(h)|<\infty$, definimos la **densidad espectral**
+$$
+f(\lambda) = \frac1{2\pi}\sum_{h = -\infty}^\infty\gamma(h)e^{-ih\lambda},\qquad\lambda\in[-\pi,\pi].
+$$
+Es una función continua (la serie converge uniformemente) y, por la simetría $\gamma(h) = \gamma(-h)$, **real**: $f(\lambda) = \frac1{2\pi}\big[\gamma(0) + 2\sum_{h\ge1}\gamma(h)\cos(h\lambda)\big]$. Por inversión de Fourier, $\gamma(h) = \int_{-\pi}^\pi e^{ih\lambda}f(\lambda)\,d\lambda$. La varianza de largo plazo es la densidad espectral **en cero**: $\sigma^2_{LR} = 2\pi f(0)$.
+
+::: {#prp-espectral}
+## La densidad espectral es no negativa
+Si $\sum_h|\gamma(h)|<\infty$, entonces $f(\lambda)\ge0$ para todo $\lambda$.
+:::
+
+::: {.proof}
+Para $\lambda$ fijo, sea $S_T(\lambda) = \sum_{t = 1}^Ty_te^{-it\lambda}$ (la transformada de Fourier discreta de la serie, con $\mu = 0$ por simplicidad). Entonces
+$$
+0\le\frac1T\mathbb{E}|S_T(\lambda)|^2 = \frac1T\sum_{t,s = 1}^T\gamma(t - s)e^{-i(t - s)\lambda} = \sum_{|h|<T}\Big(1 - \frac{|h|}T\Big)\gamma(h)e^{-ih\lambda}.
+$$
+Es el mismo cálculo de @eq-var-media, con el factor $e^{-ih\lambda}$. Por convergencia dominada (como en el @thm-lgn-ms), el lado derecho tiende a $2\pi f(\lambda)$ cuando $T\to\infty$, y el límite de números no negativos es no negativo.
+:::
+
+Con $\lambda = 0$ esto *es* el @thm-lgn-ms: $\frac1T\mathbb{E}|\sum y_t|^2 = T\operatorname{Var}(\bar y_T)\to2\pi f(0)$. La densidad espectral generaliza esa cantidad a todas las frecuencias y dice **cuánta varianza aporta cada ciclo** (frecuencia $\lambda$ corresponde a un período de $2\pi/\lambda$ observaciones). Para un MA(1), $f(\lambda) = \frac{\sigma^2}{2\pi}(1 + \theta^2 + 2\theta\cos\lambda)$, que con $\theta>0$ concentra la varianza en frecuencias bajas (series "suaves") y con $\theta<0$ en frecuencias altas (series "dentadas").
+
+El **teorema de Herglotz** (que se toma prestado) completa el cuadro: una función $\gamma$ es la autocovarianza de algún proceso estacionario **si y solo si** es simétrica y semidefinida positiva, y entonces $\gamma(h) = \int e^{ih\lambda}\,dF(\lambda)$ para una medida $F$ no negativa (la **distribución espectral**). Eso resuelve el aviso que dimos tras la @prp-gamma: la semidefinición positiva no es una restricción cosmética sino el criterio exacto de qué funciones son autocovarianzas.
+
+# Resumen
+
+- Una serie de tiempo es **una realización** de un proceso estocástico. Para aprender de ella hace falta **estacionariedad** (@def-estacionario) y **ergodicidad** (@def-ergodico).
+- La función de autocovarianza $\gamma(h)$ es simétrica, acotada por $\gamma(0)$ y **semidefinida positiva** (@prp-gamma). Ruido blanco, MA(1), caminata aleatoria y tendencia son los ejemplos de referencia.
+- $\operatorname{Var}(\bar y_T) = \frac1T\sum_{|h|<T}(1 - |h|/T)\gamma(h)$. Si $\gamma(h)\to0$, $\bar y_T\to\mu$ (@thm-lgn-ms), y con autocovarianzas sumables, $T\operatorname{Var}(\bar y_T)\to\sigma^2_{LR} = \sum_h\gamma(h)$: la **varianza de largo plazo** reemplaza a $\gamma(0)$.
+- El **teorema ergódico** (@thm-ergodico) es la LGN general: para procesos ergódicos, los promedios temporales convergen a las esperanzas de ensamble. Sin ergodicidad convergen a una variable aleatoria (@exm-no-ergodico).
+- $\hat\gamma(h)$ (divisor $T$) es semidefinida positiva (@prp-gamma-hat). Bajo ruido blanco, $\sqrt T\hat\rho(h)\to N(0,1)$ (@prp-bartlett).
+
+# Ejercicios
+
+**Ejercicio 1.1.** Determina si cada proceso es débilmente estacionario y calcula $\gamma(h)$ cuando corresponda. (a) $y_t = \varepsilon_t + \varepsilon_{t-1}$, $\varepsilon_t\sim WN(0,1)$. (b) $y_t = (-1)^tZ$ con $Z$ de media cero y varianza $1$. (c) $y_t = t\,\varepsilon_t$.
+
+::: {.callout-tip collapse="true" title="Solución 1.1"}
+(a) MA(1) con $\theta = 1$, $\sigma^2 = 1$: estacionario, $\gamma(0) = 2$, $\gamma(\pm1) = 1$, $\gamma(h) = 0$ si $|h|\ge2$; $\rho(1) = 0{,}5$ (el máximo posible). (b) $\mathbb{E}[y_t] = 0$ y $\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h$: depende solo de $h$, estacionario, con $\gamma(h) = (-1)^h$ (oscila entre $+1$ y $-1$; no es ergódico, pues $\gamma(h)\not\to0$). (c) $\operatorname{Var}(y_t) = t^2$ depende de $t$: no estacionario (heterocedasticidad creciente).
+:::
+
+**Ejercicio 1.2.** Calcula $\rho(1)$ de un MA(1) con $\theta = 0{,}5$ y con $\theta = 2$. ¿Qué observas? ¿Por qué no se puede distinguir un caso del otro con la ACF?
+
+::: {.callout-tip collapse="true" title="Solución 1.2"}
+$\theta = 0{,}5$: $\rho(1) = 0{,}5/1{,}25 = 0{,}4$. $\theta = 2$: $\rho(1) = 2/5 = 0{,}4$. **Es la misma.** En general, $\theta/(1 + \theta^2)$ es invariante a $\theta\to1/\theta$. Como la ACF (y la autocovarianza, con la varianza $\sigma^2$ ajustada: $\sigma^2(1 + \theta^2)$ debe coincidir, o sea $\sigma^2_{(2)} = \sigma^2_{(0{,}5)}\cdot0{,}25$) es lo único que identifican los dos primeros momentos, ambos modelos generan la **misma ley de segundo orden**. Se resuelve eligiendo la parametrización *invertible* $|\theta|<1$ (Clase 2).
+:::
+
+**Ejercicio 1.3.** Para un MA(1) con $\theta = 0{,}5$ y $\sigma^2 = 1$, calcula $T\operatorname{Var}(\bar y_T)$ exacto para $T = 10$ y compáralo con el límite $\sigma^2_{LR}$.
+
+::: {.callout-tip collapse="true" title="Solución 1.3"}
+$T\operatorname{Var}(\bar y_T) = \gamma(0) + 2\big(1 - \tfrac1T\big)\gamma(1) = 1{,}25 + 2(0{,}9)(0{,}5) = 1{,}25 + 0{,}9 = 2{,}15$. El límite es $\sigma^2_{LR} = (1 + \theta)^2 = 2{,}25$. Para $T = 10$ ya está a $4$ % del límite, y converge a tasa $1/T$ (el término $2\gamma(1)/T$ es la corrección). Con i.i.d. se habría calculado $1{,}25$: un error de 42 %.
+:::
+
+**Ejercicio 1.4.** Un proceso $y_t = \mu + Z$ (nivel aleatorio con $\operatorname{Var}(Z) = 4$) se observa en $T = 1000$ períodos. ¿Cuál es la distribución de $\bar y_T$ y cuál el error de estimar $\mu$? Compara con un ruido blanco de varianza $4$.
+
+::: {.callout-tip collapse="true" title="Solución 1.4"}
+$\bar y_T = \mu + Z$ para todo $T$ (promedio de $T$ copias de lo mismo): $\operatorname{Var}(\bar y_T) = 4$, **independiente de $T$**. Con 1000 observaciones el error estándar sigue siendo $2$, no mejora. Con un ruido blanco de varianza $4$, $\operatorname{Var}(\bar y_T) = 4/1000$ (error estándar $0{,}063$). La diferencia es la ergodicidad: la serie con nivel aleatorio contiene una sola realización de $Z$, y no hay "información nueva" en cada observación. $\gamma(h) = 4$ constante: $T\operatorname{Var}(\bar y_T) = 4T\to\infty$.
+:::
+
+**Ejercicio 1.5.** Un proceso estacionario cumple $y_t = \phi y_{t-1} + \varepsilon_t$ con $|\phi|<1$, $\varepsilon_t\sim WN(0,\sigma^2)$ no correlacionado con $y_{t - s}$ para $s\ge1$. Deduce $\gamma(h)$ y la varianza de largo plazo. Para $\phi = 0{,}8$, ¿por cuánto se subestima la varianza de $\bar y_T$ si se usa $\gamma(0)/T$?
+
+::: {.callout-tip collapse="true" title="Solución 1.5"}
+$\gamma(0) = \phi^2\gamma(0) + \sigma^2\Rightarrow\gamma(0) = \sigma^2/(1 - \phi^2)$. Para $h\ge1$, multiplicando por $y_{t - h}$ y tomando esperanza, $\gamma(h) = \phi\gamma(h - 1)$ (el término $\mathbb{E}[\varepsilon_ty_{t - h}] = 0$), luego $\gamma(h) = \phi^{|h|}\gamma(0)$. La suma: $\sigma^2_{LR} = \gamma(0)\sum_h\phi^{|h|} = \gamma(0)\dfrac{1 + \phi}{1 - \phi} = \dfrac{\sigma^2}{(1 - \phi)^2}$. Con $\phi = 0{,}8$: $\gamma(0) = \sigma^2/0{,}36 = 2{,}78\sigma^2$ y $\sigma^2_{LR} = 25\sigma^2$. El cociente $\sigma^2_{LR}/\gamma(0) = (1 + \phi)/(1 - \phi) = 9$: **ignorar la dependencia subestima la varianza de $\bar y_T$ en un factor 9** (el error estándar, en 3). Una serie con $\phi = 0{,}8$ de $T = 100$ observaciones equivale, para estimar la media, a solo $100/9\approx11$ observaciones independientes.
+:::
+
+**Ejercicio 1.6.** Con $T = 100$, ¿cuál es la banda del 95 % para la ACF muestral de un ruido blanco? Si se miran $20$ rezagos, ¿cuántos se esperan fuera de la banda y cuál es la probabilidad de que **al menos uno** salga?
+
+::: {.callout-tip collapse="true" title="Solución 1.6"}
+Banda: $\pm1{,}96/\sqrt{100} = \pm0{,}196$. Con $20$ rezagos asintóticamente independientes, se esperan $20\times0{,}05 = 1$ fuera de la banda. $P(\text{al menos uno}) = 1 - 0{,}95^{20} = 1 - 0{,}358 = 0{,}64$. **Hay 64 % de probabilidad de ver al menos una autocorrelación "significativa" en un ruido blanco puro.** Por eso no se interpreta un solo rezago aislado, y se usan pruebas conjuntas (Ljung–Box, Clase 4).
+:::
+
+**Ejercicio 1.7 ★.** (a) Muestra que $\gamma(0) = 1$, $\gamma(\pm1) = 0{,}9$, $\gamma(h) = 0$ para $|h|\ge2$ **no** es una función de autocovarianza. (b) ¿Para qué valores de $\rho(1)$ y $\gamma(h) = 0$ si $|h|\ge2$ sí lo es?
+
+::: {.callout-tip collapse="true" title="Solución 1.7 ★"}
+(a) Con $\rho(1) = 0{,}9>\tfrac12$ y $\rho(h) = 0$ para $|h|\ge2$: la matriz de Toeplitz $3\times3$ $\begin{pmatrix}1&0{,}9&0\\0{,}9&1&0{,}9\\0&0{,}9&1\end{pmatrix}$ tiene determinante $1 - 2(0{,}81) = -0{,}62<0$, así que no es semidefinida positiva: con $a = (1,-\sqrt2,1)'$ se obtiene $a'\Gamma a = 4 - 4\sqrt2(0{,}9)\approx-1{,}09<0$. Ninguna varianza puede ser negativa. (b) La densidad espectral $f(\lambda) = \frac1{2\pi}[1 + 2\rho(1)\cos\lambda]$ debe ser no negativa (@prp-espectral): $1 + 2\rho(1)\cos\lambda\ge0$ para todo $\lambda$, es decir $|\rho(1)|\le\tfrac12$. Es exactamente la cota del MA(1) (@exm-procesos): una autocorrelación de primer orden mayor que $\tfrac12$ con todas las demás nulas es imposible.
+:::

@@ -5,7 +5,7 @@ project:
     - index.qmd
     - econometria-1/*.qmd
     - econometria-2/*.qmd
-    - econometria-3/index.qmd
+    - econometria-3/*.qmd
 
 lang: es
 
@@ -58,6 +58,16 @@ website:
         - econometria-2/clase-11.qmd
         - econometria-2/clase-12.qmd
         - econometria-2/clase-13.qmd
+    - id: eco3
+      title: "Econometría 3"
+      style: floating
+      contents:
+        - econometria-3/index.qmd
+        - econometria-3/clase-01.qmd
+        - econometria-3/clase-02.qmd
+        - econometria-3/clase-03.qmd
+        - econometria-3/clase-04.qmd
+        - econometria-3/clase-05.qmd
   page-footer:
     left: "© 2026 Benjamín Solís · Econometría"
     right: "Hecho con [Quarto](https://quarto.org)"
