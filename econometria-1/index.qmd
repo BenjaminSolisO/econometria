@@ -10,7 +10,7 @@ toc: false
 Este curso construye la teoría del modelo de regresión lineal desde cero. No hay atajos: cada resultado que se usa está demostrado en el curso o marcado explícitamente como un hecho que se toma prestado (el teorema espectral, el teorema de continuidad de Lévy y pocos más). La idea es que, al terminar, puedas reconstruir por tu cuenta cualquier fórmula de un libro de econometría y, sobre todo, saber **por qué** es cierta.
 
 ::: {.callout-caution title="Cómo están escritas las clases"}
-Las clases siguen el estilo de los libros de Jay Cummings: tono conversacional, notas al margen con contexto (y alguna broma), y cada demostración precedida de un recuadro **Borrador** donde se piensa en voz alta cómo encontrarla. La demostración formal viene después, con cada paso justificado. Las secciones **★ Postgrado** profundizan en los temas y se pueden saltar en una primera lectura de pregrado. Cada clase termina con ejercicios resueltos (la solución está plegada, así que intenta resolverlos antes de abrirla).
+Las clases tienen un tono conversacional, notas al margen con contexto (y alguna broma), y cada demostración precedida de un recuadro **Borrador** donde se piensa en voz alta cómo encontrarla. La demostración formal viene después, con cada paso justificado. Las secciones **★ Postgrado** profundizan en los temas y se pueden saltar en una primera lectura de pregrado. Cada clase termina con ejercicios resueltos (la solución está plegada, así que intenta resolverlos antes de abrirla).
 :::
 
 ## Clases
@@ -49,4 +49,3 @@ El curso no sigue un solo libro. Las fuentes principales, de menor a mayor nivel
 - Greene, W. (2018). *Econometric Analysis*, 8.ª ed. Pearson. (La enciclopedia.)
 - Hayashi, F. (2000). *Econometrics*. Princeton University Press. (Postgrado; muestras finitas y asintótica con mucho rigor.)
 - Hansen, B. (2022). *Econometrics*. Princeton University Press. (Postgrado; la referencia moderna, con la proyección lineal como objeto central.)
-- Cummings, J. (2019). *Real Analysis: A Long-Form Mathematics Textbook*. (No es de econometría, pero es el modelo de cómo se explican las demostraciones en este curso.)

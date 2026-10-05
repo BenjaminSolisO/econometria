@@ -1,6 +1,6 @@
 # Econometría
 
-Sitio de los cursos **Econometría 1, 2 y 3**: teoría, demostraciones paso a paso (estilo Jay Cummings) y ejercicios resueltos.
+Sitio de los cursos **Econometría 1, 2 y 3**: teoría, demostraciones paso a paso y ejercicios resueltos.
 
 Sitio publicado: <https://benjaminsoliso.github.io/econometria/>
 
