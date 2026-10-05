@@ -1,6 +1,6 @@
 ---
 title: "Econometría"
-description: "Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
+description: "Álgebra matricial aplicada y cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
 page-layout: full
 title-block-banner: false
 toc: false
@@ -12,14 +12,35 @@ format:
 ---
 
 ::: {.hero}
-<div class="eyebrow">Cuatro cursos · teoría y demostraciones</div>
+<div class="eyebrow">Álgebra y econometría · teoría y demostraciones</div>
 
 <h1>Econometría,<br>paso a paso.</h1>
 
-<p class="lead">Un recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender <em>por qué</em> funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.</p>
+<p class="lead">Un recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender <em>por qué</em> funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla. Y, como base de todo, un curso de álgebra matricial con la mirada de la ingeniería y la física.</p>
 
 <div class="formula">$$\hat\beta \;=\; (X'X)^{-1}X'y \;=\; \beta + \Big(\tfrac{1}{n}\textstyle\sum_i x_ix_i'\Big)^{-1}\tfrac{1}{n}\textstyle\sum_i x_iu_i$$</div>
 :::
+
+## Fundamentos matemáticos
+
+::: {.cursos}
+<div class="curso">
+<div class="num">A</div>
+<h3>Álgebra matricial aplicada</h3>
+<p>Matrices como herramienta de trabajo, con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, mínimos cuadrados, valores propios, SVD, condicionamiento, optimización y problemas inversos. Resultados demostrados en general; todos los ejemplos en dos y tres dimensiones, con figuras. Catorce clases.</p>
+<span class="estado activo">● En construcción · 14 clases</span>
+<a class="boton" href="algebra-matricial/index.qmd">Entrar al curso →</a>
+</div>
+
+<div class="curso pronto">
+<div class="num">L</div>
+<h3>Álgebra lineal</h3>
+<p>El mismo tema con la mirada de la matemática: espacios vectoriales abstractos, transformaciones lineales, formas canónicas y dimensión arbitraria, al nivel de una licenciatura en matemáticas.</p>
+<span class="estado proximo">○ Próximamente</span>
+</div>
+:::
+
+## Econometría
 
 ::: {.cursos}
 <div class="curso">

@@ -3,6 +3,7 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - algebra-matricial/*.qmd
     - econometria-1/*.qmd
     - econometria-2/*.qmd
     - econometria-3/*.qmd
@@ -13,12 +14,14 @@ lang: es
 website:
   title: "Econometría"
   site-url: "https://benjaminsoliso.github.io/econometria/"
-  description: "Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
+  description: "Álgebra matricial aplicada y cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
   page-navigation: true
   navbar:
     left:
       - text: "Inicio"
         href: index.qmd
+      - text: "Álgebra matricial"
+        href: algebra-matricial/index.qmd
       - text: "Econometría 1"
         href: econometria-1/index.qmd
       - text: "Econometría 2"
@@ -28,6 +31,25 @@ website:
       - text: "Econometría 4"
         href: econometria-4/index.qmd
   sidebar:
+    - id: am
+      title: "Álgebra matricial aplicada"
+      style: floating
+      contents:
+        - algebra-matricial/index.qmd
+        - algebra-matricial/clase-01.qmd
+        - algebra-matricial/clase-02.qmd
+        - algebra-matricial/clase-03.qmd
+        - algebra-matricial/clase-04.qmd
+        - algebra-matricial/clase-05.qmd
+        - algebra-matricial/clase-06.qmd
+        - algebra-matricial/clase-07.qmd
+        - algebra-matricial/clase-08.qmd
+        - algebra-matricial/clase-09.qmd
+        - algebra-matricial/clase-10.qmd
+        - algebra-matricial/clase-11.qmd
+        - algebra-matricial/clase-12.qmd
+        - algebra-matricial/clase-13.qmd
+        - algebra-matricial/clase-14.qmd
     - id: eco1
       title: "Econometría 1"
       style: floating

@@ -1,0 +1,58 @@
+---
+title: "Álgebra matricial aplicada"
+subtitle: "Matrices para resolver, ajustar, vibrar y optimizar"
+description: "Catorce clases de álgebra matricial con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, determinantes, mínimos cuadrados, valores propios, SVD, condicionamiento, matrices complejas, funciones de matrices, optimización y problemas inversos."
+format: html
+number-sections: false
+toc: false
+---
+
+Este curso trata las matrices como una herramienta de trabajo. Las preguntas son las de un ingeniero o un físico: ¿cómo resuelvo este sistema y cuánto me cuesta?, ¿qué tan sensible es la respuesta a un error en los datos?, ¿cuál es la mejor recta que pasa cerca de estos puntos?, ¿con qué frecuencias vibra esta estructura?, ¿cuál es la mejor decisión que cumple estas restricciones? Cada herramienta se presenta junto con el problema que resuelve.
+
+Hay dos reglas que recorren todo el curso:
+
+- **Los resultados se enuncian y se demuestran en general**, para matrices $n\times n$ (o $m\times n$), con cada paso escrito y justificado. Nada de "es fácil ver".
+- **Todos los ejemplos y ejercicios son en dos y tres dimensiones**: matrices $2\times2$ y $3\times3$, vectores del plano y del espacio, con la aritmética completa. Así cada idea se puede **dibujar**, y casi todas las clases traen figuras.
+
+Las ideas más abstractas (espacios vectoriales generales, dimensión infinita, la FFT, el producto de Kronecker, los sistemas grandes y dispersos) quedan para el curso de **Álgebra lineal**, de corte matemático. Cada clase termina con un recuadro *En más dimensiones* que avisa qué se generaliza.
+
+::: {.callout-caution title="Cómo están escritas las clases"}
+Antes de cada demostración hay un recuadro **Borrador**, donde se piensa en voz alta cómo encontrarla. Los **Algoritmos** aparecen en recuadros con sus pasos, su costo y sus puntos débiles. Las secciones **★ Para ir más allá** profundizan y se pueden saltar en una primera lectura. Cada clase termina con siete ejercicios resueltos (con la solución plegada: intenta antes de mirar).
+:::
+
+::: {.callout-caution title="Requisitos"}
+Álgebra de secundaria (resolver sistemas pequeños, operar con fracciones) y la idea de vector en el plano. Las Clases 7 y 12 usan derivadas y la función exponencial; la Clase 13, la idea de gradiente. Las Clases 11 y 12 usan números complejos, que se repasan donde hacen falta.
+:::
+
+## Clases
+
+<ul class="clases">
+<li><span class="n">01</span><span><a href="clase-01.qmd">Sistemas lineales y eliminación gaussiana</a><span class="d">Tres maneras de mirar Ax = b, operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad, costo de la eliminación. Circuitos y reacciones químicas. ★ Matrices elementales.</span></span></li>
+<li><span class="n">02</span><span><a href="clase-02.qmd">Factorización LU, inversas y matrices por bloques</a><span class="d">La eliminación como A = LU, pivoteo, muchos lados derechos, Gauss–Jordan, complemento de Schur y Sherman–Morrison. Una armadura plana. ★ Unicidad de LU.</span></span></li>
+<li><span class="n">03</span><span><a href="clase-03.qmd">Los cuatro subespacios fundamentales</a><span class="d">Espacio columna, espacio nulo, espacio fila y nulo izquierdo; independencia, base, dimensión, rango–nulidad y la estructura de todas las soluciones. Redes. ★ Rango fila = rango columna.</span></span></li>
+<li><span class="n">04</span><span><a href="clase-04.qmd">Determinantes</a><span class="d">Las tres propiedades que lo definen, cálculo por eliminación, cofactores y Cramer, el determinante como área y volumen, el jacobiano. ★ La fórmula de Leibniz.</span></span></li>
+<li><span class="n">05</span><span><a href="clase-05.qmd">Ortogonalidad y factorización QR</a><span class="d">Producto interno, Cauchy–Schwarz, bases ortonormales, rotaciones y reflexiones, Gram–Schmidt, QR y Householder. ★ Cuando Gram–Schmidt pierde la ortogonalidad.</span></span></li>
+<li><span class="n">06</span><span><a href="clase-06.qmd">Mínimos cuadrados</a><span class="d">Proyecciones sobre rectas y planos, ecuaciones normales, solución por QR, ajuste de rectas, parábolas y exponenciales, ponderación y regularización. ★ El condicionamiento se eleva al cuadrado.</span></span></li>
+<li><span class="n">07</span><span><a href="clase-07.qmd">Valores propios y sistemas dinámicos</a><span class="d">Polinomio característico, diagonalización, potencias de matrices, cadenas de Markov, Fibonacci, la exponencial de una matriz y los retratos de fase. ★ Cuando no hay suficientes autovectores.</span></span></li>
+<li><span class="n">08</span><span><a href="clase-08.qmd">Matrices simétricas y definidas positivas</a><span class="d">Teorema espectral, formas cuadráticas y ejes principales, criterios de positividad, Cholesky, cociente de Rayleigh, modos normales de vibración y tensor de inercia. ★ Courant–Fischer.</span></span></li>
+<li><span class="n">09</span><span><a href="clase-09.qmd">Descomposición en valores singulares</a><span class="d">La SVD y su geometría, rango y subespacios, pseudoinversa, aproximación de rango bajo y componentes principales. ★ Teorema de Eckart–Young.</span></span></li>
+<li><span class="n">10</span><span><a href="clase-10.qmd">Normas, condicionamiento y métodos iterativos</a><span class="d">Normas de vectores y matrices, número de condición, estabilidad, método de la potencia, Jacobi y Gauss–Seidel, derivadas matriciales. ★ Convergencia y radio espectral.</span></span></li>
+<li><span class="n">11</span><span><a href="clase-11.qmd">Matrices complejas</a><span class="d">Producto hermitiano, matrices hermitianas y unitarias, rotaciones como números complejos, matrices de Pauli, circulantes y la transformada discreta de Fourier de tres puntos. ★ Matrices normales.</span></span></li>
+<li><span class="n">12</span><span><a href="clase-12.qmd">Forma de Jordan y funciones de matrices</a><span class="d">Cayley–Hamilton, bloques de Jordan, la exponencial en general y el amortiguamiento crítico, raíces y logaritmos de matrices, Perron–Frobenius, Leontief y PageRank. ★ Demostración de Perron–Frobenius.</span></span></li>
+<li><span class="n">13</span><span><a href="clase-13.qmd">Optimización lineal y convexa</a><span class="d">Conjuntos y funciones convexas, programación lineal, método gráfico y simplex, dualidad, holgura complementaria, multiplicadores de Lagrange y condiciones KKT. ★ Dualidad fuerte vía Farkas.</span></span></li>
+<li><span class="n">14</span><span><a href="clase-14.qmd">Mínimos cuadrados con restricciones y problemas inversos</a><span class="d">Restricciones de igualdad y desigualdad, mínimos cuadrados no negativos, problemas mal condicionados, SVD truncada, Tikhonov y la curva L. ★ Regularización como filtro.</span></span></li>
+</ul>
+
+## Notación
+
+Los vectores son columnas y se escriben en minúscula ($x$, $b$, $v$); las matrices, en mayúscula ($A$, $L$, $Q$). $A'$ es la transpuesta, $I$ la identidad, $e_j$ el $j$-ésimo vector canónico y $a_{ij}$ la entrada de la fila $i$ y la columna $j$ de $A$. Las columnas de $A$ son $a_1,\dots,a_n$. El producto interno es $x\cdot y = x'y$ y la norma euclidiana, $\|x\| = \sqrt{x'x}$. Para matrices complejas, $A^*$ es la transpuesta conjugada.
+
+## Bibliografía
+
+- Strang, G. (2016). *Introduction to Linear Algebra*, 5.ª ed. Wellesley-Cambridge Press. (La referencia principal del curso: misma mirada aplicada.)
+- Lay, D., Lay, S. y McDonald, J. (2016). *Linear Algebra and Its Applications*, 5.ª ed. Pearson. (Muchos ejemplos de ingeniería.)
+- Trefethen, L. N. y Bau, D. (1997). *Numerical Linear Algebra*. SIAM. (QR, SVD, condicionamiento y estabilidad.)
+- Meyer, C. (2000). *Matrix Analysis and Applied Linear Algebra*. SIAM. (Jordan, Perron–Frobenius y funciones de matrices.)
+- Boyd, S. y Vandenberghe, L. (2004). *Convex Optimization*. Cambridge University Press. (Clase 13.)
+- Boyd, S. y Vandenberghe, L. (2018). *Introduction to Applied Linear Algebra*. Cambridge University Press. (Mínimos cuadrados con restricciones.)
+- Hansen, P. C. (2010). *Discrete Inverse Problems: Insight and Algorithms*. SIAM. (Clase 14.)

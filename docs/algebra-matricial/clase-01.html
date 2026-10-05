@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, circuitos y balance de reacciones químicas.">
+
+<title>Clase 1 · Sistemas lineales y eliminación gaussiana – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-02.html" rel="next">
+<link href="../algebra-matricial/index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../algebra-matricial/index.html" aria-current="page"> 
+<span class="menu-text">Álgebra matricial</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../algebra-matricial/clase-01.html">Clase 1 · Sistemas lineales y eliminación gaussiana</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Álgebra matricial aplicada</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-03.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-04.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-05.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-06.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-07.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-08.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-09.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-10.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-11.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-12.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-13.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-14.qmd</span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#un-circuito-dos-ecuaciones" id="toc-un-circuito-dos-ecuaciones" class="nav-link active" data-scroll-target="#un-circuito-dos-ecuaciones"><span class="header-section-number">1</span> Un circuito, dos ecuaciones</a></li>
+  <li><a href="#notación-matrices-y-vectores" id="toc-notación-matrices-y-vectores" class="nav-link" data-scroll-target="#notación-matrices-y-vectores"><span class="header-section-number">2</span> Notación: matrices y vectores</a></li>
+  <li><a href="#tres-maneras-de-mirar-ax-b" id="toc-tres-maneras-de-mirar-ax-b" class="nav-link" data-scroll-target="#tres-maneras-de-mirar-ax-b"><span class="header-section-number">3</span> Tres maneras de mirar <span class="math inline">\(Ax = b\)</span></a>
+  <ul class="collapse">
+  <li><a href="#por-filas-rectas-y-planos-que-se-cortan" id="toc-por-filas-rectas-y-planos-que-se-cortan" class="nav-link" data-scroll-target="#por-filas-rectas-y-planos-que-se-cortan"><span class="header-section-number">3.1</span> Por filas: rectas y planos que se cortan</a></li>
+  <li><a href="#por-columnas-combinaciones-de-vectores" id="toc-por-columnas-combinaciones-de-vectores" class="nav-link" data-scroll-target="#por-columnas-combinaciones-de-vectores"><span class="header-section-number">3.2</span> Por columnas: combinaciones de vectores</a></li>
+  <li><a href="#como-transformación" id="toc-como-transformación" class="nav-link" data-scroll-target="#como-transformación"><span class="header-section-number">3.3</span> Como transformación</a></li>
+  </ul></li>
+  <li><a href="#operaciones-elementales" id="toc-operaciones-elementales" class="nav-link" data-scroll-target="#operaciones-elementales"><span class="header-section-number">4</span> Operaciones elementales</a></li>
+  <li><a href="#la-eliminación-gaussiana" id="toc-la-eliminación-gaussiana" class="nav-link" data-scroll-target="#la-eliminación-gaussiana"><span class="header-section-number">5</span> La eliminación gaussiana</a>
+  <ul class="collapse">
+  <li><a href="#forma-escalonada" id="toc-forma-escalonada" class="nav-link" data-scroll-target="#forma-escalonada"><span class="header-section-number">5.1</span> Forma escalonada</a></li>
+  <li><a href="#el-algoritmo" id="toc-el-algoritmo" class="nav-link" data-scroll-target="#el-algoritmo"><span class="header-section-number">5.2</span> El algoritmo</a></li>
+  <li><a href="#cuando-hace-falta-intercambiar-filas" id="toc-cuando-hace-falta-intercambiar-filas" class="nav-link" data-scroll-target="#cuando-hace-falta-intercambiar-filas"><span class="header-section-number">5.3</span> Cuando hace falta intercambiar filas</a></li>
+  </ul></li>
+  <li><a href="#forma-escalonada-reducida-y-variables-libres" id="toc-forma-escalonada-reducida-y-variables-libres" class="nav-link" data-scroll-target="#forma-escalonada-reducida-y-variables-libres"><span class="header-section-number">6</span> Forma escalonada reducida y variables libres</a></li>
+  <li><a href="#existencia-y-unicidad" id="toc-existencia-y-unicidad" class="nav-link" data-scroll-target="#existencia-y-unicidad"><span class="header-section-number">7</span> Existencia y unicidad</a></li>
+  <li><a href="#el-caso-homogéneo-reacciones-químicas" id="toc-el-caso-homogéneo-reacciones-químicas" class="nav-link" data-scroll-target="#el-caso-homogéneo-reacciones-químicas"><span class="header-section-number">8</span> El caso homogéneo: reacciones químicas</a></li>
+  <li><a href="#cuánto-cuesta-eliminar" id="toc-cuánto-cuesta-eliminar" class="nav-link" data-scroll-target="#cuánto-cuesta-eliminar"><span class="header-section-number">9</span> Cuánto cuesta eliminar</a></li>
+  <li><a href="#para-ir-más-allá-matrices-elementales" id="toc-para-ir-más-allá-matrices-elementales" class="nav-link" data-scroll-target="#para-ir-más-allá-matrices-elementales"><span class="header-section-number">10</span> ★ Para ir más allá: matrices elementales</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">11</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">12</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 1 · Sistemas lineales y eliminación gaussiana</h1>
+<p class="subtitle lead">Tres maneras de mirar Ax = b y el algoritmo que lo resuelve</p>
+</div>
+
+<div>
+  <div class="description">
+    Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, circuitos y balance de reacciones químicas.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a></p>
+<section id="un-circuito-dos-ecuaciones" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Un circuito, dos ecuaciones</h1>
+<p>Empecemos con un problema de ingeniería eléctrica. El circuito de la <a href="#fig-circuito" class="quarto-xref">Figura&nbsp;1</a> tiene una batería de <span class="math inline">\(8\)</span> voltios y tres resistencias. Queremos saber qué corriente circula por cada rama.</p>
+<div id="fig-circuito" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-circuito-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_circuito.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-circuito-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Un circuito de dos mallas. Las flechas circulares son las corrientes de malla <span class="math inline">\(i_1\)</span> e <span class="math inline">\(i_2\)</span>, que suponemos en el sentido de las agujas del reloj.
+</figcaption>
+</figure>
+</div>
+<p>El método de las <strong>corrientes de malla</strong> asigna una corriente a cada “ventana” del circuito: <span class="math inline">\(i_1\)</span> a la de la izquierda e <span class="math inline">\(i_2\)</span> a la de la derecha. La resistencia del medio, <span class="math inline">\(R_2\)</span>, la recorren las dos corrientes en sentidos opuestos, así que por ella pasa <span class="math inline">\(i_1 - i_2\)</span> (hacia abajo). Usamos dos leyes de la física:</p>
+<ul>
+<li><strong>Ley de Ohm:</strong> una corriente <span class="math inline">\(i\)</span> que atraviesa una resistencia <span class="math inline">\(R\)</span> produce una caída de voltaje <span class="math inline">\(Ri\)</span>.</li>
+<li><strong>Ley de voltajes de Kirchhoff:</strong> al recorrer una malla cerrada, la suma de las caídas de voltaje es igual a la suma de los voltajes de las fuentes.</li>
+</ul>
+<p>En la malla izquierda, las caídas son <span class="math inline">\(R_1i_1 = 1\cdot i_1\)</span> y <span class="math inline">\(R_2(i_1 - i_2) = 2(i_1 - i_2)\)</span>, y la fuente aporta <span class="math inline">\(8\)</span>: <span class="math display">\[
+1\cdot i_1 + 2(i_1 - i_2) = 8\quad\Longleftrightarrow\quad 3i_1 - 2i_2 = 8.
+\]</span> En la malla derecha no hay fuente; las caídas son <span class="math inline">\(R_2(i_2 - i_1) = 2(i_2 - i_1)\)</span> y <span class="math inline">\(R_3i_2 = 2i_2\)</span>: <span class="math display">\[
+2(i_2 - i_1) + 2i_2 = 0\quad\Longleftrightarrow\quad -2i_1 + 4i_2 = 0.
+\]</span> Es un <strong>sistema de dos ecuaciones lineales con dos incógnitas</strong>. La segunda ecuación dice <span class="math inline">\(4i_2 = 2i_1\)</span>, es decir <span class="math inline">\(i_2 = i_1/2\)</span>. Reemplazando en la primera: <span class="math inline">\(3i_1 - 2\cdot\tfrac{i_1}2 = 3i_1 - i_1 = 2i_1 = 8\)</span>, así que <span class="math inline">\(i_1 = 4\)</span> y <span class="math inline">\(i_2 = 2\)</span> amperes. Por la resistencia del medio pasan <span class="math inline">\(i_1 - i_2 = 2\)</span> amperes.</p>
+<p>Con dos incógnitas cualquier método sirve. Pero un circuito real tiene decenas de mallas, una estructura de acero tiene miles de nudos y un modelo del clima tiene millones de incógnitas. Hace falta un <strong>método sistemático</strong>, que funcione igual para dos o para un millón de ecuaciones, y que diga además <strong>cuándo</strong> hay solución y <strong>cuántas</strong> hay. Ese método es la <strong>eliminación gaussiana</strong>, y es el tema de esta clase.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;El método aparece ya en el texto chino <em>Los nueve capítulos sobre el arte matemático</em>, compilado hace unos dos mil años, donde se resuelven sistemas de hasta cinco ecuaciones disponiendo los coeficientes en una tabla. El nombre de Gauss se le asoció porque lo usó sistemáticamente a comienzos del siglo XIX para calcular la órbita de asteroides con mínimos cuadrados (Clase 6).</p></div></div></section>
+<section id="notación-matrices-y-vectores" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Notación: matrices y vectores</h1>
+<p>Un <strong>sistema lineal</strong> de <span class="math inline">\(m\)</span> ecuaciones con <span class="math inline">\(n\)</span> incógnitas <span class="math inline">\(x_1,\dots,x_n\)</span> es <span id="eq-sistema"><span class="math display">\[
+\begin{aligned}
+a_{11}x_1 + a_{12}x_2 + \dots + a_{1n}x_n &amp;= b_1\\
+a_{21}x_1 + a_{22}x_2 + \dots + a_{2n}x_n &amp;= b_2\\
+&amp;\;\;\vdots\\
+a_{m1}x_1 + a_{m2}x_2 + \dots + a_{mn}x_n &amp;= b_m.
+\end{aligned}
+\tag{1}\]</span></span> Los números <span class="math inline">\(a_{ij}\)</span> (el coeficiente de la incógnita <span class="math inline">\(j\)</span> en la ecuación <span class="math inline">\(i\)</span>) forman la <strong>matriz de coeficientes</strong> <span class="math inline">\(A\)</span>, de <span class="math inline">\(m\)</span> filas y <span class="math inline">\(n\)</span> columnas (<span class="math inline">\(m\times n\)</span>). Las incógnitas forman el vector <span class="math inline">\(x\)</span> y los lados derechos, el vector <span class="math inline">\(b\)</span>: <span class="math display">\[
+A = \begin{pmatrix}a_{11}&amp;a_{12}&amp;\cdots&amp;a_{1n}\\a_{21}&amp;a_{22}&amp;\cdots&amp;a_{2n}\\\vdots&amp;&amp;&amp;\vdots\\a_{m1}&amp;a_{m2}&amp;\cdots&amp;a_{mn}\end{pmatrix},\qquad x = \begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix},\qquad b = \begin{pmatrix}b_1\\\vdots\\b_m\end{pmatrix}.
+\]</span> El sistema <a href="#eq-sistema" class="quarto-xref">Ecuación&nbsp;1</a> se escribe, en forma compacta, <span class="math inline">\(Ax = b\)</span>. Para el circuito, <span class="math display">\[
+A = \begin{pmatrix}3&amp;-2\\-2&amp;4\end{pmatrix},\qquad x = \begin{pmatrix}i_1\\i_2\end{pmatrix},\qquad b = \begin{pmatrix}8\\0\end{pmatrix}.
+\]</span> Una <strong>solución</strong> es un vector <span class="math inline">\(x\)</span> que satisface las <span class="math inline">\(m\)</span> ecuaciones a la vez. El conjunto de todas las soluciones es el <strong>conjunto solución</strong>. Los vectores siempre son columnas, y escribimos <span class="math inline">\(a_j\)</span> para la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(A\)</span>.</p>
+</section>
+<section id="tres-maneras-de-mirar-ax-b" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Tres maneras de mirar <span class="math inline">\(Ax = b\)</span></h1>
+<p>La misma ecuación <span class="math inline">\(Ax = b\)</span> admite tres lecturas, y cada una aporta una intuición distinta. Usaremos como ejemplo el sistema <span id="eq-ejemplo2"><span class="math display">\[
+\begin{aligned}
+x_1 + 2x_2 &amp;= 5\\
+3x_1 - x_2 &amp;= 1
+\end{aligned}
+\qquad\text{es decir}\qquad
+\begin{pmatrix}1&amp;2\\3&amp;-1\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} = \begin{pmatrix}5\\1\end{pmatrix}.
+\tag{2}\]</span></span></p>
+<section id="por-filas-rectas-y-planos-que-se-cortan" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="por-filas-rectas-y-planos-que-se-cortan"><span class="header-section-number">3.1</span> Por filas: rectas y planos que se cortan</h2>
+<p>Cada ecuación de <a href="#eq-ejemplo2" class="quarto-xref">Ecuación&nbsp;2</a> es una <strong>recta</strong> del plano: <span class="math inline">\(x_1 + 2x_2 = 5\)</span> pasa por <span class="math inline">\((5,0)\)</span> y <span class="math inline">\((1,2)\)</span>; <span class="math inline">\(3x_1 - x_2 = 1\)</span> pasa por <span class="math inline">\((0,-1)\)</span> y <span class="math inline">\((1,2)\)</span>. Una solución del sistema es un punto que está en <strong>las dos</strong> rectas a la vez: su <strong>intersección</strong>. Las dos rectas pasan por <span class="math inline">\((1,2)\)</span>, que es la solución: <span class="math inline">\(1 + 2\cdot2 = 5\)</span> ✓ y <span class="math inline">\(3\cdot1 - 2 = 1\)</span> ✓.</p>
+<p>Dos rectas del plano pueden cortarse en un punto, ser paralelas (no se cortan) o ser la misma recta (se cortan en todos sus puntos). Son los tres casos de la <a href="#fig-rectas" class="quarto-xref">Figura&nbsp;2</a>, y anticipan algo que demostraremos: <strong>un sistema lineal tiene una solución, ninguna o infinitas</strong>. Nunca exactamente dos.</p>
+<div id="fig-rectas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rectas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_rectas.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rectas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Lectura por filas en el plano. Izquierda: <span class="math inline">\(x_1 + 2x_2 = 5\)</span> y <span class="math inline">\(3x_1 - x_2 = 1\)</span> se cortan en <span class="math inline">\((1,2)\)</span>. Centro: <span class="math inline">\(x_1 + 2x_2 = 5\)</span> y <span class="math inline">\(2x_1 + 4x_2 = 4\)</span> son paralelas. Derecha: <span class="math inline">\(x_1 + 2x_2 = 5\)</span> y <span class="math inline">\(2x_1 + 4x_2 = 10\)</span> son la misma recta.
+</figcaption>
+</figure>
+</div>
+<p>Con tres incógnitas, cada ecuación <span class="math inline">\(a_1x_1 + a_2x_2 + a_3x_3 = b\)</span> es un <strong>plano</strong> del espacio, y resolver un sistema de tres ecuaciones es encontrar el punto común a tres planos. Por ejemplo, <span id="eq-ejemplo3"><span class="math display">\[
+\begin{aligned}
+x_1 + x_2 + x_3 &amp;= 6\\
+2x_1 + 3x_2 + x_3 &amp;= 11\\
+x_1 - x_2 + 2x_3 &amp;= 5
+\end{aligned}
+\tag{3}\]</span></span> tiene la única solución <span class="math inline">\((1,2,3)\)</span>: <span class="math inline">\(1 + 2 + 3 = 6\)</span> ✓, <span class="math inline">\(2 + 6 + 3 = 11\)</span> ✓ y <span class="math inline">\(1 - 2 + 6 = 5\)</span> ✓. Es el punto de la <a href="#fig-planos" class="quarto-xref">Figura&nbsp;3</a>.</p>
+<div id="fig-planos" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-planos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_planos.png" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-planos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: Lectura por filas en el espacio: los tres planos de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a> se cortan en el punto <span class="math inline">\((1,2,3)\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>Tres planos también pueden no tener un único punto común. Si el tercer plano contiene la recta donde se cortan los dos primeros, hay infinitas soluciones (toda esa recta). Si el tercero no toca esa recta, no hay ninguna (<a href="#fig-planos-casos" class="quarto-xref">Figura&nbsp;4</a>).</p>
+<div id="fig-planos-casos" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-planos-casos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_planos_casos.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-planos-casos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: Izquierda: con la tercera ecuación <span class="math inline">\(3x_1 + 4x_2 + 2x_3 = 17\)</span> (la suma de las dos primeras de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a>), los tres planos comparten una recta. Derecha: con <span class="math inline">\(3x_1 + 4x_2 + 2x_3 = 20\)</span>, los planos se cortan de a pares pero no tienen ningún punto común a los tres.
+</figcaption>
+</figure>
+</div>
+<p>La lectura por filas es la más intuitiva en dos y tres dimensiones, pero en dimensiones más altas no se puede dibujar. La siguiente lectura escala mejor.</p>
+</section>
+<section id="por-columnas-combinaciones-de-vectores" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="por-columnas-combinaciones-de-vectores"><span class="header-section-number">3.2</span> Por columnas: combinaciones de vectores</h2>
+<p>Escribamos <a href="#eq-ejemplo2" class="quarto-xref">Ecuación&nbsp;2</a> separando las columnas: <span class="math display">\[
+x_1\begin{pmatrix}1\\3\end{pmatrix} + x_2\begin{pmatrix}2\\-1\end{pmatrix} = \begin{pmatrix}5\\1\end{pmatrix}.
+\]</span> La pregunta ahora es: <strong>¿qué múltiplos de las columnas <span class="math inline">\(a_1 = (1,3)'\)</span> y <span class="math inline">\(a_2 = (2,-1)'\)</span> hay que sumar para obtener <span class="math inline">\(b = (5,1)'\)</span>?</strong> La respuesta es <span class="math inline">\(x_1 = 1\)</span> y <span class="math inline">\(x_2 = 2\)</span>: <span class="math inline">\(1\cdot(1,3)' + 2\cdot(2,-1)' = (1 + 4,\ 3 - 2)' = (5,1)'\)</span> ✓. La <a href="#fig-columnas" class="quarto-xref">Figura&nbsp;5</a> lo muestra: se camina <span class="math inline">\(a_1\)</span> una vez y <span class="math inline">\(a_2\)</span> dos veces, y se llega a <span class="math inline">\(b\)</span>.</p>
+<div id="fig-columnas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-columnas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_columnas.png" class="img-fluid figure-img" style="width:62.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-columnas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5: Lectura por columnas: <span class="math inline">\(b = (5,1)'\)</span> es la combinación <span class="math inline">\(1\cdot a_1 + 2\cdot a_2\)</span> de las columnas de la matriz.
+</figcaption>
+</figure>
+</div>
+<p>Una expresión de la forma <span class="math inline">\(x_1a_1 + x_2a_2 + \dots + x_na_n\)</span>, con números <span class="math inline">\(x_j\)</span>, se llama <strong>combinación lineal</strong> de los vectores <span class="math inline">\(a_j\)</span>. Entonces:</p>
+<blockquote class="blockquote">
+<p><span class="math inline">\(Ax = b\)</span> tiene solución <strong>si y solo si</strong> <span class="math inline">\(b\)</span> es una combinación lineal de las columnas de <span class="math inline">\(A\)</span>.</p>
+</blockquote>
+<p>Esta lectura explica de inmediato los casos de la <a href="#fig-rectas" class="quarto-xref">Figura&nbsp;2</a>. En el caso central, las columnas son <span class="math inline">\((1,2)'\)</span> y <span class="math inline">\((2,4)'\)</span>: la segunda es el doble de la primera, así que todas sus combinaciones <span class="math inline">\(x_1(1,2)' + x_2(2,4)' = (x_1 + 2x_2)(1,2)'\)</span> caen sobre <strong>una misma recta</strong> que pasa por el origen. Si <span class="math inline">\(b\)</span> no está en esa recta (como <span class="math inline">\(b = (5,4)'\)</span>), no hay solución. Si está (como <span class="math inline">\(b = (5,10)'\)</span>), hay infinitas maneras de repartir el peso entre las dos columnas.</p>
+<p>Las dos lecturas son la misma cuenta ordenada de dos maneras. Lo hacemos explícito porque usaremos ambas todo el curso.</p>
+<div id="def-producto" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Producto de matriz por vector)</strong></span> Para <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times n\)</span> y <span class="math inline">\(x\in\mathbb{R}^n\)</span>, el producto <span class="math inline">\(Ax\)</span> es el vector de <span class="math inline">\(\mathbb{R}^m\)</span> cuya componente <span class="math inline">\(i\)</span> es <span class="math display">\[
+(Ax)_i = a_{i1}x_1 + a_{i2}x_2 + \dots + a_{in}x_n = \sum_{j = 1}^na_{ij}x_j,\qquad i = 1,\dots,m.
+\]</span></p>
+</div>
+<div id="prp-filas-columnas" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Las dos lecturas coinciden)</strong></span> Para toda <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times n\)</span> con columnas <span class="math inline">\(a_1,\dots,a_n\)</span> y todo <span class="math inline">\(x\in\mathbb{R}^n\)</span>, <span class="math display">\[
+Ax = x_1a_1 + x_2a_2 + \dots + x_na_n.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dos vectores son iguales cuando son iguales componente a componente. Así que basta comparar la componente <span class="math inline">\(i\)</span> de cada lado. A la izquierda, por definición, es <span class="math inline">\(\sum_ja_{ij}x_j\)</span>. A la derecha tengo una suma de vectores escalados: la componente <span class="math inline">\(i\)</span> de <span class="math inline">\(x_ja_j\)</span> es <span class="math inline">\(x_j\)</span> por la componente <span class="math inline">\(i\)</span> de <span class="math inline">\(a_j\)</span>, que es <span class="math inline">\(a_{ij}\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Fijemos una fila <span class="math inline">\(i\in\{1,\dots,m\}\)</span>.</p>
+<p><em>Paso 1 (lado izquierdo).</em> Por la <a href="#def-producto" class="quarto-xref">Definición&nbsp;1</a>, <span class="math inline">\((Ax)_i = \sum_{j = 1}^na_{ij}x_j\)</span>.</p>
+<p><em>Paso 2 (lado derecho).</em> La columna <span class="math inline">\(a_j\)</span> es el vector <span class="math inline">\((a_{1j},a_{2j},\dots,a_{mj})'\)</span>, así que su componente <span class="math inline">\(i\)</span> es <span class="math inline">\(a_{ij}\)</span>. Multiplicar un vector por el número <span class="math inline">\(x_j\)</span> multiplica cada componente por <span class="math inline">\(x_j\)</span>: la componente <span class="math inline">\(i\)</span> de <span class="math inline">\(x_ja_j\)</span> es <span class="math inline">\(x_ja_{ij}\)</span>. Sumar vectores suma componente a componente: la componente <span class="math inline">\(i\)</span> de <span class="math inline">\(x_1a_1 + \dots + x_na_n\)</span> es <span class="math inline">\(x_1a_{i1} + \dots + x_na_{in} = \sum_{j = 1}^nx_ja_{ij}\)</span>.</p>
+<p><em>Paso 3.</em> Como <span class="math inline">\(x_ja_{ij} = a_{ij}x_j\)</span> (los números conmutan), las expresiones de los pasos 1 y 2 son iguales. Como <span class="math inline">\(i\)</span> era arbitrario, los dos vectores coinciden en todas sus componentes.</p>
+</div>
+<div id="exm-producto" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un producto <span class="math inline">\(3\times3\)</span> calculado de las dos maneras)</strong></span> Con la matriz de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a> y <span class="math inline">\(x = (1,2,3)'\)</span>:</p>
+<p><em>Por filas:</em> <span class="math inline">\((1\cdot1 + 1\cdot2 + 1\cdot3,\ 2\cdot1 + 3\cdot2 + 1\cdot3,\ 1\cdot1 + (-1)\cdot2 + 2\cdot3)' = (6,\ 11,\ 5)'\)</span>.</p>
+<p><em>Por columnas:</em> <span class="math inline">\(1\begin{pmatrix}1\\2\\1\end{pmatrix} + 2\begin{pmatrix}1\\3\\-1\end{pmatrix} + 3\begin{pmatrix}1\\1\\2\end{pmatrix} = \begin{pmatrix}1 + 2 + 3\\2 + 6 + 3\\1 - 2 + 6\end{pmatrix} = \begin{pmatrix}6\\11\\5\end{pmatrix}\)</span>.</p>
+<p>Ambas dan <span class="math inline">\(b = (6,11,5)'\)</span>: <span class="math inline">\((1,2,3)\)</span> resuelve <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a>.</p>
+</div>
+</section>
+<section id="como-transformación" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="como-transformación"><span class="header-section-number">3.3</span> Como transformación</h2>
+<p>La tercera lectura mira a <span class="math inline">\(A\)</span> como una <strong>máquina</strong> que recibe un vector <span class="math inline">\(x\in\mathbb{R}^n\)</span> y entrega el vector <span class="math inline">\(Ax\in\mathbb{R}^m\)</span>. Resolver <span class="math inline">\(Ax = b\)</span> es preguntar <strong>qué entrada produce la salida <span class="math inline">\(b\)</span></strong>. Esta lectura es la que explica los determinantes (cuánto agranda <span class="math inline">\(A\)</span> las áreas, Clase 4), los valores propios (qué direcciones no cambian de dirección, Clase 7) y la SVD (cómo deforma <span class="math inline">\(A\)</span> un círculo, Clase 9). Por ahora basta registrar una propiedad: la máquina es <strong>lineal</strong>.</p>
+<div id="prp-linealidad" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Linealidad del producto)</strong></span> Para toda <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times n\)</span>, todos <span class="math inline">\(x,y\in\mathbb{R}^n\)</span> y todo número <span class="math inline">\(c\)</span>: <span class="math inline">\(A(x + y) = Ax + Ay\)</span> y <span class="math inline">\(A(cx) = c(Ax)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Comparamos la componente <span class="math inline">\(i\)</span>. <em>Suma:</em> <span class="math inline">\((A(x + y))_i = \sum_ja_{ij}(x_j + y_j) = \sum_j(a_{ij}x_j + a_{ij}y_j) = \sum_ja_{ij}x_j + \sum_ja_{ij}y_j = (Ax)_i + (Ay)_i\)</span>, donde se usó la distributividad de los números y que una suma de sumas se puede reordenar. <em>Escalar:</em> <span class="math inline">\((A(cx))_i = \sum_ja_{ij}(cx_j) = c\sum_ja_{ij}x_j = c(Ax)_i\)</span>, sacando el factor común <span class="math inline">\(c\)</span>.</p>
+</div>
+</section>
+</section>
+<section id="operaciones-elementales" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Operaciones elementales</h1>
+<p>La idea de la eliminación es transformar el sistema en otro <strong>más fácil</strong> que tenga <strong>exactamente las mismas soluciones</strong>. Las transformaciones permitidas son tres.</p>
+<div id="def-operaciones" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Operaciones elementales de fila)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><strong>Reemplazo:</strong> sumar a una ecuación un múltiplo de otra (<span class="math inline">\(F_i\leftarrow F_i + cF_k\)</span>, con <span class="math inline">\(k\ne i\)</span>).</li>
+<li><strong>Intercambio:</strong> intercambiar dos ecuaciones (<span class="math inline">\(F_i\leftrightarrow F_k\)</span>).</li>
+<li><strong>Escalamiento:</strong> multiplicar una ecuación por un número <strong>distinto de cero</strong> (<span class="math inline">\(F_i\leftarrow cF_i\)</span>, con <span class="math inline">\(c\ne0\)</span>).</li>
+</ol>
+</div>
+<p>Para no arrastrar las incógnitas, se trabaja con la <strong>matriz aumentada</strong> <span class="math inline">\([A\mid b]\)</span>, que pone el lado derecho como una columna más: <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\2&amp;3&amp;1&amp;11\\1&amp;-1&amp;2&amp;5\end{array}\right]\quad\text{representa @eq-ejemplo3}.
+\]</span> Una operación elemental sobre las ecuaciones es la misma operación sobre las filas de la matriz aumentada.</p>
+<div id="thm-equivalencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Las operaciones elementales no cambian las soluciones)</strong></span> Si el sistema <span class="math inline">\(\tilde Ax = \tilde b\)</span> se obtiene de <span class="math inline">\(Ax = b\)</span> con una operación elemental, entonces ambos sistemas tienen exactamente el mismo conjunto solución.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>“Mismo conjunto solución” son dos inclusiones: toda solución del original resuelve el nuevo, y toda solución del nuevo resuelve el original. Para la primera, tomo una solución <span class="math inline">\(x\)</span> y verifico cada ecuación nueva: las que no cambiaron se siguen cumpliendo, y la que cambió es una combinación de ecuaciones que <span class="math inline">\(x\)</span> cumple. Para la segunda, uso que cada operación se <strong>deshace</strong> con otra operación del mismo tipo: entonces el original se obtiene del nuevo con una operación elemental, y aplico la primera inclusión al revés.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Escribimos la ecuación <span class="math inline">\(i\)</span> del sistema original como <span class="math inline">\(F_i(x) = b_i\)</span>, donde <span class="math inline">\(F_i(x) = a_{i1}x_1 + \dots + a_{in}x_n\)</span>. Notar que <span class="math inline">\(F_i(x) + cF_k(x) = (a_{i1} + ca_{k1})x_1 + \dots + (a_{in} + ca_{kn})x_n\)</span>: sumar un múltiplo de una fila a otra, en la matriz, es lo mismo que sumar las expresiones.</p>
+<p><em>Paso 1: toda solución del original resuelve el nuevo.</em> Sea <span class="math inline">\(x\)</span> con <span class="math inline">\(F_\ell(x) = b_\ell\)</span> para todo <span class="math inline">\(\ell\)</span>. Revisamos cada operación.</p>
+<ul>
+<li><em>Reemplazo</em> <span class="math inline">\(F_i\leftarrow F_i + cF_k\)</span>: todas las ecuaciones salvo la <span class="math inline">\(i\)</span> son las mismas, y <span class="math inline">\(x\)</span> las cumple. La nueva ecuación <span class="math inline">\(i\)</span> es <span class="math inline">\(F_i(x) + cF_k(x) = b_i + cb_k\)</span>. Como <span class="math inline">\(F_i(x) = b_i\)</span> y <span class="math inline">\(F_k(x) = b_k\)</span>, el lado izquierdo vale <span class="math inline">\(b_i + cb_k\)</span>: se cumple.</li>
+<li><em>Intercambio</em> <span class="math inline">\(F_i\leftrightarrow F_k\)</span>: el nuevo sistema tiene las mismas ecuaciones en otro orden, y <span class="math inline">\(x\)</span> las cumple todas.</li>
+<li><em>Escalamiento</em> <span class="math inline">\(F_i\leftarrow cF_i\)</span>: la nueva ecuación <span class="math inline">\(i\)</span> es <span class="math inline">\(cF_i(x) = cb_i\)</span>, y se cumple porque <span class="math inline">\(F_i(x) = b_i\)</span>; las demás no cambian.</li>
+</ul>
+<p><em>Paso 2: cada operación se deshace con otra operación elemental.</em> El reemplazo <span class="math inline">\(F_i\leftarrow F_i + cF_k\)</span> se deshace con <span class="math inline">\(F_i\leftarrow F_i - cF_k\)</span> (la fila <span class="math inline">\(k\)</span> no cambió, así que restar <span class="math inline">\(c\)</span> veces la fila <span class="math inline">\(k\)</span> devuelve la fila <span class="math inline">\(i\)</span> original). El intercambio se deshace repitiéndolo. El escalamiento por <span class="math inline">\(c\ne0\)</span> se deshace escalando por <span class="math inline">\(1/c\)</span>, que existe <strong>porque <span class="math inline">\(c\ne0\)</span></strong>; por eso la definición prohíbe escalar por cero.</p>
+<p><em>Paso 3: toda solución del nuevo resuelve el original.</em> Por el paso 2, el sistema original se obtiene del nuevo aplicando una operación elemental. Por el paso 1 (aplicado con los papeles invertidos), toda solución del nuevo resuelve el original.</p>
+<p>Los pasos 1 y 3 dan las dos inclusiones, y los conjuntos solución son iguales.</p>
+</div>
+<p>Notar por qué el escalamiento por cero está prohibido: multiplicar <span class="math inline">\(x_1 + x_2 = 3\)</span> por <span class="math inline">\(0\)</span> la convierte en <span class="math inline">\(0 = 0\)</span>, que cumple cualquier <span class="math inline">\(x\)</span>; se “pierde” una ecuación y aparecen soluciones falsas. Aplicando el teorema varias veces: <strong>una sucesión de operaciones elementales tampoco cambia las soluciones</strong>.</p>
+</section>
+<section id="la-eliminación-gaussiana" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> La eliminación gaussiana</h1>
+<section id="forma-escalonada" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="forma-escalonada"><span class="header-section-number">5.1</span> Forma escalonada</h2>
+<p>El objetivo de la eliminación es llegar a un sistema <strong>triangular</strong>, que se resuelve de abajo hacia arriba.</p>
+<div id="def-escalonada" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 3 (Forma escalonada)</strong></span> Una matriz está en <strong>forma escalonada</strong> si:</p>
+<ol type="1">
+<li>las filas de ceros, si hay, están al final;</li>
+<li>en cada fila no nula, la primera entrada distinta de cero (el <strong>pivote</strong>) está estrictamente a la derecha del pivote de la fila de arriba.</li>
+</ol>
+<p>Las columnas que contienen un pivote son <strong>columnas pivote</strong>; las incógnitas correspondientes son <strong>variables pivote</strong>, y las demás son <strong>variables libres</strong>.</p>
+</div>
+<p>Debajo de cada pivote, por la condición 2, solo hay ceros. Por ejemplo, con <span class="math inline">\(\ast\)</span> un número cualquiera y <span class="math inline">\(\blacksquare\)</span> un pivote (distinto de cero), <span class="math display">\[
+\begin{pmatrix}\blacksquare&amp;\ast&amp;\ast\\0&amp;\blacksquare&amp;\ast\\0&amp;0&amp;\blacksquare\end{pmatrix}\qquad\begin{pmatrix}\blacksquare&amp;\ast&amp;\ast\\0&amp;0&amp;\blacksquare\\0&amp;0&amp;0\end{pmatrix}
+\]</span> están en forma escalonada: la primera tiene tres pivotes y ninguna variable libre; la segunda, pivotes en las columnas 1 y 3, y <span class="math inline">\(x_2\)</span> es libre.</p>
+</section>
+<section id="el-algoritmo" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="el-algoritmo"><span class="header-section-number">5.2</span> El algoritmo</h2>
+<div class="callout callout-style-default callout-caution callout-titled" title="Algoritmo: eliminación gaussiana">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Algoritmo: eliminación gaussiana
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Entrada: la matriz aumentada <span class="math inline">\([A\mid b]\)</span>.</p>
+<ol type="1">
+<li>Tomar la primera columna que tenga alguna entrada distinta de cero (en las filas que quedan por procesar). Si la entrada de arriba es cero, <strong>intercambiar</strong> con una fila de más abajo que tenga entrada distinta de cero. Esa entrada es el <strong>pivote</strong>.</li>
+<li>Para cada fila debajo del pivote, restarle el múltiplo de la fila del pivote que anula su entrada en esa columna: <span class="math inline">\(F_i\leftarrow F_i - \ell_iF_{\text{piv}}\)</span>, con el <strong>multiplicador</strong> <span class="math inline">\(\ell_i = (\text{entrada de }F_i)/(\text{pivote})\)</span>.</li>
+<li>Repetir los pasos 1 y 2 con las filas de abajo (olvidando la fila del pivote), hasta que no queden filas o columnas.</li>
+<li><strong>Sustitución hacia atrás:</strong> si no aparece una fila <span class="math inline">\((0\ \cdots\ 0\mid c)\)</span> con <span class="math inline">\(c\ne0\)</span>, resolver la última ecuación con pivote para su variable pivote, sustituir hacia arriba y continuar.</li>
+</ol>
+<p><strong>Falla</strong> (detiene el pivote) si toda la columna restante es cero: entonces esa columna no tiene pivote y se pasa a la siguiente. Numéricamente, un pivote <strong>muy pequeño</strong> amplifica los errores de redondeo; la solución (pivoteo parcial) está en la Clase 2.</p>
+</div>
+</div>
+<div id="exm-elim2" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Eliminación en el sistema <span class="math inline">\(2\times2\)</span>)</strong></span> Para <a href="#eq-ejemplo2" class="quarto-xref">Ecuación&nbsp;2</a>: <span class="math display">\[
+\left[\begin{array}{cc|c}1&amp;2&amp;5\\3&amp;-1&amp;1\end{array}\right]\xrightarrow{F_2\leftarrow F_2 - 3F_1}\left[\begin{array}{cc|c}1&amp;2&amp;5\\0&amp;-7&amp;-14\end{array}\right].
+\]</span> El multiplicador es <span class="math inline">\(\ell_2 = 3/1 = 3\)</span>. La nueva fila 2 es <span class="math inline">\((3 - 3\cdot1,\ -1 - 3\cdot2\mid1 - 3\cdot5) = (0,\ -7\mid-14)\)</span>. Pivotes: <span class="math inline">\(1\)</span> y <span class="math inline">\(-7\)</span>. Sustitución hacia atrás: la fila 2 dice <span class="math inline">\(-7x_2 = -14\)</span>, así que <span class="math inline">\(x_2 = 2\)</span>; la fila 1 dice <span class="math inline">\(x_1 + 2\cdot2 = 5\)</span>, así que <span class="math inline">\(x_1 = 1\)</span>.</p>
+</div>
+<div id="exm-elim3" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Eliminación en el sistema <span class="math inline">\(3\times3\)</span>)</strong></span> Para <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a>:</p>
+<p><em>Columna 1.</em> El pivote es <span class="math inline">\(1\)</span> (fila 1). Multiplicadores: <span class="math inline">\(\ell_2 = 2/1 = 2\)</span> y <span class="math inline">\(\ell_3 = 1/1 = 1\)</span>. <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\2&amp;3&amp;1&amp;11\\1&amp;-1&amp;2&amp;5\end{array}\right]
+\xrightarrow[F_3\leftarrow F_3 - 1\cdot F_1]{F_2\leftarrow F_2 - 2F_1}
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;-2&amp;1&amp;-1\end{array}\right].
+\]</span> Cuentas: <span class="math inline">\(F_2 - 2F_1 = (2 - 2,\ 3 - 2,\ 1 - 2\mid11 - 12) = (0,\ 1,\ -1\mid-1)\)</span>; <span class="math inline">\(F_3 - F_1 = (1 - 1,\ -1 - 1,\ 2 - 1\mid5 - 6) = (0,\ -2,\ 1\mid-1)\)</span>.</p>
+<p><em>Columna 2.</em> Olvidamos la fila 1. El pivote es <span class="math inline">\(1\)</span> (fila 2). Multiplicador: <span class="math inline">\(\ell_3 = -2/1 = -2\)</span>, así que <span class="math inline">\(F_3\leftarrow F_3 - (-2)F_2 = F_3 + 2F_2\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;-2&amp;1&amp;-1\end{array}\right]
+\xrightarrow{F_3\leftarrow F_3 + 2F_2}
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;0&amp;-1&amp;-3\end{array}\right].
+\]</span> Cuenta: <span class="math inline">\((0 + 0,\ -2 + 2,\ 1 - 2\mid-1 - 2) = (0,\ 0,\ -1\mid-3)\)</span>.</p>
+<p><em>Sustitución hacia atrás.</em> Fila 3: <span class="math inline">\(-x_3 = -3\)</span>, luego <span class="math inline">\(x_3 = 3\)</span>. Fila 2: <span class="math inline">\(x_2 - x_3 = -1\)</span>, luego <span class="math inline">\(x_2 = -1 + 3 = 2\)</span>. Fila 1: <span class="math inline">\(x_1 + x_2 + x_3 = 6\)</span>, luego <span class="math inline">\(x_1 = 6 - 2 - 3 = 1\)</span>. La solución es <span class="math inline">\((1,2,3)\)</span>, el punto de la <a href="#fig-planos" class="quarto-xref">Figura&nbsp;3</a>. Los pivotes son <span class="math inline">\(1\)</span>, <span class="math inline">\(1\)</span> y <span class="math inline">\(-1\)</span>.</p>
+</div>
+</section>
+<section id="cuando-hace-falta-intercambiar-filas" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="cuando-hace-falta-intercambiar-filas"><span class="header-section-number">5.3</span> Cuando hace falta intercambiar filas</h2>
+<div id="exm-propano" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 4 (Balance de la combustión del propano)</strong></span> Al quemar propano (<span class="math inline">\(\mathrm{C_3H_8}\)</span>) con oxígeno (<span class="math inline">\(\mathrm{O_2}\)</span>) se obtiene dióxido de carbono (<span class="math inline">\(\mathrm{CO_2}\)</span>) y agua (<span class="math inline">\(\mathrm{H_2O}\)</span>): <span class="math display">\[
+\mathrm{C_3H_8} + x_2\,\mathrm{O_2}\ \longrightarrow\ x_3\,\mathrm{CO_2} + x_4\,\mathrm{H_2O}.
+\]</span> Fijamos en <span class="math inline">\(1\)</span> el coeficiente del propano y buscamos <span class="math inline">\(x_2,x_3,x_4\)</span> para que cada elemento aparezca la misma cantidad de veces a cada lado:</p>
+<ul>
+<li>carbono: <span class="math inline">\(3 = x_3\)</span>;</li>
+<li>hidrógeno: <span class="math inline">\(8 = 2x_4\)</span>;</li>
+<li>oxígeno: <span class="math inline">\(2x_2 = 2x_3 + x_4\)</span>, es decir <span class="math inline">\(2x_2 - 2x_3 - x_4 = 0\)</span>.</li>
+</ul>
+<p>Con las incógnitas en el orden <span class="math inline">\((x_2,x_3,x_4)\)</span>, la matriz aumentada es <span class="math display">\[
+\left[\begin{array}{ccc|c}0&amp;1&amp;0&amp;3\\0&amp;0&amp;2&amp;8\\2&amp;-2&amp;-1&amp;0\end{array}\right].
+\]</span> La entrada <span class="math inline">\((1,1)\)</span> es <strong>cero</strong>: no sirve de pivote (no se puede dividir por ella). La única fila con entrada no nula en la columna 1 es la tercera, así que <strong>intercambiamos</strong> <span class="math inline">\(F_1\leftrightarrow F_3\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|c}2&amp;-2&amp;-1&amp;0\\0&amp;0&amp;2&amp;8\\0&amp;1&amp;0&amp;3\end{array}\right]\xrightarrow{F_2\leftrightarrow F_3}\left[\begin{array}{ccc|c}2&amp;-2&amp;-1&amp;0\\0&amp;1&amp;0&amp;3\\0&amp;0&amp;2&amp;8\end{array}\right].
+\]</span> En la columna 2, la entrada de la fila 2 era cero y la de la fila 3 era <span class="math inline">\(1\)</span>: un segundo intercambio deja la matriz escalonada (no hizo falta ningún reemplazo). Sustitución hacia atrás: <span class="math inline">\(2x_4 = 8\Rightarrow x_4 = 4\)</span>; <span class="math inline">\(x_3 = 3\)</span>; <span class="math inline">\(2x_2 - 2\cdot3 - 4 = 0\Rightarrow 2x_2 = 10\Rightarrow x_2 = 5\)</span>. La ecuación balanceada es <span class="math display">\[
+\mathrm{C_3H_8} + 5\,\mathrm{O_2}\longrightarrow3\,\mathrm{CO_2} + 4\,\mathrm{H_2O}.
+\]</span> Verificación: carbono <span class="math inline">\(3 = 3\)</span>; hidrógeno <span class="math inline">\(8 = 4\cdot2\)</span>; oxígeno <span class="math inline">\(5\cdot2 = 10 = 3\cdot2 + 4\cdot1\)</span> ✓.</p>
+</div>
+</section>
+</section>
+<section id="forma-escalonada-reducida-y-variables-libres" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Forma escalonada reducida y variables libres</h1>
+<p>Cuando hay variables libres conviene seguir eliminando hasta una forma más limpia.</p>
+<div id="def-reducida" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 4 (Forma escalonada reducida)</strong></span> Una matriz está en <strong>forma escalonada reducida</strong> si está en forma escalonada, cada pivote vale <span class="math inline">\(1\)</span> y cada pivote es la <strong>única</strong> entrada distinta de cero de su columna.</p>
+</div>
+<p>Se llega a ella desde la forma escalonada (método de <strong>Gauss–Jordan</strong>): se escala cada fila para que su pivote valga <span class="math inline">\(1\)</span> y se eliminan también las entradas <strong>sobre</strong> cada pivote, de abajo hacia arriba.</p>
+<div id="exm-infinitas" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 5 (Un sistema con infinitas soluciones)</strong></span> Cambiemos la tercera ecuación de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a> por la suma de las dos primeras, <span class="math inline">\(3x_1 + 4x_2 + 2x_3 = 17\)</span> (el caso izquierdo de la <a href="#fig-planos-casos" class="quarto-xref">Figura&nbsp;4</a>): <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\2&amp;3&amp;1&amp;11\\3&amp;4&amp;2&amp;17\end{array}\right]
+\xrightarrow[F_3\leftarrow F_3 - 3F_1]{F_2\leftarrow F_2 - 2F_1}
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;1&amp;-1&amp;-1\end{array}\right],
+\]</span> <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;1&amp;-1&amp;-1\end{array}\right]
+\xrightarrow{F_3\leftarrow F_3 - F_2}
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;0&amp;0&amp;0\end{array}\right].
+\]</span> Cuentas: <span class="math inline">\(F_3 - 3F_1 = (3 - 3,\ 4 - 3,\ 2 - 3\mid17 - 18) = (0,\ 1,\ -1\mid-1)\)</span>, y luego <span class="math inline">\(F_3 - F_2 = (0,0,0\mid0)\)</span>. La matriz está en forma escalonada con pivotes en las columnas 1 y 2: <strong><span class="math inline">\(x_3\)</span> es libre</strong>. Para la forma reducida eliminamos el <span class="math inline">\(1\)</span> sobre el segundo pivote, <span class="math inline">\(F_1\leftarrow F_1 - F_2\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;0&amp;2&amp;7\\0&amp;1&amp;-1&amp;-1\\0&amp;0&amp;0&amp;0\end{array}\right],
+\]</span> con <span class="math inline">\(F_1 - F_2 = (1,\ 1 - 1,\ 1 - (-1)\mid6 - (-1)) = (1,\ 0,\ 2\mid7)\)</span>. Ahora cada variable pivote se <strong>despeja</strong> en función de la libre: <span class="math inline">\(x_1 = 7 - 2x_3\)</span> y <span class="math inline">\(x_2 = -1 + x_3\)</span>. Llamando <span class="math inline">\(t\)</span> a la variable libre, las soluciones son <span class="math display">\[
+\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix} = \begin{pmatrix}7 - 2t\\-1 + t\\t\end{pmatrix} = \begin{pmatrix}7\\-1\\0\end{pmatrix} + t\begin{pmatrix}-2\\1\\1\end{pmatrix},\qquad t\in\mathbb{R}.
+\]</span> Es la <strong>ecuación paramétrica de una recta</strong> en el espacio: la recta común de la <a href="#fig-planos-casos" class="quarto-xref">Figura&nbsp;4</a>. Con <span class="math inline">\(t = 3\)</span> se obtiene <span class="math inline">\((1,2,3)\)</span>, la solución del sistema original, que en efecto está en esa recta.</p>
+</div>
+<div id="exm-ninguna" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 6 (Un sistema sin solución)</strong></span> Si en cambio el lado derecho de la tercera ecuación es <span class="math inline">\(20\)</span>, la misma eliminación da <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;1&amp;-1&amp;2\end{array}\right]\xrightarrow{F_3\leftarrow F_3 - F_2}\left[\begin{array}{ccc|c}1&amp;1&amp;1&amp;6\\0&amp;1&amp;-1&amp;-1\\0&amp;0&amp;0&amp;3\end{array}\right],
+\]</span> con <span class="math inline">\(20 - 3\cdot6 = 2\)</span> en la fila 3 tras el primer paso, y <span class="math inline">\(2 - (-1) = 3\)</span> tras el segundo. La última fila dice <span class="math inline">\(0x_1 + 0x_2 + 0x_3 = 3\)</span>, es decir <span class="math inline">\(0 = 3\)</span>: <strong>ningún</strong> <span class="math inline">\(x\)</span> la cumple. El sistema no tiene solución (caso derecho de la <a href="#fig-planos-casos" class="quarto-xref">Figura&nbsp;4</a>).</p>
+</div>
+</section>
+<section id="existencia-y-unicidad" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Existencia y unicidad</h1>
+<p>Los tres ejemplos anteriores muestran todo lo que puede pasar. El siguiente teorema lo dice en general.</p>
+<div id="thm-existencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Existencia y unicidad de soluciones)</strong></span> Sea <span class="math inline">\([U\mid c]\)</span> una forma escalonada de la matriz aumentada <span class="math inline">\([A\mid b]\)</span> de un sistema de <span class="math inline">\(m\)</span> ecuaciones con <span class="math inline">\(n\)</span> incógnitas.</p>
+<ol type="1">
+<li>El sistema <strong>no tiene solución</strong> si y solo si <span class="math inline">\([U\mid c]\)</span> tiene una fila de la forma <span class="math inline">\((0\ 0\ \cdots\ 0\mid c_i)\)</span> con <span class="math inline">\(c_i\ne0\)</span>.</li>
+<li>Si el sistema tiene solución, la solución es <strong>única</strong> si y solo si no hay variables libres (todas las columnas de <span class="math inline">\(U\)</span> son columnas pivote). Si hay al menos una variable libre, hay <strong>infinitas</strong> soluciones.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Por el <a href="#thm-equivalencia" class="quarto-xref">Teorema&nbsp;1</a>, puedo trabajar con <span class="math inline">\([U\mid c]\)</span> en lugar de <span class="math inline">\([A\mid b]\)</span>. La dirección fácil de 1: la fila mala dice <span class="math inline">\(0 = c_i\)</span> y nadie la cumple. Para la otra dirección construyo soluciones: le doy a las variables libres valores cualesquiera y, de abajo hacia arriba, despejo cada variable pivote. Eso siempre se puede porque el pivote es distinto de cero, y en cada fila las variables a la derecha del pivote ya tienen valor: o son libres o son pivotes de filas de más abajo. Esa construcción también responde la parte 2: cada elección de las libres da exactamente una solución.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por el <a href="#thm-equivalencia" class="quarto-xref">Teorema&nbsp;1</a> (aplicado a cada operación de la eliminación), <span class="math inline">\(Ax = b\)</span> y <span class="math inline">\(Ux = c\)</span> tienen el mismo conjunto solución. Trabajamos con <span class="math inline">\(Ux = c\)</span>. Sean <span class="math inline">\(r\)</span> el número de filas no nulas de <span class="math inline">\(U\)</span> y <span class="math inline">\(p_1&lt;p_2&lt;\dots&lt;p_r\)</span> las columnas de sus pivotes (crecientes por la forma escalonada).</p>
+<p><em>Parte 1, dirección (<span class="math inline">\(\Leftarrow\)</span>).</em> Si una fila de <span class="math inline">\([U\mid c]\)</span> es <span class="math inline">\((0\ \cdots\ 0\mid c_i)\)</span> con <span class="math inline">\(c_i\ne0\)</span>, la ecuación correspondiente es <span class="math inline">\(0x_1 + \dots + 0x_n = c_i\)</span>. Su lado izquierdo vale <span class="math inline">\(0\)</span> para cualquier <span class="math inline">\(x\)</span>, y <span class="math inline">\(0\ne c_i\)</span>: ningún <span class="math inline">\(x\)</span> la cumple, y el sistema no tiene solución.</p>
+<p><em>Parte 1, dirección (<span class="math inline">\(\Rightarrow\)</span>), por contrarrecíproco.</em> Supongamos que no hay ninguna fila <span class="math inline">\((0\ \cdots\ 0\mid c_i)\)</span> con <span class="math inline">\(c_i\ne0\)</span>. Las filas de <span class="math inline">\(U\)</span> nulas (las <span class="math inline">\(m - r\)</span> últimas) tienen entonces <span class="math inline">\(c_i = 0\)</span>, y sus ecuaciones <span class="math inline">\(0 = 0\)</span> las cumple cualquier <span class="math inline">\(x\)</span>. Construimos un <span class="math inline">\(x\)</span> que cumple las <span class="math inline">\(r\)</span> primeras:</p>
+<ul>
+<li><ol type="a">
+<li>A cada variable libre le damos un valor cualquiera (por ejemplo, <span class="math inline">\(0\)</span>).</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>Procesamos las filas <span class="math inline">\(k = r, r - 1, \dots, 1\)</span> en ese orden. La fila <span class="math inline">\(k\)</span> dice <span class="math display">\[
+u_{k,p_k}x_{p_k} + \sum_{j&gt;p_k}u_{kj}x_j = c_k.
+\]</span> (No hay términos con <span class="math inline">\(j&lt;p_k\)</span> porque las entradas a la izquierda del pivote son cero.) Cada <span class="math inline">\(x_j\)</span> con <span class="math inline">\(j&gt;p_k\)</span> ya tiene valor: si <span class="math inline">\(j\)</span> es una columna no pivote, se fijó en (a); si es una columna pivote, es <span class="math inline">\(p_\ell\)</span> para algún <span class="math inline">\(\ell&gt;k\)</span> (los pivotes de filas más bajas están más a la derecha), y se fijó al procesar la fila <span class="math inline">\(\ell\)</span>, antes que la <span class="math inline">\(k\)</span>. Como el pivote <span class="math inline">\(u_{k,p_k}\ne0\)</span>, la ecuación tiene una <strong>única</strong> solución para <span class="math inline">\(x_{p_k}\)</span>: <span class="math display">\[
+x_{p_k} = \frac1{u_{k,p_k}}\Big(c_k - \sum_{j&gt;p_k}u_{kj}x_j\Big).
+\]</span></li>
+</ol></li>
+</ul>
+<p>Al terminar, todas las variables tienen valor y se cumplen todas las ecuaciones: el sistema tiene solución. Esto prueba el contrarrecíproco de (<span class="math inline">\(\Rightarrow\)</span>).</p>
+<p><em>Parte 2.</em> Supongamos que hay solución (no hay fila mala). La construcción de la parte 1 muestra dos cosas. Primero, <strong>toda</strong> solución se obtiene así: si <span class="math inline">\(x\)</span> es una solución, sus variables libres tienen ciertos valores, y entonces cada variable pivote está obligada a valer lo que dice la fórmula de (b) (porque esa ecuación tiene solución única dados los valores a su derecha). Segundo, <strong>cada</strong> elección de las variables libres produce una solución. Hay dos casos:</p>
+<ul>
+<li>Si no hay variables libres, no hay nada que elegir: la construcción produce exactamente un <span class="math inline">\(x\)</span>, y como toda solución se obtiene así, la solución es única.</li>
+<li>Si hay al menos una variable libre <span class="math inline">\(x_f\)</span>, las elecciones <span class="math inline">\(x_f = 0, 1, 2, \dots\)</span> (con las demás libres fijas) producen soluciones <strong>distintas</strong>, porque difieren en la componente <span class="math inline">\(f\)</span>. Hay infinitas soluciones.</li>
+</ul>
+</div>
+<div id="cor-cuadrado" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 1 (Sistemas cuadrados)</strong></span> Sea <span class="math inline">\(A\)</span> de <span class="math inline">\(n\times n\)</span>. Si una forma escalonada de <span class="math inline">\(A\)</span> tiene <span class="math inline">\(n\)</span> pivotes, entonces <span class="math inline">\(Ax = b\)</span> tiene <strong>exactamente una</strong> solución para <strong>todo</strong> <span class="math inline">\(b\)</span>. Si tiene menos de <span class="math inline">\(n\)</span> pivotes, existe algún <span class="math inline">\(b\)</span> sin solución, y para los <span class="math inline">\(b\)</span> que sí tienen solución, hay infinitas.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Con <span class="math inline">\(n\)</span> pivotes.</em> Una matriz <span class="math inline">\(n\times n\)</span> escalonada con <span class="math inline">\(n\)</span> pivotes tiene un pivote en cada fila y en cada columna (los pivotes están en filas distintas y columnas distintas, y hay <span class="math inline">\(n\)</span> de cada una). Entonces no hay filas nulas en <span class="math inline">\(U\)</span>: no puede aparecer <span class="math inline">\((0\ \cdots\ 0\mid c_i)\)</span>, sea cual sea <span class="math inline">\(b\)</span>. Por la parte 1 del <a href="#thm-existencia" class="quarto-xref">Teorema&nbsp;2</a> hay solución, y como no hay variables libres, por la parte 2 es única.</p>
+<p><em>Con menos de <span class="math inline">\(n\)</span> pivotes.</em> Hay al menos una columna sin pivote (una variable libre) y, como hay menos de <span class="math inline">\(n\)</span> pivotes en <span class="math inline">\(n\)</span> filas, la última fila de <span class="math inline">\(U\)</span> es nula. Sean <span class="math inline">\(E\)</span> las operaciones elementales que llevan <span class="math inline">\(A\)</span> a <span class="math inline">\(U\)</span>. Tomemos <span class="math inline">\(c = (0,\dots,0,1)'\)</span> y apliquemos a <span class="math inline">\([U\mid c]\)</span> las operaciones de <span class="math inline">\(E\)</span> <strong>al revés</strong> (cada una se deshace, <a href="#thm-equivalencia" class="quarto-xref">Teorema&nbsp;1</a>, paso 2): obtenemos <span class="math inline">\([A\mid b]\)</span> para cierto <span class="math inline">\(b\)</span>. Ese sistema tiene, por construcción, la forma escalonada <span class="math inline">\([U\mid c]\)</span>, cuya última fila es <span class="math inline">\((0\ \cdots\ 0\mid1)\)</span>: por la parte 1 no tiene solución. Y para cualquier <span class="math inline">\(b\)</span> con solución, la variable libre da infinitas (parte 2).</p>
+</div>
+<p>El número de pivotes de una forma escalonada se llama <strong>rango</strong> de <span class="math inline">\(A\)</span>. Que no dependa de cómo se hizo la eliminación (qué intercambios se eligieron) se demuestra en la Clase 3. Con esa palabra, el <a href="#cor-cuadrado" class="quarto-xref">Corolario&nbsp;1</a> dice: una matriz cuadrada de rango completo define un sistema con solución única para cualquier lado derecho.</p>
+</section>
+<section id="el-caso-homogéneo-reacciones-químicas" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> El caso homogéneo: reacciones químicas</h1>
+<p>Un sistema con <span class="math inline">\(b = 0\)</span>, <span class="math inline">\(Ax = 0\)</span>, se llama <strong>homogéneo</strong>. Siempre tiene la solución <span class="math inline">\(x = 0\)</span>, y la pregunta interesante es si tiene otras. Por el <a href="#thm-existencia" class="quarto-xref">Teorema&nbsp;2</a>, las tiene exactamente cuando hay variables libres; en particular, <strong>si hay más incógnitas que ecuaciones</strong> (<span class="math inline">\(n&gt;m\)</span>), como hay a lo más <span class="math inline">\(m\)</span> pivotes, sobra al menos una columna sin pivote, y hay infinitas soluciones.</p>
+<div id="exm-agua" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 7 (Formación del agua)</strong></span> En <span class="math inline">\(x_1\,\mathrm{H_2} + x_2\,\mathrm{O_2}\to x_3\,\mathrm{H_2O}\)</span>, el balance de hidrógeno es <span class="math inline">\(2x_1 = 2x_3\)</span> y el de oxígeno <span class="math inline">\(2x_2 = x_3\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|c}2&amp;0&amp;-2&amp;0\\0&amp;2&amp;-1&amp;0\end{array}\right]\xrightarrow[F_2\leftarrow\frac12F_2]{F_1\leftarrow\frac12F_1}\left[\begin{array}{ccc|c}1&amp;0&amp;-1&amp;0\\0&amp;1&amp;-\tfrac12&amp;0\end{array}\right].
+\]</span> Ya está en forma reducida, con pivotes en las columnas 1 y 2: <span class="math inline">\(x_3 = t\)</span> es libre, y <span class="math inline">\(x_1 = t\)</span>, <span class="math inline">\(x_2 = t/2\)</span>. Los coeficientes de una reacción deben ser enteros positivos, y el menor <span class="math inline">\(t\)</span> que lo logra es <span class="math inline">\(t = 2\)</span>: <span class="math inline">\((x_1,x_2,x_3) = (2,1,2)\)</span>, es decir <span class="math inline">\(2\,\mathrm{H_2} + \mathrm{O_2}\to2\,\mathrm{H_2O}\)</span>. Que haya infinitas soluciones refleja que una reacción balanceada sigue balanceada si se multiplican todos los coeficientes por el mismo número.</p>
+</div>
+</section>
+<section id="cuánto-cuesta-eliminar" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Cuánto cuesta eliminar</h1>
+<p>Para comparar algoritmos se cuentan las <strong>operaciones de punto flotante</strong> (sumas, restas, multiplicaciones y divisiones), llamadas <em>flops</em>.</p>
+<div id="prp-costo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Costo de la eliminación sin intercambios)</strong></span> Para un sistema <span class="math inline">\(n\times n\)</span> que no requiere intercambios, la eliminación hasta la forma escalonada (incluido el lado derecho) cuesta <span class="math display">\[
+\sum_{k = 1}^{n - 1}(n - k)\big(2(n - k) + 3\big) = \frac{(n - 1)n(2n - 1)}3 + \frac{3(n - 1)n}2\ \text{flops},
+\]</span> y la sustitución hacia atrás cuesta <span class="math inline">\(n^2\)</span> flops. El término dominante es <span class="math inline">\(\tfrac23n^3\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Eliminación.</em> En la etapa <span class="math inline">\(k\)</span> (el pivote de la columna <span class="math inline">\(k\)</span>, con <span class="math inline">\(k = 1,\dots,n - 1\)</span>) hay <span class="math inline">\(n - k\)</span> filas debajo del pivote. Para cada una de ellas:</p>
+<ul>
+<li>se calcula el multiplicador <span class="math inline">\(\ell_i = a_{ik}/a_{kk}\)</span>: <span class="math inline">\(1\)</span> división;</li>
+<li>se actualizan las entradas de las columnas <span class="math inline">\(k + 1,\dots,n\)</span> (son <span class="math inline">\(n - k\)</span> entradas), cada una con <span class="math inline">\(a_{ij}\leftarrow a_{ij} - \ell_ia_{kj}\)</span>: <span class="math inline">\(1\)</span> multiplicación y <span class="math inline">\(1\)</span> resta, o sea <span class="math inline">\(2(n - k)\)</span> flops;</li>
+<li>se actualiza el lado derecho <span class="math inline">\(b_i\leftarrow b_i - \ell_ib_k\)</span>: <span class="math inline">\(2\)</span> flops.</li>
+</ul>
+<p>(La entrada de la columna <span class="math inline">\(k\)</span> no se calcula: se sabe que queda en cero.) Cada fila cuesta <span class="math inline">\(1 + 2(n - k) + 2 = 2(n - k) + 3\)</span>, y con <span class="math inline">\(n - k\)</span> filas la etapa <span class="math inline">\(k\)</span> cuesta <span class="math inline">\((n - k)(2(n - k) + 3)\)</span>. Sumando sobre <span class="math inline">\(k\)</span> y cambiando el índice a <span class="math inline">\(j = n - k\)</span> (que recorre <span class="math inline">\(1,\dots,n - 1\)</span>): <span class="math display">\[
+\sum_{j = 1}^{n - 1}j(2j + 3) = 2\sum_{j = 1}^{n - 1}j^2 + 3\sum_{j = 1}^{n - 1}j = 2\cdot\frac{(n - 1)n(2n - 1)}6 + 3\cdot\frac{(n - 1)n}2,
+\]</span> usando las fórmulas <span class="math inline">\(\sum_{j = 1}^Nj = N(N + 1)/2\)</span> y <span class="math inline">\(\sum_{j = 1}^Nj^2 = N(N + 1)(2N + 1)/6\)</span> con <span class="math inline">\(N = n - 1\)</span>. El primer término es <span class="math inline">\(\frac{(n - 1)n(2n - 1)}3 = \frac{2n^3 - 3n^2 + n}3\)</span>, cuyo término dominante es <span class="math inline">\(\frac23n^3\)</span>; el segundo es de orden <span class="math inline">\(n^2\)</span>.</p>
+<p><em>Sustitución hacia atrás.</em> La ecuación <span class="math inline">\(i\)</span> (contando desde arriba) tiene <span class="math inline">\(n - i\)</span> incógnitas ya conocidas a la derecha del pivote: se calculan <span class="math inline">\(n - i\)</span> productos y <span class="math inline">\(n - i\)</span> restas, y luego <span class="math inline">\(1\)</span> división por el pivote, <span class="math inline">\(2(n - i) + 1\)</span> flops. Sumando sobre <span class="math inline">\(i = 1,\dots,n\)</span> con <span class="math inline">\(j = n - i\)</span> de <span class="math inline">\(0\)</span> a <span class="math inline">\(n - 1\)</span>: <span class="math inline">\(\sum_{j = 0}^{n - 1}(2j + 1) = 2\cdot\frac{(n - 1)n}2 + n = n^2\)</span>.</p>
+</div>
+<p>Con <span class="math inline">\(n = 2\)</span>: la eliminación cuesta <span class="math inline">\(1\cdot(2 + 3) = 5\)</span> flops y la sustitución <span class="math inline">\(4\)</span>; total <span class="math inline">\(9\)</span>. Con <span class="math inline">\(n = 3\)</span>: <span class="math inline">\(2\cdot(4 + 3) + 1\cdot(2 + 3) = 14 + 5 = 19\)</span> y <span class="math inline">\(9\)</span>; total <span class="math inline">\(28\)</span> (Ejercicio 1.7). La lección importante es la <strong>escala</strong>: el costo crece como el <strong>cubo</strong> del tamaño. Duplicar el número de incógnitas multiplica el trabajo por <span class="math inline">\(2^3 = 8\)</span>. Por eso, en problemas grandes, la estructura de la matriz (bandas, ceros) importa tanto; ese tema está en el curso de Álgebra lineal.</p>
+</section>
+<section id="para-ir-más-allá-matrices-elementales" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> ★ Para ir más allá: matrices elementales</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Para ir más allá">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Para ir más allá
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cada operación elemental es <strong>multiplicar a la izquierda</strong> por una matriz especial. Esto convierte la eliminación en un producto de matrices, que es la base de la factorización <span class="math inline">\(A = LU\)</span> de la Clase 2.</p>
+</div>
+</div>
+<p>Recordemos el producto de matrices: si <span class="math inline">\(E\)</span> es <span class="math inline">\(m\times m\)</span> y <span class="math inline">\(A\)</span> es <span class="math inline">\(m\times n\)</span>, la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(EA\)</span> es <span class="math inline">\(\sum_\ell e_{i\ell}\,(\text{fila }\ell\text{ de }A)\)</span>; es decir, <strong>cada fila de <span class="math inline">\(EA\)</span> es una combinación de las filas de <span class="math inline">\(A\)</span></strong>, con los coeficientes de la fila correspondiente de <span class="math inline">\(E\)</span>. (Es la lectura por columnas de la <a href="#prp-filas-columnas" class="quarto-xref">Proposición&nbsp;1</a>, aplicada a las filas.) Sea <span class="math inline">\(e_i\)</span> el <span class="math inline">\(i\)</span>-ésimo vector canónico (un <span class="math inline">\(1\)</span> en la posición <span class="math inline">\(i\)</span> y ceros en el resto) y <span class="math inline">\(I\)</span> la identidad.</p>
+<div id="prp-elementales" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 4 (Matrices elementales)</strong></span> Sean <span class="math inline">\(i\ne k\)</span> y <span class="math inline">\(c\)</span> un número.</p>
+<ol type="1">
+<li>La matriz <span class="math inline">\(E = I + c\,e_ie_k'\)</span> (la identidad con un <span class="math inline">\(c\)</span> en la posición <span class="math inline">\((i,k)\)</span>) cumple: <span class="math inline">\(EA\)</span> es <span class="math inline">\(A\)</span> con <span class="math inline">\(F_i\leftarrow F_i + cF_k\)</span>.</li>
+<li>La matriz <span class="math inline">\(P\)</span> que se obtiene de <span class="math inline">\(I\)</span> intercambiando las filas <span class="math inline">\(i\)</span> y <span class="math inline">\(k\)</span> cumple: <span class="math inline">\(PA\)</span> es <span class="math inline">\(A\)</span> con <span class="math inline">\(F_i\leftrightarrow F_k\)</span>.</li>
+<li>Con <span class="math inline">\(c\ne0\)</span>, la matriz <span class="math inline">\(D = I + (c - 1)e_ie_i'\)</span> (la identidad con <span class="math inline">\(c\)</span> en la posición <span class="math inline">\((i,i)\)</span>) cumple: <span class="math inline">\(DA\)</span> es <span class="math inline">\(A\)</span> con <span class="math inline">\(F_i\leftarrow cF_i\)</span>.</li>
+</ol>
+<p>Las tres son invertibles: <span class="math inline">\(E^{-1} = I - c\,e_ie_k'\)</span>, <span class="math inline">\(P^{-1} = P\)</span> y <span class="math inline">\(D^{-1} = I + (1/c - 1)e_ie_i'\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1.</em> La fila <span class="math inline">\(\ell\)</span> de <span class="math inline">\(E\)</span> es <span class="math inline">\(e_\ell'\)</span> si <span class="math inline">\(\ell\ne i\)</span>, y <span class="math inline">\(e_i' + c\,e_k'\)</span> si <span class="math inline">\(\ell = i\)</span> (la identidad más la entrada <span class="math inline">\(c\)</span> en la columna <span class="math inline">\(k\)</span>). Por la regla de arriba, la fila <span class="math inline">\(\ell\ne i\)</span> de <span class="math inline">\(EA\)</span> es <span class="math inline">\(1\cdot(\text{fila }\ell\text{ de }A)\)</span>, sin cambio. La fila <span class="math inline">\(i\)</span> de <span class="math inline">\(EA\)</span> es <span class="math inline">\(1\cdot(\text{fila }i) + c\cdot(\text{fila }k)\)</span>. Es exactamente <span class="math inline">\(F_i\leftarrow F_i + cF_k\)</span>.</p>
+<p><em>Inversa de <span class="math inline">\(E\)</span>.</em> Calculamos <span class="math inline">\((I + c\,e_ie_k')(I - c\,e_ie_k') = I - c\,e_ie_k' + c\,e_ie_k' - c^2\,e_i(e_k'e_i)e_k'\)</span>. Como <span class="math inline">\(i\ne k\)</span>, el número <span class="math inline">\(e_k'e_i\)</span> (el producto de dos vectores canónicos distintos) es <span class="math inline">\(0\)</span>. Queda <span class="math inline">\(I\)</span>. Del mismo modo <span class="math inline">\((I - c\,e_ie_k')(I + c\,e_ie_k') = I\)</span>.</p>
+<p><em>Parte 2.</em> La fila <span class="math inline">\(i\)</span> de <span class="math inline">\(P\)</span> es <span class="math inline">\(e_k'\)</span>, la fila <span class="math inline">\(k\)</span> es <span class="math inline">\(e_i'\)</span> y las demás son <span class="math inline">\(e_\ell'\)</span>. Entonces la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(PA\)</span> es la fila <span class="math inline">\(k\)</span> de <span class="math inline">\(A\)</span>, la fila <span class="math inline">\(k\)</span> de <span class="math inline">\(PA\)</span> es la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span> y las demás no cambian. Aplicar el intercambio dos veces devuelve el original, así que <span class="math inline">\(PP = I\)</span> y <span class="math inline">\(P^{-1} = P\)</span>.</p>
+<p><em>Parte 3.</em> La fila <span class="math inline">\(i\)</span> de <span class="math inline">\(D\)</span> es <span class="math inline">\(c\,e_i'\)</span> y las demás son <span class="math inline">\(e_\ell'\)</span>: la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(DA\)</span> es <span class="math inline">\(c\)</span> por la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span>. La inversa: <span class="math inline">\(D\)</span> y <span class="math inline">\(I + (1/c - 1)e_ie_i'\)</span> son diagonales, con entradas diagonales <span class="math inline">\(c\)</span> y <span class="math inline">\(1/c\)</span> en la posición <span class="math inline">\(i\)</span> y <span class="math inline">\(1\)</span> en el resto; su producto es diagonal con <span class="math inline">\(c\cdot\frac1c = 1\)</span> en la posición <span class="math inline">\(i\)</span> y <span class="math inline">\(1\)</span> en el resto, es decir <span class="math inline">\(I\)</span>.</p>
+</div>
+<p>Con esto la eliminación se escribe como un producto. En el <a href="#exm-elim3" class="quarto-xref">Ejemplo&nbsp;3</a> se usaron, en orden, <span class="math inline">\(F_2\leftarrow F_2 - 2F_1\)</span>, <span class="math inline">\(F_3\leftarrow F_3 - F_1\)</span> y <span class="math inline">\(F_3\leftarrow F_3 + 2F_2\)</span>: <span class="math display">\[
+E_{21} = \begin{pmatrix}1&amp;0&amp;0\\-2&amp;1&amp;0\\0&amp;0&amp;1\end{pmatrix},\quad
+E_{31} = \begin{pmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\-1&amp;0&amp;1\end{pmatrix},\quad
+E_{32} = \begin{pmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\0&amp;2&amp;1\end{pmatrix},
+\]</span> y la forma escalonada es <span class="math inline">\(U = E_{32}E_{31}E_{21}A\)</span>. Esto da otra demostración del <a href="#thm-equivalencia" class="quarto-xref">Teorema&nbsp;1</a>: si <span class="math inline">\(E\)</span> es invertible, <span class="math inline">\(Ax = b\)</span> implica <span class="math inline">\(EAx = Eb\)</span>, y <span class="math inline">\(EAx = Eb\)</span> implica <span class="math inline">\(E^{-1}EAx = E^{-1}Eb\)</span>, es decir <span class="math inline">\(Ax = b\)</span>. El Ejercicio 1.7 calcula el producto <span class="math inline">\(E_{32}E_{31}E_{21}\)</span> y descubre en su inversa los multiplicadores de la eliminación, ordenados en una matriz triangular: es la <span class="math inline">\(L\)</span> de la Clase 2.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="En más dimensiones">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>En más dimensiones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todo lo de esta clase (la eliminación, el <a href="#thm-existencia" class="quarto-xref">Teorema&nbsp;2</a>, el costo <span class="math inline">\(\tfrac23n^3\)</span>) vale tal cual para <span class="math inline">\(n\)</span> arbitrario: las demostraciones se escribieron para <span class="math inline">\(n\)</span> general. Lo que cambia en dimensión grande es la <strong>práctica</strong>: con <span class="math inline">\(n\)</span> en los millones, la eliminación densa es inviable y se aprovecha que la mayoría de las entradas son cero (matrices dispersas) o se usan métodos iterativos. Esos temas, junto con la teoría de sistemas en espacios vectoriales abstractos, están en el curso de Álgebra lineal.</p>
+</div>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Resumen</h1>
+<ul>
+<li>Un sistema lineal se escribe <span class="math inline">\(Ax = b\)</span>. Se lee <strong>por filas</strong> (intersección de rectas o planos), <strong>por columnas</strong> (<span class="math inline">\(b\)</span> como combinación de las columnas, <a href="#prp-filas-columnas" class="quarto-xref">Proposición&nbsp;1</a>) o como <strong>transformación</strong> <span class="math inline">\(x\mapsto Ax\)</span> (lineal, <a href="#prp-linealidad" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+<li>Las tres <strong>operaciones elementales</strong> (reemplazo, intercambio y escalamiento por un número no nulo) no cambian las soluciones (<a href="#thm-equivalencia" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>La <strong>eliminación gaussiana</strong> lleva <span class="math inline">\([A\mid b]\)</span> a forma <strong>escalonada</strong>; la sustitución hacia atrás resuelve. Gauss–Jordan sigue hasta la forma <strong>escalonada reducida</strong>, que despeja las variables pivote en función de las libres.</li>
+<li><strong>Existencia y unicidad</strong> (<a href="#thm-existencia" class="quarto-xref">Teorema&nbsp;2</a>): no hay solución si aparece una fila <span class="math inline">\((0\ \cdots\ 0\mid c)\)</span> con <span class="math inline">\(c\ne0\)</span>; si hay solución, es única sin variables libres e infinita con alguna. Un sistema lineal tiene <strong>cero, una o infinitas</strong> soluciones.</li>
+<li>Un sistema homogéneo con más incógnitas que ecuaciones siempre tiene soluciones no nulas (balance de reacciones).</li>
+<li>El costo de la eliminación crece como <span class="math inline">\(\tfrac23n^3\)</span> (<a href="#prp-costo" class="quarto-xref">Proposición&nbsp;3</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Ejercicios</h1>
+<p><strong>Ejercicio 1.1.</strong> Resuelve por eliminación el sistema <span class="math inline">\(x_1 - x_2 = 1\)</span>, <span class="math inline">\(2x_1 + x_2 = 8\)</span>. Verifica la solución por filas (las dos rectas pasan por ella) y por columnas (<span class="math inline">\(b\)</span> como combinación de las columnas).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Matriz aumentada y eliminación con multiplicador <span class="math inline">\(\ell_2 = 2/1 = 2\)</span>: <span class="math display">\[
+\left[\begin{array}{cc|c}1&amp;-1&amp;1\\2&amp;1&amp;8\end{array}\right]\xrightarrow{F_2\leftarrow F_2 - 2F_1}\left[\begin{array}{cc|c}1&amp;-1&amp;1\\0&amp;3&amp;6\end{array}\right],
+\]</span> con <span class="math inline">\(F_2 - 2F_1 = (2 - 2,\ 1 - (-2)\mid8 - 2) = (0,\ 3\mid6)\)</span>. Sustitución: <span class="math inline">\(3x_2 = 6\Rightarrow x_2 = 2\)</span>; <span class="math inline">\(x_1 - 2 = 1\Rightarrow x_1 = 3\)</span>. <em>Por filas:</em> <span class="math inline">\(3 - 2 = 1\)</span> ✓ y <span class="math inline">\(2\cdot3 + 2 = 8\)</span> ✓: el punto <span class="math inline">\((3,2)\)</span> está en ambas rectas. <em>Por columnas:</em> <span class="math inline">\(3\begin{pmatrix}1\\2\end{pmatrix} + 2\begin{pmatrix}-1\\1\end{pmatrix} = \begin{pmatrix}3 - 2\\6 + 2\end{pmatrix} = \begin{pmatrix}1\\8\end{pmatrix} = b\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.2.</strong> Para el sistema <span class="math inline">\(x_1 + kx_2 = 2\)</span>, <span class="math inline">\(kx_1 + 4x_2 = 4\)</span>, determina para qué valores de <span class="math inline">\(k\)</span> hay una solución, ninguna o infinitas. Cuando hay una, encuéntrala en función de <span class="math inline">\(k\)</span>. Interpreta geométricamente.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Eliminación con multiplicador <span class="math inline">\(\ell_2 = k/1 = k\)</span>: <span class="math display">\[
+\left[\begin{array}{cc|c}1&amp;k&amp;2\\k&amp;4&amp;4\end{array}\right]\xrightarrow{F_2\leftarrow F_2 - kF_1}\left[\begin{array}{cc|c}1&amp;k&amp;2\\0&amp;4 - k^2&amp;4 - 2k\end{array}\right].
+\]</span> La segunda fila es <span class="math inline">\((4 - k^2)x_2 = 4 - 2k\)</span>. Factorizamos: <span class="math inline">\(4 - k^2 = (2 - k)(2 + k)\)</span> y <span class="math inline">\(4 - 2k = 2(2 - k)\)</span>.</p>
+<ul>
+<li>Si <span class="math inline">\(k\ne2\)</span> y <span class="math inline">\(k\ne-2\)</span>: el coeficiente <span class="math inline">\(4 - k^2\)</span> no es cero (es un segundo pivote), hay <strong>una</strong> solución: <span class="math inline">\(x_2 = \frac{2(2 - k)}{(2 - k)(2 + k)} = \frac2{2 + k}\)</span> (se simplificó <span class="math inline">\(2 - k\ne0\)</span>), y <span class="math inline">\(x_1 = 2 - kx_2 = 2 - \frac{2k}{2 + k} = \frac{2(2 + k) - 2k}{2 + k} = \frac4{2 + k}\)</span>.</li>
+<li>Si <span class="math inline">\(k = 2\)</span>: la fila es <span class="math inline">\(0\cdot x_2 = 0\)</span>; no hay segundo pivote y no hay fila mala: <span class="math inline">\(x_2\)</span> es libre e infinitas soluciones. Las ecuaciones son <span class="math inline">\(x_1 + 2x_2 = 2\)</span> y <span class="math inline">\(2x_1 + 4x_2 = 4\)</span>, <strong>la misma recta</strong>.</li>
+<li>Si <span class="math inline">\(k = -2\)</span>: la fila es <span class="math inline">\(0\cdot x_2 = 8\)</span>, una fila mala: <strong>ninguna</strong> solución. Las ecuaciones <span class="math inline">\(x_1 - 2x_2 = 2\)</span> y <span class="math inline">\(-2x_1 + 4x_2 = 4\)</span> (equivalente a <span class="math inline">\(x_1 - 2x_2 = -2\)</span>) son rectas <strong>paralelas</strong> distintas.</li>
+</ul>
+<p>Por ejemplo, con <span class="math inline">\(k = 0\)</span>: <span class="math inline">\(x = (2,1)\)</span>, y en efecto <span class="math inline">\(2 + 0 = 2\)</span> y <span class="math inline">\(0 + 4 = 4\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.3.</strong> Resuelve por eliminación, con los intercambios que hagan falta: <span class="math display">\[
+x_2 + x_3 = 2,\qquad x_1 + 2x_2 + x_3 = 4,\qquad 2x_1 + x_2 + 3x_3 = 6.
+\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\left[\begin{array}{ccc|c}0&amp;1&amp;1&amp;2\\1&amp;2&amp;1&amp;4\\2&amp;1&amp;3&amp;6\end{array}\right]\xrightarrow{F_1\leftrightarrow F_2}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\2&amp;1&amp;3&amp;6\end{array}\right]\xrightarrow{F_3\leftarrow F_3 - 2F_1}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\0&amp;-3&amp;1&amp;-2\end{array}\right].
+\]</span> La entrada <span class="math inline">\((1,1)\)</span> era cero y se intercambió con la fila 2. La cuenta: <span class="math inline">\(F_3 - 2F_1 = (2 - 2,\ 1 - 4,\ 3 - 2\mid6 - 8) = (0,\ -3,\ 1\mid-2)\)</span>. Columna 2, pivote <span class="math inline">\(1\)</span>, multiplicador <span class="math inline">\(\ell_3 = -3/1 = -3\)</span>: <span class="math display">\[
+\xrightarrow{F_3\leftarrow F_3 + 3F_2}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\0&amp;0&amp;4&amp;4\end{array}\right],
+\]</span> con <span class="math inline">\((0,\ -3 + 3,\ 1 + 3\mid-2 + 6) = (0,0,4\mid4)\)</span>. Sustitución: <span class="math inline">\(4x_3 = 4\Rightarrow x_3 = 1\)</span>; <span class="math inline">\(x_2 + 1 = 2\Rightarrow x_2 = 1\)</span>; <span class="math inline">\(x_1 + 2 + 1 = 4\Rightarrow x_1 = 1\)</span>. Solución <span class="math inline">\((1,1,1)\)</span>. Verificación en el sistema original: <span class="math inline">\(1 + 1 = 2\)</span> ✓, <span class="math inline">\(1 + 2 + 1 = 4\)</span> ✓, <span class="math inline">\(2 + 1 + 3 = 6\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.4.</strong> Encuentra todas las soluciones de <span class="math display">\[
+x_1 + 2x_2 - x_3 = 3,\qquad 2x_1 + 4x_2 - 2x_3 = 6,\qquad -x_1 - 2x_2 + x_3 = -3,
+\]</span> escríbelas en forma paramétrica e interpreta el resultado geométricamente.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;2&amp;-1&amp;3\\2&amp;4&amp;-2&amp;6\\-1&amp;-2&amp;1&amp;-3\end{array}\right]\xrightarrow[F_3\leftarrow F_3 + F_1]{F_2\leftarrow F_2 - 2F_1}\left[\begin{array}{ccc|c}1&amp;2&amp;-1&amp;3\\0&amp;0&amp;0&amp;0\\0&amp;0&amp;0&amp;0\end{array}\right].
+\]</span> Cuentas: <span class="math inline">\(F_2 - 2F_1 = (0,0,0\mid0)\)</span> y <span class="math inline">\(F_3 + F_1 = (0,0,0\mid0)\)</span>. Ya está en forma reducida: un solo pivote (columna 1), y <strong>dos</strong> variables libres, <span class="math inline">\(x_2 = s\)</span> y <span class="math inline">\(x_3 = t\)</span>. La fila 1 da <span class="math inline">\(x_1 = 3 - 2s + t\)</span>: <span class="math display">\[
+x = \begin{pmatrix}3 - 2s + t\\s\\t\end{pmatrix} = \begin{pmatrix}3\\0\\0\end{pmatrix} + s\begin{pmatrix}-2\\1\\0\end{pmatrix} + t\begin{pmatrix}1\\0\\1\end{pmatrix},\qquad s,t\in\mathbb{R}.
+\]</span> Geométricamente, las tres ecuaciones son <strong>el mismo plano</strong> (la segunda es el doble de la primera y la tercera, menos la primera), y las soluciones forman ese plano entero, descrito con un punto <span class="math inline">\((3,0,0)\)</span> y dos direcciones. Verificación con <span class="math inline">\(s = 1\)</span>, <span class="math inline">\(t = 1\)</span>: <span class="math inline">\(x = (2,1,1)\)</span> y <span class="math inline">\(2 + 2 - 1 = 3\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.5.</strong> Una red resistiva tiene tres mallas en fila. La malla 1 tiene una batería de <span class="math inline">\(21\)</span> V y una resistencia propia de <span class="math inline">\(2\,\Omega\)</span>; las mallas 1 y 2 comparten una resistencia de <span class="math inline">\(1\,\Omega\)</span>; la malla 2 tiene una resistencia propia de <span class="math inline">\(1\,\Omega\)</span>; las mallas 2 y 3 comparten una resistencia de <span class="math inline">\(1\,\Omega\)</span>; la malla 3 tiene una resistencia propia de <span class="math inline">\(2\,\Omega\)</span>. Plantea las ecuaciones de malla y encuentra las tres corrientes.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>En cada malla, la suma de las resistencias que recorre su corriente multiplica a su propia corriente, y cada resistencia compartida resta la corriente vecina. Malla 1: <span class="math inline">\((2 + 1)i_1 - 1\cdot i_2 = 21\)</span>. Malla 2: <span class="math inline">\(-1\cdot i_1 + (1 + 1 + 1)i_2 - 1\cdot i_3 = 0\)</span>. Malla 3: <span class="math inline">\(-1\cdot i_2 + (1 + 2)i_3 = 0\)</span>. Es decir <span class="math display">\[
+\left[\begin{array}{ccc|c}3&amp;-1&amp;0&amp;21\\-1&amp;3&amp;-1&amp;0\\0&amp;-1&amp;3&amp;0\end{array}\right].
+\]</span> Columna 1, pivote <span class="math inline">\(3\)</span>, multiplicador <span class="math inline">\(\ell_2 = -1/3\)</span>: <span class="math inline">\(F_2\leftarrow F_2 + \tfrac13F_1 = (0,\ 3 - \tfrac13,\ -1\mid0 + 7) = (0,\ \tfrac83,\ -1\mid7)\)</span>. La fila 3 ya tiene cero en la columna 1. Columna 2, pivote <span class="math inline">\(\tfrac83\)</span>, multiplicador <span class="math inline">\(\ell_3 = (-1)/(\tfrac83) = -\tfrac38\)</span>: <span class="math inline">\(F_3\leftarrow F_3 + \tfrac38F_2 = (0,\ -1 + 1,\ 3 - \tfrac38\mid0 + \tfrac{21}8) = (0,\ 0,\ \tfrac{21}8\mid\tfrac{21}8)\)</span>. Sustitución: <span class="math inline">\(\tfrac{21}8i_3 = \tfrac{21}8\Rightarrow i_3 = 1\)</span>; <span class="math inline">\(\tfrac83i_2 - 1 = 7\Rightarrow i_2 = 8\cdot\tfrac38 = 3\)</span>; <span class="math inline">\(3i_1 - 3 = 21\Rightarrow i_1 = 8\)</span>. Corrientes: <span class="math inline">\(i = (8,3,1)\)</span> A. Verificación: <span class="math inline">\(24 - 3 = 21\)</span> ✓, <span class="math inline">\(-8 + 9 - 1 = 0\)</span> ✓, <span class="math inline">\(-3 + 3 = 0\)</span> ✓. Por la resistencia entre las mallas 1 y 2 circulan <span class="math inline">\(i_1 - i_2 = 5\)</span> A.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.6.</strong> Balancea la oxidación del hierro, <span class="math inline">\(x_1\,\mathrm{Fe} + x_2\,\mathrm{O_2}\to x_3\,\mathrm{Fe_2O_3}\)</span>, con los menores enteros positivos.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Hierro: <span class="math inline">\(x_1 = 2x_3\)</span>. Oxígeno: <span class="math inline">\(2x_2 = 3x_3\)</span>. Sistema homogéneo <span class="math inline">\(2\times3\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|c}1&amp;0&amp;-2&amp;0\\0&amp;2&amp;-3&amp;0\end{array}\right]\xrightarrow{F_2\leftarrow\frac12F_2}\left[\begin{array}{ccc|c}1&amp;0&amp;-2&amp;0\\0&amp;1&amp;-\tfrac32&amp;0\end{array}\right].
+\]</span> Forma reducida con pivotes en las columnas 1 y 2: <span class="math inline">\(x_3 = t\)</span> libre, <span class="math inline">\(x_1 = 2t\)</span>, <span class="math inline">\(x_2 = \tfrac32t\)</span>. Para que todos sean enteros, <span class="math inline">\(t\)</span> debe ser par; el menor positivo es <span class="math inline">\(t = 2\)</span>: <span class="math inline">\((x_1,x_2,x_3) = (4,3,2)\)</span>, es decir <span class="math inline">\(4\,\mathrm{Fe} + 3\,\mathrm{O_2}\to2\,\mathrm{Fe_2O_3}\)</span>. Verificación: hierro <span class="math inline">\(4 = 2\cdot2\)</span> ✓; oxígeno <span class="math inline">\(3\cdot2 = 6 = 2\cdot3\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.7 ★.</strong> (a) Calcula el producto <span class="math inline">\(E = E_{32}E_{31}E_{21}\)</span> de las matrices elementales de la sección ★ y verifica que <span class="math inline">\(EA = U\)</span> para la matriz de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a>. (b) Calcula <span class="math inline">\(L = E_{21}^{-1}E_{31}^{-1}E_{32}^{-1}\)</span> y compara sus entradas con los multiplicadores del <a href="#exm-elim3" class="quarto-xref">Ejemplo&nbsp;3</a>. (c) Verifica la cuenta de flops para <span class="math inline">\(n = 3\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p>Primero <span class="math inline">\(E_{31}E_{21}\)</span>: cada fila del producto es una combinación de las filas de <span class="math inline">\(E_{21}\)</span> con los coeficientes de la fila de <span class="math inline">\(E_{31}\)</span>. Filas 1 y 2 de <span class="math inline">\(E_{31}\)</span> son <span class="math inline">\(e_1'\)</span> y <span class="math inline">\(e_2'\)</span>: copian las filas <span class="math inline">\((1,0,0)\)</span> y <span class="math inline">\((-2,1,0)\)</span>. Fila 3 de <span class="math inline">\(E_{31}\)</span> es <span class="math inline">\((-1,0,1)\)</span>: <span class="math inline">\(-1\cdot(1,0,0) + 1\cdot(0,0,1) = (-1,0,1)\)</span>. Así <span class="math inline">\(E_{31}E_{21} = \begin{pmatrix}1&amp;0&amp;0\\-2&amp;1&amp;0\\-1&amp;0&amp;1\end{pmatrix}\)</span>. Luego <span class="math inline">\(E_{32}\)</span> por eso: filas 1 y 2 se copian; fila 3 de <span class="math inline">\(E_{32}\)</span> es <span class="math inline">\((0,2,1)\)</span>: <span class="math inline">\(2\cdot(-2,1,0) + 1\cdot(-1,0,1) = (-5,2,1)\)</span>. Entonces <span class="math display">\[
+E = \begin{pmatrix}1&amp;0&amp;0\\-2&amp;1&amp;0\\-5&amp;2&amp;1\end{pmatrix}.
+\]</span> <span class="math inline">\(EA\)</span>, fila por fila con <span class="math inline">\(A\)</span> de <a href="#eq-ejemplo3" class="quarto-xref">Ecuación&nbsp;3</a> (filas <span class="math inline">\((1,1,1)\)</span>, <span class="math inline">\((2,3,1)\)</span>, <span class="math inline">\((1,-1,2)\)</span>): fila 1: <span class="math inline">\((1,1,1)\)</span>; fila 2: <span class="math inline">\(-2(1,1,1) + (2,3,1) = (0,1,-1)\)</span>; fila 3: <span class="math inline">\(-5(1,1,1) + 2(2,3,1) + (1,-1,2) = (-5 + 4 + 1,\ -5 + 6 - 1,\ -5 + 2 + 2) = (0,0,-1)\)</span>. Es la <span class="math inline">\(U\)</span> del <a href="#exm-elim3" class="quarto-xref">Ejemplo&nbsp;3</a> ✓.</p></li>
+<li><p>Por la <a href="#prp-elementales" class="quarto-xref">Proposición&nbsp;4</a>, la inversa cambia el signo de la entrada fuera de la diagonal: <span class="math inline">\(E_{21}^{-1}\)</span> tiene <span class="math inline">\(+2\)</span> en <span class="math inline">\((2,1)\)</span>, <span class="math inline">\(E_{31}^{-1}\)</span> tiene <span class="math inline">\(+1\)</span> en <span class="math inline">\((3,1)\)</span> y <span class="math inline">\(E_{32}^{-1}\)</span> tiene <span class="math inline">\(-2\)</span> en <span class="math inline">\((3,2)\)</span>. Producto <span class="math inline">\(E_{31}^{-1}E_{32}^{-1}\)</span>: filas 1 y 2 de <span class="math inline">\(E_{31}^{-1}\)</span> son <span class="math inline">\(e_1',e_2'\)</span> y copian <span class="math inline">\((1,0,0)\)</span>, <span class="math inline">\((0,1,0)\)</span>; fila 3 es <span class="math inline">\((1,0,1)\)</span>: <span class="math inline">\(1\cdot(1,0,0) + 1\cdot(0,-2,1) = (1,-2,1)\)</span>. Luego <span class="math inline">\(E_{21}^{-1}\)</span> por eso: fila 1 <span class="math inline">\((1,0,0)\)</span>; fila 2 de <span class="math inline">\(E_{21}^{-1}\)</span> es <span class="math inline">\((2,1,0)\)</span>: <span class="math inline">\(2(1,0,0) + 1(0,1,0) = (2,1,0)\)</span>; fila 3 es <span class="math inline">\(e_3'\)</span>: <span class="math inline">\((1,-2,1)\)</span>. Entonces <span class="math display">\[
+L = \begin{pmatrix}1&amp;0&amp;0\\2&amp;1&amp;0\\1&amp;-2&amp;1\end{pmatrix}.
+\]</span> Debajo de la diagonal aparecen <strong>exactamente los multiplicadores</strong> <span class="math inline">\(\ell_{21} = 2\)</span>, <span class="math inline">\(\ell_{31} = 1\)</span>, <span class="math inline">\(\ell_{32} = -2\)</span> del <a href="#exm-elim3" class="quarto-xref">Ejemplo&nbsp;3</a>, cada uno en su lugar. Comprobación <span class="math inline">\(EL = I\)</span>: la fila 3 de <span class="math inline">\(E\)</span>, <span class="math inline">\((-5,2,1)\)</span>, por las columnas de <span class="math inline">\(L\)</span>: <span class="math inline">\(-5 + 4 + 1 = 0\)</span>, <span class="math inline">\(2 - 2 = 0\)</span>, <span class="math inline">\(1\)</span> ✓. Como <span class="math inline">\(U = EA\)</span>, se tiene <span class="math inline">\(A = E^{-1}U = LU\)</span>: es la factorización de la Clase 2.</p></li>
+<li><p>Con <span class="math inline">\(n = 3\)</span>: etapa <span class="math inline">\(k = 1\)</span>, <span class="math inline">\(n - k = 2\)</span> filas, cada una <span class="math inline">\(2\cdot2 + 3 = 7\)</span> flops: <span class="math inline">\(14\)</span>. Etapa <span class="math inline">\(k = 2\)</span>, <span class="math inline">\(1\)</span> fila, <span class="math inline">\(2\cdot1 + 3 = 5\)</span>: <span class="math inline">\(5\)</span>. Eliminación <span class="math inline">\(19\)</span>, que coincide con la fórmula <span class="math inline">\(\frac{2\cdot3\cdot5}3 + \frac{3\cdot2\cdot3}2 = 10 + 9 = 19\)</span> ✓. Sustitución <span class="math inline">\(3^2 = 9\)</span>: filas con <span class="math inline">\(2,1,0\)</span> incógnitas conocidas cuestan <span class="math inline">\(5,3,1\)</span> flops, total <span class="math inline">\(9\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../algebra-matricial/index.html" class="pagination-link" aria-label="Álgebra matricial aplicada">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Álgebra matricial aplicada</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../algebra-matricial/clase-02.html" class="pagination-link" aria-label="Clase 2 · Factorización LU, inversas y matrices por bloques">
+        <span class="nav-page-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

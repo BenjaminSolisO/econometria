@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El determinante definido por tres propiedades, sus consecuencias, el cálculo por eliminación, el determinante de un producto y de la transpuesta, la expansión por cofactores, la regla de Cramer y la fórmula de la inversa, el determinante como área y volumen orientados, el jacobiano de un cambio de variables y los determinantes por bloques.">
+
+<title>Clase 4 · Determinantes – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-03.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../algebra-matricial/index.html" aria-current="page"> 
+<span class="menu-text">Álgebra matricial</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../algebra-matricial/clase-04.html">Clase 4 · Determinantes</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Álgebra matricial aplicada</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los cuatro subespacios fundamentales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 4 · Determinantes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-05.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-06.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-07.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-08.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-09.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-10.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-11.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-12.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-13.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-14.qmd</span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#un-número-para-cada-matriz-cuadrada" id="toc-un-número-para-cada-matriz-cuadrada" class="nav-link active" data-scroll-target="#un-número-para-cada-matriz-cuadrada"><span class="header-section-number">1</span> Un número para cada matriz cuadrada</a></li>
+  <li><a href="#tres-propiedades-que-lo-definen" id="toc-tres-propiedades-que-lo-definen" class="nav-link" data-scroll-target="#tres-propiedades-que-lo-definen"><span class="header-section-number">2</span> Tres propiedades que lo definen</a></li>
+  <li><a href="#cálculo-por-eliminación" id="toc-cálculo-por-eliminación" class="nav-link" data-scroll-target="#cálculo-por-eliminación"><span class="header-section-number">3</span> Cálculo por eliminación</a></li>
+  <li><a href="#producto-transpuesta-e-inversa" id="toc-producto-transpuesta-e-inversa" class="nav-link" data-scroll-target="#producto-transpuesta-e-inversa"><span class="header-section-number">4</span> Producto, transpuesta e inversa</a></li>
+  <li><a href="#cofactores" id="toc-cofactores" class="nav-link" data-scroll-target="#cofactores"><span class="header-section-number">5</span> Cofactores</a></li>
+  <li><a href="#la-regla-de-cramer-y-la-fórmula-de-la-inversa" id="toc-la-regla-de-cramer-y-la-fórmula-de-la-inversa" class="nav-link" data-scroll-target="#la-regla-de-cramer-y-la-fórmula-de-la-inversa"><span class="header-section-number">6</span> La regla de Cramer y la fórmula de la inversa</a></li>
+  <li><a href="#área-volumen-y-orientación" id="toc-área-volumen-y-orientación" class="nav-link" data-scroll-target="#área-volumen-y-orientación"><span class="header-section-number">7</span> Área, volumen y orientación</a></li>
+  <li><a href="#el-jacobiano" id="toc-el-jacobiano" class="nav-link" data-scroll-target="#el-jacobiano"><span class="header-section-number">8</span> El jacobiano</a></li>
+  <li><a href="#determinantes-por-bloques" id="toc-determinantes-por-bloques" class="nav-link" data-scroll-target="#determinantes-por-bloques"><span class="header-section-number">9</span> Determinantes por bloques</a></li>
+  <li><a href="#para-ir-más-allá-la-existencia-y-la-fórmula-de-leibniz" id="toc-para-ir-más-allá-la-existencia-y-la-fórmula-de-leibniz" class="nav-link" data-scroll-target="#para-ir-más-allá-la-existencia-y-la-fórmula-de-leibniz"><span class="header-section-number">10</span> ★ Para ir más allá: la existencia y la fórmula de Leibniz</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">11</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">12</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-04.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 4 · Determinantes</h1>
+<p class="subtitle lead">Un número que mide áreas, volúmenes e invertibilidad</p>
+</div>
+
+<div>
+  <div class="description">
+    El determinante definido por tres propiedades, sus consecuencias, el cálculo por eliminación, el determinante de un producto y de la transpuesta, la expansión por cofactores, la regla de Cramer y la fórmula de la inversa, el determinante como área y volumen orientados, el jacobiano de un cambio de variables y los determinantes por bloques.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a></p>
+<section id="un-número-para-cada-matriz-cuadrada" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Un número para cada matriz cuadrada</h1>
+<p>En la Clase 2 apareció el número <span class="math inline">\(ad - bc\)</span>: si es distinto de cero, la matriz <span class="math inline">\(\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}\)</span> es invertible, y si es cero, no lo es. Ese número es el <strong>determinante</strong>, y tiene una segunda vida geométrica: su valor absoluto es el <strong>área</strong> del paralelogramo que forman las columnas de la matriz (<a href="#fig-area" class="quarto-xref">Figura&nbsp;1</a>). Para la matriz <span class="math inline">\(\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}\)</span>, el paralelogramo con lados <span class="math inline">\((3,1)\)</span> y <span class="math inline">\((1,2)\)</span> tiene área <span class="math inline">\(3\cdot2 - 1\cdot1 = 5\)</span>.</p>
+<div id="fig-area" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-area-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c04_area.png" class="img-fluid figure-img" style="width:62.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-area-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: El paralelogramo generado por <span class="math inline">\((a,c) = (3,1)\)</span> y <span class="math inline">\((b,d) = (1,2)\)</span>. Su área se obtiene restando al rectángulo de lados <span class="math inline">\(a + b = 4\)</span> y <span class="math inline">\(c + d = 3\)</span> los dos triángulos de catetos <span class="math inline">\(a,c\)</span>, los dos de catetos <span class="math inline">\(b,d\)</span> y los dos rectángulos de lados <span class="math inline">\(b\)</span> y <span class="math inline">\(c\)</span>: <span class="math inline">\(12 - 3 - 2 - 2 = 5 = ad - bc\)</span>.
+</figcaption>
+</figure>
+</div>
+<p>La cuenta de la figura vale en general (con <span class="math inline">\(a,b,c,d&gt;0\)</span> y la columna <span class="math inline">\((a,c)\)</span> “debajo” de <span class="math inline">\((b,d)\)</span>): <span class="math display">\[
+\begin{aligned}
+\text{área} &amp;= (a + b)(c + d) - 2\cdot\frac{ac}2 - 2\cdot\frac{bd}2 - 2bc\\
+&amp;= ac + ad + bc + bd - ac - bd - 2bc\\
+&amp;= ad - bc.
+\end{aligned}
+\]</span> En tres dimensiones, el determinante de una matriz <span class="math inline">\(3\times3\)</span> mide el <strong>volumen</strong> del paralelepípedo que forman sus columnas. Esta clase define el determinante para matrices <span class="math inline">\(n\times n\)</span> de cualquier tamaño, aprende a calcularlo de manera eficiente y lo usa en tres aplicaciones: el criterio de invertibilidad, las fórmulas de Cramer y la inversa, y el <strong>jacobiano</strong> de un cambio de variables, que es el que aparece en las integrales dobles y triples de física e ingeniería.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Los determinantes son más antiguos que las matrices. Seki Takakazu en Japón (1683) y Leibniz en Europa (1693) los usaron para decidir si un sistema de ecuaciones tenía solución, casi dos siglos antes de que Cayley definiera las matrices como objetos con su propia aritmética (1858). La palabra “determinante” es de Cauchy (1812), que demostró la regla del producto <span class="math inline">\(\det(AB) = \det A\det B\)</span>.</p></div></div></section>
+<section id="tres-propiedades-que-lo-definen" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Tres propiedades que lo definen</h1>
+<p>En lugar de empezar con una fórmula (que para <span class="math inline">\(n\)</span> grande es enorme), definimos el determinante por <strong>tres propiedades</strong>. Todo lo demás se deduce de ellas. Escribimos <span class="math inline">\(\det A\)</span> o <span class="math inline">\(|A|\)</span>, y pensamos <span class="math inline">\(\det\)</span> como una función de las <span class="math inline">\(n\)</span> filas <span class="math inline">\(f_1,\dots,f_n\)</span> de <span class="math inline">\(A\)</span>.</p>
+<div id="def-determinante" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Determinante)</strong></span> El determinante es la función que a cada matriz <span class="math inline">\(n\times n\)</span> le asigna un número <span class="math inline">\(\det A\)</span> con las propiedades:</p>
+<ol type="1">
+<li><strong>Normalización:</strong> <span class="math inline">\(\det I = 1\)</span>.</li>
+<li><strong>Alternancia:</strong> intercambiar dos filas cambia el signo del determinante.</li>
+<li><strong>Linealidad en cada fila</strong> (con las demás filas fijas): <span class="math display">\[
+\det\begin{pmatrix}\vdots\\ cf_i + c'g_i\\\vdots\end{pmatrix} = c\det\begin{pmatrix}\vdots\\f_i\\\vdots\end{pmatrix} + c'\det\begin{pmatrix}\vdots\\g_i\\\vdots\end{pmatrix}.
+\]</span></li>
+</ol>
+</div>
+<p>Que <strong>existe</strong> una función así (y una sola) se demuestra en esta clase: la unicidad en la sección siguiente, y la existencia en la sección ★. Mientras tanto, veamos qué se deduce de las tres propiedades. Ojo con la propiedad 3: es lineal en <strong>una</strong> fila a la vez. No dice que <span class="math inline">\(\det(A + B) = \det A + \det B\)</span> (falso en general: <span class="math inline">\(\det(I + I) = \det(2I)\)</span>, que veremos que vale <span class="math inline">\(2^n\)</span>, no <span class="math inline">\(2\)</span>).</p>
+<div id="prp-consecuencias" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Consecuencias de las tres propiedades)</strong></span> &nbsp;</p>
+<ol start="4" type="1">
+<li>Si dos filas son iguales, <span class="math inline">\(\det A = 0\)</span>.</li>
+<li>Sumar a una fila un múltiplo de otra <strong>no cambia</strong> el determinante.</li>
+<li>Si una fila es cero, <span class="math inline">\(\det A = 0\)</span>.</li>
+<li>Si <span class="math inline">\(A\)</span> es triangular (superior o inferior), <span class="math inline">\(\det A\)</span> es el producto de las entradas de la diagonal.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Propiedad 4.</em> Si las filas <span class="math inline">\(i\)</span> y <span class="math inline">\(k\)</span> son iguales, al intercambiarlas la matriz no cambia, pero por la propiedad 2 el determinante cambia de signo: <span class="math inline">\(\det A = -\det A\)</span>. Entonces <span class="math inline">\(2\det A = 0\)</span> y <span class="math inline">\(\det A = 0\)</span>.</p>
+<p><em>Propiedad 5.</em> Sea <span class="math inline">\(\tilde A\)</span> la matriz con la fila <span class="math inline">\(i\)</span> reemplazada por <span class="math inline">\(f_i + cf_k\)</span> (<span class="math inline">\(k\ne i\)</span>). Por la linealidad (propiedad 3) en la fila <span class="math inline">\(i\)</span>, <span class="math display">\[
+\det\tilde A = \det A + c\det B,
+\]</span> donde <span class="math inline">\(B\)</span> es <span class="math inline">\(A\)</span> con la fila <span class="math inline">\(i\)</span> reemplazada por <span class="math inline">\(f_k\)</span>. Pero <span class="math inline">\(B\)</span> tiene dos filas iguales (la <span class="math inline">\(i\)</span> y la <span class="math inline">\(k\)</span>), así que <span class="math inline">\(\det B = 0\)</span> por la propiedad 4. Luego <span class="math inline">\(\det\tilde A = \det A\)</span>.</p>
+<p><em>Propiedad 6.</em> Si la fila <span class="math inline">\(i\)</span> es cero, es igual a <span class="math inline">\(0\cdot f_i\)</span>. Por la linealidad con <span class="math inline">\(c = 0\)</span>, <span class="math inline">\(\det A = 0\cdot\det A = 0\)</span>.</p>
+<p><em>Propiedad 7.</em> Sea <span class="math inline">\(U\)</span> triangular superior con diagonal <span class="math inline">\(u_{11},\dots,u_{nn}\)</span>.</p>
+<ul>
+<li><em>Si todas las <span class="math inline">\(u_{ii}\ne0\)</span>:</em> con reemplazos (propiedad 5, que no cambia el determinante) eliminamos las entradas <strong>sobre</strong> la diagonal, de abajo hacia arriba: la fila <span class="math inline">\(n\)</span> es <span class="math inline">\((0,\dots,0,u_{nn})\)</span>, y restando a cada fila de arriba el múltiplo adecuado de ella se anula la columna <span class="math inline">\(n\)</span> sobre la diagonal; después se usa la fila <span class="math inline">\(n - 1\)</span> (que ahora es <span class="math inline">\((0,\dots,u_{n-1,n-1},0)\)</span>) para anular la columna <span class="math inline">\(n - 1\)</span>, y así. Llegamos a la matriz diagonal <span class="math inline">\(D = \operatorname{diag}(u_{11},\dots,u_{nn})\)</span> con <span class="math inline">\(\det D = \det U\)</span>. Por linealidad, sacamos el factor <span class="math inline">\(u_{ii}\)</span> de cada fila <span class="math inline">\(i\)</span>: <span class="math inline">\(\det D = u_{11}u_{22}\cdots u_{nn}\det I = u_{11}\cdots u_{nn}\)</span>.</li>
+<li><em>Si alguna <span class="math inline">\(u_{ii} = 0\)</span>:</em> sea <span class="math inline">\(i\)</span> el mayor índice con <span class="math inline">\(u_{ii} = 0\)</span>. Las filas <span class="math inline">\(i + 1,\dots,n\)</span> tienen diagonal no nula y, como antes, con ellas se anulan las entradas de las columnas <span class="math inline">\(i + 1,\dots,n\)</span> en la fila <span class="math inline">\(i\)</span>. La fila <span class="math inline">\(i\)</span> era <span class="math inline">\((0,\dots,0,u_{ii},u_{i,i+1},\dots)\)</span> con <span class="math inline">\(u_{ii} = 0\)</span>, así que queda entera en cero. Por la propiedad 6 el determinante es <span class="math inline">\(0\)</span>, que es el producto de la diagonal (tiene un factor nulo).</li>
+</ul>
+<p>Para una triangular inferior el argumento es el mismo, eliminando debajo de la diagonal de arriba hacia abajo.</p>
+</div>
+</section>
+<section id="cálculo-por-eliminación" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Cálculo por eliminación</h1>
+<p>La eliminación gaussiana usa justamente reemplazos (no cambian <span class="math inline">\(\det\)</span>) e intercambios (cambian el signo). Eso da el método eficiente de cálculo y, de paso, la unicidad.</p>
+<div id="thm-det-eliminacion" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (El determinante por eliminación)</strong></span> Si la eliminación gaussiana lleva <span class="math inline">\(A\)</span> a la forma escalonada <span class="math inline">\(U\)</span> usando solo reemplazos y <span class="math inline">\(s\)</span> intercambios de filas, entonces <span class="math display">\[
+\det A = (-1)^s\,u_{11}u_{22}\cdots u_{nn} = \pm(\text{producto de los pivotes}).
+\]</span> Si <span class="math inline">\(A\)</span> tiene menos de <span class="math inline">\(n\)</span> pivotes, <span class="math inline">\(\det A = 0\)</span>. En particular, <strong>existe a lo más una</strong> función con las tres propiedades.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Cada reemplazo deja el determinante igual (propiedad 5) y cada intercambio lo multiplica por <span class="math inline">\(-1\)</span> (propiedad 2). Después de <span class="math inline">\(s\)</span> intercambios, <span class="math inline">\(\det U = (-1)^s\det A\)</span>, es decir <span class="math inline">\(\det A = (-1)^s\det U\)</span> (porque <span class="math inline">\((-1)^s(-1)^s = 1\)</span>). <span class="math inline">\(U\)</span> es triangular superior, y por la propiedad 7 su determinante es el producto de su diagonal. Si hay <span class="math inline">\(n\)</span> pivotes, la diagonal son los pivotes. Si hay menos de <span class="math inline">\(n\)</span>, <span class="math inline">\(U\)</span> es una matriz cuadrada escalonada con una fila de ceros al final (Clase 1), y su determinante es <span class="math inline">\(0\)</span>.</p>
+<p><em>Unicidad.</em> El cálculo anterior usó solo las tres propiedades. Si dos funciones <span class="math inline">\(D_1\)</span> y <span class="math inline">\(D_2\)</span> las cumplen, ambas dan, para cada <span class="math inline">\(A\)</span>, el mismo número <span class="math inline">\((-1)^s\cdot(\text{diagonal de }U)\)</span>. Entonces <span class="math inline">\(D_1 = D_2\)</span>.</p>
+</div>
+<div id="cor-invertible" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 1 (Determinante e invertibilidad)</strong></span> <span class="math inline">\(A\)</span> es invertible si y solo si <span class="math inline">\(\det A\ne0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por el corolario de los sistemas cuadrados (Clase 1) y la Clase 2 (para matrices cuadradas basta una inversa de un lado), <span class="math inline">\(A\)</span> es invertible exactamente cuando tiene <span class="math inline">\(n\)</span> pivotes. [Con <span class="math inline">\(n\)</span> pivotes, <span class="math inline">\(Ax = e_j\)</span> tiene solución para cada <span class="math inline">\(j\)</span>, y esas soluciones forman una <span class="math inline">\(B\)</span> con <span class="math inline">\(AB = I\)</span>; con menos, algún <span class="math inline">\(Ax = b\)</span> no tiene solución, y no puede haber inversa.] Por el <a href="#thm-det-eliminacion" class="quarto-xref">Teorema&nbsp;1</a>, <span class="math inline">\(n\)</span> pivotes significa <span class="math inline">\(\det A = \pm(\text{producto de pivotes no nulos})\ne0\)</span>, y menos de <span class="math inline">\(n\)</span> significa <span class="math inline">\(\det A = 0\)</span>.</p>
+</div>
+<div id="exm-det-eliminacion" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Tres determinantes por eliminación)</strong></span> <em>La matriz de la Clase 1.</em> <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;1\\2&amp;3&amp;1\\1&amp;-1&amp;2\end{pmatrix}\)</span> se eliminó sin intercambios hasta <span class="math inline">\(U\)</span> con pivotes <span class="math inline">\(1\)</span>, <span class="math inline">\(1\)</span> y <span class="math inline">\(-1\)</span>. Entonces <span class="math inline">\(\det A = 1\cdot1\cdot(-1) = -1\)</span>.</p>
+<p><em>La matriz de rigidez de la Clase 2.</em> <span class="math inline">\(K\)</span> tiene pivotes <span class="math inline">\(2\)</span>, <span class="math inline">\(\tfrac32\)</span> y <span class="math inline">\(\tfrac43\)</span>, sin intercambios: <span class="math inline">\(\det K = 2\cdot\tfrac32\cdot\tfrac43 = 4\)</span>.</p>
+<p><em>La matriz del propano (Clase 1).</em> <span class="math inline">\(P = \begin{pmatrix}0&amp;1&amp;0\\0&amp;0&amp;2\\2&amp;-2&amp;-1\end{pmatrix}\)</span> necesitó <strong>dos</strong> intercambios para llegar a <span class="math inline">\(U = \begin{pmatrix}2&amp;-2&amp;-1\\0&amp;1&amp;0\\0&amp;0&amp;2\end{pmatrix}\)</span>. Entonces <span class="math inline">\(\det P = (-1)^2\cdot2\cdot1\cdot2 = 4\)</span>.</p>
+</div>
+</section>
+<section id="producto-transpuesta-e-inversa" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Producto, transpuesta e inversa</h1>
+<div id="thm-producto" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (El determinante de un producto)</strong></span> Para matrices <span class="math inline">\(n\times n\)</span>: <span class="math inline">\(\det(AB) = \det A\,\det B\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fijo <span class="math inline">\(B\)</span> y miro <span class="math inline">\(A\mapsto\det(AB)\)</span> como función de las filas de <span class="math inline">\(A\)</span>. La fila <span class="math inline">\(i\)</span> de <span class="math inline">\(AB\)</span> es <span class="math inline">\((\text{fila }i\text{ de }A)\,B\)</span> (lectura por filas del producto). Entonces intercambiar filas de <span class="math inline">\(A\)</span> intercambia filas de <span class="math inline">\(AB\)</span>, y la linealidad en una fila de <span class="math inline">\(A\)</span> pasa a linealidad en una fila de <span class="math inline">\(AB\)</span>. Si divido por <span class="math inline">\(\det B\)</span>, la función cumple las tres propiedades… y por la unicidad tiene que ser <span class="math inline">\(\det A\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Caso <span class="math inline">\(\det B = 0\)</span>.</em> Entonces <span class="math inline">\(B\)</span> no es invertible (<a href="#cor-invertible" class="quarto-xref">Corolario&nbsp;1</a>), y por la Clase 3 existe <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(Bx = 0\)</span>. Entonces <span class="math inline">\((AB)x = A(Bx) = 0\)</span> con <span class="math inline">\(x\ne0\)</span>, así que <span class="math inline">\(AB\)</span> no es invertible (si lo fuera, <span class="math inline">\(x = (AB)^{-1}(AB)x = 0\)</span>) y <span class="math inline">\(\det(AB) = 0 = \det A\cdot0\)</span>.</p>
+<p><em>Caso <span class="math inline">\(\det B\ne0\)</span>.</em> Definimos <span class="math inline">\(D(A) = \det(AB)/\det B\)</span> y verificamos las tres propiedades como función de las filas de <span class="math inline">\(A\)</span>. Recordemos que la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(AB\)</span> es <span class="math inline">\(f_iB\)</span>, con <span class="math inline">\(f_i\)</span> la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span> (Clase 2).</p>
+<ol type="1">
+<li><span class="math inline">\(D(I) = \det(IB)/\det B = \det B/\det B = 1\)</span>.</li>
+<li>Intercambiar las filas <span class="math inline">\(i\)</span> y <span class="math inline">\(k\)</span> de <span class="math inline">\(A\)</span> intercambia las filas <span class="math inline">\(f_iB\)</span> y <span class="math inline">\(f_kB\)</span> de <span class="math inline">\(AB\)</span>, lo que cambia el signo de <span class="math inline">\(\det(AB)\)</span> y por lo tanto de <span class="math inline">\(D(A)\)</span>.</li>
+<li>Si la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span> es <span class="math inline">\(cf_i + c'g_i\)</span>, la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(AB\)</span> es <span class="math inline">\((cf_i + c'g_i)B = c(f_iB) + c'(g_iB)\)</span> (distributividad), y por la linealidad de <span class="math inline">\(\det\)</span> en la fila <span class="math inline">\(i\)</span>, <span class="math inline">\(\det(AB)\)</span> se separa en <span class="math inline">\(c\)</span> veces más <span class="math inline">\(c'\)</span> veces; dividiendo por <span class="math inline">\(\det B\)</span>, lo mismo vale para <span class="math inline">\(D\)</span>.</li>
+</ol>
+<p>Por la unicidad (<a href="#thm-det-eliminacion" class="quarto-xref">Teorema&nbsp;1</a>), <span class="math inline">\(D(A) = \det A\)</span>, es decir <span class="math inline">\(\det(AB) = \det A\,\det B\)</span>.</p>
+</div>
+<div id="cor-inversa-transpuesta" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corolario 2 (Inversa y transpuesta)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Si <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(\det(A^{-1}) = 1/\det A\)</span>.</li>
+<li><span class="math inline">\(\det(A') = \det A\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1.</em> Por el <a href="#thm-producto" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(\det A\,\det(A^{-1}) = \det(AA^{-1}) = \det I = 1\)</span>.</p>
+<p><em>Parte 2.</em> Si <span class="math inline">\(A\)</span> no es invertible, <span class="math inline">\(A'\)</span> tampoco (si <span class="math inline">\(A'\)</span> tuviera inversa <span class="math inline">\(C\)</span>, transponiendo <span class="math inline">\(A'C = I\)</span> se obtendría <span class="math inline">\(C'A = I\)</span>, y <span class="math inline">\(A\)</span> sería invertible porque, por la Clase 2, en matrices cuadradas basta una inversa de un lado), así que ambos determinantes son <span class="math inline">\(0\)</span>. Si <span class="math inline">\(A\)</span> es invertible, por la Clase 2 hay una permutación <span class="math inline">\(P\)</span> con <span class="math inline">\(PA = LU\)</span>; como <span class="math inline">\(P'P = I\)</span> (una permutación se deshace con su transpuesta), <span class="math inline">\(A = P'LU\)</span>. Transponiendo, <span class="math inline">\(A' = U'L'P\)</span>. Por el <a href="#thm-producto" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(\det A = \det P'\det L\det U\)</span> y <span class="math inline">\(\det A' = \det U'\det L'\det P\)</span>. Ahora: <span class="math inline">\(L\)</span> y <span class="math inline">\(L'\)</span> son triangulares con unos en la diagonal, así que <span class="math inline">\(\det L = \det L' = 1\)</span> (propiedad 7); <span class="math inline">\(U\)</span> y <span class="math inline">\(U'\)</span> son triangulares con la misma diagonal, así que <span class="math inline">\(\det U = \det U'\)</span>; y <span class="math inline">\(\det P\det P' = \det(PP') = \det I = 1\)</span> con <span class="math inline">\(\det P = \pm1\)</span> (es <span class="math inline">\(I\)</span> con filas intercambiadas), lo que obliga a <span class="math inline">\(\det P' = \det P\)</span>. Entonces <span class="math inline">\(\det A = \det A'\)</span>.</p>
+</div>
+<p>La parte 2 tiene una consecuencia práctica: <strong>todo lo dicho sobre filas vale también para columnas</strong>. Intercambiar columnas cambia el signo, el determinante es lineal en cada columna, sumar a una columna un múltiplo de otra no lo cambia, y dos columnas iguales dan cero.</p>
+</section>
+<section id="cofactores" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Cofactores</h1>
+<p>Para matrices pequeñas conviene una fórmula explícita. Sea <span class="math inline">\(M_{ij}\)</span> la matriz <span class="math inline">\((n - 1)\times(n - 1)\)</span> que queda al <strong>borrar la fila <span class="math inline">\(i\)</span> y la columna <span class="math inline">\(j\)</span></strong> de <span class="math inline">\(A\)</span> (el <strong>menor</strong> <span class="math inline">\(ij\)</span>), y <span class="math inline">\(C_{ij} = (-1)^{i+j}\det M_{ij}\)</span> el <strong>cofactor</strong> <span class="math inline">\(ij\)</span>. Los signos <span class="math inline">\((-1)^{i+j}\)</span> forman un tablero de ajedrez que empieza con <span class="math inline">\(+\)</span>: <span class="math display">\[
+\begin{pmatrix}+&amp;-&amp;+\\-&amp;+&amp;-\\+&amp;-&amp;+\end{pmatrix}.
+\]</span></p>
+<div id="thm-cofactores" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Expansión por cofactores)</strong></span> Para cualquier fila <span class="math inline">\(i\)</span>: <span class="math inline">\(\det A = a_{i1}C_{i1} + a_{i2}C_{i2} + \dots + a_{in}C_{in}\)</span>. Y para cualquier columna <span class="math inline">\(j\)</span>: <span class="math inline">\(\det A = a_{1j}C_{1j} + \dots + a_{nj}C_{nj}\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La fila <span class="math inline">\(i\)</span> es <span class="math inline">\(\sum_ja_{ij}e_j'\)</span>. Por linealidad en esa fila, <span class="math inline">\(\det A = \sum_ja_{ij}\det(A_j)\)</span>, donde <span class="math inline">\(A_j\)</span> es <span class="math inline">\(A\)</span> con la fila <span class="math inline">\(i\)</span> cambiada por <span class="math inline">\(e_j'\)</span> (un <span class="math inline">\(1\)</span> en la columna <span class="math inline">\(j\)</span>). Falta ver que <span class="math inline">\(\det A_j = C_{ij}\)</span>. Muevo esa fila al tope y esa columna a la izquierda con intercambios de vecinos (cada uno cambia el signo); quedan <span class="math inline">\(i - 1 + j - 1\)</span> intercambios, de ahí el <span class="math inline">\((-1)^{i+j}\)</span>. Después, con el <span class="math inline">\(1\)</span> en la esquina y ceros en el resto de su fila, limpio su columna con reemplazos y queda una matriz “bloque” cuyo determinante es el del menor.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Paso 1 (linealidad).</em> La fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span> es <span class="math inline">\(a_{i1}e_1' + \dots + a_{in}e_n'\)</span>. Por la linealidad en la fila <span class="math inline">\(i\)</span>, <span class="math inline">\(\det A = \sum_ja_{ij}\det A_j\)</span>, con <span class="math inline">\(A_j\)</span> igual a <span class="math inline">\(A\)</span> salvo que su fila <span class="math inline">\(i\)</span> es <span class="math inline">\(e_j'\)</span>.</p>
+<p><em>Paso 2 (llevar el <span class="math inline">\(1\)</span> a la esquina).</em> En <span class="math inline">\(A_j\)</span>, intercambiamos la fila <span class="math inline">\(i\)</span> con la de arriba, luego con la siguiente, hasta llevarla a la posición <span class="math inline">\(1\)</span>: son <span class="math inline">\(i - 1\)</span> intercambios de filas vecinas, que no alteran el orden relativo de las demás filas. Luego hacemos lo mismo con la columna <span class="math inline">\(j\)</span>, llevándola a la posición <span class="math inline">\(1\)</span> con <span class="math inline">\(j - 1\)</span> intercambios de columnas vecinas (que también cambian el signo, por la consecuencia del <a href="#cor-inversa-transpuesta" class="quarto-xref">Corolario&nbsp;2</a>). La matriz resultante <span class="math inline">\(B\)</span> tiene primera fila <span class="math inline">\((1,0,\dots,0)\)</span>, y al borrar su primera fila y su primera columna queda exactamente <span class="math inline">\(M_{ij}\)</span> (las demás filas y columnas conservan su orden). Entonces <span class="math inline">\(\det A_j = (-1)^{(i-1)+(j-1)}\det B = (-1)^{i+j}\det B\)</span>.</p>
+<p><em>Paso 3 (limpiar la primera columna).</em> <span class="math inline">\(B = \begin{pmatrix}1&amp;0\\v&amp;M_{ij}\end{pmatrix}\)</span> por bloques, con <span class="math inline">\(v\)</span> una columna. Restando a cada fila <span class="math inline">\(k\ge2\)</span> el múltiplo <span class="math inline">\(v_k\)</span> de la fila 1 (reemplazos, que no cambian el determinante), como la fila 1 es <span class="math inline">\((1,0,\dots,0)\)</span> solo cambia la primera entrada, que queda en cero: <span class="math inline">\(\det B = \det\begin{pmatrix}1&amp;0\\0&amp;M_{ij}\end{pmatrix}\)</span>.</p>
+<p><em>Paso 4.</em> La función <span class="math inline">\(M\mapsto\det\begin{pmatrix}1&amp;0\\0&amp;M\end{pmatrix}\)</span> cumple las tres propiedades como función de las filas de <span class="math inline">\(M\)</span>: vale <span class="math inline">\(1\)</span> en <span class="math inline">\(M = I\)</span>, cambia de signo si se intercambian filas de <span class="math inline">\(M\)</span> (son filas de la matriz grande), y es lineal en cada fila de <span class="math inline">\(M\)</span> (ídem). Por la unicidad, es <span class="math inline">\(\det M\)</span>. Juntando, <span class="math inline">\(\det A_j = (-1)^{i+j}\det M_{ij} = C_{ij}\)</span>, y el paso 1 da la fórmula por filas.</p>
+<p><em>Por columnas.</em> Se aplica la fórmula por filas a <span class="math inline">\(A'\)</span> y se usa <span class="math inline">\(\det A' = \det A\)</span> (los menores de <span class="math inline">\(A'\)</span> son los transpuestos de los de <span class="math inline">\(A\)</span>, con el mismo determinante).</p>
+</div>
+<div id="exm-formulas" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Las fórmulas <span class="math inline">\(2\times2\)</span> y <span class="math inline">\(3\times3\)</span>)</strong></span> <em><span class="math inline">\(2\times2\)</span>:</em> expandiendo por la primera fila, <span class="math inline">\(C_{11} = +d\)</span> (borrar fila 1 y columna 1 deja <span class="math inline">\((d)\)</span>) y <span class="math inline">\(C_{12} = -c\)</span>: <span class="math display">\[
+\det\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix} = a\cdot d + b\cdot(-c) = ad - bc.
+\]</span> <em><span class="math inline">\(3\times3\)</span>:</em> por la primera fila, <span class="math display">\[
+\begin{aligned}
+\det\begin{pmatrix}a_{11}&amp;a_{12}&amp;a_{13}\\a_{21}&amp;a_{22}&amp;a_{23}\\a_{31}&amp;a_{32}&amp;a_{33}\end{pmatrix} &amp;= a_{11}(a_{22}a_{33} - a_{23}a_{32}) - a_{12}(a_{21}a_{33} - a_{23}a_{31})\\
+&amp;\quad + a_{13}(a_{21}a_{32} - a_{22}a_{31}).
+\end{aligned}
+\]</span> Expandiendo los paréntesis aparecen seis productos, cada uno con un factor de cada fila y de cada columna: <span class="math inline">\(+a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32} - a_{11}a_{23}a_{32} - a_{12}a_{21}a_{33} - a_{13}a_{22}a_{31}\)</span>. Es la <strong>regla de Sarrus</strong>: los tres productos de las “diagonales” hacia la derecha con signo <span class="math inline">\(+\)</span> y los tres hacia la izquierda con signo <span class="math inline">\(-\)</span>. (Solo vale para <span class="math inline">\(3\times3\)</span>.)</p>
+<p><em>Verificación con la matriz de la Clase 1:</em> <span class="math display">\[
+\begin{aligned}
+\det\begin{pmatrix}1&amp;1&amp;1\\2&amp;3&amp;1\\1&amp;-1&amp;2\end{pmatrix} &amp;= 1(3\cdot2 - 1\cdot(-1)) - 1(2\cdot2 - 1\cdot1)\\
+&amp;\quad + 1(2\cdot(-1) - 3\cdot1)\\
+&amp;= 7 - 3 - 5 = -1,
+\end{aligned}
+\]</span> igual que por eliminación.</p>
+</div>
+<p>En la práctica conviene expandir por la fila o columna con <strong>más ceros</strong>. Para la matriz del propano, la primera columna es <span class="math inline">\((0,0,2)'\)</span>: <span class="math inline">\(\det P = 2\cdot C_{31} = 2\cdot(+1)\det\begin{pmatrix}1&amp;0\\0&amp;2\end{pmatrix} = 2\cdot2 = 4\)</span> ✓.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Algoritmo: cuál método usar">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Algoritmo: cuál método usar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Matrices <span class="math inline">\(2\times2\)</span> y <span class="math inline">\(3\times3\)</span>:</strong> fórmula directa o cofactores por la fila con más ceros.</li>
+<li><strong>Matrices más grandes:</strong> eliminación, <span class="math inline">\(\det A = \pm\prod(\text{pivotes})\)</span>, con costo <span class="math inline">\(\approx\tfrac23n^3\)</span> flops.</li>
+<li><strong>Nunca</strong> la expansión por cofactores completa para <span class="math inline">\(n\)</span> grande: cada determinante <span class="math inline">\(n\times n\)</span> requiere <span class="math inline">\(n\)</span> determinantes <span class="math inline">\((n - 1)\times(n - 1)\)</span>, lo que suma del orden de <span class="math inline">\(n!\)</span> operaciones. Con <span class="math inline">\(n = 20\)</span>, <span class="math inline">\(20!\approx2{,}4\times10^{18}\)</span>.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="la-regla-de-cramer-y-la-fórmula-de-la-inversa" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> La regla de Cramer y la fórmula de la inversa</h1>
+<p>Los cofactores dan fórmulas cerradas para <span class="math inline">\(A^{-1}\)</span> y para la solución de <span class="math inline">\(Ax = b\)</span>. No son buenas para calcular (salvo en <span class="math inline">\(2\times2\)</span> y <span class="math inline">\(3\times3\)</span>), pero sirven para entender cómo depende la solución de los datos.</p>
+<div id="thm-cramer" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Regla de Cramer)</strong></span> Si <span class="math inline">\(\det A\ne0\)</span>, la solución de <span class="math inline">\(Ax = b\)</span> es <span class="math display">\[
+x_j = \frac{\det B_j}{\det A},\qquad j = 1,\dots,n,
+\]</span> donde <span class="math inline">\(B_j\)</span> es <span class="math inline">\(A\)</span> con su columna <span class="math inline">\(j\)</span> reemplazada por <span class="math inline">\(b\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(x\)</span> la solución, de modo que <span class="math inline">\(b = Ax = x_1a_1 + \dots + x_na_n\)</span> (lectura por columnas). La matriz <span class="math inline">\(B_j\)</span> tiene en la columna <span class="math inline">\(j\)</span> el vector <span class="math inline">\(b = \sum_kx_ka_k\)</span>. Por la linealidad del determinante en la columna <span class="math inline">\(j\)</span>, <span class="math display">\[
+\det B_j = \sum_{k = 1}^nx_k\det\big(a_1\ \cdots\ \underbrace{a_k}_{\text{columna }j}\ \cdots\ a_n\big).
+\]</span> Si <span class="math inline">\(k\ne j\)</span>, la matriz del término <span class="math inline">\(k\)</span> tiene la columna <span class="math inline">\(a_k\)</span> repetida (en la posición <span class="math inline">\(j\)</span> y en la <span class="math inline">\(k\)</span>): su determinante es <span class="math inline">\(0\)</span>. Solo sobrevive <span class="math inline">\(k = j\)</span>, que es la matriz <span class="math inline">\(A\)</span> original: <span class="math inline">\(\det B_j = x_j\det A\)</span>. Dividiendo por <span class="math inline">\(\det A\ne0\)</span> se obtiene la fórmula.</p>
+</div>
+<div id="exm-cramer" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Cramer en el circuito y en el sistema <span class="math inline">\(3\times3\)</span>)</strong></span> <em>El circuito de la Clase 1:</em> <span class="math inline">\(\begin{pmatrix}3&amp;-2\\-2&amp;4\end{pmatrix}\begin{pmatrix}i_1\\i_2\end{pmatrix} = \begin{pmatrix}8\\0\end{pmatrix}\)</span>, con <span class="math inline">\(\det A = 12 - 4 = 8\)</span>: <span class="math display">\[
+i_1 = \frac{\det\begin{pmatrix}8&amp;-2\\0&amp;4\end{pmatrix}}8 = \frac{32 - 0}8 = 4,\qquad i_2 = \frac{\det\begin{pmatrix}3&amp;8\\-2&amp;0\end{pmatrix}}8 = \frac{0 + 16}8 = 2.
+\]</span> <em>El sistema de la Clase 1:</em> <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;1\\2&amp;3&amp;1\\1&amp;-1&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(b = (6,11,5)'\)</span>, <span class="math inline">\(\det A = -1\)</span>. Expandiendo cada <span class="math inline">\(B_j\)</span> por la primera fila: <span class="math display">\[
+\begin{aligned}
+\det B_1 = \det\begin{pmatrix}6&amp;1&amp;1\\11&amp;3&amp;1\\5&amp;-1&amp;2\end{pmatrix} &amp;= 6(6 + 1) - 1(22 - 5) + 1(-11 - 15)\\
+&amp;= 42 - 17 - 26 = -1,
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+\det B_2 = \det\begin{pmatrix}1&amp;6&amp;1\\2&amp;11&amp;1\\1&amp;5&amp;2\end{pmatrix} &amp;= 1(22 - 5) - 6(4 - 1) + 1(10 - 11)\\
+&amp;= 17 - 18 - 1 = -2,
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+\det B_3 = \det\begin{pmatrix}1&amp;1&amp;6\\2&amp;3&amp;11\\1&amp;-1&amp;5\end{pmatrix} &amp;= 1(15 + 11) - 1(10 - 11) + 6(-2 - 3)\\
+&amp;= 26 + 1 - 30 = -3.
+\end{aligned}
+\]</span> Entonces <span class="math inline">\(x = (-1/-1,\ -2/-1,\ -3/-1) = (1,2,3)\)</span>, como antes.</p>
+</div>
+<div id="thm-adjunta" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Fórmula de la inversa)</strong></span> Sea <span class="math inline">\(\operatorname{adj}A\)</span> la <strong>adjunta</strong> de <span class="math inline">\(A\)</span>: la transpuesta de la matriz de cofactores, <span class="math inline">\((\operatorname{adj}A)_{ij} = C_{ji}\)</span>. Entonces <span class="math display">\[
+A\,\operatorname{adj}A = (\det A)\,I,\qquad\text{y si }\det A\ne0,\qquad A^{-1} = \frac{\operatorname{adj}A}{\det A}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La entrada <span class="math inline">\((i,k)\)</span> de <span class="math inline">\(A\,\operatorname{adj}A\)</span> es <span class="math inline">\(\sum_ja_{ij}(\operatorname{adj}A)_{jk} = \sum_ja_{ij}C_{kj}\)</span>.</p>
+<ul>
+<li><em>Si <span class="math inline">\(k = i\)</span>:</em> es <span class="math inline">\(\sum_ja_{ij}C_{ij}\)</span>, la expansión de <span class="math inline">\(\det A\)</span> por la fila <span class="math inline">\(i\)</span> (<a href="#thm-cofactores" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+<li><em>Si <span class="math inline">\(k\ne i\)</span>:</em> es la expansión por la fila <span class="math inline">\(k\)</span> de la matriz <span class="math inline">\(\tilde A\)</span> que se obtiene de <span class="math inline">\(A\)</span> copiando la fila <span class="math inline">\(i\)</span> en la fila <span class="math inline">\(k\)</span> (los cofactores <span class="math inline">\(C_{kj}\)</span> no dependen de la fila <span class="math inline">\(k\)</span>, que se borra, así que son los mismos para <span class="math inline">\(A\)</span> y para <span class="math inline">\(\tilde A\)</span>, y las entradas de la fila <span class="math inline">\(k\)</span> de <span class="math inline">\(\tilde A\)</span> son <span class="math inline">\(a_{ij}\)</span>). Pero <span class="math inline">\(\tilde A\)</span> tiene dos filas iguales: su determinante es <span class="math inline">\(0\)</span>.</li>
+</ul>
+<p>Entonces <span class="math inline">\(A\,\operatorname{adj}A\)</span> tiene <span class="math inline">\(\det A\)</span> en la diagonal y <span class="math inline">\(0\)</span> fuera de ella. Si <span class="math inline">\(\det A\ne0\)</span>, dividiendo, <span class="math inline">\(A\cdot\frac{\operatorname{adj}A}{\det A} = I\)</span>, y por la Clase 2 (basta un lado) es la inversa.</p>
+</div>
+<p>Con <span class="math inline">\(n = 2\)</span>, los cofactores de <span class="math inline">\(\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}\)</span> son <span class="math inline">\(C_{11} = d\)</span>, <span class="math inline">\(C_{12} = -c\)</span>, <span class="math inline">\(C_{21} = -b\)</span>, <span class="math inline">\(C_{22} = a\)</span>; transponiendo, <span class="math inline">\(\operatorname{adj}A = \begin{pmatrix}d&amp;-b\\-c&amp;a\end{pmatrix}\)</span>: es la fórmula de la Clase 2. Con la matriz de rigidez <span class="math inline">\(K\)</span> (<span class="math inline">\(\det K = 4\)</span>), algunos cofactores son <span class="math inline">\(C_{11} = \det\begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix} = 3\)</span>, <span class="math inline">\(C_{12} = -\det\begin{pmatrix}-1&amp;-1\\0&amp;2\end{pmatrix} = -(-2) = 2\)</span>, <span class="math inline">\(C_{13} = \det\begin{pmatrix}-1&amp;2\\0&amp;-1\end{pmatrix} = 1\)</span> y <span class="math inline">\(C_{22} = \det\begin{pmatrix}2&amp;0\\0&amp;2\end{pmatrix} = 4\)</span>, que divididos por <span class="math inline">\(4\)</span> reproducen la primera fila y el centro de <span class="math inline">\(K^{-1} = \tfrac14\begin{pmatrix}3&amp;2&amp;1\\2&amp;4&amp;2\\1&amp;2&amp;3\end{pmatrix}\)</span>.</p>
+</section>
+<section id="área-volumen-y-orientación" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Área, volumen y orientación</h1>
+<p>Ahora justificamos la geometría del comienzo. En el plano y en el espacio, el área y el volumen son conceptos geométricos conocidos, y el teorema dice que el determinante los calcula.</p>
+<div id="thm-volumen" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (El determinante como área y volumen)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>En <span class="math inline">\(\mathbb{R}^2\)</span>, el paralelogramo con lados <span class="math inline">\(a_1,a_2\)</span> (las columnas de <span class="math inline">\(A\)</span>) tiene área <span class="math inline">\(|\det A|\)</span>.</li>
+<li>En <span class="math inline">\(\mathbb{R}^3\)</span>, el paralelepípedo con aristas <span class="math inline">\(a_1,a_2,a_3\)</span> (las columnas de <span class="math inline">\(A\)</span>) tiene volumen <span class="math inline">\(|\det A|\)</span>.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Llamo <span class="math inline">\(V(a_1,\dots,a_n)\)</span> al área o volumen (<span class="math inline">\(n = 2\)</span> o <span class="math inline">\(3\)</span>). Quiero mostrar que <span class="math inline">\(V\)</span> y <span class="math inline">\(|\det|\)</span> cambian igual bajo las operaciones de columna de la eliminación, y que al final del proceso coinciden. Tres hechos geométricos: (i) el cuadrado o cubo unitario mide <span class="math inline">\(1\)</span>; (ii) <strong>cizallar</strong> (sumar a una arista un múltiplo de otra) no cambia el área ni el volumen, porque deja igual la base y la altura (principio de Cavalieri); (iii) estirar una arista por <span class="math inline">\(c\)</span> multiplica la medida por <span class="math inline">\(|c|\)</span>. El determinante cumple lo mismo: (i) es la normalización, (ii) es la propiedad 5 por columnas y (iii) es la linealidad por columnas.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Hacemos el caso <span class="math inline">\(n = 3\)</span>; el caso <span class="math inline">\(n = 2\)</span> es idéntico con una arista menos. Usamos tres hechos de la geometría elemental del volumen:</p>
+<ul>
+<li><ol type="i">
+<li>el cubo de aristas <span class="math inline">\(e_1,e_2,e_3\)</span> tiene volumen <span class="math inline">\(1\)</span>;</li>
+</ol></li>
+<li><ol start="2" type="i">
+<li>reemplazar una arista <span class="math inline">\(a_j\)</span> por <span class="math inline">\(a_j + ca_k\)</span> (<span class="math inline">\(k\ne j\)</span>) no cambia el volumen: el paralelepípedo se “desliza” paralelamente a la cara generada por las otras dos aristas cuando se suma un múltiplo de <span class="math inline">\(a_k\)</span>, que está en esa cara, de modo que la base (esa cara) y la altura (la distancia de la cara opuesta) no cambian;</li>
+</ol></li>
+<li><ol start="3" type="i">
+<li>reemplazar <span class="math inline">\(a_j\)</span> por <span class="math inline">\(ca_j\)</span> multiplica el volumen por <span class="math inline">\(|c|\)</span> (la altura sobre la cara de las otras aristas se multiplica por <span class="math inline">\(|c|\)</span>), y si las aristas están en un plano el volumen es <span class="math inline">\(0\)</span>.</li>
+</ol></li>
+</ul>
+<p><em>Paso 1: columnas dependientes.</em> Si <span class="math inline">\(a_1,a_2,a_3\)</span> son dependientes, están en un plano (o en una recta) y el paralelepípedo es plano: volumen <span class="math inline">\(0\)</span>. Y <span class="math inline">\(\det A = 0\)</span> porque <span class="math inline">\(A\)</span> no es invertible (Clase 3, <a href="#cor-invertible" class="quarto-xref">Corolario&nbsp;1</a>).</p>
+<p><em>Paso 2: columnas independientes.</em> Aplicamos la eliminación a <span class="math inline">\(A'\)</span> (operaciones de fila sobre <span class="math inline">\(A'\)</span> son operaciones de columna sobre <span class="math inline">\(A\)</span>). Por (ii) y por la propiedad 5 por columnas, los reemplazos de columna no cambian ni el volumen ni <span class="math inline">\(\det A\)</span>. Un intercambio de columnas no cambia el volumen (es el mismo sólido) y cambia el signo de <span class="math inline">\(\det A\)</span>, así que no cambia <span class="math inline">\(|\det A|\)</span>. Llegamos a una matriz triangular inferior <span class="math inline">\(T\)</span> (la transpuesta de la escalonada de <span class="math inline">\(A'\)</span>) con diagonal no nula <span class="math inline">\(t_{11},t_{22},t_{33}\)</span>. Con más reemplazos de columna (usando la columna 3, que es <span class="math inline">\((0,0,t_{33})'\)</span>, para anular la tercera entrada de las otras, y luego la 2) llegamos a la diagonal <span class="math inline">\(\operatorname{diag}(t_{11},t_{22},t_{33})\)</span>, sin cambiar ni el volumen ni el determinante. Esa matriz tiene columnas <span class="math inline">\(t_{11}e_1,t_{22}e_2,t_{33}e_3\)</span>: por (iii) y (i), su volumen es <span class="math inline">\(|t_{11}t_{22}t_{33}|\)</span>, y su determinante es <span class="math inline">\(t_{11}t_{22}t_{33}\)</span> (propiedad 7). Como volumen y <span class="math inline">\(|\det|\)</span> se conservaron en todos los pasos, el volumen original es <span class="math inline">\(|\det A|\)</span>.</p>
+</div>
+<p>El <strong>signo</strong> del determinante tiene también un significado: indica la <strong>orientación</strong>. En el plano, <span class="math inline">\(\det A&gt;0\)</span> significa que <span class="math inline">\(a_1\)</span> y <span class="math inline">\(a_2\)</span> están en el mismo orden de giro que <span class="math inline">\(e_1\)</span> y <span class="math inline">\(e_2\)</span> (girar de <span class="math inline">\(a_1\)</span> hacia <span class="math inline">\(a_2\)</span> por el lado corto es antihorario); <span class="math inline">\(\det A&lt;0\)</span>, que el orden está invertido, como en un espejo. En el espacio, <span class="math inline">\(\det A&gt;0\)</span> significa que <span class="math inline">\(a_1,a_2,a_3\)</span> forman un sistema “de mano derecha”.</p>
+<p>La otra cara del mismo teorema: como transformación, <span class="math inline">\(A\)</span> lleva el cuadrado (o cubo) unitario a un paralelogramo (o paralelepípedo) de medida <span class="math inline">\(|\det A|\)</span>. Y como cualquier figura se puede aproximar por cuadraditos, <strong><span class="math inline">\(A\)</span> multiplica todas las áreas (o volúmenes) por <span class="math inline">\(|\det A|\)</span></strong> (<a href="#fig-transformacion" class="quarto-xref">Figura&nbsp;2</a>). Así se entiende el <a href="#thm-producto" class="quarto-xref">Teorema&nbsp;2</a>: aplicar <span class="math inline">\(B\)</span> y después <span class="math inline">\(A\)</span> multiplica las áreas primero por <span class="math inline">\(|\det B|\)</span> y después por <span class="math inline">\(|\det A|\)</span>.</p>
+<div id="fig-transformacion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-transformacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c04_transformacion.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-transformacion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Izquierda: el cuadrado unitario. Centro: su imagen por <span class="math inline">\(\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}\)</span>, de área <span class="math inline">\(5\)</span>. Derecha: su imagen por <span class="math inline">\(\begin{pmatrix}0&amp;1\\2&amp;0\end{pmatrix}\)</span>, de área <span class="math inline">\(2\)</span> y orientación invertida (<span class="math inline">\(Ae_1\)</span> quedó “a la izquierda” de <span class="math inline">\(Ae_2\)</span>), porque el determinante es <span class="math inline">\(-2\)</span>.
+</figcaption>
+</figure>
+</div>
+<div id="exm-volumen" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 4 (Un volumen en el espacio)</strong></span> Las columnas de <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;0\\0&amp;1&amp;1\\1&amp;0&amp;1\end{pmatrix}\)</span> son <span class="math inline">\(a_1 = (1,0,1)'\)</span>, <span class="math inline">\(a_2 = (1,1,0)'\)</span> y <span class="math inline">\(a_3 = (0,1,1)'\)</span> (<a href="#fig-paralelepipedo" class="quarto-xref">Figura&nbsp;3</a>). Por cofactores en la primera fila: <span class="math inline">\(\det A = 1(1\cdot1 - 1\cdot0) - 1(0\cdot1 - 1\cdot1) + 0 = 1 + 1 = 2\)</span>. El paralelepípedo tiene volumen <span class="math inline">\(2\)</span>, el doble del cubo unitario, y como el determinante es positivo, las tres aristas forman un sistema de mano derecha.</p>
+</div>
+<div id="fig-paralelepipedo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-paralelepipedo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c04_paralelepipedo.png" class="img-fluid figure-img" style="width:66.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-paralelepipedo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: El paralelepípedo de aristas <span class="math inline">\(a_1 = (1,0,1)'\)</span>, <span class="math inline">\(a_2 = (1,1,0)'\)</span> y <span class="math inline">\(a_3 = (0,1,1)'\)</span>. Su volumen es <span class="math inline">\(\det A = 2\)</span>.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="el-jacobiano" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> El jacobiano</h1>
+<p>En las integrales de física e ingeniería es frecuente cambiar de coordenadas: polares para un disco, esféricas para una esfera. Un cambio de variables <span class="math inline">\(x = g(u)\)</span>, con <span class="math inline">\(g:\mathbb{R}^n\to\mathbb{R}^n\)</span> diferenciable, se comporta <strong>localmente</strong> como una transformación lineal: cerca de un punto <span class="math inline">\(u\)</span>, un desplazamiento pequeño <span class="math inline">\(du\)</span> produce <span class="math inline">\(dx\approx J(u)\,du\)</span>, donde la <strong>matriz jacobiana</strong> <span class="math inline">\(J\)</span> tiene las derivadas parciales <span class="math inline">\(J_{ij} = \partial g_i/\partial u_j\)</span>. Por el <a href="#thm-volumen" class="quarto-xref">Teorema&nbsp;6</a>, un cuadradito (o cubito) de medida <span class="math inline">\(du_1\cdots du_n\)</span> se transforma en un paralelogramo de medida <span class="math inline">\(\approx|\det J(u)|\,du_1\cdots du_n\)</span>. Por eso el cambio de variables en una integral es <span class="math display">\[
+\int f(x)\,dx = \int f(g(u))\,|\det J(u)|\,du.
+\]</span> (La demostración rigurosa, con el control del error de la aproximación lineal, es de cálculo en varias variables; aquí nos interesa calcular <span class="math inline">\(\det J\)</span>.)</p>
+<div id="exm-polares" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 5 (Coordenadas polares)</strong></span> <span class="math inline">\(x_1 = r\cos\theta\)</span>, <span class="math inline">\(x_2 = r\sin\theta\)</span>. Derivando: <span class="math display">\[
+J = \begin{pmatrix}\partial x_1/\partial r&amp;\partial x_1/\partial\theta\\\partial x_2/\partial r&amp;\partial x_2/\partial\theta\end{pmatrix} = \begin{pmatrix}\cos\theta&amp;-r\sin\theta\\\sin\theta&amp;r\cos\theta\end{pmatrix},
+\]</span> <span class="math display">\[
+\det J = \cos\theta\cdot r\cos\theta - (-r\sin\theta)\sin\theta = r\cos^2\theta + r\sin^2\theta = r.
+\]</span> El elemento de área es <span class="math inline">\(r\,dr\,d\theta\)</span> (<a href="#fig-polares" class="quarto-xref">Figura&nbsp;4</a>): un “rectángulo polar” de lados <span class="math inline">\(dr\)</span> y <span class="math inline">\(r\,d\theta\)</span> (un arco de radio <span class="math inline">\(r\)</span> y ángulo <span class="math inline">\(d\theta\)</span> mide <span class="math inline">\(r\,d\theta\)</span>). Con esto, el área del disco de radio <span class="math inline">\(R\)</span> es <span class="math inline">\(\int_0^{2\pi}\int_0^Rr\,dr\,d\theta = 2\pi\cdot\tfrac{R^2}2 = \pi R^2\)</span>.</p>
+</div>
+<div id="fig-polares" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-polares-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c04_polares.png" class="img-fluid figure-img" style="width:55.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-polares-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: El rectángulo polar de radios <span class="math inline">\(r\)</span> y <span class="math inline">\(r + dr\)</span> y ángulos <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\theta + d\theta\)</span> tiene lados <span class="math inline">\(\approx dr\)</span> y <span class="math inline">\(\approx r\,d\theta\)</span>: su área es <span class="math inline">\(\approx r\,dr\,d\theta\)</span>, de acuerdo con <span class="math inline">\(\det J = r\)</span>.
+</figcaption>
+</figure>
+</div>
+<div id="exm-esfericas" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 6 (Coordenadas esféricas)</strong></span> <span class="math inline">\(x_1 = \rho\sin\varphi\cos\theta\)</span>, <span class="math inline">\(x_2 = \rho\sin\varphi\sin\theta\)</span>, <span class="math inline">\(x_3 = \rho\cos\varphi\)</span>, con <span class="math inline">\(\rho\ge0\)</span> la distancia al origen, <span class="math inline">\(\varphi\in[0,\pi]\)</span> el ángulo con el eje <span class="math inline">\(x_3\)</span> y <span class="math inline">\(\theta\)</span> el ángulo en el plano <span class="math inline">\(x_1x_2\)</span>. La jacobiana, con columnas <span class="math inline">\(\partial/\partial\rho\)</span>, <span class="math inline">\(\partial/\partial\varphi\)</span>, <span class="math inline">\(\partial/\partial\theta\)</span>, es <span class="math display">\[
+J = \begin{pmatrix}\sin\varphi\cos\theta&amp;\rho\cos\varphi\cos\theta&amp;-\rho\sin\varphi\sin\theta\\\sin\varphi\sin\theta&amp;\rho\cos\varphi\sin\theta&amp;\rho\sin\varphi\cos\theta\\\cos\varphi&amp;-\rho\sin\varphi&amp;0\end{pmatrix}.
+\]</span> Expandimos por la tercera fila, que tiene un cero. Los cofactores son <span class="math display">\[
+\begin{aligned}
+C_{31} &amp;= +\det\begin{pmatrix}\rho\cos\varphi\cos\theta&amp;-\rho\sin\varphi\sin\theta\\\rho\cos\varphi\sin\theta&amp;\rho\sin\varphi\cos\theta\end{pmatrix}\\
+&amp;= \rho^2\cos\varphi\sin\varphi\cos^2\theta + \rho^2\cos\varphi\sin\varphi\sin^2\theta = \rho^2\cos\varphi\sin\varphi,
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+C_{32} &amp;= -\det\begin{pmatrix}\sin\varphi\cos\theta&amp;-\rho\sin\varphi\sin\theta\\\sin\varphi\sin\theta&amp;\rho\sin\varphi\cos\theta\end{pmatrix}\\
+&amp;= -\big(\rho\sin^2\varphi\cos^2\theta + \rho\sin^2\varphi\sin^2\theta\big) = -\rho\sin^2\varphi,
+\end{aligned}
+\]</span> usando <span class="math inline">\(\cos^2\theta + \sin^2\theta = 1\)</span>. Entonces <span class="math display">\[
+\begin{aligned}
+\det J &amp;= \cos\varphi\cdot\rho^2\cos\varphi\sin\varphi + (-\rho\sin\varphi)(-\rho\sin^2\varphi) + 0\\
+&amp;= \rho^2\sin\varphi\,(\cos^2\varphi + \sin^2\varphi) = \rho^2\sin\varphi.
+\end{aligned}
+\]</span> El volumen de la esfera de radio <span class="math inline">\(R\)</span> resulta <span class="math inline">\(\int_0^{2\pi}\int_0^\pi\int_0^R\rho^2\sin\varphi\,d\rho\,d\varphi\,d\theta = 2\pi\cdot2\cdot\tfrac{R^3}3 = \tfrac43\pi R^3\)</span>, usando <span class="math inline">\(\int_0^\pi\sin\varphi\,d\varphi = [-\cos\varphi]_0^\pi = 2\)</span>.</p>
+</div>
+</section>
+<section id="determinantes-por-bloques" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Determinantes por bloques</h1>
+<div id="prp-det-bloques" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Determinantes por bloques)</strong></span> Sean <span class="math inline">\(A\)</span> (<span class="math inline">\(k\times k\)</span>) y <span class="math inline">\(D\)</span> (<span class="math inline">\(\ell\times\ell\)</span>) cuadradas.</p>
+<ol type="1">
+<li><span class="math inline">\(\det\begin{pmatrix}A&amp;B\\0&amp;D\end{pmatrix} = \det A\,\det D\)</span>.</li>
+<li>Si <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(\det\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix} = \det A\,\det(D - CA^{-1}B)\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1.</em> Por inducción en <span class="math inline">\(k\)</span>. Si <span class="math inline">\(k = 1\)</span>, <span class="math inline">\(A = (a_{11})\)</span> y la primera columna de la matriz grande es <span class="math inline">\((a_{11},0,\dots,0)'\)</span>; expandiendo por esa columna (<a href="#thm-cofactores" class="quarto-xref">Teorema&nbsp;3</a>), el único término es <span class="math inline">\(a_{11}\cdot(+1)\det D\)</span>, porque borrar la fila 1 y la columna 1 deja <span class="math inline">\(D\)</span>. Si <span class="math inline">\(k&gt;1\)</span>, expandimos por la primera columna, que es <span class="math inline">\((a_{11},\dots,a_{k1},0,\dots,0)'\)</span>: los términos son <span class="math inline">\(a_{i1}C_{i1}\)</span> con <span class="math inline">\(i\le k\)</span>. El menor que queda al borrar la fila <span class="math inline">\(i\)</span> y la columna 1 es <span class="math inline">\(\begin{pmatrix}A_{(i)}&amp;B_{(i)}\\0&amp;D\end{pmatrix}\)</span>, donde <span class="math inline">\(A_{(i)}\)</span> es el menor <span class="math inline">\((i,1)\)</span> de <span class="math inline">\(A\)</span>, de tamaño <span class="math inline">\(k - 1\)</span>. Por la hipótesis de inducción, su determinante es <span class="math inline">\(\det A_{(i)}\det D\)</span>. Sumando, <span class="math inline">\(\sum_{i\le k}a_{i1}(-1)^{i+1}\det A_{(i)}\det D = \det A\det D\)</span> (la suma es la expansión de <span class="math inline">\(\det A\)</span> por su primera columna).</p>
+<p><em>Parte 2.</em> Por la eliminación por bloques de la Clase 2, <span class="math display">\[
+\begin{pmatrix}I&amp;0\\-CA^{-1}&amp;I\end{pmatrix}\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix} = \begin{pmatrix}A&amp;B\\0&amp;D - CA^{-1}B\end{pmatrix}.
+\]</span> La primera matriz es triangular inferior con unos en la diagonal: determinante <span class="math inline">\(1\)</span>. Por el <a href="#thm-producto" class="quarto-xref">Teorema&nbsp;2</a> y la parte 1, <span class="math inline">\(\det\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix} = \det A\det(D - CA^{-1}B)\)</span>.</p>
+</div>
+<p>Por ejemplo, para la matriz <span class="math inline">\(M = \begin{pmatrix}2&amp;1&amp;1\\1&amp;2&amp;1\\1&amp;1&amp;2\end{pmatrix}\)</span> de la Clase 2, con <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span> y complemento de Schur <span class="math inline">\(S = \tfrac43\)</span>: <span class="math inline">\(\det M = \det A\cdot S = 3\cdot\tfrac43 = 4\)</span>. Por Sarrus: <span class="math inline">\(8 + 1 + 1 - 2 - 2 - 2 = 4\)</span> ✓.</p>
+</section>
+<section id="para-ir-más-allá-la-existencia-y-la-fórmula-de-leibniz" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> ★ Para ir más allá: la existencia y la fórmula de Leibniz</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Para ir más allá">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Para ir más allá
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Falta demostrar que <strong>existe</strong> una función con las tres propiedades. La construimos por <strong>inducción</strong> con la expansión por la primera columna, y verificamos las tres propiedades. Como subproducto aparece la fórmula de Leibniz con <span class="math inline">\(n!\)</span> términos.</p>
+</div>
+</div>
+<div id="thm-existencia-det" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (Existencia del determinante)</strong></span> Definamos <span class="math inline">\(D_1(a) = a\)</span> para matrices <span class="math inline">\(1\times1\)</span> y, para <span class="math inline">\(n\ge2\)</span>, <span class="math display">\[
+D_n(A) = \sum_{i = 1}^n(-1)^{i+1}a_{i1}\,D_{n-1}(M_{i1}),
+\]</span> con <span class="math inline">\(M_{i1}\)</span> la matriz que queda al borrar la fila <span class="math inline">\(i\)</span> y la primera columna. Entonces <span class="math inline">\(D_n\)</span> cumple las tres propiedades de la <a href="#def-determinante" class="quarto-xref">Definición&nbsp;1</a>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por inducción en <span class="math inline">\(n\)</span>. Para <span class="math inline">\(n = 1\)</span>: <span class="math inline">\(D_1(1) = 1\)</span>; no hay dos filas que intercambiar; y <span class="math inline">\(D_1\)</span> es lineal. Supongamos que <span class="math inline">\(D_{n-1}\)</span> cumple las tres propiedades y probémoslas para <span class="math inline">\(D_n\)</span>.</p>
+<p><em>Normalización.</em> En <span class="math inline">\(I\)</span>, la primera columna es <span class="math inline">\(e_1\)</span>: solo sobrevive <span class="math inline">\(i = 1\)</span>, con <span class="math inline">\(a_{11} = 1\)</span> y <span class="math inline">\(M_{11} = I_{n-1}\)</span>. Entonces <span class="math inline">\(D_n(I) = 1\cdot D_{n-1}(I_{n-1}) = 1\)</span>.</p>
+<p><em>Linealidad en la fila <span class="math inline">\(k\)</span>.</em> Miremos cada término <span class="math inline">\((-1)^{i+1}a_{i1}D_{n-1}(M_{i1})\)</span>. Si <span class="math inline">\(i = k\)</span>: el factor <span class="math inline">\(a_{k1}\)</span> es una entrada de la fila <span class="math inline">\(k\)</span> (depende linealmente de ella) y <span class="math inline">\(M_{k1}\)</span> no contiene la fila <span class="math inline">\(k\)</span> (la borramos), así que el término es lineal en la fila <span class="math inline">\(k\)</span>. Si <span class="math inline">\(i\ne k\)</span>: <span class="math inline">\(a_{i1}\)</span> no depende de la fila <span class="math inline">\(k\)</span>, y <span class="math inline">\(M_{i1}\)</span> contiene la fila <span class="math inline">\(k\)</span> (sin su primera entrada) como una de sus filas; por la hipótesis de inducción, <span class="math inline">\(D_{n-1}(M_{i1})\)</span> es lineal en ella. Una suma de términos lineales es lineal.</p>
+<p><em>Alternancia.</em> Basta probarla para dos filas <strong>vecinas</strong> <span class="math inline">\(k\)</span> y <span class="math inline">\(k + 1\)</span>: cualquier intercambio de las filas <span class="math inline">\(i&lt;j\)</span> se logra con <span class="math inline">\(2(j - i) - 1\)</span> intercambios de vecinas (bajar la fila <span class="math inline">\(i\)</span> hasta la posición <span class="math inline">\(j\)</span> con <span class="math inline">\(j - i\)</span> pasos y subir la que era <span class="math inline">\(j\)</span> hasta la posición <span class="math inline">\(i\)</span> con <span class="math inline">\(j - i - 1\)</span>), un número impar, y cada uno cambia el signo. Sea <span class="math inline">\(\tilde A\)</span> la matriz con las filas <span class="math inline">\(k\)</span> y <span class="math inline">\(k + 1\)</span> intercambiadas.</p>
+<ul>
+<li>Para <span class="math inline">\(i\ne k,k + 1\)</span>: <span class="math inline">\(\tilde a_{i1} = a_{i1}\)</span>, y <span class="math inline">\(\tilde M_{i1}\)</span> es <span class="math inline">\(M_{i1}\)</span> con dos filas vecinas intercambiadas. Por inducción, <span class="math inline">\(D_{n-1}(\tilde M_{i1}) = -D_{n-1}(M_{i1})\)</span>: el término cambia de signo.</li>
+<li>Los términos <span class="math inline">\(i = k\)</span> e <span class="math inline">\(i = k + 1\)</span> se intercambian: en <span class="math inline">\(\tilde A\)</span>, la entrada de la fila <span class="math inline">\(k\)</span> es <span class="math inline">\(a_{k+1,1}\)</span> y, al borrar la fila <span class="math inline">\(k\)</span> de <span class="math inline">\(\tilde A\)</span>, queda lo mismo que al borrar la fila <span class="math inline">\(k + 1\)</span> de <span class="math inline">\(A\)</span>: <span class="math inline">\(\tilde M_{k1} = M_{k+1,1}\)</span>. Entonces el término <span class="math inline">\(i = k\)</span> de <span class="math inline">\(\tilde A\)</span> es <span class="math inline">\((-1)^{k+1}a_{k+1,1}D_{n-1}(M_{k+1,1})\)</span>, que es <strong>menos</strong> el término <span class="math inline">\(i = k + 1\)</span> de <span class="math inline">\(A\)</span>, que tenía signo <span class="math inline">\((-1)^{k+2}\)</span>. Del mismo modo, el término <span class="math inline">\(i = k + 1\)</span> de <span class="math inline">\(\tilde A\)</span> es menos el término <span class="math inline">\(i = k\)</span> de <span class="math inline">\(A\)</span>.</li>
+</ul>
+<p>Todos los términos cambian de signo: <span class="math inline">\(D_n(\tilde A) = -D_n(A)\)</span>.</p>
+</div>
+<p>Con la existencia (este teorema) y la unicidad (<a href="#thm-det-eliminacion" class="quarto-xref">Teorema&nbsp;1</a>), el determinante está bien definido para toda matriz cuadrada, y todas las fórmulas de la clase son fórmulas para el mismo número.</p>
+<p><strong>La fórmula de Leibniz.</strong> Si en cada fila escribimos <span class="math inline">\(f_i = \sum_ja_{ij}e_j'\)</span> y usamos la linealidad en <strong>todas</strong> las filas a la vez, <span class="math inline">\(\det A\)</span> se convierte en una suma de <span class="math inline">\(n^n\)</span> términos <span class="math inline">\(a_{1j_1}a_{2j_2}\cdots a_{nj_n}\det(e_{j_1};e_{j_2};\dots;e_{j_n})\)</span>, uno por cada elección de una columna <span class="math inline">\(j_i\)</span> en cada fila. Cuando dos de los <span class="math inline">\(j_i\)</span> se repiten, la matriz de vectores canónicos tiene dos filas iguales y su determinante es cero. Sobreviven solo las elecciones donde <span class="math inline">\(j_1,\dots,j_n\)</span> son <strong>todas distintas</strong>, es decir, las <strong>permutaciones</strong> de <span class="math inline">\(\{1,\dots,n\}\)</span>, que son <span class="math inline">\(n!\)</span>. Para cada permutación, la matriz de filas <span class="math inline">\(e_{j_1}',\dots,e_{j_n}'\)</span> es una matriz de permutación, cuyo determinante es <span class="math inline">\(+1\)</span> o <span class="math inline">\(-1\)</span> según el número de intercambios necesarios para llevarla a <span class="math inline">\(I\)</span> sea par o impar (su <strong>signo</strong>). Entonces <span class="math display">\[
+\det A = \sum_{\text{permutaciones }(j_1,\dots,j_n)}\operatorname{signo}(j_1,\dots,j_n)\,a_{1j_1}a_{2j_2}\cdots a_{nj_n}.
+\]</span> Para <span class="math inline">\(n = 3\)</span> hay <span class="math inline">\(3! = 6\)</span> permutaciones. Las pares (signo <span class="math inline">\(+\)</span>) son <span class="math inline">\((1,2,3)\)</span>, <span class="math inline">\((2,3,1)\)</span> y <span class="math inline">\((3,1,2)\)</span>; las impares (signo <span class="math inline">\(-\)</span>) son <span class="math inline">\((1,3,2)\)</span>, <span class="math inline">\((2,1,3)\)</span> y <span class="math inline">\((3,2,1)\)</span>. Sus seis términos son exactamente los de la regla de Sarrus del <a href="#exm-formulas" class="quarto-xref">Ejemplo&nbsp;2</a>. Para <span class="math inline">\(n = 2\)</span> hay <span class="math inline">\(2\)</span> términos, <span class="math inline">\(a_{11}a_{22} - a_{12}a_{21}\)</span>. El número de términos, <span class="math inline">\(n!\)</span>, explica por qué esta fórmula (como la expansión completa por cofactores) no sirve para calcular cuando <span class="math inline">\(n\)</span> es grande.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="En más dimensiones">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>En más dimensiones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las tres propiedades, la eliminación, el producto, los cofactores y Cramer valen para todo <span class="math inline">\(n\)</span>, con las demostraciones de esta clase. Lo que se generaliza de manera menos obvia es la geometría: en <span class="math inline">\(\mathbb{R}^n\)</span> el “volumen <span class="math inline">\(n\)</span>-dimensional” de un paralelepípedo se <strong>define</strong> como <span class="math inline">\(|\det A|\)</span>, y la fórmula de cambio de variables con el jacobiano vale igual. El estudio de las permutaciones y su signo (que la sección ★ usó sin demostrar que el signo está bien definido) y la definición del determinante sin coordenadas, como forma multilineal alternada, están en el curso de Álgebra lineal.</p>
+</div>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Resumen</h1>
+<ul>
+<li>El determinante queda definido por tres propiedades: <span class="math inline">\(\det I = 1\)</span>, cambia de signo al intercambiar filas y es lineal en cada fila (<a href="#def-determinante" class="quarto-xref">Definición&nbsp;1</a>). De ellas: dos filas iguales dan cero, los reemplazos no lo cambian y el de una triangular es el producto de la diagonal (<a href="#prp-consecuencias" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li><strong>Cálculo:</strong> <span class="math inline">\(\det A = \pm(\text{producto de los pivotes})\)</span> (<a href="#thm-det-eliminacion" class="quarto-xref">Teorema&nbsp;1</a>). <span class="math inline">\(A\)</span> es invertible si y solo si <span class="math inline">\(\det A\ne0\)</span>.</li>
+<li><span class="math inline">\(\det(AB) = \det A\det B\)</span>, <span class="math inline">\(\det A^{-1} = 1/\det A\)</span> y <span class="math inline">\(\det A' = \det A\)</span> (<a href="#thm-producto" class="quarto-xref">Teorema&nbsp;2</a>, <a href="#cor-inversa-transpuesta" class="quarto-xref">Corolario&nbsp;2</a>): lo que vale para filas vale para columnas.</li>
+<li><strong>Cofactores:</strong> <span class="math inline">\(\det A = \sum_ja_{ij}C_{ij}\)</span> (<a href="#thm-cofactores" class="quarto-xref">Teorema&nbsp;3</a>); Sarrus en <span class="math inline">\(3\times3\)</span>. <strong>Cramer:</strong> <span class="math inline">\(x_j = \det B_j/\det A\)</span>. <strong>Inversa:</strong> <span class="math inline">\(A^{-1} = \operatorname{adj}A/\det A\)</span>.</li>
+<li><strong>Geometría:</strong> <span class="math inline">\(|\det A|\)</span> es el área o volumen generado por las columnas, y el signo es la orientación (<a href="#thm-volumen" class="quarto-xref">Teorema&nbsp;6</a>). Una matriz multiplica las áreas por <span class="math inline">\(|\det A|\)</span>.</li>
+<li><strong>Jacobiano:</strong> <span class="math inline">\(|\det J|\)</span> es el factor de área o volumen en un cambio de variables: <span class="math inline">\(r\)</span> en polares, <span class="math inline">\(\rho^2\sin\varphi\)</span> en esféricas.</li>
+<li><strong>Bloques:</strong> <span class="math inline">\(\det\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix} = \det A\det(D - CA^{-1}B)\)</span> (<a href="#prp-det-bloques" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Ejercicios</h1>
+<p><strong>Ejercicio 4.1.</strong> Calcula el área del paralelogramo generado por <span class="math inline">\((4,1)\)</span> y <span class="math inline">\((2,3)\)</span> con el determinante y con el método del rectángulo de la <a href="#fig-area" class="quarto-xref">Figura&nbsp;1</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con columnas <span class="math inline">\((a,c) = (4,1)\)</span> y <span class="math inline">\((b,d) = (2,3)\)</span>: <span class="math inline">\(\det = ad - bc = 4\cdot3 - 2\cdot1 = 10\)</span>. Rectángulo: lados <span class="math inline">\(a + b = 6\)</span> y <span class="math inline">\(c + d = 4\)</span>, área <span class="math inline">\(24\)</span>. Se restan dos triángulos de catetos <span class="math inline">\(4\)</span> y <span class="math inline">\(1\)</span> (área total <span class="math inline">\(4\)</span>), dos de catetos <span class="math inline">\(2\)</span> y <span class="math inline">\(3\)</span> (área total <span class="math inline">\(6\)</span>) y dos rectángulos de lados <span class="math inline">\(b = 2\)</span> y <span class="math inline">\(c = 1\)</span> (área total <span class="math inline">\(4\)</span>): <span class="math inline">\(24 - 4 - 6 - 4 = 10\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.2.</strong> Calcula <span class="math inline">\(\det\begin{pmatrix}2&amp;1&amp;3\\1&amp;0&amp;1\\4&amp;2&amp;1\end{pmatrix}\)</span> por eliminación y por Sarrus.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><em>Eliminación.</em> Multiplicadores <span class="math inline">\(\tfrac12\)</span> y <span class="math inline">\(2\)</span>: <span class="math inline">\(F_2 - \tfrac12F_1 = (0,\ -\tfrac12,\ 1 - \tfrac32) = (0,-\tfrac12,-\tfrac12)\)</span>; <span class="math inline">\(F_3 - 2F_1 = (0,\ 0,\ 1 - 6) = (0,0,-5)\)</span>. La matriz ya es triangular superior (la fila 3 tiene cero en la columna 2), sin intercambios. Pivotes <span class="math inline">\(2\)</span>, <span class="math inline">\(-\tfrac12\)</span>, <span class="math inline">\(-5\)</span>: <span class="math inline">\(\det = 2\cdot(-\tfrac12)\cdot(-5) = 5\)</span>.</p>
+<p><em>Sarrus.</em> Productos hacia la derecha: <span class="math inline">\(2\cdot0\cdot1 + 1\cdot1\cdot4 + 3\cdot1\cdot2 = 0 + 4 + 6 = 10\)</span>. Hacia la izquierda: <span class="math inline">\(3\cdot0\cdot4 + 2\cdot1\cdot2 + 1\cdot1\cdot1 = 0 + 4 + 1 = 5\)</span>. Diferencia: <span class="math inline">\(10 - 5 = 5\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.3.</strong> ¿Para qué valores de <span class="math inline">\(k\)</span> es singular la matriz <span class="math inline">\(\begin{pmatrix}1&amp;1&amp;1\\1&amp;k&amp;1\\1&amp;1&amp;k\end{pmatrix}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Reemplazos <span class="math inline">\(F_2\leftarrow F_2 - F_1\)</span> y <span class="math inline">\(F_3\leftarrow F_3 - F_1\)</span> (no cambian el determinante): <span class="math inline">\(\begin{pmatrix}1&amp;1&amp;1\\0&amp;k - 1&amp;0\\0&amp;0&amp;k - 1\end{pmatrix}\)</span>, triangular. Por la propiedad 7, <span class="math inline">\(\det = 1\cdot(k - 1)\cdot(k - 1) = (k - 1)^2\)</span>. Es cero si y solo si <span class="math inline">\(k = 1\)</span>: la matriz es singular exactamente para <span class="math inline">\(k = 1\)</span> (cuando sus tres filas son iguales).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.4.</strong> Resuelve con la regla de Cramer: <span class="math inline">\(2x_1 + x_2 = 3\)</span>, <span class="math inline">\(x_1 + 2x_2 + x_3 = 4\)</span>, <span class="math inline">\(x_2 + 2x_3 = 3\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(A = \begin{pmatrix}2&amp;1&amp;0\\1&amp;2&amp;1\\0&amp;1&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(\det A = 2(4 - 1) - 1(2 - 0) + 0 = 6 - 2 = 4\)</span>. Por la primera fila de cada <span class="math inline">\(B_j\)</span>:</p>
+<p><span class="math inline">\(\det B_1 = \det\begin{pmatrix}3&amp;1&amp;0\\4&amp;2&amp;1\\3&amp;1&amp;2\end{pmatrix} = 3(4 - 1) - 1(8 - 3) + 0 = 9 - 5 = 4\)</span>, así que <span class="math inline">\(x_1 = 1\)</span>.</p>
+<p><span class="math inline">\(\det B_2 = \det\begin{pmatrix}2&amp;3&amp;0\\1&amp;4&amp;1\\0&amp;3&amp;2\end{pmatrix} = 2(8 - 3) - 3(2 - 0) + 0 = 10 - 6 = 4\)</span>, así que <span class="math inline">\(x_2 = 1\)</span>.</p>
+<p><span class="math inline">\(\det B_3 = \det\begin{pmatrix}2&amp;1&amp;3\\1&amp;2&amp;4\\0&amp;1&amp;3\end{pmatrix} = 2(6 - 4) - 1(3 - 0) + 3(1 - 0) = 4 - 3 + 3 = 4\)</span>, así que <span class="math inline">\(x_3 = 1\)</span>.</p>
+<p>Solución <span class="math inline">\((1,1,1)\)</span>; en efecto <span class="math inline">\((2 + 1,\ 1 + 2 + 1,\ 1 + 2) = (3,4,3)\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.5.</strong> Calcula la inversa de <span class="math inline">\(A = \begin{pmatrix}1&amp;2&amp;0\\0&amp;1&amp;0\\2&amp;0&amp;1\end{pmatrix}\)</span> con la adjunta y verifica.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\det A\)</span> por la segunda fila (que tiene dos ceros): <span class="math inline">\(a_{22}C_{22} = 1\cdot(+1)\det\begin{pmatrix}1&amp;0\\2&amp;1\end{pmatrix} = 1\)</span>. Cofactores:</p>
+<ul>
+<li><span class="math inline">\(C_{11} = +(1\cdot1 - 0\cdot0) = 1\)</span>, <span class="math inline">\(C_{12} = -(0\cdot1 - 0\cdot2) = 0\)</span>, <span class="math inline">\(C_{13} = +(0\cdot0 - 1\cdot2) = -2\)</span>;</li>
+<li><span class="math inline">\(C_{21} = -(2\cdot1 - 0\cdot0) = -2\)</span>, <span class="math inline">\(C_{22} = +(1\cdot1 - 0\cdot2) = 1\)</span>, <span class="math inline">\(C_{23} = -(1\cdot0 - 2\cdot2) = 4\)</span>;</li>
+<li><span class="math inline">\(C_{31} = +(2\cdot0 - 0\cdot1) = 0\)</span>, <span class="math inline">\(C_{32} = -(1\cdot0 - 0\cdot0) = 0\)</span>, <span class="math inline">\(C_{33} = +(1\cdot1 - 2\cdot0) = 1\)</span>.</li>
+</ul>
+<p>La adjunta es la transpuesta de la matriz de cofactores, y con <span class="math inline">\(\det A = 1\)</span>: <span class="math display">\[
+A^{-1} = \operatorname{adj}A = \begin{pmatrix}1&amp;-2&amp;0\\0&amp;1&amp;0\\-2&amp;4&amp;1\end{pmatrix}.
+\]</span> Verificación de <span class="math inline">\(AA^{-1}\)</span> por filas de <span class="math inline">\(A\)</span>: fila 1, <span class="math inline">\((1,2,0)\)</span>: por las columnas <span class="math inline">\((1,0,-2)\)</span>, <span class="math inline">\((-2,1,4)\)</span>, <span class="math inline">\((0,0,1)\)</span> da <span class="math inline">\(1\)</span>, <span class="math inline">\(-2 + 2 = 0\)</span>, <span class="math inline">\(0\)</span>. Fila 3, <span class="math inline">\((2,0,1)\)</span>: da <span class="math inline">\(2 - 2 = 0\)</span>, <span class="math inline">\(-4 + 4 = 0\)</span>, <span class="math inline">\(1\)</span>. La fila 2 es <span class="math inline">\(e_2'\)</span> y reproduce la fila 2 de <span class="math inline">\(A^{-1}\)</span>, <span class="math inline">\((0,1,0)\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.6.</strong> Calcula el volumen del paralelepípedo de aristas <span class="math inline">\((1,0,0)'\)</span>, <span class="math inline">\((1,2,0)'\)</span> y <span class="math inline">\((1,1,3)'\)</span>. ¿Qué pasa con el determinante si se intercambian las dos primeras aristas? ¿Y con el volumen?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con esas columnas, <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;1\\0&amp;2&amp;1\\0&amp;0&amp;3\end{pmatrix}\)</span>, triangular superior: <span class="math inline">\(\det A = 1\cdot2\cdot3 = 6\)</span>. Volumen <span class="math inline">\(6\)</span>. Intercambiar las dos primeras columnas cambia el signo: <span class="math inline">\(\det = -6\)</span>. El volumen sigue siendo <span class="math inline">\(|-6| = 6\)</span> (es el mismo sólido), pero la orientación se invierte: las aristas en el nuevo orden forman un sistema de mano izquierda.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.7 ★.</strong> (a) Calcula <span class="math inline">\(\det\begin{pmatrix}1&amp;2&amp;3\\0&amp;1&amp;4\\5&amp;6&amp;0\end{pmatrix}\)</span> con la definición recursiva del <a href="#thm-existencia-det" class="quarto-xref">Teorema&nbsp;7</a> y comprueba que al intercambiar las dos primeras filas el resultado cambia de signo. (b) Escribe los seis términos de Leibniz para esa matriz y verifica que suman lo mismo.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p>Primera columna <span class="math inline">\((1,0,5)'\)</span>. Términos: <span class="math inline">\(i = 1\)</span>: <span class="math inline">\(+1\cdot\det\begin{pmatrix}1&amp;4\\6&amp;0\end{pmatrix} = 0 - 24 = -24\)</span>; <span class="math inline">\(i = 2\)</span>: <span class="math inline">\(-0\cdot(\dots) = 0\)</span>; <span class="math inline">\(i = 3\)</span>: <span class="math inline">\(+5\cdot\det\begin{pmatrix}2&amp;3\\1&amp;4\end{pmatrix} = 5(8 - 3) = 25\)</span>. Total <span class="math inline">\(D_3(A) = -24 + 0 + 25 = 1\)</span>. Con las filas 1 y 2 intercambiadas, <span class="math inline">\(\tilde A = \begin{pmatrix}0&amp;1&amp;4\\1&amp;2&amp;3\\5&amp;6&amp;0\end{pmatrix}\)</span>, primera columna <span class="math inline">\((0,1,5)'\)</span>: <span class="math inline">\(i = 2\)</span>: <span class="math inline">\(-1\cdot\det\begin{pmatrix}1&amp;4\\6&amp;0\end{pmatrix} = -(0 - 24) = 24\)</span>; <span class="math inline">\(i = 3\)</span>: <span class="math inline">\(+5\cdot\det\begin{pmatrix}1&amp;4\\2&amp;3\end{pmatrix} = 5(3 - 8) = -25\)</span>. Total <span class="math inline">\(24 - 25 = -1\)</span> ✓, el opuesto.</p></li>
+<li><p>Permutaciones pares: <span class="math inline">\((1,2,3)\)</span>: <span class="math inline">\(a_{11}a_{22}a_{33} = 1\cdot1\cdot0 = 0\)</span>; <span class="math inline">\((2,3,1)\)</span>: <span class="math inline">\(a_{12}a_{23}a_{31} = 2\cdot4\cdot5 = 40\)</span>; <span class="math inline">\((3,1,2)\)</span>: <span class="math inline">\(a_{13}a_{21}a_{32} = 3\cdot0\cdot6 = 0\)</span>. Impares: <span class="math inline">\((1,3,2)\)</span>: <span class="math inline">\(a_{11}a_{23}a_{32} = 1\cdot4\cdot6 = 24\)</span>; <span class="math inline">\((2,1,3)\)</span>: <span class="math inline">\(a_{12}a_{21}a_{33} = 2\cdot0\cdot0 = 0\)</span>; <span class="math inline">\((3,2,1)\)</span>: <span class="math inline">\(a_{13}a_{22}a_{31} = 3\cdot1\cdot5 = 15\)</span>. Suma: <span class="math inline">\((0 + 40 + 0) - (24 + 0 + 15) = 40 - 39 = 1\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../algebra-matricial/clase-03.html" class="pagination-link" aria-label="Clase 3 · Los cuatro subespacios fundamentales">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 3 · Los cuatro subespacios fundamentales</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

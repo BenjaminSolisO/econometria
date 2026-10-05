@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Producto de matrices, la eliminación gaussiana como factorización A = LU, resolución con muchos lados derechos, pivoteo parcial y PA = LU, la matriz inversa y Gauss–Jordan, matrices por bloques, complemento de Schur y la fórmula de Sherman–Morrison, con una cadena de masas y resortes.">
+
+<title>Clase 2 · Factorización LU, inversas y matrices por bloques – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-03.html" rel="next">
+<link href="../algebra-matricial/clase-01.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../algebra-matricial/index.html" aria-current="page"> 
+<span class="menu-text">Álgebra matricial</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../algebra-matricial/clase-02.html">Clase 2 · Factorización LU, inversas y matrices por bloques</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Álgebra matricial aplicada</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los cuatro subespacios fundamentales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-04.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-05.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-06.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-07.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-08.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-09.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-10.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-11.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-12.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-13.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-14.qmd</span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#la-misma-estructura-muchas-cargas" id="toc-la-misma-estructura-muchas-cargas" class="nav-link active" data-scroll-target="#la-misma-estructura-muchas-cargas"><span class="header-section-number">1</span> La misma estructura, muchas cargas</a></li>
+  <li><a href="#producto-de-matrices" id="toc-producto-de-matrices" class="nav-link" data-scroll-target="#producto-de-matrices"><span class="header-section-number">2</span> Producto de matrices</a></li>
+  <li><a href="#la-eliminación-es-una-factorización" id="toc-la-eliminación-es-una-factorización" class="nav-link" data-scroll-target="#la-eliminación-es-una-factorización"><span class="header-section-number">3</span> La eliminación es una factorización</a>
+  <ul class="collapse">
+  <li><a href="#el-hecho-central" id="toc-el-hecho-central" class="nav-link" data-scroll-target="#el-hecho-central"><span class="header-section-number">3.1</span> El hecho central</a></li>
+  <li><a href="#resolver-con-lu" id="toc-resolver-con-lu" class="nav-link" data-scroll-target="#resolver-con-lu"><span class="header-section-number">3.2</span> Resolver con <span class="math inline">\(LU\)</span></a></li>
+  </ul></li>
+  <li><a href="#pivoteo" id="toc-pivoteo" class="nav-link" data-scroll-target="#pivoteo"><span class="header-section-number">4</span> Pivoteo</a>
+  <ul class="collapse">
+  <li><a href="#pivotes-nulos-y-pivotes-pequeños" id="toc-pivotes-nulos-y-pivotes-pequeños" class="nav-link" data-scroll-target="#pivotes-nulos-y-pivotes-pequeños"><span class="header-section-number">4.1</span> Pivotes nulos y pivotes pequeños</a></li>
+  <li><a href="#pa-lu" id="toc-pa-lu" class="nav-link" data-scroll-target="#pa-lu"><span class="header-section-number">4.2</span> <span class="math inline">\(PA = LU\)</span></a></li>
+  </ul></li>
+  <li><a href="#la-inversa" id="toc-la-inversa" class="nav-link" data-scroll-target="#la-inversa"><span class="header-section-number">5</span> La inversa</a>
+  <ul class="collapse">
+  <li><a href="#definición-y-propiedades" id="toc-definición-y-propiedades" class="nav-link" data-scroll-target="#definición-y-propiedades"><span class="header-section-number">5.1</span> Definición y propiedades</a></li>
+  <li><a href="#la-inversa-2times2" id="toc-la-inversa-2times2" class="nav-link" data-scroll-target="#la-inversa-2times2"><span class="header-section-number">5.2</span> La inversa <span class="math inline">\(2\times2\)</span></a></li>
+  <li><a href="#gaussjordan" id="toc-gaussjordan" class="nav-link" data-scroll-target="#gaussjordan"><span class="header-section-number">5.3</span> Gauss–Jordan</a></li>
+  <li><a href="#por-qué-casi-nunca-se-calcula-la-inversa" id="toc-por-qué-casi-nunca-se-calcula-la-inversa" class="nav-link" data-scroll-target="#por-qué-casi-nunca-se-calcula-la-inversa"><span class="header-section-number">5.4</span> Por qué casi nunca se calcula la inversa</a></li>
+  </ul></li>
+  <li><a href="#matrices-por-bloques" id="toc-matrices-por-bloques" class="nav-link" data-scroll-target="#matrices-por-bloques"><span class="header-section-number">6</span> Matrices por bloques</a>
+  <ul class="collapse">
+  <li><a href="#eliminación-por-bloques-y-complemento-de-schur" id="toc-eliminación-por-bloques-y-complemento-de-schur" class="nav-link" data-scroll-target="#eliminación-por-bloques-y-complemento-de-schur"><span class="header-section-number">6.1</span> Eliminación por bloques y complemento de Schur</a></li>
+  <li><a href="#la-fórmula-de-shermanmorrison" id="toc-la-fórmula-de-shermanmorrison" class="nav-link" data-scroll-target="#la-fórmula-de-shermanmorrison"><span class="header-section-number">6.2</span> La fórmula de Sherman–Morrison</a></li>
+  </ul></li>
+  <li><a href="#para-ir-más-allá-cuándo-existe-lu-y-por-qué-es-única" id="toc-para-ir-más-allá-cuándo-existe-lu-y-por-qué-es-única" class="nav-link" data-scroll-target="#para-ir-más-allá-cuándo-existe-lu-y-por-qué-es-única"><span class="header-section-number">7</span> ★ Para ir más allá: cuándo existe LU y por qué es única</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-02.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 2 · Factorización LU, inversas y matrices por bloques</h1>
+<p class="subtitle lead">Guardar la eliminación para reutilizarla</p>
+</div>
+
+<div>
+  <div class="description">
+    Producto de matrices, la eliminación gaussiana como factorización A = LU, resolución con muchos lados derechos, pivoteo parcial y PA = LU, la matriz inversa y Gauss–Jordan, matrices por bloques, complemento de Schur y la fórmula de Sherman–Morrison, con una cadena de masas y resortes.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a></p>
+<section id="la-misma-estructura-muchas-cargas" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> La misma estructura, muchas cargas</h1>
+<p>Un ingeniero que diseña una estructura no la calcula para <strong>una</strong> carga: la calcula para el peso propio, para el viento desde cada lado, para un sismo, para la nieve. La estructura (la matriz <span class="math inline">\(A\)</span>) es siempre la misma y lo que cambia es la carga (el vector <span class="math inline">\(b\)</span>). Resolver <span class="math inline">\(Ax = b\)</span> desde cero para cada <span class="math inline">\(b\)</span> repite el trabajo más caro, la eliminación, una y otra vez. La idea de esta clase es <strong>hacer la eliminación una sola vez y guardarla</strong>. Lo que se guarda es una factorización <span class="math inline">\(A = LU\)</span>.</p>
+<p>Usaremos de ejemplo la cadena de la <a href="#fig-resortes" class="quarto-xref">Figura&nbsp;1</a>: tres masas unidas por cuatro resortes iguales de constante <span class="math inline">\(k\)</span>, entre dos paredes fijas. Se aplican fuerzas <span class="math inline">\(f_1,f_2,f_3\)</span> a las masas y queremos los desplazamientos de equilibrio <span class="math inline">\(u_1,u_2,u_3\)</span>.</p>
+<div id="fig-resortes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-resortes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c02_resortes.png" class="img-fluid figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-resortes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Tres masas y cuatro resortes entre dos paredes. Cada masa recibe una fuerza externa <span class="math inline">\(f_i\)</span> y se desplaza <span class="math inline">\(u_i\)</span> desde su posición de reposo.
+</figcaption>
+</figure>
+</div>
+<p>Un resorte estirado una longitud <span class="math inline">\(s\)</span> ejerce una fuerza <span class="math inline">\(ks\)</span> (ley de Hooke). El resorte entre la masa <span class="math inline">\(i - 1\)</span> y la masa <span class="math inline">\(i\)</span> queda estirado <span class="math inline">\(u_i - u_{i-1}\)</span> y tira de la masa <span class="math inline">\(i\)</span> hacia atrás con fuerza <span class="math inline">\(k(u_i - u_{i-1})\)</span>; el resorte entre <span class="math inline">\(i\)</span> y <span class="math inline">\(i + 1\)</span> queda estirado <span class="math inline">\(u_{i+1} - u_i\)</span> y tira de la masa <span class="math inline">\(i\)</span> hacia adelante con fuerza <span class="math inline">\(k(u_{i+1} - u_i)\)</span>. Las paredes no se mueven: <span class="math inline">\(u_0 = u_4 = 0\)</span>. En equilibrio, la fuerza externa compensa la de los resortes: <span class="math display">\[
+f_i = k(u_i - u_{i-1}) - k(u_{i+1} - u_i) = k\big(-u_{i-1} + 2u_i - u_{i+1}\big),\qquad i = 1,2,3.
+\]</span> Con <span class="math inline">\(k = 1\)</span> (en unidades convenientes) esto es <span class="math inline">\(Ku = f\)</span> con la <strong>matriz de rigidez</strong> <span id="eq-rigidez"><span class="math display">\[
+K = \begin{pmatrix}2&amp;-1&amp;0\\-1&amp;2&amp;-1\\0&amp;-1&amp;2\end{pmatrix}.
+\tag{1}\]</span></span> Para cada carga <span class="math inline">\(f\)</span> hay que resolver un sistema con la misma <span class="math inline">\(K\)</span>. Antes de factorizar necesitamos multiplicar matrices.</p>
+</section>
+<section id="producto-de-matrices" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Producto de matrices</h1>
+<div id="def-producto-matrices" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Producto de matrices)</strong></span> Si <span class="math inline">\(A\)</span> es <span class="math inline">\(m\times n\)</span> y <span class="math inline">\(B\)</span> es <span class="math inline">\(n\times p\)</span>, el producto <span class="math inline">\(AB\)</span> es la matriz <span class="math inline">\(m\times p\)</span> con entradas <span class="math display">\[
+(AB)_{ij} = \sum_{\ell = 1}^na_{i\ell}b_{\ell j} = a_{i1}b_{1j} + a_{i2}b_{2j} + \dots + a_{in}b_{nj}.
+\]</span> Solo está definido si el número de columnas de <span class="math inline">\(A\)</span> coincide con el número de filas de <span class="math inline">\(B\)</span>.</p>
+</div>
+<p>Como el producto matriz–vector de la Clase 1, el producto de matrices admite varias lecturas. Llamemos <span class="math inline">\(b_j\)</span> a la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(B\)</span>.</p>
+<div id="prp-lecturas-producto" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Lecturas del producto)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><strong>Por columnas:</strong> la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(AB\)</span> es <span class="math inline">\(Ab_j\)</span>. Es decir, <span class="math inline">\(AB = \big(Ab_1\ \ Ab_2\ \cdots\ Ab_p\big)\)</span>.</li>
+<li><strong>Por filas:</strong> la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(AB\)</span> es la combinación de las filas de <span class="math inline">\(B\)</span> con los coeficientes de la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span>: <span class="math inline">\(\sum_\ell a_{i\ell}\,(\text{fila }\ell\text{ de }B)\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1.</em> La componente <span class="math inline">\(i\)</span> de <span class="math inline">\(Ab_j\)</span> es, por definición del producto matriz–vector, <span class="math inline">\(\sum_\ell a_{i\ell}(b_j)_\ell = \sum_\ell a_{i\ell}b_{\ell j}\)</span>, que es <span class="math inline">\((AB)_{ij}\)</span>. Como coinciden para todo <span class="math inline">\(i\)</span>, la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(AB\)</span> es <span class="math inline">\(Ab_j\)</span>.</p>
+<p><em>Parte 2.</em> La entrada <span class="math inline">\(j\)</span> de la combinación <span class="math inline">\(\sum_\ell a_{i\ell}(\text{fila }\ell\text{ de }B)\)</span> es <span class="math inline">\(\sum_\ell a_{i\ell}b_{\ell j}\)</span>, porque la entrada <span class="math inline">\(j\)</span> de la fila <span class="math inline">\(\ell\)</span> de <span class="math inline">\(B\)</span> es <span class="math inline">\(b_{\ell j}\)</span>. Es <span class="math inline">\((AB)_{ij}\)</span> para todo <span class="math inline">\(j\)</span>.</p>
+</div>
+<div id="exm-producto-2x2" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El orden importa)</strong></span> Con <span class="math inline">\(A = \begin{pmatrix}1&amp;2\\0&amp;1\end{pmatrix}\)</span> y <span class="math inline">\(B = \begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\)</span>: <span class="math display">\[
+AB = \begin{pmatrix}1\cdot0 + 2\cdot1&amp;1\cdot1 + 2\cdot0\\0\cdot0 + 1\cdot1&amp;0\cdot1 + 1\cdot0\end{pmatrix} = \begin{pmatrix}2&amp;1\\1&amp;0\end{pmatrix},
+\]</span> <span class="math display">\[
+BA = \begin{pmatrix}0\cdot1 + 1\cdot0&amp;0\cdot2 + 1\cdot1\\1\cdot1 + 0\cdot0&amp;1\cdot2 + 0\cdot1\end{pmatrix} = \begin{pmatrix}0&amp;1\\1&amp;2\end{pmatrix}.
+\]</span> <span class="math inline">\(AB\ne BA\)</span>: <strong>el producto de matrices no es conmutativo</strong>. Por filas se entiende por qué: <span class="math inline">\(B\)</span> intercambia filas, así que <span class="math inline">\(BA\)</span> es <span class="math inline">\(A\)</span> con las filas intercambiadas, y <span class="math inline">\(AB\)</span> es <span class="math inline">\(A\)</span> con las <strong>columnas</strong> intercambiadas (por la lectura por columnas, la columna 1 de <span class="math inline">\(AB\)</span> es <span class="math inline">\(Ab_1 = A e_2\)</span>, la segunda columna de <span class="math inline">\(A\)</span>).</p>
+</div>
+<p>Aunque no conmuta, el producto cumple las propiedades que uno espera de una multiplicación.</p>
+<div id="prp-propiedades-producto" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Propiedades del producto)</strong></span> Para matrices de tamaños compatibles:</p>
+<ol type="1">
+<li><strong>Asociatividad:</strong> <span class="math inline">\((AB)C = A(BC)\)</span>.</li>
+<li><strong>Distributividad:</strong> <span class="math inline">\(A(B + C) = AB + AC\)</span> y <span class="math inline">\((A + B)C = AC + BC\)</span>.</li>
+<li><strong>Identidad:</strong> <span class="math inline">\(IA = A = AI\)</span>, con <span class="math inline">\(I\)</span> la identidad del tamaño adecuado.</li>
+<li><strong>Transpuesta de un producto:</strong> <span class="math inline">\((AB)' = B'A'\)</span> (el orden se invierte).</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todas se prueban comparando una entrada genérica <span class="math inline">\((i,j)\)</span> de cada lado y manipulando sumas. La asociatividad es la única con dos sumas anidadas: al expandir, aparece <span class="math inline">\(\sum_\ell\sum_q a_{i\ell}b_{\ell q}c_{qj}\)</span> de los dos lados, solo que sumada en distinto orden.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sean <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times n\)</span>, <span class="math inline">\(B\)</span> de <span class="math inline">\(n\times p\)</span> y <span class="math inline">\(C\)</span> de <span class="math inline">\(p\times r\)</span> en la parte 1.</p>
+<p><em>Parte 1.</em> Por la definición aplicada dos veces, <span class="math display">\[
+((AB)C)_{ij} = \sum_{q = 1}^p(AB)_{iq}c_{qj} = \sum_{q = 1}^p\Big(\sum_{\ell = 1}^na_{i\ell}b_{\ell q}\Big)c_{qj} = \sum_{q = 1}^p\sum_{\ell = 1}^na_{i\ell}b_{\ell q}c_{qj},
+\]</span> donde se distribuyó <span class="math inline">\(c_{qj}\)</span> dentro de la suma interior. Del otro lado, <span class="math display">\[
+(A(BC))_{ij} = \sum_{\ell = 1}^na_{i\ell}(BC)_{\ell j} = \sum_{\ell = 1}^na_{i\ell}\Big(\sum_{q = 1}^pb_{\ell q}c_{qj}\Big) = \sum_{\ell = 1}^n\sum_{q = 1}^pa_{i\ell}b_{\ell q}c_{qj}.
+\]</span> Las dos dobles sumas tienen los mismos <span class="math inline">\(np\)</span> términos <span class="math inline">\(a_{i\ell}b_{\ell q}c_{qj}\)</span>, uno por cada par <span class="math inline">\((\ell,q)\)</span>, sumados en distinto orden; una suma finita no depende del orden. Son iguales.</p>
+<p><em>Parte 2.</em> <span class="math inline">\((A(B + C))_{ij} = \sum_\ell a_{i\ell}(b_{\ell j} + c_{\ell j}) = \sum_\ell a_{i\ell}b_{\ell j} + \sum_\ell a_{i\ell}c_{\ell j} = (AB)_{ij} + (AC)_{ij}\)</span>. La otra igualdad es análoga: <span class="math inline">\(((A + B)C)_{ij} = \sum_\ell(a_{i\ell} + b_{i\ell})c_{\ell j} = \sum_\ell a_{i\ell}c_{\ell j} + \sum_\ell b_{i\ell}c_{\ell j}\)</span>.</p>
+<p><em>Parte 3.</em> Las entradas de <span class="math inline">\(I\)</span> son <span class="math inline">\(\delta_{i\ell} = 1\)</span> si <span class="math inline">\(i = \ell\)</span> y <span class="math inline">\(0\)</span> si no. Entonces <span class="math inline">\((IA)_{ij} = \sum_\ell\delta_{i\ell}a_{\ell j}\)</span>; el único término no nulo es el de <span class="math inline">\(\ell = i\)</span>, que vale <span class="math inline">\(a_{ij}\)</span>. Igual para <span class="math inline">\(AI\)</span>.</p>
+<p><em>Parte 4.</em> La entrada <span class="math inline">\((i,j)\)</span> de una transpuesta es la <span class="math inline">\((j,i)\)</span> de la original. Entonces <span class="math inline">\(((AB)')_{ij} = (AB)_{ji} = \sum_\ell a_{j\ell}b_{\ell i}\)</span>. Por otro lado, <span class="math inline">\((B'A')_{ij} = \sum_\ell(B')_{i\ell}(A')_{\ell j} = \sum_\ell b_{\ell i}a_{j\ell}\)</span>. Los términos son los mismos (<span class="math inline">\(a_{j\ell}b_{\ell i} = b_{\ell i}a_{j\ell}\)</span>).</p>
+</div>
+</section>
+<section id="la-eliminación-es-una-factorización" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> La eliminación es una factorización</h1>
+<section id="el-hecho-central" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="el-hecho-central"><span class="header-section-number">3.1</span> El hecho central</h2>
+<p>En la Clase 1 (Ejercicio 1.7 ★) se observó, para una matriz <span class="math inline">\(3\times3\)</span>, que los multiplicadores de la eliminación forman una matriz triangular inferior <span class="math inline">\(L\)</span> tal que <span class="math inline">\(A = LU\)</span>. Eso vale siempre que la eliminación no necesite intercambios.</p>
+<div id="def-triangular" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Matrices triangulares)</strong></span> Una matriz cuadrada es <strong>triangular inferior</strong> si todas sus entradas sobre la diagonal son cero (<span class="math inline">\(t_{ij} = 0\)</span> si <span class="math inline">\(i&lt;j\)</span>), y <strong>triangular superior</strong> si son cero todas las de debajo (<span class="math inline">\(t_{ij} = 0\)</span> si <span class="math inline">\(i&gt;j\)</span>). Es <strong>unitriangular inferior</strong> si además tiene unos en la diagonal.</p>
+</div>
+<div id="thm-lu" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Factorización LU)</strong></span> Sea <span class="math inline">\(A\)</span> una matriz <span class="math inline">\(n\times n\)</span> cuya eliminación gaussiana no requiere intercambios de filas (todos los pivotes que van apareciendo son distintos de cero). Sean <span class="math inline">\(U\)</span> la forma escalonada resultante y <span class="math inline">\(\ell_{ij}\)</span> (<span class="math inline">\(i&gt;j\)</span>) el multiplicador usado para anular la entrada <span class="math inline">\((i,j)\)</span> (de modo que la operación fue <span class="math inline">\(F_i\leftarrow F_i - \ell_{ij}F_j\)</span>). Entonces <span class="math display">\[
+A = LU,\qquad L = \begin{pmatrix}1&amp;0&amp;\cdots&amp;0\\\ell_{21}&amp;1&amp;\cdots&amp;0\\\vdots&amp;&amp;\ddots&amp;\vdots\\\ell_{n1}&amp;\ell_{n2}&amp;\cdots&amp;1\end{pmatrix},
+\]</span> con <span class="math inline">\(L\)</span> unitriangular inferior y <span class="math inline">\(U\)</span> triangular superior con los pivotes en la diagonal.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cada paso <span class="math inline">\(F_i\leftarrow F_i - \ell_{ij}F_j\)</span> es multiplicar por <span class="math inline">\(E_{ij} = I - \ell_{ij}e_ie_j'\)</span> (Clase 1, ★). Toda la eliminación es <span class="math inline">\(E\,A = U\)</span> con <span class="math inline">\(E\)</span> el producto de estas matrices en el orden en que se aplicaron. Despejando, <span class="math inline">\(A = E^{-1}U\)</span>, y <span class="math inline">\(E^{-1}\)</span> es el producto de las inversas <span class="math inline">\(I + \ell_{ij}e_ie_j'\)</span> <strong>en el orden contrario</strong>. Lo sorprendente es que ese producto no mezcla nada: los multiplicadores aparecen tal cual, cada uno en su casilla. Para verlo, expando el producto y muestro que todos los productos cruzados <span class="math inline">\(e_ie_j'e_ke_\ell'\)</span> se anulan, porque contienen un <span class="math inline">\(e_j'e_k = 0\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Paso 1: la eliminación como producto.</em> Recordemos que <span class="math inline">\(e_j'e_k\)</span> (el producto de la fila <span class="math inline">\(e_j'\)</span> por la columna <span class="math inline">\(e_k\)</span>) vale <span class="math inline">\(1\)</span> si <span class="math inline">\(j = k\)</span> y <span class="math inline">\(0\)</span> si <span class="math inline">\(j\ne k\)</span>. Por la proposición de matrices elementales de la Clase 1, la operación <span class="math inline">\(F_i\leftarrow F_i - \ell_{ij}F_j\)</span> equivale a multiplicar a la izquierda por <span class="math inline">\(E_{ij} = I - \ell_{ij}e_ie_j'\)</span>, cuya inversa es <span class="math inline">\(E_{ij}^{-1} = I + \ell_{ij}e_ie_j'\)</span>. La eliminación procesa las columnas <span class="math inline">\(j = 1,2,\dots,n - 1\)</span> y, dentro de cada columna, las filas <span class="math inline">\(i = j + 1,\dots,n\)</span>. Si ordenamos los pares <span class="math inline">\((i,j)\)</span> en ese orden de aplicación, la eliminación es <span class="math display">\[
+U = E_{n,n-1}\cdots E_{3,1}E_{2,1}\,A,
+\]</span> con el primer paso aplicado (<span class="math inline">\(E_{21}\)</span>) más cerca de <span class="math inline">\(A\)</span>. Multiplicando a la izquierda por las inversas, en el orden contrario, se obtiene <span class="math inline">\(A = E_{21}^{-1}E_{31}^{-1}\cdots E_{n,n-1}^{-1}\,U\)</span>. Llamemos <span class="math inline">\(L\)</span> a ese producto de inversas.</p>
+<p><em>Paso 2: expandir el producto.</em> <span class="math inline">\(L\)</span> es un producto de factores <span class="math inline">\((I + \ell_{ij}e_ie_j')\)</span>, ordenados por columna <span class="math inline">\(j\)</span> creciente y, dentro de cada columna, por fila <span class="math inline">\(i\)</span> creciente. Al expandirlo (distribuyendo, <a href="#prp-propiedades-producto" class="quarto-xref">Proposición&nbsp;2</a>) aparece: el término <span class="math inline">\(I\)</span>; un término <span class="math inline">\(\ell_{ij}e_ie_j'\)</span> por cada factor; y términos con dos o más factores <span class="math inline">\(\ell_{ij}e_ie_j'\,\ell_{k\ell}e_ke_\ell'\cdots\)</span> con los factores en el orden del producto.</p>
+<p><em>Paso 3: los términos cruzados son cero.</em> Tomemos dos factores consecutivos en un término cruzado, <span class="math inline">\(\ell_{ij}e_ie_j'\)</span> y luego <span class="math inline">\(\ell_{k\ell}e_ke_\ell'\)</span>, donde <span class="math inline">\((k,\ell)\)</span> viene después que <span class="math inline">\((i,j)\)</span> en el orden. Su producto contiene, en el medio, el número <span class="math inline">\(e_j'e_k\)</span>. Veamos que <span class="math inline">\(k\ne j\)</span>. Como <span class="math inline">\((k,\ell)\)</span> viene después, su columna <span class="math inline">\(\ell\)</span> es mayor o igual que <span class="math inline">\(j\)</span>. Y en cada factor la fila es mayor que la columna: <span class="math inline">\(k&gt;\ell\)</span>. Entonces <span class="math inline">\(k&gt;\ell\ge j\)</span>, así que <span class="math inline">\(k\ne j\)</span> y <span class="math inline">\(e_j'e_k = 0\)</span>. Por lo tanto, todo término con dos o más factores es cero.</p>
+<p><em>Paso 4: conclusión.</em> Queda <span class="math inline">\(L = I + \sum_{i&gt;j}\ell_{ij}e_ie_j'\)</span>. La matriz <span class="math inline">\(e_ie_j'\)</span> tiene un <span class="math inline">\(1\)</span> en la posición <span class="math inline">\((i,j)\)</span> y ceros en el resto. Entonces <span class="math inline">\(L\)</span> tiene unos en la diagonal, el multiplicador <span class="math inline">\(\ell_{ij}\)</span> en cada posición <span class="math inline">\((i,j)\)</span> con <span class="math inline">\(i&gt;j\)</span>, y ceros sobre la diagonal: es la matriz del enunciado. Por construcción, <span class="math inline">\(U\)</span> es la forma escalonada, triangular superior con los pivotes en la diagonal.</p>
+</div>
+<div id="fig-patron-lu" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-patron-lu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c02_patron_lu.png" class="img-fluid figure-img" style="width:88.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-patron-lu-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: La factorización del sistema <span class="math inline">\(3\times3\)</span> de la Clase 1: los multiplicadores <span class="math inline">\(2\)</span>, <span class="math inline">\(1\)</span> y <span class="math inline">\(-2\)</span> ocupan exactamente las casillas que anularon.
+</figcaption>
+</figure>
+</div>
+<div id="exm-lu2" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (LU de una matriz <span class="math inline">\(2\times2\)</span>)</strong></span> Para <span class="math inline">\(A = \begin{pmatrix}4&amp;3\\8&amp;10\end{pmatrix}\)</span>, el único multiplicador es <span class="math inline">\(\ell_{21} = 8/4 = 2\)</span>, y <span class="math inline">\(F_2 - 2F_1 = (8 - 8,\ 10 - 6) = (0,\ 4)\)</span>: <span class="math display">\[
+A = \begin{pmatrix}4&amp;3\\8&amp;10\end{pmatrix} = \underbrace{\begin{pmatrix}1&amp;0\\2&amp;1\end{pmatrix}}_{L}\underbrace{\begin{pmatrix}4&amp;3\\0&amp;4\end{pmatrix}}_{U}.
+\]</span> Comprobación por la definición: <span class="math inline">\((LU)_{21} = 2\cdot4 + 1\cdot0 = 8\)</span> y <span class="math inline">\((LU)_{22} = 2\cdot3 + 1\cdot4 = 10\)</span> ✓.</p>
+</div>
+<div id="exm-lu-rigidez" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (LU de la matriz de rigidez)</strong></span> Para <span class="math inline">\(K\)</span> en <a href="#eq-rigidez" class="quarto-xref">Ecuación&nbsp;1</a>:</p>
+<p><em>Columna 1.</em> Pivote <span class="math inline">\(2\)</span>. Multiplicadores <span class="math inline">\(\ell_{21} = -1/2\)</span> y <span class="math inline">\(\ell_{31} = 0/2 = 0\)</span>. La fila 2 pasa a <span class="math inline">\(F_2 - (-\tfrac12)F_1 = (-1 + 1,\ 2 - \tfrac12,\ -1 + 0) = (0,\ \tfrac32,\ -1)\)</span>; la fila 3 no cambia.</p>
+<p><em>Columna 2.</em> Pivote <span class="math inline">\(\tfrac32\)</span>. Multiplicador <span class="math inline">\(\ell_{32} = (-1)/\tfrac32 = -\tfrac23\)</span>. La fila 3 pasa a <span class="math inline">\(F_3 + \tfrac23F_2 = (0,\ -1 + 1,\ 2 - \tfrac23) = (0,\ 0,\ \tfrac43)\)</span>.</p>
+<p>Entonces <span class="math display">\[
+K = \underbrace{\begin{pmatrix}1&amp;0&amp;0\\-\tfrac12&amp;1&amp;0\\0&amp;-\tfrac23&amp;1\end{pmatrix}}_{L}\underbrace{\begin{pmatrix}2&amp;-1&amp;0\\0&amp;\tfrac32&amp;-1\\0&amp;0&amp;\tfrac43\end{pmatrix}}_{U}.
+\]</span> Comprobación de la fila 3 de <span class="math inline">\(LU\)</span> (combinación de las filas de <span class="math inline">\(U\)</span> con coeficientes <span class="math inline">\(0,-\tfrac23,1\)</span>): <span class="math inline">\(-\tfrac23(0,\tfrac32,-1) + (0,0,\tfrac43) = (0,\ -1,\ \tfrac23 + \tfrac43) = (0,-1,2)\)</span> ✓. Notar que <strong>la estructura tridiagonal se conserva</strong>: <span class="math inline">\(L\)</span> solo tiene entradas en la subdiagonal y <span class="math inline">\(U\)</span> en la diagonal y la sobrediagonal.</p>
+</div>
+</section>
+<section id="resolver-con-lu" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="resolver-con-lu"><span class="header-section-number">3.2</span> Resolver con <span class="math inline">\(LU\)</span></h2>
+<p>Con <span class="math inline">\(A = LU\)</span>, el sistema <span class="math inline">\(Ax = b\)</span> es <span class="math inline">\(L(Ux) = b\)</span>. Llamando <span class="math inline">\(c = Ux\)</span>, se resuelve en dos etapas triangulares:</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Algoritmo: resolver Ax = b con A = LU">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Algoritmo: resolver Ax = b con A = LU
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Factorizar</strong> <span class="math inline">\(A = LU\)</span> (una sola vez): <span class="math inline">\(\approx\tfrac23n^3\)</span> flops.</li>
+<li>Para cada lado derecho <span class="math inline">\(b\)</span>:
+<ol type="a">
+<li><strong>Sustitución hacia adelante:</strong> resolver <span class="math inline">\(Lc = b\)</span> desde la primera ecuación hacia abajo (<span class="math inline">\(c_1 = b_1\)</span>, <span class="math inline">\(c_2 = b_2 - \ell_{21}c_1\)</span>, …): <span class="math inline">\(\approx n^2\)</span> flops.</li>
+<li><strong>Sustitución hacia atrás:</strong> resolver <span class="math inline">\(Ux = c\)</span> desde la última ecuación hacia arriba: <span class="math inline">\(\approx n^2\)</span> flops.</li>
+</ol></li>
+</ol>
+<p><strong>Falla</strong> si algún pivote es cero (hace falta pivoteo, más abajo). Con <span class="math inline">\(p\)</span> lados derechos, el costo total es <span class="math inline">\(\approx\tfrac23n^3 + 2pn^2\)</span> en vez de <span class="math inline">\(p\cdot\tfrac23n^3\)</span>.</p>
+</div>
+</div>
+<p>Que la etapa 2a sea correcta es la misma idea de la sustitución hacia atrás, pero de arriba hacia abajo: la ecuación <span class="math inline">\(i\)</span> de <span class="math inline">\(Lc = b\)</span> es <span class="math inline">\(\ell_{i1}c_1 + \dots + \ell_{i,i-1}c_{i-1} + c_i = b_i\)</span> (el coeficiente de <span class="math inline">\(c_i\)</span> es <span class="math inline">\(1\)</span> y no hay términos a la derecha porque <span class="math inline">\(L\)</span> es triangular inferior), así que <span class="math inline">\(c_i = b_i - \sum_{j&lt;i}\ell_{ij}c_j\)</span> queda determinado por los <span class="math inline">\(c_j\)</span> ya calculados.</p>
+<div id="exm-tres-cargas" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 4 (Tres casos de carga para la cadena de resortes)</strong></span> Con la factorización del <a href="#exm-lu-rigidez" class="quarto-xref">Ejemplo&nbsp;3</a> resolvemos <span class="math inline">\(Ku = f\)</span> para tres cargas.</p>
+<p><em>Carga uniforme <span class="math inline">\(f = (2,2,2)'\)</span>.</em> Adelante: <span class="math inline">\(c_1 = 2\)</span>; <span class="math inline">\(c_2 = 2 - (-\tfrac12)(2) = 3\)</span>; <span class="math inline">\(c_3 = 2 - 0\cdot2 - (-\tfrac23)(3) = 4\)</span>. Atrás: <span class="math inline">\(\tfrac43u_3 = 4\Rightarrow u_3 = 3\)</span>; <span class="math inline">\(\tfrac32u_2 - u_3 = 3\Rightarrow\tfrac32u_2 = 6\Rightarrow u_2 = 4\)</span>; <span class="math inline">\(2u_1 - u_2 = 2\Rightarrow 2u_1 = 6\Rightarrow u_1 = 3\)</span>. Desplazamientos <span class="math inline">\(u = (3,4,3)'\)</span>: la masa del medio se mueve más, como era de esperar.</p>
+<p><em>Carga puntual en el centro, <span class="math inline">\(f = (0,4,0)'\)</span>.</em> Adelante: <span class="math inline">\(c_1 = 0\)</span>; <span class="math inline">\(c_2 = 4 + \tfrac12\cdot0 = 4\)</span>; <span class="math inline">\(c_3 = 0 + \tfrac23\cdot4 = \tfrac83\)</span>. Atrás: <span class="math inline">\(u_3 = \tfrac83/\tfrac43 = 2\)</span>; <span class="math inline">\(\tfrac32u_2 - 2 = 4\Rightarrow u_2 = 4\)</span>; <span class="math inline">\(2u_1 - 4 = 0\Rightarrow u_1 = 2\)</span>. Resultado <span class="math inline">\(u = (2,4,2)'\)</span>.</p>
+<p><em>Carga en la primera masa, <span class="math inline">\(f = (4,0,0)'\)</span>.</em> Adelante: <span class="math inline">\(c_1 = 4\)</span>; <span class="math inline">\(c_2 = 0 + \tfrac12\cdot4 = 2\)</span>; <span class="math inline">\(c_3 = 0 + \tfrac23\cdot2 = \tfrac43\)</span>. Atrás: <span class="math inline">\(u_3 = 1\)</span>; <span class="math inline">\(\tfrac32u_2 - 1 = 2\Rightarrow u_2 = 2\)</span>; <span class="math inline">\(2u_1 - 2 = 4\Rightarrow u_1 = 3\)</span>. Resultado <span class="math inline">\(u = (3,2,1)'\)</span>.</p>
+<p>Verificación de la tercera: <span class="math inline">\(Ku = (6 - 2,\ -3 + 4 - 1,\ -2 + 2)' = (4,0,0)'\)</span> ✓. La factorización se hizo una vez; cada carga costó solo dos sustituciones.</p>
+</div>
+</section>
+</section>
+<section id="pivoteo" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Pivoteo</h1>
+<section id="pivotes-nulos-y-pivotes-pequeños" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="pivotes-nulos-y-pivotes-pequeños"><span class="header-section-number">4.1</span> Pivotes nulos y pivotes pequeños</h2>
+<p>La eliminación sin intercambios falla si aparece un pivote <strong>cero</strong> (como en el propano de la Clase 1). Hay un problema más sutil: un pivote <strong>muy pequeño</strong> no detiene el algoritmo, pero lo arruina cuando se trabaja con precisión finita, como hacen los computadores.</p>
+<div id="exm-pivote-chico" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 5 (Un pivote pequeño en aritmética de tres cifras)</strong></span> Consideremos <span class="math display">\[
+\begin{aligned}
+0{,}0001\,x_1 + x_2 &amp;= 1\\
+x_1 + x_2 &amp;= 2,
+\end{aligned}
+\]</span> cuya solución exacta es <span class="math inline">\(x_1 = 1/0{,}9999\approx1{,}0001\)</span> y <span class="math inline">\(x_2 = 0{,}9998/0{,}9999\approx0{,}9999\)</span>. Supongamos que cada resultado intermedio se <strong>redondea a tres cifras significativas</strong>.</p>
+<p><em>Sin intercambio.</em> El pivote es <span class="math inline">\(0{,}0001\)</span> y el multiplicador es <span class="math inline">\(\ell_{21} = 1/0{,}0001 = 10\,000\)</span>. La nueva fila 2 tiene coeficiente <span class="math inline">\(1 - 10\,000\cdot1 = -9\,999\)</span>, que se redondea a <span class="math inline">\(-10\,000\)</span>, y lado derecho <span class="math inline">\(2 - 10\,000\cdot1 = -9\,998\)</span>, que también se redondea a <span class="math inline">\(-10\,000\)</span>. Entonces <span class="math inline">\(x_2 = (-10\,000)/(-10\,000) = 1{,}00\)</span> y, de la fila 1, <span class="math inline">\(0{,}0001\,x_1 = 1 - 1{,}00 = 0\)</span>, así que <span class="math inline">\(x_1 = 0\)</span>. <strong>El valor de <span class="math inline">\(x_1\)</span> está completamente equivocado.</strong></p>
+<p><em>Con intercambio</em> (pivote <span class="math inline">\(1\)</span>, el mayor de la columna). Ahora la fila 1 es <span class="math inline">\(x_1 + x_2 = 2\)</span> y el multiplicador es <span class="math inline">\(\ell_{21} = 0{,}0001\)</span>. La fila 2 pasa a tener coeficiente <span class="math inline">\(1 - 0{,}0001 = 0{,}9999\to1{,}00\)</span> y lado derecho <span class="math inline">\(1 - 0{,}0002 = 0{,}9998\to1{,}00\)</span>, así que <span class="math inline">\(x_2 = 1{,}00\)</span> y <span class="math inline">\(x_1 = 2 - 1{,}00 = 1{,}00\)</span>: correcto a tres cifras.</p>
+</div>
+<div id="fig-pivoteo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pivoteo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c02_pivoteo.png" class="img-fluid figure-img" style="width:65.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pivoteo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: El sistema del <a href="#exm-pivote-chico" class="quarto-xref">Ejemplo&nbsp;5</a>. La intersección está en <span class="math inline">\((1{,}0001;\ 0{,}9999)\)</span>. La eliminación sin intercambio, con redondeo a tres cifras, entrega <span class="math inline">\((0;\ 1)\)</span>: un punto de la primera recta, pero lejos de la segunda.
+</figcaption>
+</figure>
+</div>
+<p>¿Qué salió mal? El multiplicador enorme (<span class="math inline">\(10\,000\)</span>) hizo que la fila 2 nueva quedara dominada por <span class="math inline">\(-10\,000\)</span> veces la fila 1, y el redondeo <strong>borró la información propia de la fila 2</strong> (el <span class="math inline">\(1\)</span> y el <span class="math inline">\(2\)</span> originales desaparecieron en <span class="math inline">\(-9\,999\)</span> y <span class="math inline">\(-9\,998\)</span>). La regla para evitarlo es simple.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Algoritmo: pivoteo parcial">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Algoritmo: pivoteo parcial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En cada etapa <span class="math inline">\(k\)</span>, antes de eliminar, buscar en la columna <span class="math inline">\(k\)</span>, desde la fila <span class="math inline">\(k\)</span> hacia abajo, la entrada de <strong>mayor valor absoluto</strong>, e intercambiar su fila con la fila <span class="math inline">\(k\)</span>. Así todos los multiplicadores cumplen <span class="math inline">\(|\ell_{ij}|\le1\)</span>, y ninguna fila se suma con un factor que la haga dominar a otra.</p>
+<p>Costo extra: solo comparaciones (del orden de <span class="math inline">\(n^2\)</span> en total), despreciables frente a los <span class="math inline">\(\tfrac23n^3\)</span> flops.</p>
+</div>
+</div>
+</section>
+<section id="pa-lu" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="pa-lu"><span class="header-section-number">4.2</span> <span class="math inline">\(PA = LU\)</span></h2>
+<p>Con intercambios, la factorización se escribe con una <strong>matriz de permutación</strong> <span class="math inline">\(P\)</span>: la identidad con sus filas reordenadas.</p>
+<div id="thm-pa-lu" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Factorización con pivoteo)</strong></span> Si <span class="math inline">\(A\)</span> es <span class="math inline">\(n\times n\)</span> e invertible, la eliminación gaussiana con intercambios de filas nunca se detiene, y existe una matriz de permutación <span class="math inline">\(P\)</span> tal que <span class="math display">\[
+PA = LU,
+\]</span> con <span class="math inline">\(L\)</span> unitriangular inferior y <span class="math inline">\(U\)</span> triangular superior con diagonal sin ceros.</p>
+</div>
+<p>La invertibilidad se define formalmente en la próxima sección; aquí basta usar una consecuencia: si <span class="math inline">\(A\)</span> es invertible y <span class="math inline">\(Ax = 0\)</span>, entonces <span class="math inline">\(x = 0\)</span> (multiplicando por <span class="math inline">\(A^{-1}\)</span>).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dos cosas que probar. (1) Nunca falta un pivote: si en la etapa <span class="math inline">\(k\)</span> la columna <span class="math inline">\(k\)</span> fuera cero desde la fila <span class="math inline">\(k\)</span> hacia abajo, construiría un <span class="math inline">\(x\ne0\)</span> con (matriz actual)<span class="math inline">\(\,x = 0\)</span>, y como la matriz actual es <span class="math inline">\(A\)</span> multiplicada por matrices invertibles, eso daría <span class="math inline">\(Ax = 0\)</span> con <span class="math inline">\(x\ne0\)</span>. (2) Los intercambios se pueden “hacer al principio”: si supiera desde el comienzo qué filas voy a usar como pivote en cada etapa, podría ordenar <span class="math inline">\(A\)</span> así antes de empezar, y la eliminación de esa matriz reordenada no necesitaría intercambios.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1: siempre hay pivote.</em> Supongamos que la eliminación llegó a la etapa <span class="math inline">\(k\)</span> con una matriz <span class="math inline">\(M = EA\)</span>, donde <span class="math inline">\(E\)</span> es el producto de las matrices elementales usadas (intercambios y reemplazos), que es invertible. Las primeras <span class="math inline">\(k - 1\)</span> columnas de <span class="math inline">\(M\)</span> ya están escalonadas, con pivotes <span class="math inline">\(m_{11},\dots,m_{k-1,k-1}\)</span> distintos de cero, y en esas columnas <span class="math inline">\(M\)</span> tiene ceros debajo de la diagonal. Supongamos, por contradicción, que las entradas <span class="math inline">\(m_{kk},m_{k+1,k},\dots,m_{nk}\)</span> son <strong>todas cero</strong>. Construimos <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(Mx = 0\)</span>:</p>
+<ul>
+<li>Ponemos <span class="math inline">\(x_k = 1\)</span> y <span class="math inline">\(x_{k+1} = \dots = x_n = 0\)</span>.</li>
+<li>Para <span class="math inline">\(x_1,\dots,x_{k-1}\)</span> resolvemos, de abajo hacia arriba, las ecuaciones <span class="math inline">\(i = k - 1, k - 2, \dots, 1\)</span>: <span class="math inline">\(m_{ii}x_i + \sum_{j = i+1}^{k-1}m_{ij}x_j + m_{ik}\cdot1 = 0\)</span>. Se puede porque <span class="math inline">\(m_{ii}\ne0\)</span> y los <span class="math inline">\(x_j\)</span> con <span class="math inline">\(j&gt;i\)</span> ya están calculados (es una sustitución hacia atrás).</li>
+</ul>
+<p>Con esto las filas <span class="math inline">\(1,\dots,k - 1\)</span> de <span class="math inline">\(Mx\)</span> son cero. Las filas <span class="math inline">\(i\ge k\)</span> también: en esas filas, las columnas <span class="math inline">\(1,\dots,k\)</span> de <span class="math inline">\(M\)</span> son cero (las primeras <span class="math inline">\(k - 1\)</span> por la forma escalonada y la <span class="math inline">\(k\)</span>-ésima por la suposición), y <span class="math inline">\(x_j = 0\)</span> para <span class="math inline">\(j&gt;k\)</span>; así <span class="math inline">\((Mx)_i = \sum_jm_{ij}x_j = 0\)</span>. Entonces <span class="math inline">\(Mx = 0\)</span> con <span class="math inline">\(x\ne0\)</span> (porque <span class="math inline">\(x_k = 1\)</span>). Pero <span class="math inline">\(Mx = EAx = 0\)</span> implica, multiplicando por <span class="math inline">\(E^{-1}\)</span>, <span class="math inline">\(Ax = 0\)</span>, y como <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(x = 0\)</span>: contradicción. Luego alguna entrada de la columna <span class="math inline">\(k\)</span> desde la fila <span class="math inline">\(k\)</span> es distinta de cero, y hay pivote. Como esto vale en cada etapa, <span class="math inline">\(U\)</span> tiene los <span class="math inline">\(n\)</span> pivotes no nulos en su diagonal.</p>
+<p><em>Parte 2: <span class="math inline">\(PA = LU\)</span>.</em> Una vez terminada la eliminación sabemos qué fila original de <span class="math inline">\(A\)</span> terminó en cada posición: sea <span class="math inline">\(P\)</span> la permutación que coloca en la posición <span class="math inline">\(1\)</span> la fila original que quedó primera, en la posición <span class="math inline">\(2\)</span> la que quedó segunda, etcétera. Apliquemos la eliminación <strong>sin intercambios</strong> a <span class="math inline">\(PA\)</span>. En la etapa <span class="math inline">\(1\)</span>, el pivote de <span class="math inline">\(PA\)</span> es la entrada de la fila que la eliminación original eligió como primer pivote: es distinta de cero, y se restan de cada fila los mismos múltiplos que antes, porque un reemplazo <span class="math inline">\(F_i\leftarrow F_i - \ell F_1\)</span> hace lo mismo con la fila sin importar en qué posición esté guardada. Lo mismo ocurre en cada etapa: las filas de <span class="math inline">\(PA\)</span> ya están en el orden en que la eliminación original las iba a necesitar, de modo que los intercambios sobran, y todos los pivotes son los de la eliminación original (distintos de cero). Por el <a href="#thm-lu" class="quarto-xref">Teorema&nbsp;1</a>, <span class="math inline">\(PA = LU\)</span>.</p>
+</div>
+<div id="exm-pa-lu" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 6 (<span class="math inline">\(PA = LU\)</span> con un pivote nulo)</strong></span> Para <span class="math inline">\(A = \begin{pmatrix}0&amp;2\\3&amp;1\end{pmatrix}\)</span>, la entrada <span class="math inline">\((1,1)\)</span> es cero. Intercambiamos las filas con <span class="math inline">\(P = \begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\)</span>: <span class="math inline">\(PA = \begin{pmatrix}3&amp;1\\0&amp;2\end{pmatrix}\)</span>, que ya es triangular superior. Entonces <span class="math inline">\(L = I\)</span>, <span class="math inline">\(U = PA\)</span>, y <span class="math inline">\(PA = LU\)</span> trivialmente. Para resolver <span class="math inline">\(Ax = b\)</span> con <span class="math inline">\(b = (4,5)'\)</span>: <span class="math inline">\(PAx = Pb = (5,4)'\)</span>, es decir <span class="math inline">\(3x_1 + x_2 = 5\)</span>, <span class="math inline">\(2x_2 = 4\)</span>; luego <span class="math inline">\(x_2 = 2\)</span> y <span class="math inline">\(x_1 = 1\)</span>. Verificación en el original: <span class="math inline">\(0 + 4 = 4\)</span> ✓ y <span class="math inline">\(3 + 2 = 5\)</span> ✓.</p>
+</div>
+</section>
+</section>
+<section id="la-inversa" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> La inversa</h1>
+<section id="definición-y-propiedades" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="definición-y-propiedades"><span class="header-section-number">5.1</span> Definición y propiedades</h2>
+<div id="def-inversa" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 3 (Matriz inversa)</strong></span> Una matriz cuadrada <span class="math inline">\(A\)</span> es <strong>invertible</strong> si existe una matriz <span class="math inline">\(B\)</span> del mismo tamaño con <span class="math inline">\(AB = I\)</span> y <span class="math inline">\(BA = I\)</span>. Tal <span class="math inline">\(B\)</span> se llama <strong>inversa</strong> de <span class="math inline">\(A\)</span> y se escribe <span class="math inline">\(A^{-1}\)</span>. Una matriz que no es invertible se llama <strong>singular</strong>.</p>
+</div>
+<div id="prp-inversa" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Propiedades de la inversa)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>La inversa, si existe, es <strong>única</strong>.</li>
+<li>Si <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(Ax = b\)</span> tiene la solución única <span class="math inline">\(x = A^{-1}b\)</span>.</li>
+<li>Si <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> son invertibles, <span class="math inline">\(AB\)</span> también lo es y <span class="math inline">\((AB)^{-1} = B^{-1}A^{-1}\)</span> (el orden se invierte).</li>
+<li>Si <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(A'\)</span> también, y <span class="math inline">\((A')^{-1} = (A^{-1})'\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Parte 1.</em> Si <span class="math inline">\(B\)</span> y <span class="math inline">\(C\)</span> son inversas de <span class="math inline">\(A\)</span>: <span class="math inline">\(B = BI = B(AC) = (BA)C = IC = C\)</span>, usando <span class="math inline">\(AC = I\)</span>, la asociatividad y <span class="math inline">\(BA = I\)</span>.</p>
+<p><em>Parte 2.</em> <em>Existe:</em> <span class="math inline">\(A(A^{-1}b) = (AA^{-1})b = Ib = b\)</span>. <em>Es única:</em> si <span class="math inline">\(Ax = b\)</span>, multiplicando por <span class="math inline">\(A^{-1}\)</span> a la izquierda, <span class="math inline">\(A^{-1}Ax = A^{-1}b\)</span>, es decir <span class="math inline">\(x = A^{-1}b\)</span>.</p>
+<p><em>Parte 3.</em> <span class="math inline">\((AB)(B^{-1}A^{-1}) = A(BB^{-1})A^{-1} = AIA^{-1} = AA^{-1} = I\)</span>, y <span class="math inline">\((B^{-1}A^{-1})(AB) = B^{-1}(A^{-1}A)B = B^{-1}B = I\)</span>.</p>
+<p><em>Parte 4.</em> Transponiendo <span class="math inline">\(AA^{-1} = I\)</span> con la regla <span class="math inline">\((XY)' = Y'X'\)</span>: <span class="math inline">\((A^{-1})'A' = I' = I\)</span>. Transponiendo <span class="math inline">\(A^{-1}A = I\)</span>: <span class="math inline">\(A'(A^{-1})' = I\)</span>. Entonces <span class="math inline">\((A^{-1})'\)</span> cumple la definición de inversa de <span class="math inline">\(A'\)</span>.</p>
+</div>
+<p>La definición pide dos productos, <span class="math inline">\(AB = I\)</span> y <span class="math inline">\(BA = I\)</span>. Para matrices cuadradas basta uno.</p>
+<div id="prp-un-lado" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 4 (Para matrices cuadradas basta un lado)</strong></span> Si <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> son <span class="math inline">\(n\times n\)</span> y <span class="math inline">\(AB = I\)</span>, entonces <span class="math inline">\(BA = I\)</span>, y por lo tanto <span class="math inline">\(B = A^{-1}\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Paso 1: <span class="math inline">\(A\)</span> tiene <span class="math inline">\(n\)</span> pivotes.</em> Para todo <span class="math inline">\(b\)</span>, el vector <span class="math inline">\(x = Bb\)</span> resuelve <span class="math inline">\(Ax = b\)</span>: <span class="math inline">\(A(Bb) = (AB)b = b\)</span>. Así <span class="math inline">\(Ax = b\)</span> tiene solución para <strong>todo</strong> <span class="math inline">\(b\)</span>. Por el corolario de los sistemas cuadrados de la Clase 1, si <span class="math inline">\(A\)</span> tuviera menos de <span class="math inline">\(n\)</span> pivotes, existiría algún <span class="math inline">\(b\)</span> sin solución. Luego tiene <span class="math inline">\(n\)</span> pivotes, y por ese mismo corolario <span class="math inline">\(Ax = b\)</span> tiene solución <strong>única</strong> para todo <span class="math inline">\(b\)</span>; en particular, <span class="math inline">\(Ax = 0\)</span> solo tiene la solución <span class="math inline">\(x = 0\)</span>.</p>
+<p><em>Paso 2: <span class="math inline">\(BA = I\)</span>.</em> Calculemos <span class="math inline">\(A(BA - I) = (AB)A - A = IA - A = 0\)</span>. Entonces cada columna <span class="math inline">\(z\)</span> de la matriz <span class="math inline">\(BA - I\)</span> cumple <span class="math inline">\(Az = 0\)</span> (por la lectura por columnas, la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(A(BA - I)\)</span> es <span class="math inline">\(A\)</span> por la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(BA - I\)</span>). Por el paso 1, <span class="math inline">\(z = 0\)</span>. Todas las columnas de <span class="math inline">\(BA - I\)</span> son cero: <span class="math inline">\(BA = I\)</span>.</p>
+</div>
+</section>
+<section id="la-inversa-2times2" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="la-inversa-2times2"><span class="header-section-number">5.2</span> La inversa <span class="math inline">\(2\times2\)</span></h2>
+<div id="prp-inversa-2x2" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 5 (Inversa de una matriz <span class="math inline">\(2\times2\)</span>)</strong></span> Sea <span class="math inline">\(A = \begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}\)</span>. Si <span class="math inline">\(ad - bc\ne0\)</span>, <span class="math display">\[
+A^{-1} = \frac1{ad - bc}\begin{pmatrix}d&amp;-b\\-c&amp;a\end{pmatrix}.
+\]</span> Si <span class="math inline">\(ad - bc = 0\)</span>, <span class="math inline">\(A\)</span> es singular.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Caso <span class="math inline">\(ad - bc\ne0\)</span>.</em> Multiplicamos, entrada por entrada: <span class="math display">\[
+\begin{aligned}
+\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}\begin{pmatrix}d&amp;-b\\-c&amp;a\end{pmatrix} &amp;= \begin{pmatrix}ad - bc&amp;-ab + ba\\cd - dc&amp;-cb + da\end{pmatrix}\\
+&amp;= \begin{pmatrix}ad - bc&amp;0\\0&amp;ad - bc\end{pmatrix} = (ad - bc)I.
+\end{aligned}
+\]</span> Dividiendo por el número <span class="math inline">\(ad - bc\ne0\)</span>, la matriz del enunciado multiplicada por <span class="math inline">\(A\)</span> a la derecha da <span class="math inline">\(I\)</span>; por la <a href="#prp-un-lado" class="quarto-xref">Proposición&nbsp;4</a>, es la inversa.</p>
+<p><em>Caso <span class="math inline">\(ad - bc = 0\)</span>.</em> La cuenta anterior da <span class="math inline">\(A\begin{pmatrix}d\\-c\end{pmatrix} = \begin{pmatrix}ad - bc\\cd - dc\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}\)</span> y <span class="math inline">\(A\begin{pmatrix}-b\\a\end{pmatrix} = \begin{pmatrix}-ab + ba\\-cb + da\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}\)</span>. Si alguno de los vectores <span class="math inline">\((d,-c)'\)</span> o <span class="math inline">\((-b,a)'\)</span> es distinto de cero, encontramos <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(Ax = 0\)</span>, y <span class="math inline">\(A\)</span> no puede ser invertible (si lo fuera, <span class="math inline">\(x = A^{-1}Ax = A^{-1}0 = 0\)</span>). Si ambos son cero, entonces <span class="math inline">\(a = b = c = d = 0\)</span>, <span class="math inline">\(A\)</span> es la matriz nula y <span class="math inline">\(Ax = 0\)</span> para todo <span class="math inline">\(x\)</span>: también es singular.</p>
+</div>
+<p>El número <span class="math inline">\(ad - bc\)</span> es el <strong>determinante</strong> de <span class="math inline">\(A\)</span>, tema de la Clase 4. Por ejemplo, <span class="math inline">\(A = \begin{pmatrix}4&amp;3\\8&amp;10\end{pmatrix}\)</span> tiene <span class="math inline">\(ad - bc = 40 - 24 = 16\)</span> y <span class="math inline">\(A^{-1} = \tfrac1{16}\begin{pmatrix}10&amp;-3\\-8&amp;4\end{pmatrix}\)</span>. Comprobación de la entrada <span class="math inline">\((1,1)\)</span> de <span class="math inline">\(AA^{-1}\)</span>: <span class="math inline">\(\tfrac1{16}(4\cdot10 + 3\cdot(-8)) = \tfrac{16}{16} = 1\)</span> ✓.</p>
+</section>
+<section id="gaussjordan" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="gaussjordan"><span class="header-section-number">5.3</span> Gauss–Jordan</h2>
+<p>Para <span class="math inline">\(n\ge3\)</span> no hay una fórmula práctica. Pero la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(A^{-1}\)</span> es, por la lectura por columnas, la solución de <span class="math inline">\(Ax = e_j\)</span>: buscar <span class="math inline">\(A^{-1}\)</span> es resolver <span class="math inline">\(n\)</span> sistemas con la misma matriz y los lados derechos <span class="math inline">\(e_1,\dots,e_n\)</span>. Se resuelven todos a la vez reduciendo la matriz aumentada <span class="math inline">\([A\mid I]\)</span> hasta la forma escalonada reducida: si <span class="math inline">\(A\)</span> es invertible, se llega a <span class="math inline">\([I\mid A^{-1}]\)</span>.</p>
+<div id="exm-inversa-rigidez" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 7 (Inversa de la matriz de rigidez)</strong></span> Primer paso, <span class="math inline">\(F_2\leftarrow F_2 + \tfrac12F_1\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|ccc}2&amp;-1&amp;0&amp;1&amp;0&amp;0\\-1&amp;2&amp;-1&amp;0&amp;1&amp;0\\0&amp;-1&amp;2&amp;0&amp;0&amp;1\end{array}\right]
+\longrightarrow
+\left[\begin{array}{ccc|ccc}2&amp;-1&amp;0&amp;1&amp;0&amp;0\\0&amp;\tfrac32&amp;-1&amp;\tfrac12&amp;1&amp;0\\0&amp;-1&amp;2&amp;0&amp;0&amp;1\end{array}\right].
+\]</span> Segundo paso, <span class="math inline">\(F_3\leftarrow F_3 + \tfrac23F_2\)</span>: <span class="math display">\[
+\longrightarrow\left[\begin{array}{ccc|ccc}2&amp;-1&amp;0&amp;1&amp;0&amp;0\\0&amp;\tfrac32&amp;-1&amp;\tfrac12&amp;1&amp;0\\0&amp;0&amp;\tfrac43&amp;\tfrac13&amp;\tfrac23&amp;1\end{array}\right].
+\]</span> Cuentas del segundo paso, a la derecha: <span class="math inline">\((0 + \tfrac23\cdot\tfrac12,\ 0 + \tfrac23\cdot1,\ 1 + 0) = (\tfrac13,\tfrac23,1)\)</span>. Ahora escalamos las filas para que los pivotes valgan <span class="math inline">\(1\)</span>: <span class="math inline">\(F_1\leftarrow\tfrac12F_1\)</span>, <span class="math inline">\(F_2\leftarrow\tfrac23F_2\)</span>, <span class="math inline">\(F_3\leftarrow\tfrac34F_3\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|ccc}1&amp;-\tfrac12&amp;0&amp;\tfrac12&amp;0&amp;0\\0&amp;1&amp;-\tfrac23&amp;\tfrac13&amp;\tfrac23&amp;0\\0&amp;0&amp;1&amp;\tfrac14&amp;\tfrac12&amp;\tfrac34\end{array}\right].
+\]</span> Eliminamos hacia arriba. <span class="math inline">\(F_2\leftarrow F_2 + \tfrac23F_3\)</span>: a la derecha, <span class="math inline">\((\tfrac13 + \tfrac23\cdot\tfrac14,\ \tfrac23 + \tfrac23\cdot\tfrac12,\ 0 + \tfrac23\cdot\tfrac34) = (\tfrac12,\ 1,\ \tfrac12)\)</span>. Luego <span class="math inline">\(F_1\leftarrow F_1 + \tfrac12F_2\)</span>: a la derecha, <span class="math inline">\((\tfrac12 + \tfrac14,\ 0 + \tfrac12,\ 0 + \tfrac14) = (\tfrac34,\ \tfrac12,\ \tfrac14)\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|ccc}1&amp;0&amp;0&amp;\tfrac34&amp;\tfrac12&amp;\tfrac14\\0&amp;1&amp;0&amp;\tfrac12&amp;1&amp;\tfrac12\\0&amp;0&amp;1&amp;\tfrac14&amp;\tfrac12&amp;\tfrac34\end{array}\right],\qquad K^{-1} = \frac14\begin{pmatrix}3&amp;2&amp;1\\2&amp;4&amp;2\\1&amp;2&amp;3\end{pmatrix}.
+\]</span> Comprobación de la primera columna: <span class="math inline">\(K\cdot\tfrac14(3,2,1)' = \tfrac14(6 - 2,\ -3 + 4 - 1,\ -2 + 2)' = (1,0,0)'\)</span> ✓.</p>
+<p>La inversa tiene una <strong>interpretación física</strong>: la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(K^{-1}\)</span> son los desplazamientos producidos por una fuerza unitaria aplicada en la masa <span class="math inline">\(j\)</span>. Por eso se llama <strong>matriz de flexibilidad</strong>. Todas sus entradas son positivas: empujar cualquier masa mueve a todas en la misma dirección.</p>
+</div>
+</section>
+<section id="por-qué-casi-nunca-se-calcula-la-inversa" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="por-qué-casi-nunca-se-calcula-la-inversa"><span class="header-section-number">5.4</span> Por qué casi nunca se calcula la inversa</h2>
+<p>Que <span class="math inline">\(x = A^{-1}b\)</span> sea una fórmula correcta no la hace un buen algoritmo. Calcular <span class="math inline">\(A^{-1}\)</span> por Gauss–Jordan cuesta del orden de <span class="math inline">\(2n^3\)</span> flops (tres veces más que factorizar), y después cada producto <span class="math inline">\(A^{-1}b\)</span> cuesta <span class="math inline">\(2n^2\)</span>, igual que las dos sustituciones con <span class="math inline">\(LU\)</span>. Además, en precisión finita, <span class="math inline">\(A^{-1}b\)</span> suele ser <strong>menos exacto</strong> que la solución por <span class="math inline">\(LU\)</span>. La regla práctica es: <strong>la inversa es una herramienta para razonar y para escribir fórmulas; para calcular, se factoriza</strong>.</p>
+</section>
+</section>
+<section id="matrices-por-bloques" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Matrices por bloques</h1>
+<p>Muchas matrices tienen una estructura natural en trozos: variables de dos tipos, dos subsistemas acoplados. Se pueden partir en <strong>bloques</strong> y operar con los bloques como si fueran números, siempre que se respete el orden de los productos.</p>
+<div id="prp-bloques" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 6 (Producto por bloques)</strong></span> Si <span class="math inline">\(A = \begin{pmatrix}A_{11}&amp;A_{12}\\A_{21}&amp;A_{22}\end{pmatrix}\)</span> y <span class="math inline">\(B = \begin{pmatrix}B_{11}&amp;B_{12}\\B_{21}&amp;B_{22}\end{pmatrix}\)</span>, con las columnas de <span class="math inline">\(A\)</span> partidas igual que las filas de <span class="math inline">\(B\)</span>, entonces <span class="math display">\[
+AB = \begin{pmatrix}A_{11}B_{11} + A_{12}B_{21}&amp;A_{11}B_{12} + A_{12}B_{22}\\A_{21}B_{11} + A_{22}B_{21}&amp;A_{21}B_{12} + A_{22}B_{22}\end{pmatrix}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(q\)</span> el número de columnas de <span class="math inline">\(A_{11}\)</span> (igual al número de filas de <span class="math inline">\(B_{11}\)</span>). Tomemos una entrada <span class="math inline">\((i,j)\)</span> con <span class="math inline">\(i\)</span> en las filas del primer bloque y <span class="math inline">\(j\)</span> en las columnas del primer bloque. Separamos la suma de la definición en los índices <span class="math inline">\(\ell\le q\)</span> y <span class="math inline">\(\ell&gt;q\)</span>: <span class="math display">\[
+(AB)_{ij} = \sum_{\ell = 1}^qa_{i\ell}b_{\ell j} + \sum_{\ell = q+1}^na_{i\ell}b_{\ell j}.
+\]</span> La primera suma recorre la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A_{11}\)</span> y la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(B_{11}\)</span>: es la entrada <span class="math inline">\((i,j)\)</span> de <span class="math inline">\(A_{11}B_{11}\)</span>. La segunda recorre la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(A_{12}\)</span> y la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(B_{21}\)</span>: es la entrada correspondiente de <span class="math inline">\(A_{12}B_{21}\)</span>. Las otras tres posiciones de bloque se prueban igual, cambiando qué bloques contienen la fila <span class="math inline">\(i\)</span> y la columna <span class="math inline">\(j\)</span>.</p>
+</div>
+<section id="eliminación-por-bloques-y-complemento-de-schur" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="eliminación-por-bloques-y-complemento-de-schur"><span class="header-section-number">6.1</span> Eliminación por bloques y complemento de Schur</h2>
+<p>Supongamos que <span class="math inline">\(M = \begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix}\)</span> con <span class="math inline">\(A\)</span> cuadrado e invertible. La eliminación “por bloques” resta a la segunda fila de bloques <span class="math inline">\(CA^{-1}\)</span> veces la primera, que es lo que anula el bloque <span class="math inline">\(C\)</span>: <span class="math display">\[
+\begin{aligned}
+\begin{pmatrix}I&amp;0\\-CA^{-1}&amp;I\end{pmatrix}\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix} &amp;= \begin{pmatrix}A&amp;B\\-CA^{-1}A + C&amp;-CA^{-1}B + D\end{pmatrix}\\
+&amp;= \begin{pmatrix}A&amp;B\\0&amp;D - CA^{-1}B\end{pmatrix},
+\end{aligned}
+\]</span> donde se usó la <a href="#prp-bloques" class="quarto-xref">Proposición&nbsp;6</a> y <span class="math inline">\(CA^{-1}A = C\)</span>. El bloque que aparece donde iba el último pivote, <span class="math display">\[
+S = D - CA^{-1}B,
+\]</span> es el <strong>complemento de Schur</strong> de <span class="math inline">\(A\)</span> en <span class="math inline">\(M\)</span>. Desempeña el papel de un pivote “en bloque”. Con él, el sistema <span class="math display">\[
+\begin{pmatrix}A&amp;B\\C&amp;D\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}f\\g\end{pmatrix}
+\]</span> se resuelve en dos etapas: primero <span class="math inline">\(Sy = g - CA^{-1}f\)</span>, después <span class="math inline">\(Ax = f - By\)</span>.</p>
+<div id="prp-inversa-bloques" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 7 (Inversa por bloques)</strong></span> Si <span class="math inline">\(A\)</span> y <span class="math inline">\(S = D - CA^{-1}B\)</span> son invertibles, entonces <span class="math inline">\(M\)</span> es invertible y <span class="math display">\[
+M^{-1} = \begin{pmatrix}A^{-1} + A^{-1}BS^{-1}CA^{-1}&amp;-A^{-1}BS^{-1}\\-S^{-1}CA^{-1}&amp;S^{-1}\end{pmatrix}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Llamemos <span class="math inline">\(N\)</span> a la matriz del enunciado y calculemos <span class="math inline">\(MN\)</span> por bloques (<a href="#prp-bloques" class="quarto-xref">Proposición&nbsp;6</a>). Bloque <span class="math inline">\((1,1)\)</span>: <span class="math display">\[
+\begin{aligned}
+A\big(A^{-1} + A^{-1}BS^{-1}CA^{-1}\big) + B\big(-S^{-1}CA^{-1}\big) &amp;= I + BS^{-1}CA^{-1} - BS^{-1}CA^{-1}\\
+&amp;= I.
+\end{aligned}
+\]</span> Bloque <span class="math inline">\((1,2)\)</span>: <span class="math inline">\(A(-A^{-1}BS^{-1}) + BS^{-1} = -BS^{-1} + BS^{-1} = 0\)</span>. Bloque <span class="math inline">\((2,1)\)</span>: <span class="math display">\[
+\begin{aligned}
+C\big(A^{-1} + A^{-1}BS^{-1}CA^{-1}\big) - DS^{-1}CA^{-1} &amp;= CA^{-1} + (CA^{-1}B - D)S^{-1}CA^{-1}\\
+&amp;= CA^{-1} - SS^{-1}CA^{-1} = 0,
+\end{aligned}
+\]</span> usando <span class="math inline">\(CA^{-1}B - D = -S\)</span>. Bloque <span class="math inline">\((2,2)\)</span>: <span class="math inline">\(C(-A^{-1}BS^{-1}) + DS^{-1} = (D - CA^{-1}B)S^{-1} = SS^{-1} = I\)</span>. Entonces <span class="math inline">\(MN = I\)</span> y, por la <a href="#prp-un-lado" class="quarto-xref">Proposición&nbsp;4</a>, <span class="math inline">\(N = M^{-1}\)</span>.</p>
+</div>
+<div id="exm-schur" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 8 (Un complemento de Schur escalar)</strong></span> Partimos <span class="math inline">\(M = \begin{pmatrix}2&amp;1&amp;1\\1&amp;2&amp;1\\1&amp;1&amp;2\end{pmatrix}\)</span> con <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(B = \begin{pmatrix}1\\1\end{pmatrix}\)</span>, <span class="math inline">\(C = (1\ \ 1)\)</span> y <span class="math inline">\(D = 2\)</span>. Por la fórmula <span class="math inline">\(2\times2\)</span>, <span class="math inline">\(A^{-1} = \tfrac13\begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix}\)</span> (pues <span class="math inline">\(ad - bc = 4 - 1 = 3\)</span>). Entonces <span class="math inline">\(A^{-1}B = \tfrac13(2 - 1,\ -1 + 2)' = \tfrac13(1,1)'\)</span> y <span class="math display">\[
+S = D - CA^{-1}B = 2 - (1\ \ 1)\tfrac13\begin{pmatrix}1\\1\end{pmatrix} = 2 - \tfrac23 = \tfrac43.
+\]</span> Con la <a href="#prp-inversa-bloques" class="quarto-xref">Proposición&nbsp;7</a>: <span class="math inline">\(S^{-1} = \tfrac34\)</span>; el bloque <span class="math inline">\((1,2)\)</span> es <span class="math inline">\(-A^{-1}BS^{-1} = -\tfrac13\cdot\tfrac34(1,1)' = -\tfrac14(1,1)'\)</span>; el bloque <span class="math inline">\((2,1)\)</span> es su transpuesto, <span class="math inline">\(-\tfrac14(1\ \ 1)\)</span>, porque <span class="math inline">\(C = B'\)</span> y <span class="math inline">\(A\)</span> es simétrica; y el bloque <span class="math inline">\((1,1)\)</span> es <span class="math display">\[
+\begin{aligned}
+A^{-1} + (A^{-1}B)S^{-1}(CA^{-1}) &amp;= \tfrac13\begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix} + \tfrac13\cdot\tfrac34\cdot\tfrac13\begin{pmatrix}1&amp;1\\1&amp;1\end{pmatrix}\\
+&amp;= \frac1{12}\begin{pmatrix}8 + 1&amp;-4 + 1\\-4 + 1&amp;8 + 1\end{pmatrix} = \frac14\begin{pmatrix}3&amp;-1\\-1&amp;3\end{pmatrix}.
+\end{aligned}
+\]</span> Juntando: <span class="math inline">\(M^{-1} = \tfrac14\begin{pmatrix}3&amp;-1&amp;-1\\-1&amp;3&amp;-1\\-1&amp;-1&amp;3\end{pmatrix}\)</span>. Comprobación: <span class="math inline">\(M\cdot\tfrac14(3,-1,-1)' = \tfrac14(6 - 1 - 1,\ 3 - 2 - 1,\ 3 - 1 - 2)' = (1,0,0)'\)</span> ✓.</p>
+</div>
+</section>
+<section id="la-fórmula-de-shermanmorrison" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="la-fórmula-de-shermanmorrison"><span class="header-section-number">6.2</span> La fórmula de Sherman–Morrison</h2>
+<p>A menudo una matriz cambia <strong>un poco</strong>: se agrega un resorte, se modifica una resistencia, llega un dato nuevo. Si el cambio es de la forma <span class="math inline">\(uv'\)</span> (una matriz de rango uno), no hace falta volver a factorizar ni a invertir.</p>
+<div id="thm-sherman-morrison" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Sherman–Morrison)</strong></span> Sea <span class="math inline">\(A\)</span> invertible y <span class="math inline">\(u,v\)</span> vectores con <span class="math inline">\(1 + v'A^{-1}u\ne0\)</span>. Entonces <span class="math inline">\(A + uv'\)</span> es invertible y <span class="math display">\[
+(A + uv')^{-1} = A^{-1} - \frac{A^{-1}uv'A^{-1}}{1 + v'A^{-1}u}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tengo una fórmula candidata; basta multiplicar y ver que da <span class="math inline">\(I\)</span>. La clave al multiplicar es que <span class="math inline">\(v'A^{-1}u\)</span> es un <strong>número</strong> (fila por matriz por columna), así que puedo sacarlo de en medio de un producto. Escribo <span class="math inline">\(\alpha = v'A^{-1}u\)</span> para no perderlo.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\alpha = v'A^{-1}u\)</span>, un número, y <span class="math inline">\(N = A^{-1} - \dfrac{A^{-1}uv'A^{-1}}{1 + \alpha}\)</span>. Calculamos <span class="math inline">\((A + uv')N\)</span> distribuyendo: <span class="math display">\[
+\begin{aligned}
+(A + uv')N &amp;= AA^{-1} + uv'A^{-1}\\
+&amp;\quad - \frac{AA^{-1}uv'A^{-1}}{1 + \alpha} - \frac{u\,(v'A^{-1}u)\,v'A^{-1}}{1 + \alpha}.
+\end{aligned}
+\]</span> En el primer término <span class="math inline">\(AA^{-1} = I\)</span>. En el tercero <span class="math inline">\(AA^{-1}uv'A^{-1} = uv'A^{-1}\)</span>. En el cuarto, por asociatividad, el número <span class="math inline">\(v'A^{-1}u = \alpha\)</span> sale del medio: <span class="math inline">\(u\,\alpha\,v'A^{-1} = \alpha\,uv'A^{-1}\)</span>. Entonces <span class="math display">\[
+\begin{aligned}
+(A + uv')N &amp;= I + uv'A^{-1} - \frac{uv'A^{-1}}{1 + \alpha} - \frac{\alpha\,uv'A^{-1}}{1 + \alpha}\\
+&amp;= I + uv'A^{-1}\Big(1 - \frac{1 + \alpha}{1 + \alpha}\Big) = I.
+\end{aligned}
+\]</span> Por la <a href="#prp-un-lado" class="quarto-xref">Proposición&nbsp;4</a>, <span class="math inline">\(N = (A + uv')^{-1}\)</span>.</p>
+</div>
+<div id="exm-sherman" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 9 (Agregar un resorte a la cadena)</strong></span> Unimos la masa del medio a tierra con un quinto resorte de constante <span class="math inline">\(1\)</span>. Ese resorte solo agrega una fuerza <span class="math inline">\(-u_2\)</span> sobre la masa 2, así que la nueva rigidez es <span class="math inline">\(K + e_2e_2'\)</span> (un <span class="math inline">\(1\)</span> más en la posición <span class="math inline">\((2,2)\)</span>). Con <span class="math inline">\(u = v = e_2\)</span> y <span class="math inline">\(K^{-1}\)</span> del <a href="#exm-inversa-rigidez" class="quarto-xref">Ejemplo&nbsp;7</a>: <span class="math inline">\(K^{-1}e_2\)</span> es la segunda columna, <span class="math inline">\(\tfrac14(2,4,2)' = (\tfrac12,1,\tfrac12)'\)</span>, y <span class="math inline">\(\alpha = e_2'K^{-1}e_2 = 1\)</span> (la entrada <span class="math inline">\((2,2)\)</span>). Entonces <span class="math display">\[
+\begin{aligned}
+(K + e_2e_2')^{-1} &amp;= K^{-1} - \frac{(\tfrac12,1,\tfrac12)'(\tfrac12,1,\tfrac12)}{1 + 1}\\
+&amp;= \frac14\begin{pmatrix}3&amp;2&amp;1\\2&amp;4&amp;2\\1&amp;2&amp;3\end{pmatrix} - \frac12\begin{pmatrix}\tfrac14&amp;\tfrac12&amp;\tfrac14\\\tfrac12&amp;1&amp;\tfrac12\\\tfrac14&amp;\tfrac12&amp;\tfrac14\end{pmatrix}\\
+&amp;= \begin{pmatrix}\tfrac58&amp;\tfrac14&amp;\tfrac18\\\tfrac14&amp;\tfrac12&amp;\tfrac14\\\tfrac18&amp;\tfrac14&amp;\tfrac58\end{pmatrix}.
+\end{aligned}
+\]</span> Comprobación con la nueva rigidez <span class="math inline">\(\begin{pmatrix}2&amp;-1&amp;0\\-1&amp;3&amp;-1\\0&amp;-1&amp;2\end{pmatrix}\)</span> por la primera columna: <span class="math inline">\((\tfrac{10}8 - \tfrac28,\ -\tfrac58 + \tfrac68 - \tfrac18,\ -\tfrac28 + \tfrac28)' = (1,0,0)'\)</span> ✓. El resorte extra redujo la flexibilidad del centro de <span class="math inline">\(1\)</span> a <span class="math inline">\(\tfrac12\)</span>.</p>
+</div>
+</section>
+</section>
+<section id="para-ir-más-allá-cuándo-existe-lu-y-por-qué-es-única" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Para ir más allá: cuándo existe LU y por qué es única</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Para ir más allá">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Para ir más allá
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El <a href="#thm-lu" class="quarto-xref">Teorema&nbsp;1</a> supone que la eliminación no encuentra pivotes nulos. Aquí caracterizamos exactamente cuándo pasa eso, en términos de las <strong>submatrices principales</strong> <span class="math inline">\(A_k\)</span> (la esquina superior izquierda <span class="math inline">\(k\times k\)</span> de <span class="math inline">\(A\)</span>), y probamos que la factorización es única.</p>
+</div>
+</div>
+<p>Usaremos dos hechos sobre matrices triangulares, que se prueban con las definiciones.</p>
+<div id="lem-triangulares" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Productos e inversas de unitriangulares)</strong></span> &nbsp;</p>
+<ol type="a">
+<li>El producto de dos matrices unitriangulares inferiores es unitriangular inferior. (b) Una matriz unitriangular inferior es invertible y su inversa es unitriangular inferior. (c) Una triangular superior con diagonal sin ceros es invertible y su inversa es triangular superior. (d) Una matriz que es a la vez unitriangular inferior y triangular superior es la identidad.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>(a)</em> Si <span class="math inline">\(L_1,L_2\)</span> son unitriangulares inferiores, <span class="math inline">\((L_1L_2)_{ij} = \sum_\ell(L_1)_{i\ell}(L_2)_{\ell j}\)</span>. Un término es distinto de cero solo si <span class="math inline">\((L_1)_{i\ell}\ne0\)</span> (lo que exige <span class="math inline">\(\ell\le i\)</span>) y <span class="math inline">\((L_2)_{\ell j}\ne0\)</span> (lo que exige <span class="math inline">\(\ell\ge j\)</span>). Si <span class="math inline">\(i&lt;j\)</span>, no hay <span class="math inline">\(\ell\)</span> con <span class="math inline">\(j\le\ell\le i\)</span>, y la entrada es <span class="math inline">\(0\)</span>: el producto es triangular inferior. Si <span class="math inline">\(i = j\)</span>, el único término es <span class="math inline">\(\ell = i\)</span>, que vale <span class="math inline">\(1\cdot1 = 1\)</span>.</p>
+<p><em>(b)</em> La columna <span class="math inline">\(j\)</span> de la inversa resuelve <span class="math inline">\(Lx = e_j\)</span>. Por sustitución hacia adelante (posible porque la diagonal es de unos), <span class="math inline">\(x_1 = \dots = x_{j-1} = 0\)</span> (las primeras <span class="math inline">\(j - 1\)</span> ecuaciones tienen lado derecho cero y solo involucran <span class="math inline">\(x_1,\dots,x_{i}\)</span>), <span class="math inline">\(x_j = 1\)</span>, y las demás quedan determinadas. Entonces la inversa tiene ceros sobre la diagonal y unos en la diagonal.</p>
+<p><em>(c)</em> La columna <span class="math inline">\(j\)</span> de la inversa resuelve <span class="math inline">\(Ux = e_j\)</span>. Por sustitución hacia atrás (posible porque la diagonal no tiene ceros), las ecuaciones <span class="math inline">\(i = n,\dots,j + 1\)</span> tienen lado derecho cero y dan <span class="math inline">\(x_n = \dots = x_{j+1} = 0\)</span>. La inversa tiene ceros debajo de la diagonal.</p>
+<p><em>(d)</em> Si es triangular superior, sus entradas debajo de la diagonal son cero; si es unitriangular inferior, las de encima son cero y la diagonal es de unos. Es <span class="math inline">\(I\)</span>.</p>
+</div>
+<div id="thm-lu-existencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Existencia y unicidad de LU)</strong></span> Sea <span class="math inline">\(A\)</span> de <span class="math inline">\(n\times n\)</span> invertible. Entonces <span class="math inline">\(A\)</span> tiene una factorización <span class="math inline">\(A = LU\)</span> (con <span class="math inline">\(L\)</span> unitriangular inferior y <span class="math inline">\(U\)</span> triangular superior) <strong>si y solo si</strong> todas las submatrices principales <span class="math inline">\(A_1,A_2,\dots,A_n\)</span> son invertibles. En ese caso, la factorización es <strong>única</strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>Unicidad.</em> Si <span class="math inline">\(A = L_1U_1 = L_2U_2\)</span>, las <span class="math inline">\(U_i\)</span> son invertibles: <span class="math inline">\(U_i = L_i^{-1}A\)</span> es producto de invertibles (<a href="#prp-inversa" class="quarto-xref">Proposición&nbsp;3</a>, parte 3). Multiplicando por <span class="math inline">\(L_2^{-1}\)</span> a la izquierda y por <span class="math inline">\(U_1^{-1}\)</span> a la derecha: <span class="math inline">\(L_2^{-1}L_1 = U_2U_1^{-1}\)</span>. El lado izquierdo es unitriangular inferior (lema, partes b y a); el derecho es triangular superior, porque el producto de triangulares superiores es triangular superior (mismo argumento de la parte a, con las desigualdades invertidas). Por el lema, parte (d), ambos lados son <span class="math inline">\(I\)</span>: <span class="math inline">\(L_1 = L_2\)</span> y <span class="math inline">\(U_1 = U_2\)</span>.</p>
+<p><em>Si <span class="math inline">\(A = LU\)</span>, las <span class="math inline">\(A_k\)</span> son invertibles.</em> Partimos <span class="math inline">\(L\)</span>, <span class="math inline">\(U\)</span> y <span class="math inline">\(A\)</span> en bloques con la esquina <span class="math inline">\(k\times k\)</span>: <span class="math inline">\(L = \begin{pmatrix}L_k&amp;0\\\ast&amp;\ast\end{pmatrix}\)</span> y <span class="math inline">\(U = \begin{pmatrix}U_k&amp;\ast\\0&amp;\ast\end{pmatrix}\)</span> (el bloque superior derecho de <span class="math inline">\(L\)</span> y el inferior izquierdo de <span class="math inline">\(U\)</span> son cero por ser triangulares). Por la <a href="#prp-bloques" class="quarto-xref">Proposición&nbsp;6</a>, el bloque <span class="math inline">\((1,1)\)</span> de <span class="math inline">\(LU\)</span> es <span class="math inline">\(L_kU_k + 0\cdot\ast = L_kU_k\)</span>, así que <span class="math inline">\(A_k = L_kU_k\)</span>. <span class="math inline">\(L_k\)</span> es unitriangular (invertible); <span class="math inline">\(U\)</span> es invertible y triangular superior, así que su diagonal no tiene ceros (si <span class="math inline">\(u_{kk} = 0\)</span>, la construcción del <a href="#thm-pa-lu" class="quarto-xref">Teorema&nbsp;2</a> daría <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(Ux = 0\)</span>), y <span class="math inline">\(U_k\)</span> hereda esa diagonal. Entonces <span class="math inline">\(A_k\)</span> es producto de invertibles.</p>
+<p><em>Si las <span class="math inline">\(A_k\)</span> son invertibles, la eliminación no encuentra pivotes nulos.</em> Supongamos que la eliminación sin intercambios llegó a la etapa <span class="math inline">\(k\)</span> sin problemas, es decir, con pivotes no nulos en las columnas <span class="math inline">\(1,\dots,k - 1\)</span>. Las operaciones hechas hasta ahí solo restaron múltiplos de las filas <span class="math inline">\(1,\dots,k - 1\)</span> a filas de más abajo; restringidas a las primeras <span class="math inline">\(k\)</span> filas y columnas, son la eliminación de <span class="math inline">\(A_k\)</span>, y producen una matriz <span class="math inline">\(k\times k\)</span> triangular superior <span class="math inline">\(T_k\)</span> con <span class="math inline">\(T_k = E_kA_k\)</span>, <span class="math inline">\(E_k\)</span> invertible. La entrada <span class="math inline">\((k,k)\)</span> de <span class="math inline">\(T_k\)</span> es el pivote candidato. Si fuera cero, <span class="math inline">\(T_k\)</span> sería triangular superior con un cero en la diagonal, y la construcción del <a href="#thm-pa-lu" class="quarto-xref">Teorema&nbsp;2</a> (con <span class="math inline">\(x_k = 1\)</span>) daría <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(T_kx = 0\)</span>, de donde <span class="math inline">\(A_kx = E_k^{-1}T_kx = 0\)</span>: <span class="math inline">\(A_k\)</span> sería singular, contradicción. Por inducción en <span class="math inline">\(k\)</span>, todos los pivotes son no nulos y el <a href="#thm-lu" class="quarto-xref">Teorema&nbsp;1</a> da <span class="math inline">\(A = LU\)</span>.</p>
+</div>
+<p>El Ejercicio 2.7 muestra una matriz invertible sin factorización <span class="math inline">\(LU\)</span> (porque <span class="math inline">\(A_1\)</span> o <span class="math inline">\(A_2\)</span> es singular), que sí la tiene después de permutar filas.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="En más dimensiones">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>En más dimensiones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todo vale para <span class="math inline">\(n\)</span> arbitrario: las demostraciones de esta clase son generales. En la práctica con <span class="math inline">\(n\)</span> grande aparecen dos temas nuevos: el <strong>costo de almacenamiento</strong> (una matriz densa <span class="math inline">\(n\times n\)</span> ocupa <span class="math inline">\(n^2\)</span> números) y el <strong>relleno</strong> (<em>fill-in</em>): una matriz con muchos ceros puede tener factores <span class="math inline">\(L\)</span> y <span class="math inline">\(U\)</span> llenos, salvo que se reordenen filas y columnas con cuidado. La matriz de rigidez de esta clase es tridiagonal y sus factores también lo son, lo que permite resolverla en <span class="math inline">\(O(n)\)</span> operaciones; el estudio general de matrices dispersas está en el curso de Álgebra lineal.</p>
+</div>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>El <strong>producto de matrices</strong> se lee por columnas (<span class="math inline">\(AB = (Ab_1\cdots Ab_p)\)</span>) o por filas. Es asociativo y distributivo, pero no conmutativo; <span class="math inline">\((AB)' = B'A'\)</span> (<a href="#prp-propiedades-producto" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+<li>Sin intercambios, la eliminación es una <strong>factorización</strong> <span class="math inline">\(A = LU\)</span>: <span class="math inline">\(L\)</span> guarda los multiplicadores en su lugar y <span class="math inline">\(U\)</span> es la forma escalonada (<a href="#thm-lu" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>Con <span class="math inline">\(A = LU\)</span>, cada nuevo lado derecho cuesta dos sustituciones (<span class="math inline">\(\approx2n^2\)</span> flops) en vez de una eliminación (<span class="math inline">\(\approx\tfrac23n^3\)</span>).</li>
+<li>Un pivote pequeño destruye la precisión; el <strong>pivoteo parcial</strong> elige el mayor en valor absoluto. Toda matriz invertible tiene <span class="math inline">\(PA = LU\)</span> (<a href="#thm-pa-lu" class="quarto-xref">Teorema&nbsp;2</a>).</li>
+<li>La <strong>inversa</strong> es única, <span class="math inline">\((AB)^{-1} = B^{-1}A^{-1}\)</span>, y para matrices cuadradas basta <span class="math inline">\(AB = I\)</span> (<a href="#prp-un-lado" class="quarto-xref">Proposición&nbsp;4</a>). Se calcula con Gauss–Jordan, pero para resolver sistemas se prefiere factorizar.</li>
+<li>Por <strong>bloques</strong>, la eliminación produce el <strong>complemento de Schur</strong> <span class="math inline">\(S = D - CA^{-1}B\)</span> (<a href="#prp-inversa-bloques" class="quarto-xref">Proposición&nbsp;7</a>), y un cambio de rango uno se maneja con <strong>Sherman–Morrison</strong> (<a href="#thm-sherman-morrison" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 2.1.</strong> Factoriza <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\6&amp;8\end{pmatrix}\)</span> como <span class="math inline">\(LU\)</span> y úsala para resolver <span class="math inline">\(Ax = b\)</span> con <span class="math inline">\(b = (3,14)'\)</span> y con <span class="math inline">\(b = (3,4)'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Multiplicador <span class="math inline">\(\ell_{21} = 6/2 = 3\)</span>; <span class="math inline">\(F_2 - 3F_1 = (6 - 6,\ 8 - 3) = (0,\ 5)\)</span>. Entonces <span class="math inline">\(L = \begin{pmatrix}1&amp;0\\3&amp;1\end{pmatrix}\)</span> y <span class="math inline">\(U = \begin{pmatrix}2&amp;1\\0&amp;5\end{pmatrix}\)</span>. Comprobación: <span class="math inline">\((LU)_{21} = 3\cdot2 = 6\)</span>, <span class="math inline">\((LU)_{22} = 3\cdot1 + 5 = 8\)</span> ✓.</p>
+<p><em>Primer lado derecho.</em> <span class="math inline">\(Lc = (3,14)'\)</span>: <span class="math inline">\(c_1 = 3\)</span>, <span class="math inline">\(c_2 = 14 - 3\cdot3 = 5\)</span>. <span class="math inline">\(Ux = c\)</span>: <span class="math inline">\(5x_2 = 5\Rightarrow x_2 = 1\)</span>; <span class="math inline">\(2x_1 + 1 = 3\Rightarrow x_1 = 1\)</span>. Solución <span class="math inline">\((1,1)\)</span>.</p>
+<p><em>Segundo lado derecho.</em> <span class="math inline">\(c_1 = 3\)</span>, <span class="math inline">\(c_2 = 4 - 9 = -5\)</span>. <span class="math inline">\(5x_2 = -5\Rightarrow x_2 = -1\)</span>; <span class="math inline">\(2x_1 - 1 = 3\Rightarrow x_1 = 2\)</span>. Solución <span class="math inline">\((2,-1)\)</span>. Verificación: <span class="math inline">\(2\cdot2 - 1 = 3\)</span> ✓ y <span class="math inline">\(12 - 8 = 4\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.2.</strong> Factoriza <span class="math inline">\(A = \begin{pmatrix}1&amp;2&amp;0\\2&amp;5&amp;3\\0&amp;3&amp;10\end{pmatrix}\)</span> y resuelve <span class="math inline">\(Ax = (3,10,13)'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><em>Columna 1.</em> Pivote <span class="math inline">\(1\)</span>; <span class="math inline">\(\ell_{21} = 2\)</span>, <span class="math inline">\(\ell_{31} = 0\)</span>. <span class="math inline">\(F_2 - 2F_1 = (0,\ 5 - 4,\ 3 - 0) = (0,1,3)\)</span>. <em>Columna 2.</em> Pivote <span class="math inline">\(1\)</span>; <span class="math inline">\(\ell_{32} = 3/1 = 3\)</span>. <span class="math inline">\(F_3 - 3F_2 = (0,\ 3 - 3,\ 10 - 9) = (0,0,1)\)</span>. Entonces <span class="math display">\[
+L = \begin{pmatrix}1&amp;0&amp;0\\2&amp;1&amp;0\\0&amp;3&amp;1\end{pmatrix},\qquad U = \begin{pmatrix}1&amp;2&amp;0\\0&amp;1&amp;3\\0&amp;0&amp;1\end{pmatrix}.
+\]</span> Adelante: <span class="math inline">\(c_1 = 3\)</span>; <span class="math inline">\(c_2 = 10 - 2\cdot3 = 4\)</span>; <span class="math inline">\(c_3 = 13 - 0\cdot3 - 3\cdot4 = 1\)</span>. Atrás: <span class="math inline">\(x_3 = 1\)</span>; <span class="math inline">\(x_2 + 3\cdot1 = 4\Rightarrow x_2 = 1\)</span>; <span class="math inline">\(x_1 + 2\cdot1 = 3\Rightarrow x_1 = 1\)</span>. Solución <span class="math inline">\((1,1,1)\)</span>; en efecto <span class="math inline">\(A(1,1,1)' = (3,10,13)'\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.3.</strong> Calcula por Gauss–Jordan la inversa de <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;0\\0&amp;1&amp;1\\1&amp;0&amp;1\end{pmatrix}\)</span> y verifica el resultado.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(F_3\leftarrow F_3 - F_1\)</span>: <span class="math display">\[
+\left[\begin{array}{ccc|ccc}1&amp;1&amp;0&amp;1&amp;0&amp;0\\0&amp;1&amp;1&amp;0&amp;1&amp;0\\1&amp;0&amp;1&amp;0&amp;0&amp;1\end{array}\right]\longrightarrow\left[\begin{array}{ccc|ccc}1&amp;1&amp;0&amp;1&amp;0&amp;0\\0&amp;1&amp;1&amp;0&amp;1&amp;0\\0&amp;-1&amp;1&amp;-1&amp;0&amp;1\end{array}\right].
+\]</span> Con <span class="math inline">\(F_3\leftarrow F_3 + F_2\)</span>: <span class="math display">\[
+\longrightarrow\left[\begin{array}{ccc|ccc}1&amp;1&amp;0&amp;1&amp;0&amp;0\\0&amp;1&amp;1&amp;0&amp;1&amp;0\\0&amp;0&amp;2&amp;-1&amp;1&amp;1\end{array}\right].
+\]</span> <span class="math inline">\(F_3\leftarrow\tfrac12F_3\)</span>: <span class="math inline">\((0,0,1\mid-\tfrac12,\tfrac12,\tfrac12)\)</span>. <span class="math inline">\(F_2\leftarrow F_2 - F_3\)</span>: <span class="math inline">\((0,1,0\mid\tfrac12,\tfrac12,-\tfrac12)\)</span>. <span class="math inline">\(F_1\leftarrow F_1 - F_2\)</span>: <span class="math inline">\((1,0,0\mid\tfrac12,-\tfrac12,\tfrac12)\)</span>. Entonces <span class="math display">\[
+A^{-1} = \frac12\begin{pmatrix}1&amp;-1&amp;1\\1&amp;1&amp;-1\\-1&amp;1&amp;1\end{pmatrix}.
+\]</span> Verificación de <span class="math inline">\(AA^{-1}\)</span>, columna por columna: <span class="math inline">\(A\cdot\tfrac12(1,1,-1)' = \tfrac12(1 + 1,\ 1 - 1,\ 1 - 1)' = (1,0,0)'\)</span>; <span class="math inline">\(A\cdot\tfrac12(-1,1,1)' = \tfrac12(-1 + 1,\ 1 + 1,\ -1 + 1)' = (0,1,0)'\)</span>; <span class="math inline">\(A\cdot\tfrac12(1,-1,1)' = \tfrac12(1 - 1,\ -1 + 1,\ 1 + 1)' = (0,0,1)'\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.4.</strong> Resuelve <span class="math inline">\(0{,}001\,x_1 + x_2 = 1\)</span>, <span class="math inline">\(x_1 + x_2 = 2\)</span> redondeando cada resultado intermedio a <strong>dos</strong> cifras significativas, sin intercambio y con pivoteo parcial. Compara con la solución exacta.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><em>Exacta:</em> restando, <span class="math inline">\((1 - 0{,}001)x_1 = 1\)</span>, así que <span class="math inline">\(x_1 = 1/0{,}999\approx1{,}001\)</span> y <span class="math inline">\(x_2 = 2 - x_1\approx0{,}999\)</span>.</p>
+<p><em>Sin intercambio.</em> <span class="math inline">\(\ell_{21} = 1/0{,}001 = 1000\)</span>. Coeficiente nuevo: <span class="math inline">\(1 - 1000 = -999\to-1000\)</span> (dos cifras). Lado derecho: <span class="math inline">\(2 - 1000 = -998\to-1000\)</span>. Entonces <span class="math inline">\(x_2 = 1{,}0\)</span> y <span class="math inline">\(0{,}001x_1 = 1 - 1{,}0 = 0\)</span>, así que <span class="math inline">\(x_1 = 0\)</span>: error del <span class="math inline">\(100\)</span> % en <span class="math inline">\(x_1\)</span>.</p>
+<p><em>Con pivoteo.</em> El mayor valor absoluto en la columna 1 es <span class="math inline">\(1\)</span> (fila 2): se intercambian las filas. <span class="math inline">\(\ell_{21} = 0{,}001\)</span>. Coeficiente nuevo: <span class="math inline">\(1 - 0{,}001 = 0{,}999\to1{,}0\)</span>. Lado derecho: <span class="math inline">\(1 - 0{,}002 = 0{,}998\to1{,}0\)</span>. Entonces <span class="math inline">\(x_2 = 1{,}0\)</span> y <span class="math inline">\(x_1 = 2 - 1{,}0 = 1{,}0\)</span>: correcto a dos cifras. El multiplicador pasó de <span class="math inline">\(1000\)</span> a <span class="math inline">\(0{,}001\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.5.</strong> Para <span class="math inline">\(M = \begin{pmatrix}4&amp;2&amp;2\\2&amp;2&amp;0\\2&amp;0&amp;3\end{pmatrix}\)</span>, partida con <span class="math inline">\(A\)</span> la esquina <span class="math inline">\(2\times2\)</span>, calcula el complemento de Schur <span class="math inline">\(S\)</span> y usa la eliminación por bloques para resolver <span class="math inline">\(Mx = (8,4,5)'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(A = \begin{pmatrix}4&amp;2\\2&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(B = (2,0)'\)</span>, <span class="math inline">\(C = (2\ \ 0)\)</span>, <span class="math inline">\(D = 3\)</span>. Por la fórmula <span class="math inline">\(2\times2\)</span> (<span class="math inline">\(ad - bc = 8 - 4 = 4\)</span>): <span class="math inline">\(A^{-1} = \tfrac14\begin{pmatrix}2&amp;-2\\-2&amp;4\end{pmatrix} = \begin{pmatrix}\tfrac12&amp;-\tfrac12\\-\tfrac12&amp;1\end{pmatrix}\)</span>. Entonces <span class="math inline">\(A^{-1}B = (1,-1)'\)</span> y <span class="math inline">\(S = 3 - (2\ \ 0)(1,-1)' = 3 - 2 = 1\)</span>.</p>
+<p>Con <span class="math inline">\(f = (8,4)'\)</span> y <span class="math inline">\(g = 5\)</span>: <span class="math inline">\(A^{-1}f = (4 - 2,\ -4 + 4)' = (2,0)'\)</span>, <span class="math inline">\(CA^{-1}f = 2\cdot2 + 0 = 4\)</span>. Primera etapa: <span class="math inline">\(Sx_3 = g - CA^{-1}f = 5 - 4 = 1\)</span>, así que <span class="math inline">\(x_3 = 1\)</span>. Segunda etapa: <span class="math inline">\(A(x_1,x_2)' = f - Bx_3 = (8 - 2,\ 4 - 0)' = (6,4)'\)</span>, así que <span class="math inline">\((x_1,x_2)' = A^{-1}(6,4)' = (3 - 2,\ -3 + 4)' = (1,1)'\)</span>. Solución <span class="math inline">\((1,1,1)\)</span>; en efecto <span class="math inline">\(M(1,1,1)' = (8,4,5)'\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.6.</strong> A la cadena de resortes se le agrega un resorte de constante <span class="math inline">\(1\)</span> que une la primera masa con la pared izquierda (además del que ya había). (a) Escribe la nueva rigidez como <span class="math inline">\(K + uv'\)</span>. (b) Usa Sherman–Morrison para obtener los desplazamientos con la carga uniforme <span class="math inline">\(f = (2,2,2)'\)</span> <strong>sin volver a factorizar</strong>, partiendo de <span class="math inline">\(u = K^{-1}f = (3,4,3)'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p>El resorte nuevo agrega una fuerza <span class="math inline">\(-u_1\)</span> sobre la masa 1: <span class="math inline">\(K_{\text{nueva}} = K + e_1e_1'\)</span>, con <span class="math inline">\(u = v = e_1\)</span>.</p></li>
+<li><p>Multiplicando la fórmula de Sherman–Morrison por <span class="math inline">\(f\)</span>: <span class="math display">\[
+K_{\text{nueva}}^{-1}f = K^{-1}f - \frac{K^{-1}e_1\,(e_1'K^{-1}f)}{1 + e_1'K^{-1}e_1}.
+\]</span> Datos: <span class="math inline">\(K^{-1}f = (3,4,3)'\)</span>; <span class="math inline">\(e_1'K^{-1}f = 3\)</span> (su primera componente); <span class="math inline">\(K^{-1}e_1 = \tfrac14(3,2,1)'\)</span> (primera columna de <span class="math inline">\(K^{-1}\)</span>); <span class="math inline">\(e_1'K^{-1}e_1 = \tfrac34\)</span>. Entonces <span class="math display">\[
+u_{\text{nueva}} = \begin{pmatrix}3\\4\\3\end{pmatrix} - \frac{\tfrac14(3,2,1)'\cdot3}{\tfrac74} = \begin{pmatrix}3\\4\\3\end{pmatrix} - \frac37\begin{pmatrix}3\\2\\1\end{pmatrix} = \begin{pmatrix}12/7\\22/7\\18/7\end{pmatrix}.
+\]</span> Verificación con <span class="math inline">\(K_{\text{nueva}} = \begin{pmatrix}3&amp;-1&amp;0\\-1&amp;2&amp;-1\\0&amp;-1&amp;2\end{pmatrix}\)</span>: <span class="math inline">\(\tfrac17(36 - 22,\ -12 + 44 - 18,\ -22 + 36)' = \tfrac17(14,14,14)' = (2,2,2)'\)</span> ✓. El resorte extra frena sobre todo a la primera masa (<span class="math inline">\(3\to1{,}71\)</span>).</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.7 ★.</strong> (a) Muestra que <span class="math inline">\(A = \begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}\)</span> es invertible pero no tiene factorización <span class="math inline">\(LU\)</span>, y encuentra <span class="math inline">\(PA = LU\)</span>. (b) Para <span class="math inline">\(B = \begin{pmatrix}1&amp;1&amp;0\\1&amp;1&amp;1\\0&amp;1&amp;1\end{pmatrix}\)</span>, verifica que <span class="math inline">\(B_2\)</span> es singular, que la eliminación sin intercambios falla, y encuentra <span class="math inline">\(PB = LU\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(ad - bc = 0 - 1 = -1\ne0\)</span>: invertible. Pero <span class="math inline">\(A_1 = (0)\)</span> es singular, así que por el <a href="#thm-lu-existencia" class="quarto-xref">Teorema&nbsp;4</a> no hay <span class="math inline">\(LU\)</span>. Directamente: si <span class="math inline">\(\begin{pmatrix}1&amp;0\\\ell&amp;1\end{pmatrix}\begin{pmatrix}u_{11}&amp;u_{12}\\0&amp;u_{22}\end{pmatrix} = \begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}\)</span>, la entrada <span class="math inline">\((1,1)\)</span> da <span class="math inline">\(u_{11} = 0\)</span> y la <span class="math inline">\((2,1)\)</span> da <span class="math inline">\(\ell u_{11} = 1\)</span>, es decir <span class="math inline">\(0 = 1\)</span>: imposible. Con <span class="math inline">\(P = \begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}\)</span>: <span class="math inline">\(PA = \begin{pmatrix}1&amp;1\\0&amp;1\end{pmatrix}\)</span>, ya triangular superior: <span class="math inline">\(L = I\)</span>, <span class="math inline">\(U = PA\)</span>.</p></li>
+<li><p><span class="math inline">\(B_2 = \begin{pmatrix}1&amp;1\\1&amp;1\end{pmatrix}\)</span> tiene <span class="math inline">\(ad - bc = 1 - 1 = 0\)</span>: singular. La eliminación: <span class="math inline">\(\ell_{21} = 1\)</span>, <span class="math inline">\(F_2 - F_1 = (0,0,1)\)</span>: la entrada <span class="math inline">\((2,2)\)</span> quedó en cero y no se puede seguir sin intercambio. Intercambiando las filas 2 y 3 (<span class="math inline">\(P\)</span> intercambia las filas 2 y 3 de la identidad): <span class="math inline">\(PB = \begin{pmatrix}1&amp;1&amp;0\\0&amp;1&amp;1\\1&amp;1&amp;1\end{pmatrix}\)</span>. Eliminación de <span class="math inline">\(PB\)</span>: <span class="math inline">\(\ell_{21} = 0\)</span>; <span class="math inline">\(\ell_{31} = 1\)</span> y <span class="math inline">\(F_3 - F_1 = (0,0,1)\)</span>; <span class="math inline">\(\ell_{32} = 0\)</span>. Entonces <span class="math display">\[
+L = \begin{pmatrix}1&amp;0&amp;0\\0&amp;1&amp;0\\1&amp;0&amp;1\end{pmatrix},\qquad U = \begin{pmatrix}1&amp;1&amp;0\\0&amp;1&amp;1\\0&amp;0&amp;1\end{pmatrix}.
+\]</span> Comprobación de la fila 3 de <span class="math inline">\(LU\)</span>: <span class="math inline">\(1\cdot(1,1,0) + 0 + 1\cdot(0,0,1) = (1,1,1)\)</span> ✓. <span class="math inline">\(B\)</span> es invertible (tiene tres pivotes no nulos tras permutar), aunque no tenga <span class="math inline">\(LU\)</span> sin permutación.</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../algebra-matricial/clase-01.html" class="pagination-link" aria-label="Clase 1 · Sistemas lineales y eliminación gaussiana">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../algebra-matricial/clase-03.html" class="pagination-link" aria-label="Clase 3 · Los cuatro subespacios fundamentales">
+        <span class="nav-page-text">Clase 3 · Los cuatro subespacios fundamentales</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

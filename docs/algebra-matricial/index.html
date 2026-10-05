@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Álgebra matricial aplicada y cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos.">
+<meta name="description" content="Catorce clases de álgebra matricial con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, determinantes, mínimos cuadrados, valores propios, SVD, condicionamiento, matrices complejas, funciones de matrices, optimización y problemas inversos.">
 
-<title>Econometría</title>
+<title>Álgebra matricial aplicada – Econometría</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,23 +30,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c64d0ac6b346b31fb053d1269afbdd45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-01.html" rel="next">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,7 +76,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<style>#title-block-header{display:none;}</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
@@ -107,17 +107,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="assets/extra.css">
+<link rel="stylesheet" href="../assets/extra.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Econometría</span>
     </a>
   </div>
@@ -128,27 +128,27 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./algebra-matricial/index.html"> 
+    <a class="nav-link active" href="../algebra-matricial/index.html" aria-current="page"> 
 <span class="menu-text">Álgebra matricial</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-1/index.html"> 
+    <a class="nav-link" href="../econometria-1/index.html"> 
 <span class="menu-text">Econometría 1</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-2/index.html"> 
+    <a class="nav-link" href="../econometria-2/index.html"> 
 <span class="menu-text">Econometría 2</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-3/index.html"> 
+    <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-4/index.html"> 
+    <a class="nav-link" href="../econometria-4/index.html"> 
 <span class="menu-text">Econometría 4</span></a>
   </li>  
 </ul>
@@ -157,28 +157,106 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../algebra-matricial/index.html">Álgebra matricial aplicada</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Álgebra matricial aplicada</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los cuatro subespacios fundamentales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Determinantes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-05.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-06.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-07.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-08.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-09.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-10.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-11.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-12.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-13.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-14.qmd</span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Econometría</h1>
+<h1 class="title">Álgebra matricial aplicada</h1>
+<p class="subtitle lead">Matrices para resolver, ajustar, vibrar y optimizar</p>
 </div>
 
 <div>
   <div class="description">
-    Álgebra matricial aplicada y cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos.
+    Catorce clases de álgebra matricial con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, determinantes, mínimos cuadrados, valores propios, SVD, condicionamiento, matrices complejas, funciones de matrices, optimización y problemas inversos.
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta">
 
     
   
@@ -190,160 +268,101 @@ window.Quarto = {
 </header>
 
 
-<div class="hero">
-<div class="eyebrow">
-Álgebra y econometría · teoría y demostraciones
-</div>
-<h1>
-Econometría,<br>paso a paso.
-</h1>
-<p class="lead">
-Un recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender <em>por qué</em> funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla. Y, como base de todo, un curso de álgebra matricial con la mirada de la ingeniería y la física.
-</p>
-<div class="formula">
-<span class="math display">\[\hat\beta \;=\; (X'X)^{-1}X'y \;=\; \beta + \Big(\tfrac{1}{n}\textstyle\sum_i x_ix_i'\Big)^{-1}\tfrac{1}{n}\textstyle\sum_i x_iu_i\]</span>
-</div>
-</div>
-<section id="fundamentos-matemáticos" class="level2">
-<h2 class="anchored" data-anchor-id="fundamentos-matemáticos">Fundamentos matemáticos</h2>
-<div class="cursos">
-<div class="curso">
-<div class="num">
-A
-</div>
-<h3 class="anchored">
-Álgebra matricial aplicada
-</h3>
-<p>
-Matrices como herramienta de trabajo, con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, mínimos cuadrados, valores propios, SVD, condicionamiento, optimización y problemas inversos. Resultados demostrados en general; todos los ejemplos en dos y tres dimensiones, con figuras. Catorce clases.
-</p>
-<p><span class="estado activo">● En construcción · 14 clases</span> <a class="boton" href="./algebra-matricial/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso pronto">
-<div class="num">
-L
-</div>
-<h3 class="anchored">
-Álgebra lineal
-</h3>
-<p>
-El mismo tema con la mirada de la matemática: espacios vectoriales abstractos, transformaciones lineales, formas canónicas y dimensión arbitraria, al nivel de una licenciatura en matemáticas.
-</p>
-<p><span class="estado proximo">○ Próximamente</span></p>
-</div>
-</div>
-</section>
-<section id="econometría" class="level2">
-<h2 class="anchored" data-anchor-id="econometría">Econometría</h2>
-<div class="cursos">
-<div class="curso">
-<div class="num">
-1
-</div>
-<h3 class="anchored">
-Econometría 1
-</h3>
-<p>
-El modelo de regresión lineal: proyecciones, MCO, Gauss–Markov, inferencia exacta y asintótica, errores de especificación, MCG y variables instrumentales. Diez clases, pregrado con extensiones ★ de postgrado.
-</p>
-<p><span class="estado activo">● Disponible · 10 clases</span> <a class="boton" href="./econometria-1/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-2
-</div>
-<h3 class="anchored">
-Econometría 2
-</h3>
-<p>
-Más allá del modelo lineal: estimación por extremos, máxima verosimilitud, método generalizado de momentos, elección discreta, conteo y duración, regresión cuantílica, datos de panel y estimación por simulación. Trece clases.
-</p>
-<p><span class="estado activo">● Disponible · 13 clases</span> <a class="boton" href="./econometria-2/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-3
-</div>
-<h3 class="anchored">
-Econometría 3
-</h3>
-<p>
-Series de tiempo: procesos estacionarios y ARMA, pronóstico, inferencia con dependencia, raíces unitarias y cointegración, VAR y identificación estructural, volatilidad condicional y espacio de estados. Trece clases.
-</p>
-<p><span class="estado activo">● Disponible · 13 clases</span> <a class="boton" href="./econometria-3/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-4
-</div>
-<h3 class="anchored">
-Econometría 4
-</h3>
-<p>
-Inferencia causal, métodos no paramétricos y aprendizaje automático: resultados potenciales, selección en observables, LATE, diferencias en diferencias, discontinuidad, LASSO, DML, bootstrap e inferencia robusta. Diez clases.
-</p>
-<p><span class="estado activo">● Disponible · 10 clases</span> <a class="boton" href="./econometria-4/index.html">Entrar al curso →</a></p>
-</div>
-</div>
-</section>
-<section id="cómo-están-escritos" class="level2">
-<h2 class="anchored" data-anchor-id="cómo-están-escritos">Cómo están escritos</h2>
-<div class="principios">
-<div>
-<h4 class="anchored">
-Borrador antes que demostración
-</h4>
-<p>
-Antes de cada demostración hay un recuadro donde se piensa en voz alta: qué se sabe, qué se quiere, qué truco podría servir. La demostración formal viene después, limpia y con cada paso justificado.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Notas al margen
-</h4>
-<p>
-Contexto histórico, advertencias, conexiones con otras clases y alguna que otra broma. Leerlas es opcional; saltárselas, también.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Dos niveles en un mismo texto
-</h4>
-<p>
-El núcleo de cada clase es de pregrado. Las secciones marcadas con ★ llevan el mismo tema a nivel de postgrado, sin cambiar de notación ni de libro.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Ejercicios con solución
-</h4>
-<p>
-Cada clase termina con ejercicios de ambos niveles. Las soluciones están plegadas: primero se intenta, después se mira.
-</p>
-</div>
-</div>
-</section>
-<section id="un-ejemplo-del-estilo" class="level2">
-<h2 class="anchored" data-anchor-id="un-ejemplo-del-estilo">Un ejemplo del estilo</h2>
-<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<p>Este curso trata las matrices como una herramienta de trabajo. Las preguntas son las de un ingeniero o un físico: ¿cómo resuelvo este sistema y cuánto me cuesta?, ¿qué tan sensible es la respuesta a un error en los datos?, ¿cuál es la mejor recta que pasa cerca de estos puntos?, ¿con qué frecuencias vibra esta estructura?, ¿cuál es la mejor decisión que cumple estas restricciones? Cada herramienta se presenta junto con el problema que resuelve.</p>
+<p>Hay dos reglas que recorren todo el curso:</p>
+<ul>
+<li><strong>Los resultados se enuncian y se demuestran en general</strong>, para matrices <span class="math inline">\(n\times n\)</span> (o <span class="math inline">\(m\times n\)</span>), con cada paso escrito y justificado. Nada de “es fácil ver”.</li>
+<li><strong>Todos los ejemplos y ejercicios son en dos y tres dimensiones</strong>: matrices <span class="math inline">\(2\times2\)</span> y <span class="math inline">\(3\times3\)</span>, vectores del plano y del espacio, con la aritmética completa. Así cada idea se puede <strong>dibujar</strong>, y casi todas las clases traen figuras.</li>
+</ul>
+<p>Las ideas más abstractas (espacios vectoriales generales, dimensión infinita, la FFT, el producto de Kronecker, los sistemas grandes y dispersos) quedan para el curso de <strong>Álgebra lineal</strong>, de corte matemático. Cada clase termina con un recuadro <em>En más dimensiones</em> que avisa qué se generaliza.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Cómo están escritas las clases">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Borrador
+<span class="screen-reader-only">Precaución</span>Cómo están escritas las clases
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Quiero mostrar que <span class="math inline">\(X'Xb = 0\)</span> implica <span class="math inline">\(Xb = 0\)</span>. No puedo “cancelar” <span class="math inline">\(X'\)</span> porque no tiene inversa. ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y <span class="math inline">\(\|Xb\|^2 = b'X'Xb\)</span>… ¡que tiene un <span class="math inline">\(X'Xb\)</span> adentro! Es el truco de multiplicar por <span class="math inline">\(b'\)</span> a la izquierda.</p>
+<p>Antes de cada demostración hay un recuadro <strong>Borrador</strong>, donde se piensa en voz alta cómo encontrarla. Los <strong>Algoritmos</strong> aparecen en recuadros con sus pasos, su costo y sus puntos débiles. Las secciones <strong>★ Para ir más allá</strong> profundizan y se pueden saltar en una primera lectura. Cada clase termina con siete ejercicios resueltos (con la solución plegada: intenta antes de mirar).</p>
 </div>
 </div>
-<div class="proof">
-<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(X'Xb = 0\)</span>, entonces <span class="math inline">\(0 = b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 = \sum_i (Xb)_i^2\)</span>. Una suma de cuadrados es cero solo si cada término lo es, luego <span class="math inline">\(Xb = 0\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Requisitos">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p style="margin-top:2rem;">
-Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, donde se usa para demostrar que <span class="math inline">\(X'X\)</span> es invertible exactamente cuando <span class="math inline">\(X\)</span> tiene rango columna completo.
-</p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Requisitos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Álgebra de secundaria (resolver sistemas pequeños, operar con fracciones) y la idea de vector en el plano. Las Clases 7 y 12 usan derivadas y la función exponencial; la Clase 13, la idea de gradiente. Las Clases 11 y 12 usan números complejos, que se repasan donde hacen falta.</p>
+</div>
+</div>
+<section id="clases" class="level2">
+<h2 class="anchored" data-anchor-id="clases">Clases</h2>
+<ul class="clases">
+<li>
+<span class="n">01</span><span><a href="../algebra-matricial/clase-01.html">Sistemas lineales y eliminación gaussiana</a><span class="d">Tres maneras de mirar Ax = b, operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad, costo de la eliminación. Circuitos y reacciones químicas. ★ Matrices elementales.</span></span>
+</li>
+<li>
+<span class="n">02</span><span><a href="../algebra-matricial/clase-02.html">Factorización LU, inversas y matrices por bloques</a><span class="d">La eliminación como A = LU, pivoteo, muchos lados derechos, Gauss–Jordan, complemento de Schur y Sherman–Morrison. Una armadura plana. ★ Unicidad de LU.</span></span>
+</li>
+<li>
+<span class="n">03</span><span><a href="../algebra-matricial/clase-03.html">Los cuatro subespacios fundamentales</a><span class="d">Espacio columna, espacio nulo, espacio fila y nulo izquierdo; independencia, base, dimensión, rango–nulidad y la estructura de todas las soluciones. Redes. ★ Rango fila = rango columna.</span></span>
+</li>
+<li>
+<span class="n">04</span><span><a href="../algebra-matricial/clase-04.html">Determinantes</a><span class="d">Las tres propiedades que lo definen, cálculo por eliminación, cofactores y Cramer, el determinante como área y volumen, el jacobiano. ★ La fórmula de Leibniz.</span></span>
+</li>
+<li>
+<span class="n">05</span><span><a href="clase-05.qmd">Ortogonalidad y factorización QR</a><span class="d">Producto interno, Cauchy–Schwarz, bases ortonormales, rotaciones y reflexiones, Gram–Schmidt, QR y Householder. ★ Cuando Gram–Schmidt pierde la ortogonalidad.</span></span>
+</li>
+<li>
+<span class="n">06</span><span><a href="clase-06.qmd">Mínimos cuadrados</a><span class="d">Proyecciones sobre rectas y planos, ecuaciones normales, solución por QR, ajuste de rectas, parábolas y exponenciales, ponderación y regularización. ★ El condicionamiento se eleva al cuadrado.</span></span>
+</li>
+<li>
+<span class="n">07</span><span><a href="clase-07.qmd">Valores propios y sistemas dinámicos</a><span class="d">Polinomio característico, diagonalización, potencias de matrices, cadenas de Markov, Fibonacci, la exponencial de una matriz y los retratos de fase. ★ Cuando no hay suficientes autovectores.</span></span>
+</li>
+<li>
+<span class="n">08</span><span><a href="clase-08.qmd">Matrices simétricas y definidas positivas</a><span class="d">Teorema espectral, formas cuadráticas y ejes principales, criterios de positividad, Cholesky, cociente de Rayleigh, modos normales de vibración y tensor de inercia. ★ Courant–Fischer.</span></span>
+</li>
+<li>
+<span class="n">09</span><span><a href="clase-09.qmd">Descomposición en valores singulares</a><span class="d">La SVD y su geometría, rango y subespacios, pseudoinversa, aproximación de rango bajo y componentes principales. ★ Teorema de Eckart–Young.</span></span>
+</li>
+<li>
+<span class="n">10</span><span><a href="clase-10.qmd">Normas, condicionamiento y métodos iterativos</a><span class="d">Normas de vectores y matrices, número de condición, estabilidad, método de la potencia, Jacobi y Gauss–Seidel, derivadas matriciales. ★ Convergencia y radio espectral.</span></span>
+</li>
+<li>
+<span class="n">11</span><span><a href="clase-11.qmd">Matrices complejas</a><span class="d">Producto hermitiano, matrices hermitianas y unitarias, rotaciones como números complejos, matrices de Pauli, circulantes y la transformada discreta de Fourier de tres puntos. ★ Matrices normales.</span></span>
+</li>
+<li>
+<span class="n">12</span><span><a href="clase-12.qmd">Forma de Jordan y funciones de matrices</a><span class="d">Cayley–Hamilton, bloques de Jordan, la exponencial en general y el amortiguamiento crítico, raíces y logaritmos de matrices, Perron–Frobenius, Leontief y PageRank. ★ Demostración de Perron–Frobenius.</span></span>
+</li>
+<li>
+<span class="n">13</span><span><a href="clase-13.qmd">Optimización lineal y convexa</a><span class="d">Conjuntos y funciones convexas, programación lineal, método gráfico y simplex, dualidad, holgura complementaria, multiplicadores de Lagrange y condiciones KKT. ★ Dualidad fuerte vía Farkas.</span></span>
+</li>
+<li>
+<span class="n">14</span><span><a href="clase-14.qmd">Mínimos cuadrados con restricciones y problemas inversos</a><span class="d">Restricciones de igualdad y desigualdad, mínimos cuadrados no negativos, problemas mal condicionados, SVD truncada, Tikhonov y la curva L. ★ Regularización como filtro.</span></span>
+</li>
+</ul>
+</section>
+<section id="notación" class="level2">
+<h2 class="anchored" data-anchor-id="notación">Notación</h2>
+<p>Los vectores son columnas y se escriben en minúscula (<span class="math inline">\(x\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(v\)</span>); las matrices, en mayúscula (<span class="math inline">\(A\)</span>, <span class="math inline">\(L\)</span>, <span class="math inline">\(Q\)</span>). <span class="math inline">\(A'\)</span> es la transpuesta, <span class="math inline">\(I\)</span> la identidad, <span class="math inline">\(e_j\)</span> el <span class="math inline">\(j\)</span>-ésimo vector canónico y <span class="math inline">\(a_{ij}\)</span> la entrada de la fila <span class="math inline">\(i\)</span> y la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(A\)</span>. Las columnas de <span class="math inline">\(A\)</span> son <span class="math inline">\(a_1,\dots,a_n\)</span>. El producto interno es <span class="math inline">\(x\cdot y = x'y\)</span> y la norma euclidiana, <span class="math inline">\(\|x\| = \sqrt{x'x}\)</span>. Para matrices complejas, <span class="math inline">\(A^*\)</span> es la transpuesta conjugada.</p>
+</section>
+<section id="bibliografía" class="level2">
+<h2 class="anchored" data-anchor-id="bibliografía">Bibliografía</h2>
+<ul>
+<li>Strang, G. (2016). <em>Introduction to Linear Algebra</em>, 5.ª ed.&nbsp;Wellesley-Cambridge Press. (La referencia principal del curso: misma mirada aplicada.)</li>
+<li>Lay, D., Lay, S. y McDonald, J. (2016). <em>Linear Algebra and Its Applications</em>, 5.ª ed.&nbsp;Pearson. (Muchos ejemplos de ingeniería.)</li>
+<li>Trefethen, L. N. y Bau, D. (1997). <em>Numerical Linear Algebra</em>. SIAM. (QR, SVD, condicionamiento y estabilidad.)</li>
+<li>Meyer, C. (2000). <em>Matrix Analysis and Applied Linear Algebra</em>. SIAM. (Jordan, Perron–Frobenius y funciones de matrices.)</li>
+<li>Boyd, S. y Vandenberghe, L. (2004). <em>Convex Optimization</em>. Cambridge University Press. (Clase 13.)</li>
+<li>Boyd, S. y Vandenberghe, L. (2018). <em>Introduction to Applied Linear Algebra</em>. Cambridge University Press. (Mínimos cuadrados con restricciones.)</li>
+<li>Hansen, P. C. (2010). <em>Discrete Inverse Problems: Insight and Algorithms</em>. SIAM. (Clase 14.)</li>
+</ul>
 
 
 </section>
@@ -754,6 +773,15 @@ Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, 
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../algebra-matricial/clase-01.html" class="pagination-link" aria-label="Clase 1 · Sistemas lineales y eliminación gaussiana">
+        <span class="nav-page-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -772,5 +800,5 @@ Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, 
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
