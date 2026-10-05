@@ -1,0 +1,197 @@
+---
+title: "Clase 10 · Impulso-respuesta e identificación estructural"
+subtitle: "De los errores de forma reducida a los shocks económicos"
+description: "Funciones impulso-respuesta y descomposición de varianza, el problema de identificación de un VAR estructural (conteo n(n−1)/2), restricciones de Cholesky, de largo plazo (Blanchard–Quah), de signo e instrumentos externos, fundamentalidad, inferencia sobre las respuestas y proyecciones locales."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De la correlación a la estructura
+
+La Clase 9 estimó un VAR y lo usó para **pronosticar**. Pero la pregunta que realmente interesa en macroeconomía es otra: **¿qué pasa si ocurre un shock?** Si el banco central sube la tasa de política en un punto, ¿cómo responden en los trimestres siguientes la inflación y el producto? Es una pregunta sobre el **efecto de un cambio exógeno**, y un VAR en forma reducida no la puede responder, por una razón simple: los errores $u_t$ del VAR son **combinaciones** de varios shocks económicos que ocurren a la vez.
+
+Considera el VAR de inflación y producto. El error $u_{\pi t}$ de la ecuación de inflación recoge shocks de oferta, de demanda y de política monetaria, todos mezclados; y $u_{xt}$ también. Que $u_{\pi t}$ y $u_{xt}$ estén correlacionados no dice si el shock fue de oferta o de demanda. Para responder preguntas de política necesitamos **desmezclar** los errores en **shocks estructurales** interpretables, y eso exige **supuestos de identificación**: restricciones que vienen de la teoría económica, no de los datos. Es el problema central de esta clase.
+
+# Impulso-respuesta y descomposición de varianza
+
+## La respuesta a los errores de forma reducida
+
+De la representación MA($\infty$) de la Clase 9, $y_t = \mu_y + \sum_{j\ge0}\Psi_ju_{t-j}$, la matriz $\Psi_h$ de $n\times n$ da el efecto sobre $y_{t + h}$ de un cambio en $u_t$: su elemento $(i,j)$ es $\partial y_{i,t + h}/\partial u_{jt}$. Pero un cambio "en $u_{jt}$ solo" no es interpretable económicamente, porque los $u$ están correlacionados: $u_{jt}$ no se mueve solo.
+
+## Shocks estructurales
+
+Supongamos que existen **shocks estructurales** $\varepsilon_t = (\varepsilon_{1t},\dots,\varepsilon_{nt})'$ con $\mathbb{E}[\varepsilon_t\varepsilon_t'] = I_n$ (no correlacionados, varianza unitaria: la normalización) y que los errores de forma reducida son combinaciones lineales de ellos:
+$$
+u_t = B\,\varepsilon_t,\qquad\Sigma_u = BB'.
+$$ {#eq-B}
+La matriz $B$ ($n\times n$) es la **matriz de impacto**: su columna $j$, $B_{\cdot j}$, es el efecto contemporáneo del shock $j$ sobre las $n$ variables. Cada $\varepsilon_{jt}$ es un shock "con nombre": política monetaria, demanda, oferta, tecnología.
+
+::: {#def-irf}
+## Función impulso-respuesta
+La **respuesta al impulso** del shock estructural $j$ sobre la variable $i$ a $h$ períodos es
+$$
+\theta_{ij,h} = \frac{\partial y_{i,t + h}}{\partial\varepsilon_{jt}} = \big[\Psi_hB\big]_{ij},\qquad\Theta_h = \Psi_hB,\quad h = 0,1,2,\dots
+$$
+El gráfico de $h\mapsto\theta_{ij,h}$ es la **IRF** (*impulse response function*). La **respuesta acumulada** es $\sum_{k\le h}\theta_{ij,k}$ (importante para variables en diferencias, como la respuesta del *nivel* del PIB a un shock sobre su tasa de crecimiento).
+:::
+
+Como $\Psi_h$ viene de los datos (de $\hat A_1,\dots,\hat A_p$), la **única incógnita** es $B$. Dada $B$, todas las IRF y la descomposición de varianza se calculan.
+
+## Descomposición de varianza del error de pronóstico
+
+Del teorema de pronóstico a $h$ pasos de la Clase 3 (versión matricial en la Clase 9), el error de pronóstico a $h$ pasos es $e_{T + h|T} = \sum_{k = 0}^{h-1}\Psi_ku_{T + h - k} = \sum_{k = 0}^{h-1}\Theta_k\varepsilon_{T + h - k}$ y su ECM es $\sum_{k<h}\Theta_k\Theta_k'$. Como los $\varepsilon_j$ son **no correlacionados**, la varianza del error de la variable $i$ se **descompone** por shock:
+$$
+\operatorname{Var}\big(e^{(i)}_{T + h|T}\big) = \sum_{k = 0}^{h-1}\sum_{j = 1}^n\theta_{ij,k}^2,\qquad
+\omega_{ij}(h) = \frac{\sum_{k = 0}^{h-1}\theta_{ij,k}^2}{\sum_{k = 0}^{h-1}\sum_{l = 1}^n\theta_{il,k}^2}.
+$$ {#eq-fevd}
+La **descomposición de varianza del error de pronóstico** (FEVD) $\omega_{ij}(h)$ es la fracción de la incertidumbre de $y_i$ a $h$ pasos atribuible al shock $j$. Suma $1$ sobre $j$. Responde preguntas como "¿qué parte de la variabilidad del PIB a cuatro años se debe a shocks monetarios?".
+
+# El problema de identificación
+
+Estimamos $\hat A_k$ y $\hat\Sigma_u$ de los datos. Pero la @eq-B solo dice $BB' = \Sigma_u$: **hay infinitas $B$**.
+
+::: {#prp-id}
+## Las matrices de impacto compatibles con $\Sigma_u$
+Sea $B_0$ cualquier matriz invertible con $B_0B_0' = \Sigma_u$ (por ejemplo, el factor de Cholesky). Entonces $B$ satisface $BB' = \Sigma_u$ si y solo si $B = B_0Q$ con $Q$ una **matriz ortogonal** ($QQ' = I_n$). El conjunto de matrices ortogonales $n\times n$ tiene dimensión $n(n - 1)/2$.
+:::
+
+::: {.proof}
+($\Leftarrow$) Si $B = B_0Q$, $BB' = B_0QQ'B_0' = B_0B_0' = \Sigma_u$. ($\Rightarrow$) Si $BB' = B_0B_0'$, sea $Q = B_0^{-1}B$. Entonces $QQ' = B_0^{-1}BB'B_0^{-\prime} = B_0^{-1}B_0B_0'B_0^{-\prime} = I_n$: $Q$ es ortogonal. Para la dimensión: una matriz ortogonal cercana a la identidad es $Q = \exp(S)$ con $S$ antisimétrica ($S' = -S$), y una matriz antisimétrica $n\times n$ tiene $n(n - 1)/2$ elementos libres (los de arriba de la diagonal; la diagonal es cero y abajo queda determinada).
+:::
+
+Consecuencia: los datos identifican $\Sigma_u$ (que tiene $n(n + 1)/2$ elementos distintos) pero no los $n^2$ elementos de $B$. **Faltan $n^2 - n(n + 1)/2 = n(n - 1)/2$ restricciones** para identificar $B$ (la **condición de orden**). Con $n = 2$, una restricción; con $n = 3$, tres; con $n = 6$, quince. Cada familia de métodos de identificación es una forma de especificar esas restricciones.
+
+# Métodos de identificación
+
+## Restricciones de corto plazo: Cholesky
+
+El método más usado es imponer que $B$ sea **triangular inferior**, $B = \operatorname{chol}(\Sigma_u)$ (el factor de Cholesky de $\Sigma_u$, con diagonal positiva). Eso son exactamente $n(n - 1)/2$ ceros (los elementos sobre la diagonal), y es la restricción justa.
+
+La interpretación económica es una **estructura recursiva** (o causal ordenada): el shock $\varepsilon_{1t}$ afecta a todas las variables en $t$; el shock $\varepsilon_{2t}$ afecta a las variables $2,\dots,n$ pero **no a la variable 1** en el mismo período; y así sucesivamente. La variable 1 es "la más exógena" y la última, "la más endógena". El orden de las variables **importa**: en un caso con $\Sigma_u$ no diagonal, cambiarlo da shocks distintos y IRF distintas (Ejercicio 10.2). Por eso el orden debe estar justificado por argumentos económicos.
+
+::: {#exm-cholesky}
+## Un ejemplo con dos variables
+Con $\Sigma_u = \begin{pmatrix}1&0{,}5\\0{,}5&1\end{pmatrix}$ y el orden $(\pi_t,x_t)$, $B = \begin{pmatrix}1&0\\0{,}5&0{,}866\end{pmatrix}$ (pues $B B' = \begin{pmatrix}1&0{,}5\\0{,}5&0{,}25 + 0{,}75\end{pmatrix}$ ✓). Un shock estructural $\varepsilon_{1t} = 1$ (el que "mueve primero") sube $\pi$ en $1$ y $x$ en $0{,}5$ al impacto; un shock $\varepsilon_{2t} = 1$ **no** mueve $\pi$ en el mismo período y sube $x$ en $0{,}866$. Con el VAR(1) de la Clase 9 ($A = \begin{pmatrix}0{,}5&0{,}1\\0{,}2&0{,}4\end{pmatrix}$): $\Theta_0 = B$ y $\Theta_1 = AB = \begin{pmatrix}0{,}55&0{,}087\\0{,}40&0{,}346\end{pmatrix}$. Un shock del primer tipo eleva $x$ en $0{,}40$ un período después. Para $h = 1$, la **FEVD** de $x$ asigna al shock 1 la fracción $0{,}5^2/1 = 0{,}25$ y al shock 2 la fracción $0{,}75$ de la varianza del error de pronóstico de $x$.
+:::
+
+Un clásico de política monetaria (Christiano, Eichenbaum y Evans, 1999) ordena **primero** las variables "lentas" (producto, precios), que **no responden** a la tasa de interés en el mismo trimestre (por rigideces), y **después** la tasa de política, que sí reacciona a la información contemporánea de esas variables. El shock identificado como $\varepsilon_{R}$ es el componente de política monetaria **no sistemático**.
+
+## Restricciones de largo plazo: Blanchard–Quah
+
+Blanchard y Quah (1989) identificaron shocks de **demanda y oferta** con una idea distinta: los shocks de demanda **no tienen efecto permanente** sobre el producto (los de oferta, sí). Para $y_t = (\Delta\text{PIB}_t,\ \text{desempleo}_t)'$ estacionario con representación $y_t = \Psi(L)u_t$, el efecto **acumulado** de largo plazo de los shocks estructurales es $\Theta(1) = \Psi(1)B$ con $\Psi(1) = \sum_j\Psi_j = (I - A_1 - \dots - A_p)^{-1}$. La restricción es que la entrada de $\Theta(1)$ que mide el efecto del shock de demanda sobre el **nivel** del PIB sea cero, es decir, que $\Theta(1)$ sea **triangular** (por ejemplo, inferior con la demanda en la segunda columna).
+
+Cómo se calcula: como $\Theta(1)\Theta(1)' = \Psi(1)BB'\Psi(1)' = \Psi(1)\Sigma_u\Psi(1)'$ es conocida, $\Theta(1) = \operatorname{chol}\big(\Psi(1)\Sigma_u\Psi(1)'\big)$ (la matriz triangular), y entonces
+$$
+B = \Psi(1)^{-1}\Theta(1).
+$$ {#eq-bq}
+Es **Cholesky aplicado a la matriz de largo plazo**. Ventaja: no exige ordenar contemporáneamente; las restricciones son sobre el *efecto de largo plazo*, que muchas teorías macro predicen (neutralidad monetaria, y que los shocks de demanda no cambian el potencial). Desventaja: depende de **estimar bien $\Psi(1)$**, que es la suma de infinitos coeficientes y por lo tanto imprecisa con series persistentes, y de la **especificación en niveles o diferencias** (la elección entre las dos cambia la IRF de largo plazo).
+
+## Restricciones de signo
+
+Uhlig (2005) y otros propusieron algo más débil: en lugar de ceros, imponer **signos** de las respuestas sobre algunos horizontes ("un shock de política monetaria contractiva *sube* la tasa y *no sube* la inflación ni el producto durante cuatro trimestres"). Esas restricciones no identifican $B$ de manera única, sino un **conjunto**: todas las $B = B_0Q$ cuyas IRF cumplen los signos. El algoritmo: (1) generar $Q$ ortogonal al azar (a partir de la descomposición QR de una matriz de normales); (2) calcular $B = B_0Q$ y las IRF; (3) conservar la $Q$ si los signos se cumplen. El resultado es un **conjunto** de IRF, y se reportan sus cuantiles. Es **identificación por conjuntos**: honesta sobre la incertidumbre de identificación, pero las bandas resultan anchas y su interpretación bayesiana depende de la distribución sobre $Q$ (crítica de Baumeister y Hamilton, 2015).
+
+## Instrumentos externos (proxy-SVAR)
+
+Si existe una variable $z_t$ (un **instrumento**) **correlacionada con un shock estructural** $\varepsilon_{1t}$ pero **no con los demás**, $\mathbb{E}[z_t\varepsilon_{1t}] = \phi\ne0$ y $\mathbb{E}[z_t\varepsilon_{jt}] = 0$ ($j\ne1$) (por ejemplo, sorpresas de política monetaria medidas con futuros de tasas en una ventana angosta alrededor del anuncio), entonces
+$$
+\mathbb{E}[z_tu_t] = B\,\mathbb{E}[z_t\varepsilon_t] = B_{\cdot1}\,\phi.
+$$
+La covarianza entre el instrumento y los errores de forma reducida da la **primera columna de $B$ salvo escala**: $B_{i1}/B_{11} = \operatorname{Cov}(z_t,u_{it})/\operatorname{Cov}(z_t,u_{1t})$. Con eso se identifica **un shock** (el de interés) sin ordenar el resto. Es el enfoque moderno dominante para política monetaria y fiscal, y es el análogo en VAR de la variable instrumental de la Clase 10 de Econometría 1.
+
+# Fundamentalidad
+
+Todo lo anterior supone que los shocks estructurales $\varepsilon_t$ se pueden **recuperar del pasado de $y$** a partir de los residuos del VAR: $\varepsilon_t = B^{-1}u_t$. Eso exige que la representación MA estructural $y_t = \Theta(L)\varepsilon_t$ sea **invertible** (**fundamental**), es decir, que el polinomio $\Theta(z)$ no tenga raíces dentro del círculo unitario (la versión multivariada del problema $\theta$ frente a $1/\theta$ de las Clases 2 y 3). Si no, los residuos del VAR **no** son los shocks estructurales, y las IRF estimadas son incorrectas.
+
+El problema aparece típicamente cuando el econometrista tiene **menos información que los agentes**: shocks **anticipados** ("noticias": los agentes saben hoy de un cambio de impuestos que ocurre en dos años y ajustan hoy), o variables relevantes **omitidas** del VAR (porque los agentes observan variables que el econometrista no). El remedio es ampliar el conjunto de información (agregar variables financieras, que incorporan expectativas, o usar muchas series con modelos de factores) o identificar el shock con **instrumentos externos** o con **narrativas**.
+
+# Inferencia sobre las IRF
+
+Las IRF estimadas, $\hat\Theta_h = \hat\Psi_h\hat B$, son **estimaciones con error**, y comunicarlas sin bandas de incertidumbre es engañoso.
+
+**Método delta (asintótico).** $\Psi_h$ es una función suave de los coeficientes $A = [A_1,\dots,A_p]$ (se calcula con la recursión de la Clase 9). Por el método delta, $\sqrt T\operatorname{vec}(\hat\Psi_h - \Psi_h)\to_dN(0,G_h(\Sigma_u\otimes Q^{-1})G_h')$ con $G_h = \partial\operatorname{vec}(\Psi_h)/\partial\operatorname{vec}(A)' = \sum_{m = 0}^{h-1}J(F')^{h - 1 - m}\otimes\Psi_m$ y $J = [I_n,0,\dots,0]$ (Lütkepohl, 2005; se toma prestado). Con $B$ identificado por una función de $\Sigma_u$ (Cholesky, largo plazo), el método delta se extiende.
+
+**Bootstrap** (el más usado en la práctica; Clase 13 de Econometría 2 para la idea de simulación): (1) estimar el VAR y guardar los residuos $\hat u_t$ y los coeficientes; (2) generar **muestras artificiales** remuestreando los residuos (con reemplazo, **residual bootstrap**) y reconstruyendo $y_t^*$ recursivamente; (3) re-estimar el VAR y las IRF en cada muestra; (4) tomar los cuantiles de las IRF bootstrap como bandas. Con series persistentes los coeficientes tienen **sesgo de muestra finita** (Clase 4: $-(1 + 3\phi)/T$), por lo que se recomienda el bootstrap **con corrección de sesgo** (Kilian, 1998). Los intervalos de IRF a horizontes largos son anchos: la IRF a $h = 20$ depende de potencias $A^{20}$ y amplifica la incertidumbre.
+
+# Proyecciones locales
+
+Jordà (2005) propuso una alternativa que **no** estima un VAR: estimar cada IRF **directamente** con una regresión distinta para cada horizonte,
+$$
+y_{t + h} = \alpha_h + \theta_h\,s_t + \gamma_h'w_t + \xi_{t + h}^{(h)},\qquad h = 0,1,\dots,H,
+$$
+donde $s_t$ es una medida del **shock identificado** (un instrumento externo, o el residuo identificado de otra regresión) y $w_t$ controles (rezagos). El coeficiente $\hat\theta_h$ es el estimador de la IRF a $h$ períodos. Ventajas: **robustez** a mala especificación de la dinámica (no se impone la estructura de un VAR) y simplicidad (MCO por horizonte, con errores HAC porque $\xi^{(h)}_{t + h}$ es un MA($h$)). Desventajas: **menor eficiencia** (la IRF suave del VAR se reemplaza por $H$ estimaciones independientes, y el error crece con $h$) y curvas irregulares. Plagborg-Nielsen y Montiel Olea (2021) muestran que ambos métodos estiman **el mismo objeto poblacional** y difieren en su balance **sesgo–varianza**: VAR tiene menor varianza y más sesgo (si la dinámica está mal especificada), LP lo contrario.
+
+# ★ Postgrado: identidad poblacional entre VAR y proyecciones locales
+
+::: {.callout-important title="★ Postgrado"}
+Si el shock $\varepsilon_{jt}$ fuera observable, la regresión de $y_{t + h}$ sobre $\varepsilon_{jt}$ recupera exactamente la IRF del VAR. Es la razón de que LP y VAR estimen la misma cantidad.
+:::
+
+::: {#prp-lp}
+## La proyección local identifica la IRF
+En un VAR estacionario con shocks estructurales $\varepsilon_t$ ortonormales y observables, el coeficiente poblacional de la regresión de $y_{i,t + h}$ sobre $\varepsilon_{jt}$ (y controles que son funciones del pasado de $\varepsilon$ hasta $t - 1$) es $\theta_{ij,h} = [\Psi_hB]_{ij}$.
+:::
+
+::: {.proof}
+$y_{i,t + h} = \mu_i + \sum_{k\ge0}\sum_l\theta_{il,k}\varepsilon_{l,t + h - k}$ (de la representación MA estructural). El término con $k = h$ y $l = j$ es $\theta_{ij,h}\varepsilon_{jt}$. Los demás términos involucran $\varepsilon_{l,t + h - k}$ con $(l,k)\ne(j,h)$: los de $k<h$ son shocks **futuros** $\varepsilon_{l,t + m}$, $m\ge1$, no correlacionados con $\varepsilon_{jt}$; los de $k>h$ y $l\ne j$ son shocks **pasados** o contemporáneos de otras variables, también no correlacionados con $\varepsilon_{jt}$ (ortogonalidad contemporánea y serial). Luego $\operatorname{Cov}(y_{i,t + h},\varepsilon_{jt}) = \theta_{ij,h}\operatorname{Var}(\varepsilon_{jt}) = \theta_{ij,h}$, y el coeficiente de regresión es $\theta_{ij,h}$ (los controles, funciones del pasado, no alteran el resultado por ortogonalidad). $\square$
+:::
+
+La diferencia entre los métodos es **qué se estima y cómo**: el VAR estima $\Psi_h$ de $A_1,\dots,A_p$ (parsimonioso: $\Psi_h$ viene de potencias de $F$, y un error en $\hat F$ se amplifica con $h$), y la LP estima $\theta_h$ directamente con un coeficiente por horizonte (sin estructura, pero sin sesgo de especificación). Con un VAR bien especificado, el VAR gana; con dinámica compleja, la LP.
+
+# Resumen
+
+- Los errores del VAR son mezclas de shocks estructurales: $u_t = B\varepsilon_t$, $\Sigma_u = BB'$. La **IRF** es $\Theta_h = \Psi_hB$ (@def-irf), y la **FEVD** reparte la varianza del error de pronóstico por shock (@eq-fevd).
+- **Identificación:** $B = B_0Q$ con $Q$ ortogonal (@prp-id): faltan $n(n - 1)/2$ restricciones.
+- **Métodos:** **Cholesky** (recursivo, el orden importa), **largo plazo** (Blanchard–Quah: $B = \Psi(1)^{-1}\operatorname{chol}(\Psi(1)\Sigma_u\Psi(1)')$, @eq-bq), **signos** (identifica un conjunto), **instrumentos externos** ($\mathbb{E}[zu] = B_{\cdot1}\phi$).
+- **Fundamentalidad:** los residuos del VAR son los shocks solo si la representación es invertible; falla con noticias o información omitida.
+- **Inferencia:** delta o **bootstrap con corrección de sesgo**; las bandas a horizontes largos son anchas.
+- **Proyecciones locales:** regresión por horizonte; estima la misma IRF que el VAR (@prp-lp) con distinto balance sesgo–varianza.
+
+# Ejercicios
+
+**Ejercicio 10.1.** Calcula el factor de Cholesky de $\Sigma_u = \begin{pmatrix}4&2\\2&3\end{pmatrix}$ y las respuestas al impacto del primer shock sobre las dos variables.
+
+::: {.callout-tip collapse="true" title="Solución 10.1"}
+$B = \begin{pmatrix}b_{11}&0\\b_{21}&b_{22}\end{pmatrix}$ con $b_{11}^2 = 4\Rightarrow b_{11} = 2$; $b_{21}b_{11} = 2\Rightarrow b_{21} = 1$; $b_{21}^2 + b_{22}^2 = 3\Rightarrow b_{22} = \sqrt2 = 1{,}414$. $B = \begin{pmatrix}2&0\\1&1{,}414\end{pmatrix}$. Verificación: $BB' = \begin{pmatrix}4&2\\2&1 + 2\end{pmatrix}$ ✓. El primer shock estructural sube la variable 1 en $2$ y la variable 2 en $1$ al impacto; el segundo no mueve la variable 1 y sube la 2 en $1{,}414$. (Notar que "una unidad de $\varepsilon_1$" equivale a una desviación estándar de $u_1$: $\sqrt{4} = 2$.)
+:::
+
+**Ejercicio 10.2.** Con $\Sigma_u = \begin{pmatrix}4&2\\2&3\end{pmatrix}$, invierte el orden de las variables, calcula el nuevo factor de Cholesky y compara el efecto contemporáneo del shock "de la variable 2" sobre la variable 1 en ambos órdenes.
+
+::: {.callout-tip collapse="true" title="Solución 10.2"}
+Con el orden $(2,1)$, la covarianza es $\Sigma' = \begin{pmatrix}3&2\\2&4\end{pmatrix}$ y $B' = \begin{pmatrix}\sqrt3&0\\2/\sqrt3&\sqrt{4 - 4/3}\end{pmatrix} = \begin{pmatrix}1{,}732&0\\1{,}155&1{,}633\end{pmatrix}$. Ahora el **primer** shock es el de la variable 2 y afecta a la variable 1 en $1{,}155$ al impacto. En el orden original, el shock "de la variable 2" (el **segundo**) afectaba a la variable 1 en **cero** al impacto. Con el mismo $\Sigma_u$, los shocks identificados son distintos: en un caso $\varepsilon_2$ no mueve la variable 1 en $t$, y en el otro sí. Cuando la correlación entre $u_1$ y $u_2$ es alta ($\rho = 2/\sqrt{12} = 0{,}577$), el orden importa mucho. Si fuera cero, no importaría.
+:::
+
+**Ejercicio 10.3.** En el @exm-cholesky ($\Sigma_u = \begin{pmatrix}1&0{,}5\\0{,}5&1\end{pmatrix}$, orden $(\pi,x)$), calcula la FEVD de $x$ a $h = 1$ por shock.
+
+::: {.callout-tip collapse="true" title="Solución 10.3"}
+$\Theta_0 = B = \begin{pmatrix}1&0\\0{,}5&0{,}866\end{pmatrix}$. A $h = 1$ (solo $k = 0$), la varianza del error de $x$ es $\theta_{x1,0}^2 + \theta_{x2,0}^2 = 0{,}25 + 0{,}75 = 1$ (igual a $\Sigma_{u,22} = 1$ ✓). Fracciones: shock 1: $\omega_{x1}(1) = 0{,}25$ (25 %); shock 2: $0{,}75$ (75 %). Con $h = 2$ se suman los términos de $\Theta_1$: $\theta_{x1,1}^2 = 0{,}40^2 = 0{,}16$ y $\theta_{x2,1}^2 = 0{,}346^2 = 0{,}12$, de modo que la FEVD pasa a $(0{,}25 + 0{,}16)/(1 + 0{,}28) = 0{,}32$ (32 %) y $0{,}68$ (68 %). El peso del shock 1 crece con el horizonte porque se propaga.
+:::
+
+**Ejercicio 10.4.** ¿Cuántas restricciones se necesitan para identificar un VAR estructural con $n = 3$ y con $n = 5$? ¿Cuántas impone un Cholesky? ¿Cuántas restricciones adicionales imponen las de Blanchard–Quah en $n = 2$?
+
+::: {.callout-tip collapse="true" title="Solución 10.4"}
+$n(n - 1)/2$: $n = 3$: $3$; $n = 5$: $10$. Cholesky impone $n(n - 1)/2$ ceros (todos los elementos sobre la diagonal de $B$): **justo** las necesarias. Blanchard–Quah con $n = 2$ impone $1$ restricción ($\Theta(1)_{12} = 0$: el shock de demanda no tiene efecto permanente), que es lo que hace falta: $2\cdot1/2 = 1$. En general, cualquier conjunto de $n(n - 1)/2$ restricciones independientes (de corto o largo plazo, o mixtas) identifica $B$.
+:::
+
+**Ejercicio 10.5.** Un VAR bivariado tiene $\Psi(1) = \begin{pmatrix}2&1\\0{,}5&1{,}5\end{pmatrix}$ y $\Sigma_u = I_2$. Calcula $B$ de Blanchard–Quah imponiendo que $\Theta(1) = \Psi(1)B$ sea triangular inferior. Verifica $\Theta(1)$.
+
+::: {.callout-tip collapse="true" title="Solución 10.5"}
+$\Psi(1)\Sigma_u\Psi(1)' = \Psi(1)\Psi(1)' = \begin{pmatrix}5&2{,}5\\2{,}5&2{,}5\end{pmatrix}$. Cholesky: $\theta_{11} = \sqrt5 = 2{,}236$, $\theta_{21} = 2{,}5/2{,}236 = 1{,}118$, $\theta_{22} = \sqrt{2{,}5 - 1{,}25} = 1{,}118$. $\Theta(1) = \begin{pmatrix}2{,}236&0\\1{,}118&1{,}118\end{pmatrix}$. $\Psi(1)^{-1} = \frac1{2{,}5}\begin{pmatrix}1{,}5&-1\\-0{,}5&2\end{pmatrix} = \begin{pmatrix}0{,}6&-0{,}4\\-0{,}2&0{,}8\end{pmatrix}$ (el determinante es $3 - 0{,}5 = 2{,}5$). $B = \Psi(1)^{-1}\Theta(1) = \begin{pmatrix}0{,}894&-0{,}447\\0{,}447&0{,}894\end{pmatrix}$ (una rotación, pues $\Sigma_u = I$). Verificación: $\Psi(1)B = \begin{pmatrix}2\cdot0{,}894 + 0{,}447&-0{,}894 + 0{,}894\\0{,}447 + 0{,}671&-0{,}224 + 1{,}341\end{pmatrix} = \begin{pmatrix}2{,}236&0\\1{,}118&1{,}118\end{pmatrix}$ ✓: el elemento $(1,2)$ de $\Theta(1)$ es cero.
+:::
+
+**Ejercicio 10.6.** Un proxy-SVAR tiene un instrumento $z_t$ con $\operatorname{Cov}(z_t,u_t) = (0{,}6,\ 0{,}3,\ -0{,}12)'$ para las tres variables. Calcula la respuesta relativa de las variables 2 y 3 al shock instrumentado, normalizada a un efecto de $1$ sobre la variable 1.
+
+::: {.callout-tip collapse="true" title="Solución 10.6"}
+$B_{i1}/B_{11} = \operatorname{Cov}(z,u_i)/\operatorname{Cov}(z,u_1)$: variable 2: $0{,}3/0{,}6 = 0{,}5$; variable 3: $-0{,}12/0{,}6 = -0{,}2$. Un shock que sube la variable 1 en una unidad al impacto sube la 2 en $0{,}5$ y baja la 3 en $0{,}2$. La **escala** (cuánto vale $B_{11}$) requiere la normalización adicional (por ejemplo, fijar un aumento de un punto porcentual de la tasa de política); de ahí que el proxy-SVAR identifique la **forma** de la respuesta, no la unidad del shock sin esa normalización. La relevancia del instrumento ($\phi\ne0$) se verifica con un $F$ de primera etapa, como en la Clase 10 de Econometría 1.
+:::
+
+**Ejercicio 10.7 ★.** Muestra que $B = B_0Q$, con $B_0$ el factor de Cholesky y $Q = \begin{pmatrix}\cos\vartheta&-\sin\vartheta\\\sin\vartheta&\cos\vartheta\end{pmatrix}$ una rotación, da **la misma** $\Sigma_u$ para todo $\vartheta$, y explica qué ángulo corresponde al Cholesky. ¿Cuántos grados de libertad tiene el conjunto de rotaciones en $n = 2$?
+
+::: {.callout-tip collapse="true" title="Solución 10.7 ★"}
+$QQ' = \begin{pmatrix}\cos^2\vartheta + \sin^2\vartheta&0\\0&1\end{pmatrix} = I_2$: $Q$ es ortogonal y $BB' = B_0QQ'B_0' = B_0B_0' = \Sigma_u$ para **todo** $\vartheta$. El Cholesky corresponde a $\vartheta = 0$ ($Q = I$). Cualquier otro $\vartheta$ (hasta reflexiones) da otra identificación igualmente compatible con los datos. El conjunto de rotaciones en $\mathbb{R}^2$ tiene **un** grado de libertad (el ángulo $\vartheta$), que es $n(n - 1)/2 = 1$: **el ángulo es exactamente lo que los datos no identifican**, y lo que la restricción de identificación (un cero en $B$, o en $\Theta(1)$, o un signo) debe fijar. Con restricciones de signo se retiene el **intervalo** de ángulos compatibles.
+:::

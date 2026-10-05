@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El VAR con raíces unitarias en forma de corrección de error, la matriz Π de rango reducido, el teorema de representación de Granger, la estimación por máxima verosimilitud de rango reducido de Johansen, los tests de traza y de máximo valor propio y su conexión con Dickey–Fuller.">
+
+<title>Clase 11 · VECM y el método de Johansen – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-10.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-11.html">Clase 11 · VECM y el método de Johansen</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cointegración-con-más-de-dos-variables" id="toc-cointegración-con-más-de-dos-variables" class="nav-link active" data-scroll-target="#cointegración-con-más-de-dos-variables"><span class="header-section-number">1</span> Cointegración con más de dos variables</a></li>
+  <li><a href="#el-var-integrado-y-su-forma-de-corrección-de-error" id="toc-el-var-integrado-y-su-forma-de-corrección-de-error" class="nav-link" data-scroll-target="#el-var-integrado-y-su-forma-de-corrección-de-error"><span class="header-section-number">2</span> El VAR integrado y su forma de corrección de error</a>
+  <ul class="collapse">
+  <li><a href="#el-teorema-de-representación-de-granger" id="toc-el-teorema-de-representación-de-granger" class="nav-link" data-scroll-target="#el-teorema-de-representación-de-granger"><span class="header-section-number">2.1</span> El teorema de representación de Granger</a></li>
+  </ul></li>
+  <li><a href="#estimación-de-johansen-rango-reducido-por-máxima-verosimilitud" id="toc-estimación-de-johansen-rango-reducido-por-máxima-verosimilitud" class="nav-link" data-scroll-target="#estimación-de-johansen-rango-reducido-por-máxima-verosimilitud"><span class="header-section-number">3</span> Estimación de Johansen: rango reducido por máxima verosimilitud</a>
+  <ul class="collapse">
+  <li><a href="#concentración-y-regresión-de-rango-reducido" id="toc-concentración-y-regresión-de-rango-reducido" class="nav-link" data-scroll-target="#concentración-y-regresión-de-rango-reducido"><span class="header-section-number">3.1</span> Concentración y regresión de rango reducido</a></li>
+  </ul></li>
+  <li><a href="#tests-de-rango-traza-y-valor-propio-máximo" id="toc-tests-de-rango-traza-y-valor-propio-máximo" class="nav-link" data-scroll-target="#tests-de-rango-traza-y-valor-propio-máximo"><span class="header-section-number">4</span> Tests de rango: traza y valor propio máximo</a>
+  <ul class="collapse">
+  <li><a href="#procedimiento-secuencial" id="toc-procedimiento-secuencial" class="nav-link" data-scroll-target="#procedimiento-secuencial"><span class="header-section-number">4.1</span> Procedimiento secuencial</a></li>
+  </ul></li>
+  <li><a href="#inferencia-sobre-alpha-y-beta" id="toc-inferencia-sobre-alpha-y-beta" class="nav-link" data-scroll-target="#inferencia-sobre-alpha-y-beta"><span class="header-section-number">5</span> Inferencia sobre <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span></a></li>
+  <li><a href="#comparación-con-englegranger" id="toc-comparación-con-englegranger" class="nav-link" data-scroll-target="#comparación-con-englegranger"><span class="header-section-number">6</span> Comparación con Engle–Granger</a></li>
+  <li><a href="#postgrado-cointegración-y-conteo-de-raíces-unitarias" id="toc-postgrado-cointegración-y-conteo-de-raíces-unitarias" class="nav-link" data-scroll-target="#postgrado-cointegración-y-conteo-de-raíces-unitarias"><span class="header-section-number">7</span> ★ Postgrado: cointegración y conteo de raíces unitarias</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-11.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 11 · VECM y el método de Johansen</h1>
+<p class="subtitle lead">Cointegración en sistemas: rango reducido, tests de traza y valor propio máximo</p>
+</div>
+
+<div>
+  <div class="description">
+    El VAR con raíces unitarias en forma de corrección de error, la matriz Π de rango reducido, el teorema de representación de Granger, la estimación por máxima verosimilitud de rango reducido de Johansen, los tests de traza y de máximo valor propio y su conexión con Dickey–Fuller.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-11.pdf">Descargar esta clase en PDF</a></p>
+<section id="cointegración-con-más-de-dos-variables" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cointegración con más de dos variables</h1>
+<p>La Clase 8 trató la cointegración entre <strong>dos</strong> series con el método de Engle–Granger. Ese enfoque tiene límites: depende de cuál variable se usa como dependiente, detecta una sola relación y trata asimétricamente a las variables. Con <span class="math inline">\(n&gt;2\)</span> series puede haber <strong>varias</strong> relaciones de equilibrio (hasta <span class="math inline">\(n - 1\)</span>, Clase 8), y el desafío es <strong>estimar cuántas hay</strong> y <strong>cuáles son</strong>, de manera simétrica y eficiente. Johansen (1988, 1991) lo resolvió con un marco de máxima verosimilitud que parte del <strong>VAR</strong>. Es la herramienta estándar para cointegración multivariada.</p>
+</section>
+<section id="el-var-integrado-y-su-forma-de-corrección-de-error" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El VAR integrado y su forma de corrección de error</h1>
+<p>Sea <span class="math inline">\(y_t\)</span> (<span class="math inline">\(n\times1\)</span>) un VAR(<span class="math inline">\(p\)</span>) en niveles: <span class="math inline">\(y_t = c + A_1y_{t-1} + \dots + A_py_{t-p} + u_t\)</span>. Con el mismo álgebra de la ADF (Clase 7), pero ahora con matrices, se reescribe como</p>
+<div id="prp-vecm" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Forma VECM)</strong></span> <span class="math display">\[
+\Delta y_t = c + \Pi y_{t-1} + \sum_{j = 1}^{p-1}\Gamma_j\Delta y_{t-j} + u_t,\qquad\Pi = \sum_{j = 1}^pA_j - I_n,\quad\Gamma_j = -\sum_{i = j + 1}^pA_i.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Es la reparametrización del AR(<span class="math inline">\(p\)</span>) de la Clase 7 aplicada a matrices: se escribe <span class="math inline">\(y_{t-j} = y_{t-1} - \sum_{i = 1}^{j-1}\Delta y_{t-i}\)</span> en cada rezago, se agrupa y se resta <span class="math inline">\(y_{t-1}\)</span> de ambos lados. Los coeficientes quedan <span class="math inline">\(\Pi = \sum A_j - I\)</span> y <span class="math inline">\(\Gamma_j = -\sum_{i&gt;j}A_i\)</span>.</p>
+</div>
+<p>Esta forma separa la dinámica en <strong>tres niveles</strong>: <span class="math inline">\(\Delta y_t\)</span> (cambio), <span class="math inline">\(\Pi y_{t-1}\)</span> (<strong>el término de nivel</strong>, que contiene toda la información de largo plazo) y <span class="math inline">\(\Gamma_j\Delta y_{t-j}\)</span> (dinámica de corto plazo). La matriz <span class="math inline">\(\Pi\)</span> <strong>resume las relaciones de cointegración</strong> según su rango.</p>
+<div id="thm-rango" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Rango de <span class="math inline">\(\Pi\)</span> y cointegración)</strong></span> Sea <span class="math inline">\(r = \operatorname{rango}(\Pi)\)</span>. Suponemos que <span class="math inline">\(y_t\)</span> es a lo más <span class="math inline">\(I(1)\)</span> (las raíces de <span class="math inline">\(\det(I - \sum A_jz^j) = 0\)</span> están fuera del círculo unitario o son exactamente <span class="math inline">\(z = 1\)</span>). Entonces:</p>
+<ol type="1">
+<li><strong><span class="math inline">\(r = n\)</span></strong> (<span class="math inline">\(\Pi\)</span> de rango completo): <span class="math inline">\(y_t\)</span> es <strong>estacionario</strong> (VAR en niveles).</li>
+<li><strong><span class="math inline">\(r = 0\)</span></strong> (<span class="math inline">\(\Pi = 0\)</span>): no hay cointegración; <span class="math inline">\(\Delta y_t\)</span> sigue un <strong>VAR en diferencias</strong>.</li>
+<li><strong><span class="math inline">\(0&lt;r&lt;n\)</span></strong>: <span class="math inline">\(\Pi = \alpha\beta'\)</span> con <span class="math inline">\(\alpha,\beta\)</span> de <span class="math inline">\(n\times r\)</span> y rango columna completo. Las columnas de <span class="math inline">\(\beta\)</span> son los <strong>vectores de cointegración</strong> (<span class="math inline">\(\beta'y_t\)</span> es <span class="math inline">\(I(0)\)</span>) y las de <span class="math inline">\(\alpha\)</span> son las <strong>velocidades de ajuste</strong> (cargas). Hay <span class="math inline">\(n - r\)</span> <strong>tendencias estocásticas comunes</strong>.</li>
+</ol>
+</div>
+<p>El caso 3 se escribe <span id="eq-vecm"><span class="math display">\[
+\Delta y_t = c + \alpha\underbrace{\beta'y_{t-1}}_{\text{desequilibrios}} + \sum_{j = 1}^{p-1}\Gamma_j\Delta y_{t-j} + u_t.
+\tag{1}\]</span></span> Es la generalización multivariada del ECM de la Clase 8: <span class="math inline">\(\beta'y_{t-1}\)</span> (<span class="math inline">\(r\)</span> desequilibrios, estacionarios) <strong>corrigen</strong> a las variables con velocidad <span class="math inline">\(\alpha\)</span>. La condición “rango reducido” es lo que distingue al VECM de un VAR cualquiera.</p>
+<p>Una <strong>propiedad de identificación importante</strong>: <span class="math inline">\(\Pi = \alpha\beta' = (\alpha M)(\beta M^{-\prime})'\)</span> para cualquier <span class="math inline">\(M\)</span> invertible de <span class="math inline">\(r\times r\)</span>. Solo el <strong>espacio</strong> generado por las columnas de <span class="math inline">\(\beta\)</span> (el <em>espacio de cointegración</em>) está identificado por los datos, no los vectores individuales. Para obtener unos específicos hay que <strong>normalizar</strong> (por ejemplo, <span class="math inline">\(\beta = \begin{pmatrix}I_r\\-\beta_2\end{pmatrix}\)</span>: cada relación “normalizada” con coeficiente uno en una variable) o imponer <strong>restricciones económicas</strong> (por ejemplo, que una relación sea la paridad de poder de compra, con coeficientes <span class="math inline">\((1,-1,\dots)\)</span>).</p>
+<div id="exm-vecm" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un VAR(1) bivariado con una relación de cointegración)</strong></span> Sea <span class="math inline">\(y_t = Ay_{t-1} + u_t\)</span> con <span class="math inline">\(A = \begin{pmatrix}0{,}9&amp;0{,}1\\0{,}1&amp;0{,}9\end{pmatrix}\)</span>. Entonces <span class="math inline">\(\Pi = A - I = \begin{pmatrix}-0{,}1&amp;0{,}1\\0{,}1&amp;-0{,}1\end{pmatrix} = \begin{pmatrix}-0{,}1\\0{,}1\end{pmatrix}\begin{pmatrix}1&amp;-1\end{pmatrix}\)</span>, de rango <span class="math inline">\(1\)</span>: <span class="math inline">\(\alpha = (-0{,}1,\ 0{,}1)'\)</span> y <span class="math inline">\(\beta = (1,-1)'\)</span>. Los autovalores de <span class="math inline">\(A\)</span> son <span class="math inline">\(1\)</span> y <span class="math inline">\(0{,}8\)</span>: <strong>una raíz unitaria</strong> y una raíz estable, como predice <span class="math inline">\(n - r = 1\)</span>. La diferencia <span class="math inline">\(d_t = y_{1t} - y_{2t}\)</span> cumple <span class="math inline">\(d_t = 0{,}8d_{t-1} + (u_{1t} - u_{2t})\)</span> (<strong>estacionaria</strong>, AR(1) con coeficiente <span class="math inline">\(0{,}8\)</span>), y la suma <span class="math inline">\(s_t = y_{1t} + y_{2t}\)</span> cumple <span class="math inline">\(s_t = s_{t-1} + (u_{1t} + u_{2t})\)</span> (<strong>caminata aleatoria</strong>: la tendencia común). Ambas variables se ajustan: <span class="math inline">\(\Delta y_{1t} = -0{,}1\,d_{t-1} + u_{1t}\)</span> baja cuando <span class="math inline">\(y_1\)</span> está por encima de <span class="math inline">\(y_2\)</span>, y <span class="math inline">\(\Delta y_{2t} = +0{,}1\,d_{t-1} + u_{2t}\)</span> sube.</p>
+</div>
+<section id="el-teorema-de-representación-de-granger" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-teorema-de-representación-de-granger"><span class="header-section-number">2.1</span> El teorema de representación de Granger</h2>
+<p>El recíproco de <a href="#thm-rango" class="quarto-xref">Teorema&nbsp;1</a> también vale y es el resultado central: un sistema con una representación VECM de rango reducido <strong>es</strong> un sistema cointegrado. La representación de <strong>tendencias comunes</strong> (Stock–Watson, Johansen): bajo las condiciones del teorema, <span class="math inline">\(y_t\)</span> admite la descomposición <span class="math display">\[
+y_t = C\sum_{s = 1}^tu_s + C^*(L)u_t + \text{(términos determinísticos)},\qquad C = \beta_\perp\big(\alpha_\perp'\Gamma\beta_\perp\big)^{-1}\alpha_\perp',\quad\Gamma = I - \sum_{j = 1}^{p-1}\Gamma_j,
+\]</span> donde <span class="math inline">\(\alpha_\perp,\beta_\perp\)</span> (<span class="math inline">\(n\times(n - r)\)</span>) son los <strong>complementos ortogonales</strong> de <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span> (<span class="math inline">\(\alpha'\alpha_\perp = 0\)</span>) y <span class="math inline">\(C^*(L)u_t\)</span> es estacionario. La parte permanente <span class="math inline">\(C\sum u_s\)</span> es una combinación de <span class="math inline">\(n - r\)</span> <strong>tendencias estocásticas</strong> <span class="math inline">\(\alpha_\perp'\sum u_s\)</span>, y <span class="math inline">\(\beta'C = 0\)</span> (los vectores de cointegración eliminan la tendencia). Se toma prestado (Johansen, 1995). En el <a href="#exm-vecm" class="quarto-xref">Ejemplo&nbsp;1</a>, <span class="math inline">\(\alpha_\perp = (1,1)'\)</span> y la tendencia común es <span class="math inline">\(\sum(u_{1s} + u_{2s})\)</span>: ambas variables comparten esa caminata aleatoria, y la diferencia es estacionaria.</p>
+</section>
+</section>
+<section id="estimación-de-johansen-rango-reducido-por-máxima-verosimilitud" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estimación de Johansen: rango reducido por máxima verosimilitud</h1>
+<p>Suponiendo <span class="math inline">\(u_t\sim N(0,\Sigma_u)\)</span>, Johansen maximiza la verosimilitud <strong>sujeta a <span class="math inline">\(\Pi = \alpha\beta'\)</span> de rango <span class="math inline">\(r\)</span></strong>. La idea es reducirlo a un problema de <strong>autovalores</strong>.</p>
+<section id="concentración-y-regresión-de-rango-reducido" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="concentración-y-regresión-de-rango-reducido"><span class="header-section-number">3.1</span> Concentración y regresión de rango reducido</h2>
+<p>Para limpiar el efecto de la dinámica de corto plazo (y de los términos determinísticos), se hacen dos regresiones por MCO sobre <span class="math inline">\(z_t = (\Delta y_{t-1},\dots,\Delta y_{t-p + 1},1)\)</span>: de <span class="math inline">\(\Delta y_t\)</span> sobre <span class="math inline">\(z_t\)</span>, con residuos <span class="math inline">\(R_{0t}\)</span>; y de <span class="math inline">\(y_{t-1}\)</span> sobre <span class="math inline">\(z_t\)</span>, con residuos <span class="math inline">\(R_{1t}\)</span>. Entonces el modelo se reduce a <span class="math display">\[
+R_{0t} = \alpha\beta'R_{1t} + e_t,
+\]</span> con las matrices de momentos <span class="math inline">\(S_{ij} = T^{-1}\sum_tR_{it}R_{jt}'\)</span> (<span class="math inline">\(i,j\in\{0,1\}\)</span>).</p>
+<div id="thm-johansen" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Estimador de Johansen)</strong></span> Sea <span class="math inline">\(M = S_{10}S_{00}^{-1}S_{01}\)</span> y sean <span class="math inline">\(\hat\lambda_1&gt;\hat\lambda_2&gt;\dots&gt;\hat\lambda_n\)</span> las raíces del problema de <strong>autovalores generalizado</strong> <span class="math inline">\(\big|\lambda S_{11} - S_{10}S_{00}^{-1}S_{01}\big| = 0\)</span> (los cuadrados de las <strong>correlaciones canónicas</strong> entre <span class="math inline">\(R_{0t}\)</span> y <span class="math inline">\(R_{1t}\)</span>), con autovectores <span class="math inline">\(\hat v_1,\dots,\hat v_n\)</span> normalizados por <span class="math inline">\(\hat v_i'S_{11}\hat v_j = \mathbf{1}\{i = j\}\)</span>. Entonces el MV con rango <span class="math inline">\(r\)</span> es <span class="math display">\[
+\hat\beta = [\hat v_1,\dots,\hat v_r],\qquad\hat\alpha = S_{01}\hat\beta,\qquad\ell_{\max}(r) = \text{cte} - \frac T2\Big[\log|S_{00}| + \sum_{i = 1}^r\log\big(1 - \hat\lambda_i\big)\Big].
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para un <span class="math inline">\(\beta\)</span> dado, <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\Sigma_u\)</span> se obtienen por MCO (regresión de <span class="math inline">\(R_{0t}\)</span> sobre <span class="math inline">\(\beta'R_{1t}\)</span>), así que puedo <strong>concentrar</strong> <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\Sigma_u\)</span> y quedarme con una función de <span class="math inline">\(\beta\)</span>: la verosimilitud concentrada es <span class="math inline">\(-\frac T2\log\big|S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}\big|\)</span>. Maximizarla equivale a minimizar ese determinante. Un truco de determinantes por bloques lo convierte en un cociente, y minimizar un cociente de determinantes es un problema de autovalores.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Dado <span class="math inline">\(\beta\)</span> (<span class="math inline">\(n\times r\)</span>), la regresión de <span class="math inline">\(R_{0t}\)</span> sobre <span class="math inline">\(\beta'R_{1t}\)</span> da <span class="math inline">\(\hat\alpha(\beta) = S_{01}\beta(\beta'S_{11}\beta)^{-1}\)</span> y <span class="math inline">\(\hat\Sigma_u(\beta) = S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}\)</span> (como en el teorema MCO = MV de la Clase 9). La verosimilitud concentrada es <span class="math inline">\(-\frac T2\log|\hat\Sigma_u(\beta)|\)</span>. Para calcular el determinante usamos el complemento de Schur de la matriz de bloques <span class="math inline">\(\begin{pmatrix}S_{00}&amp;S_{01}\beta\\\beta'S_{10}&amp;\beta'S_{11}\beta\end{pmatrix}\)</span> de dos maneras: <span class="math display">\[
+|\beta'S_{11}\beta|\cdot\big|S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}\big| = |S_{00}|\cdot\big|\beta'S_{11}\beta - \beta'S_{10}S_{00}^{-1}S_{01}\beta\big|.
+\]</span> Entonces <span class="math display">\[
+|\hat\Sigma_u(\beta)| = |S_{00}|\,\frac{\big|\beta'(S_{11} - M)\beta\big|}{|\beta'S_{11}\beta|} = |S_{00}|\,\big|I_r - (\beta'S_{11}\beta)^{-1}\beta'M\beta\big|.
+\]</span> Se minimiza sobre <span class="math inline">\(\beta\)</span> (de rango <span class="math inline">\(r\)</span>). Normalizando <span class="math inline">\(\beta'S_{11}\beta = I_r\)</span>, queda <span class="math inline">\(|I_r - \beta'M\beta|\)</span>, y por la teoría de autovalores generalizados (el resultado de separación de Poincaré: la suma/producto de autovalores de la restricción de una forma cuadrática a un subespacio de dimensión <span class="math inline">\(r\)</span> es máxima/mínima en los <span class="math inline">\(r\)</span> primeros autovectores; se toma prestado), el mínimo se alcanza cuando las columnas de <span class="math inline">\(\beta\)</span> son los autovectores de <span class="math inline">\(|\lambda S_{11} - M| = 0\)</span> correspondientes a los <span class="math inline">\(r\)</span> mayores autovalores, y vale <span class="math inline">\(\prod_{i\le r}(1 - \hat\lambda_i)\)</span>. Luego <span class="math inline">\(\log|\hat\Sigma_u| = \log|S_{00}| + \sum_{i\le r}\log(1 - \hat\lambda_i)\)</span>.</p>
+</div>
+<p>Los <span class="math inline">\(\hat\lambda_i\in[0,1)\)</span> son los <strong>cuadrados de las correlaciones canónicas</strong> entre los cambios <span class="math inline">\(\Delta y_t\)</span> (ya limpios de la dinámica de corto plazo) y los niveles rezagados <span class="math inline">\(y_{t-1}\)</span>: miden <strong>cuánta predicción</strong> de <span class="math inline">\(\Delta y_t\)</span> dan combinaciones lineales de los niveles. Una correlación canónica grande significa que esa combinación de niveles (<span class="math inline">\(\hat v_i'y_{t-1}\)</span>) <strong>explica</strong> el cambio de la serie: es una relación de equilibrio con ajuste. Si los niveles no cointegran, esa correlación es cercana a cero.</p>
+</section>
+</section>
+<section id="tests-de-rango-traza-y-valor-propio-máximo" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Tests de rango: traza y valor propio máximo</h1>
+<p>Como la verosimilitud máxima con rango <span class="math inline">\(r\)</span> es <span class="math inline">\(\ell_{\max}(r) = \text{cte} - \frac T2\big[\log|S_{00}| + \sum_{i\le r}\log(1 - \hat\lambda_i)\big]\)</span>, la <strong>razón de verosimilitud</strong> para contrastar rango <span class="math inline">\(\le r_0\)</span> contra rango <span class="math inline">\(n\)</span> (sin restricción) es <span class="math display">\[
+LR_{\text{traza}}(r_0) = 2\big[\ell_{\max}(n) - \ell_{\max}(r_0)\big] = -T\sum_{i = r_0 + 1}^n\log\big(1 - \hat\lambda_i\big).
+\]</span> El de <strong>valor propio máximo</strong> contrasta rango <span class="math inline">\(r_0\)</span> contra rango <span class="math inline">\(r_0 + 1\)</span>: <span class="math inline">\(LR_{\max}(r_0) = -T\log\big(1 - \hat\lambda_{r_0 + 1}\big)\)</span>.</p>
+<p>La distribución bajo la nula <strong>no es <span class="math inline">\(\chi^2\)</span></strong>: es un funcional del movimiento browniano de dimensión <span class="math inline">\(n - r_0\)</span>, <span class="math display">\[
+LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\Big(\int_0^1WW'\Big)^{-1}\int_0^1W\,(dW)'\Big\},
+\]</span> con <span class="math inline">\(W\)</span> un movimiento browniano <span class="math inline">\((n - r_0)\)</span>-dimensional (versión demedida o destendenciada según los términos determinísticos). Se <strong>toma prestada</strong> (Johansen, 1995); los cuantiles están tabulados (Osterwald-Lenum, 1992; MacKinnon, Haug y Michelis, 1999) y dependen de <span class="math inline">\(n - r_0\)</span> y del caso determinístico.</p>
+<div id="prp-johansen-df" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (El caso <span class="math inline">\(n - r_0 = 1\)</span> es Dickey–Fuller al cuadrado)</strong></span> Cuando <span class="math inline">\(n - r_0 = 1\)</span> y no hay términos determinísticos, el límite del estadístico de traza es <span class="math inline">\(\dfrac{\big(\int_0^1W\,dW\big)^2}{\int_0^1W^2}\)</span>, el <strong>cuadrado del estadístico <span class="math inline">\(t\)</span> de Dickey–Fuller</strong> de la Clase 6.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(W\)</span> escalar, <span class="math inline">\(\operatorname{tr}\big\{\int(dW)W\cdot(\int W^2)^{-1}\cdot\int W(dW)\big\} = \big(\int W\,dW\big)^2/\int W^2\)</span> (los tres factores son escalares). Y el límite del <span class="math inline">\(t\)</span> de DF sin constante es <span class="math inline">\(\int W\,dW/(\int W^2)^{1/2}\)</span> (teorema de la distribución de Dickey–Fuller, Clase 6): su cuadrado es el enunciado.</p>
+</div>
+<p>Es un buen chequeo: el crítico al 5 % del <span class="math inline">\(t\)</span> de DF es <span class="math inline">\(-1{,}94\)</span>, y <span class="math inline">\((-1{,}94)^2 = 3{,}76\)</span>, que es <strong>exactamente</strong> el crítico de traza para <span class="math inline">\(n - r_0 = 1\)</span> sin determinísticos. El test de Johansen <strong>contiene</strong> al test de raíz unitaria univariado como caso particular (<span class="math inline">\(n = 1\)</span>, <span class="math inline">\(r_0 = 0\)</span>).</p>
+<section id="procedimiento-secuencial" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="procedimiento-secuencial"><span class="header-section-number">4.1</span> Procedimiento secuencial</h2>
+<p>Se contrasta en orden creciente de <span class="math inline">\(r_0\)</span>: se testea <span class="math inline">\(H_0:r = 0\)</span>; si <strong>se rechaza</strong>, se testea <span class="math inline">\(H_0:r\le1\)</span>; y así hasta el primer <span class="math inline">\(r_0\)</span> en que <strong>no se rechaza</strong>: <span class="math inline">\(\hat r = r_0\)</span>. (Cada nivel usa el crítico correspondiente a <span class="math inline">\(n - r_0\)</span>.)</p>
+<div id="exm-traza" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Tres variables)</strong></span> Con <span class="math inline">\(n = 3\)</span>, <span class="math inline">\(T = 100\)</span> y <span class="math inline">\(\hat\lambda = (0{,}30,\ 0{,}12,\ 0{,}03)\)</span>: <span class="math inline">\(LR_{\text{traza}}(0) = -100[\log0{,}70 + \log0{,}88 + \log0{,}97] = 51{,}5\)</span>; <span class="math inline">\(LR_{\text{traza}}(1) = -100[\log0{,}88 + \log0{,}97] = 15{,}8\)</span>; <span class="math inline">\(LR_{\text{traza}}(2) = -100\log0{,}97 = 3{,}05\)</span>. Con críticos al 5 % de <span class="math inline">\(29{,}68\)</span>, <span class="math inline">\(15{,}41\)</span> y <span class="math inline">\(3{,}76\)</span>: se rechaza <span class="math inline">\(r = 0\)</span> (<span class="math inline">\(51{,}5&gt;29{,}68\)</span>), se rechaza <span class="math inline">\(r\le1\)</span> (<span class="math inline">\(15{,}8&gt;15{,}41\)</span>, <strong>por poco</strong>), y no se rechaza <span class="math inline">\(r\le2\)</span> (<span class="math inline">\(3{,}05&lt;3{,}76\)</span>): <span class="math inline">\(\hat r = 2\)</span>. Los estadísticos de valor propio máximo son <span class="math inline">\(35{,}7\)</span>, <span class="math inline">\(12{,}8\)</span> y <span class="math inline">\(3{,}05\)</span>.</p>
+</div>
+<p>Los resultados dependen de dos decisiones que deben justificarse: el <strong>número de rezagos</strong> <span class="math inline">\(p\)</span> (que debe blanquear los residuos del VAR en niveles) y los <strong>términos determinísticos</strong>. Johansen distingue cinco casos: sin determinísticos; constante <strong>restringida</strong> al espacio de cointegración (las relaciones de equilibrio tienen un intercepto; las series no tienen deriva); constante <strong>libre</strong> (las series tienen deriva lineal: el caso habitual para series con crecimiento); tendencia restringida; y tendencia libre (tendencias cuadráticas, raro). Elegir mal el caso cambia las distribuciones límite y las conclusiones; la regla práctica es mirar los gráficos y elegir la especificación coherente con el comportamiento de las series (¿tienen deriva?, ¿los desequilibrios tienen media cero?).</p>
+</section>
+</section>
+<section id="inferencia-sobre-alpha-y-beta" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Inferencia sobre <span class="math inline">\(\alpha\)</span> y <span class="math inline">\(\beta\)</span></h1>
+<p>Una vez fijado <span class="math inline">\(r\)</span>, el estimador de Johansen de <span class="math inline">\(\beta\)</span> es <strong>superconsistente</strong> (tasa <span class="math inline">\(T\)</span>, Clase 8) y <strong>normal mixto</strong>: tests de razón de verosimilitud sobre restricciones lineales de <span class="math inline">\(\beta\)</span> tienen distribución <strong><span class="math inline">\(\chi^2\)</span></strong> asintótica. Los dos tipos de hipótesis más usadas:</p>
+<ul>
+<li><strong>Restricciones sobre <span class="math inline">\(\beta\)</span>:</strong> probar si una relación económica dada (<span class="math inline">\(\beta_1 = (1,-1,0)'\)</span>: paridad; coeficiente unitario entre consumo e ingreso) pertenece al espacio de cointegración. El LR compara los autovalores con y sin la restricción.</li>
+<li><strong>Restricciones sobre <span class="math inline">\(\alpha\)</span>:</strong> si la fila <span class="math inline">\(i\)</span> de <span class="math inline">\(\alpha\)</span> es <strong>cero</strong>, la variable <span class="math inline">\(i\)</span> <strong>no se ajusta</strong> a los desequilibrios (es <strong>débilmente exógena</strong> para <span class="math inline">\(\beta\)</span>): toda la corrección la hacen las otras. Permite estimar <span class="math inline">\(\beta\)</span> en el modelo condicional, más simple, y tiene la interpretación económica de “cuál variable lidera”.</li>
+</ul>
+</section>
+<section id="comparación-con-englegranger" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Comparación con Engle–Granger</h1>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Engle–Granger</strong></th>
+<th><strong>Johansen</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Variables</td>
+<td><span class="math inline">\(n = 2\)</span> (extensible, con problemas)</td>
+<td><span class="math inline">\(n\ge2\)</span>, múltiples vectores</td>
+</tr>
+<tr class="even">
+<td>Simetría</td>
+<td>depende de la variable dependiente</td>
+<td>simétrico</td>
+</tr>
+<tr class="odd">
+<td>Número de relaciones</td>
+<td>una</td>
+<td><strong>estima <span class="math inline">\(r\)</span></strong></td>
+</tr>
+<tr class="even">
+<td>Dinámica</td>
+<td>dos pasos, ECM aparte</td>
+<td>sistema completo (VECM)</td>
+</tr>
+<tr class="odd">
+<td>Eficiencia</td>
+<td>MCO, bias de segundo orden</td>
+<td><strong>MV</strong>, normal mixta</td>
+</tr>
+<tr class="even">
+<td>Fragilidad</td>
+<td>críticos propios</td>
+<td>sensible a <span class="math inline">\(p\)</span>, determinísticos, y sobrerrechaza en muestras chicas</td>
+</tr>
+</tbody>
+</table>
+<p>Johansen es más poderoso y flexible, pero <strong>no es infalible</strong>: con <span class="math inline">\(T\)</span> pequeño y muchas variables el test de traza <strong>sobrerrechaza</strong> (concluye más cointegración de la que hay; correcciones de Bartlett, Johansen, 2002) y tiene baja potencia contra alternativas cercanas (como en la Clase 7). Buenas prácticas: verificar que los <strong>residuos del VAR</strong> son ruido blanco, comprobar que el modelo tiene <strong>exactamente <span class="math inline">\(n - r\)</span> raíces unitarias</strong> en la matriz companion (y el resto dentro del círculo), mirar si los <strong>vectores estimados</strong> tienen sentido económico, y comparar con Engle–Granger.</p>
+<p>Por último, el VECM se integra con la identificación estructural de la Clase 10: se pueden identificar shocks <strong>permanentes</strong> (los que mueven las tendencias comunes) y <strong>transitorios</strong> (los que solo mueven los desequilibrios), una distinción clave en teoría del ciclo económico (King, Plosser, Stock y Watson, 1991).</p>
+</section>
+<section id="postgrado-cointegración-y-conteo-de-raíces-unitarias" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: cointegración y conteo de raíces unitarias</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dos hechos algebraicos que sostienen el <a href="#thm-rango" class="quarto-xref">Teorema&nbsp;1</a>: (a) si <span class="math inline">\(\Pi = \alpha\beta'\)</span> y <span class="math inline">\(\Delta y_t\)</span> es estacionario, entonces <span class="math inline">\(\beta'y_t\)</span> es estacionario; (b) el número de raíces unitarias del VAR es <span class="math inline">\(n - \operatorname{rango}(\Pi)\)</span>.</p>
+</div>
+</div>
+<p><strong>(a)</strong> De <a href="#eq-vecm" class="quarto-xref">Ecuación&nbsp;1</a>, <span class="math inline">\(\alpha\beta'y_{t-1} = \Delta y_t - c - \sum\Gamma_j\Delta y_{t-j} - u_t\)</span>. El lado derecho es <strong>estacionario</strong> (si <span class="math inline">\(\Delta y_t\)</span> lo es). Como <span class="math inline">\(\alpha\)</span> tiene rango columna completo, <span class="math inline">\(\alpha'\alpha\)</span> es invertible y multiplicando por <span class="math inline">\((\alpha'\alpha)^{-1}\alpha'\)</span> por la izquierda, <span class="math display">\[
+\beta'y_{t-1} = (\alpha'\alpha)^{-1}\alpha'\Big[\Delta y_t - c - \sum_j\Gamma_j\Delta y_{t-j} - u_t\Big],
+\]</span> una combinación lineal de variables estacionarias: <strong>estacionaria</strong>. Entonces las columnas de <span class="math inline">\(\beta\)</span> son vectores de cointegración.</p>
+<p><strong>(b)</strong> Sea <span class="math inline">\(A(z) = I - A_1z - \dots - A_pz^p\)</span>. En <span class="math inline">\(z = 1\)</span>, <span class="math inline">\(A(1) = I - \sum A_j = -\Pi\)</span>, de rango <span class="math inline">\(r\)</span>, así que su <strong>núcleo</strong> tiene dimensión <span class="math inline">\(n - r\)</span>: existen <span class="math inline">\(n - r\)</span> vectores linealmente independientes <span class="math inline">\(v\)</span> con <span class="math inline">\(A(1)v = 0\)</span>, es decir, <span class="math inline">\(\sum_jA_jv = v\)</span>. Para cada uno, el vector apilado <span class="math inline">\((v',v',\dots,v')'\)</span> cumple <span class="math inline">\(F(v',\dots,v')' = (\sum_jA_jv,\ v,\dots,v)' = (v',\dots,v')'\)</span>: es un <strong>autovector de la matriz companion <span class="math inline">\(F\)</span> con autovalor <span class="math inline">\(1\)</span></strong>. Luego <span class="math inline">\(F\)</span> tiene el autovalor <span class="math inline">\(1\)</span> con multiplicidad geométrica al menos <span class="math inline">\(n - r\)</span>: hay (al menos) <span class="math inline">\(n - r\)</span> raíces unitarias. Con la hipótesis de que el sistema es a lo más <span class="math inline">\(I(1)\)</span> (sin raíces adicionales en el círculo ni <span class="math inline">\(I(2)\)</span>), hay <strong>exactamente</strong> <span class="math inline">\(n - r\)</span>. Por eso <span class="math inline">\(r = n\)</span> (sin raíces unitarias) es el caso estacionario, y <span class="math inline">\(r = 0\)</span> (<span class="math inline">\(n\)</span> raíces unitarias, <span class="math inline">\(\Pi = 0\)</span>) el de un VAR en diferencias.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>Un VAR integrado se reescribe como <strong>VECM</strong>: <span class="math inline">\(\Delta y_t = c + \Pi y_{t-1} + \sum\Gamma_j\Delta y_{t-j} + u_t\)</span> (<a href="#prp-vecm" class="quarto-xref">Proposición&nbsp;1</a>). El <strong>rango</strong> de <span class="math inline">\(\Pi\)</span> da el <strong>número de relaciones de cointegración</strong>: <span class="math inline">\(r = n\)</span> estacionario, <span class="math inline">\(r = 0\)</span> sin cointegración, <span class="math inline">\(0&lt;r&lt;n\)</span>: <span class="math inline">\(\Pi = \alpha\beta'\)</span> (<a href="#thm-rango" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>Solo el <strong>espacio</strong> de <span class="math inline">\(\beta\)</span> está identificado: hace falta normalizar o imponer restricciones económicas. <span class="math inline">\(n - r\)</span> tendencias estocásticas comunes.</li>
+<li><strong>Johansen</strong> (<a href="#thm-johansen" class="quarto-xref">Teorema&nbsp;2</a>): MV de rango reducido = problema de <strong>autovalores</strong> (correlaciones canónicas entre <span class="math inline">\(\Delta y_t\)</span> y <span class="math inline">\(y_{t-1}\)</span> limpios de la dinámica de corto plazo).</li>
+<li><strong>Tests:</strong> <span class="math inline">\(LR_{\text{traza}}(r_0) = -T\sum_{i&gt;r_0}\log(1 - \hat\lambda_i)\)</span> y <span class="math inline">\(LR_{\max}\)</span>; distribución no estándar (funcional browniano); con <span class="math inline">\(n - r_0 = 1\)</span> es el cuadrado del <span class="math inline">\(t\)</span> de DF (<a href="#prp-johansen-df" class="quarto-xref">Proposición&nbsp;2</a>). Se aplica <strong>secuencialmente</strong>.</li>
+<li>Tests de <strong>restricciones en <span class="math inline">\(\beta\)</span></strong> (<span class="math inline">\(\chi^2\)</span>) y en <span class="math inline">\(\alpha\)</span> (<strong>exogeneidad débil</strong>). Sensible a rezagos y determinísticos; sobrerrechaza en muestras chicas.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 11.1.</strong> Para el VAR(1) con <span class="math inline">\(A = \begin{pmatrix}0{,}9&amp;0{,}1\\0{,}1&amp;0{,}9\end{pmatrix}\)</span> del <a href="#exm-vecm" class="quarto-xref">Ejemplo&nbsp;1</a>, verifica <span class="math inline">\(\Pi\)</span>, su rango y los autovalores de <span class="math inline">\(A\)</span>, y comprueba que <span class="math inline">\(d_t = y_{1t} - y_{2t}\)</span> es AR(1) con coeficiente <span class="math inline">\(0{,}8\)</span> y <span class="math inline">\(s_t = y_{1t} + y_{2t}\)</span> es una caminata aleatoria.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Pi = A - I = \begin{pmatrix}-0{,}1&amp;0{,}1\\0{,}1&amp;-0{,}1\end{pmatrix}\)</span>, con determinante <span class="math inline">\(0{,}01 - 0{,}01 = 0\)</span> y una fila proporcional a la otra: rango <span class="math inline">\(1\)</span> (<span class="math inline">\(r = 1\)</span>). Autovalores de <span class="math inline">\(A\)</span>: traza <span class="math inline">\(1{,}8\)</span>, determinante <span class="math inline">\(0{,}81 - 0{,}01 = 0{,}8\)</span>, <span class="math inline">\(\lambda^2 - 1{,}8\lambda + 0{,}8 = 0\Rightarrow\lambda = (1{,}8\pm\sqrt{3{,}24 - 3{,}2})/2 = (1{,}8\pm0{,}2)/2 = 1,\ 0{,}8\)</span>: una raíz unitaria (<span class="math inline">\(n - r = 1\)</span>). <span class="math inline">\(d_t = y_{1t} - y_{2t} = (0{,}9y_{1,t-1} + 0{,}1y_{2,t-1}) - (0{,}1y_{1,t-1} + 0{,}9y_{2,t-1}) + u_{1t} - u_{2t} = 0{,}8(y_{1,t-1} - y_{2,t-1}) + (u_{1t} - u_{2t})\)</span> ✓. <span class="math inline">\(s_t = (0{,}9 + 0{,}1)y_{1,t-1} + (0{,}1 + 0{,}9)y_{2,t-1} + u_{1t} + u_{2t} = s_{t-1} + (u_{1t} + u_{2t})\)</span> ✓.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.2.</strong> Con <span class="math inline">\(n = 3\)</span>, <span class="math inline">\(T = 100\)</span> y <span class="math inline">\(\hat\lambda = (0{,}30,\,0{,}12,\,0{,}03)\)</span>, calcula los estadísticos de traza y de valor propio máximo para <span class="math inline">\(r_0 = 0,1,2\)</span> y decide con críticos al 5 %: traza <span class="math inline">\(29{,}68;\,15{,}41;\,3{,}76\)</span> y máximo valor propio <span class="math inline">\(20{,}97;\,14{,}07;\,3{,}76\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Traza: <span class="math inline">\(r_0 = 0\)</span>: <span class="math inline">\(-100[\ln0{,}70 + \ln0{,}88 + \ln0{,}97] = 100(0{,}3567 + 0{,}1278 + 0{,}0305) = 51{,}5\)</span>. <span class="math inline">\(r_0 = 1\)</span>: <span class="math inline">\(100(0{,}1278 + 0{,}0305) = 15{,}83\)</span>. <span class="math inline">\(r_0 = 2\)</span>: <span class="math inline">\(100\cdot0{,}0305 = 3{,}05\)</span>. Máximo valor propio: <span class="math inline">\(-100\ln0{,}70 = 35{,}7\)</span>; <span class="math inline">\(-100\ln0{,}88 = 12{,}8\)</span>; <span class="math inline">\(-100\ln0{,}97 = 3{,}05\)</span>. Decisiones: <strong>traza</strong>: <span class="math inline">\(51{,}5&gt;29{,}68\)</span> rechaza <span class="math inline">\(r = 0\)</span>; <span class="math inline">\(15{,}83&gt;15{,}41\)</span> rechaza <span class="math inline">\(r\le1\)</span> (por poco); <span class="math inline">\(3{,}05&lt;3{,}76\)</span> no rechaza <span class="math inline">\(r\le2\)</span>. <span class="math inline">\(\hat r = 2\)</span>. <strong>Máximo valor propio</strong>: <span class="math inline">\(35{,}7&gt;20{,}97\)</span> rechaza <span class="math inline">\(r = 0\)</span>; <span class="math inline">\(12{,}8&lt;14{,}07\)</span> <strong>no</strong> rechaza <span class="math inline">\(r = 1\)</span> contra <span class="math inline">\(r = 2\)</span>. <span class="math inline">\(\hat r = 1\)</span>. <strong>Los dos tests discrepan</strong> (<span class="math inline">\(r = 2\)</span> frente a <span class="math inline">\(r = 1\)</span>) porque el segundo estadístico está cerca del crítico; es habitual con valores límites. En un caso así, se reportan ambos y se decide con consideraciones económicas y de estabilidad.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.3.</strong> Con <span class="math inline">\(n = 1\)</span> (<span class="math inline">\(r_0 = 0\)</span>, sin determinísticos), un test de Johansen da <span class="math inline">\(LR_{\text{traza}} = 4{,}41\)</span>. ¿A qué estadístico <span class="math inline">\(t\)</span> de Dickey–Fuller corresponde y qué concluyes con el crítico <span class="math inline">\(3{,}76\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(t^2 = 4{,}41\Rightarrow|t| = 2{,}1\)</span> (con signo negativo, <span class="math inline">\(t = -2{,}1\)</span>, porque el DF se rechaza con valores negativos). El crítico <span class="math inline">\(3{,}76 = (-1{,}94)^2\)</span>. Como <span class="math inline">\(4{,}41&gt;3{,}76\)</span> se <strong>rechaza</strong> la raíz unitaria al 5 %. Cuidado: el test de traza es de dos colas en el sentido de que el cuadrado no distingue el signo: un <span class="math inline">\(t = +2{,}1\)</span> (explosivo) daría el mismo estadístico, pero en el marco de Johansen se supone que no hay raíces explosivas.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.4.</strong> Con <span class="math inline">\(\alpha = (-0{,}2,\,0{,}1)'\)</span> y <span class="math inline">\(\beta = (1,-1)'\)</span>, escribe <span class="math inline">\(\Pi\)</span>. Muestra que <span class="math inline">\((\alpha c,\beta/c)\)</span> da la misma <span class="math inline">\(\Pi\)</span> y explica por qué hay que normalizar <span class="math inline">\(\beta\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Pi = \alpha\beta' = \begin{pmatrix}-0{,}2&amp;0{,}2\\0{,}1&amp;-0{,}1\end{pmatrix}\)</span>. Con <span class="math inline">\(c = 2\)</span>: <span class="math inline">\(\tilde\alpha = (-0{,}4,0{,}2)'\)</span> y <span class="math inline">\(\tilde\beta = (0{,}5,-0{,}5)'\)</span>: <span class="math inline">\(\tilde\alpha\tilde\beta' = \begin{pmatrix}-0{,}2&amp;0{,}2\\0{,}1&amp;-0{,}1\end{pmatrix} = \Pi\)</span>. Infinitos pares <span class="math inline">\((\alpha,\beta)\)</span> dan la misma <span class="math inline">\(\Pi\)</span> (cualquier <span class="math inline">\(M\)</span> invertible, o aquí cualquier escalar): los datos solo identifican el <strong>espacio</strong> de cointegración y la matriz <span class="math inline">\(\Pi\)</span>. Se normaliza (por ejemplo, el primer elemento de <span class="math inline">\(\beta\)</span> igual a <span class="math inline">\(1\)</span>) para que el vector sea interpretable (“<span class="math inline">\(y_1\)</span> en función de <span class="math inline">\(y_2\)</span>”); la normalización <strong>no</strong> es una restricción económica, es una convención. Para <span class="math inline">\(r\ge2\)</span> además hay que fijar cuál base del espacio se reporta, y eso sí exige restricciones identificantes (de la teoría).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.5.</strong> En un VECM bivariado, el test de <span class="math inline">\(H_0:\alpha_2 = 0\)</span> no se rechaza. ¿Qué significa? ¿Cómo cambia la estimación?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\alpha_2 = 0\)</span> dice que la variable <span class="math inline">\(2\)</span> <strong>no reacciona</strong> a los desequilibrios <span class="math inline">\(\beta'y_{t-1}\)</span> (<strong>débilmente exógena</strong> respecto de <span class="math inline">\(\beta\)</span>): su ecuación <span class="math inline">\(\Delta y_{2t} = \alpha_2\beta'y_{t-1} + \dots\)</span> no contiene el término de corrección. Toda la corrección la hace la variable 1. La variable 2 “lidera” (puede ser, por ejemplo, el precio internacional de un bien en un modelo del precio local). Para estimar, se puede usar el modelo <strong>condicional</strong> de <span class="math inline">\(\Delta y_{1t}\)</span> dado <span class="math inline">\(\Delta y_{2t}\)</span> (más simple, un solo ECM) sin perder eficiencia en <span class="math inline">\(\beta\)</span>. Es una forma de <strong>identificar</strong> cuál variable ajusta, algo que el vector de cointegración solo no dice.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.6.</strong> En el <a href="#exm-vecm" class="quarto-xref">Ejemplo&nbsp;1</a>, calcula <span class="math inline">\(\alpha_\perp\)</span> y la tendencia estocástica común. ¿Cómo se descompone cada <span class="math inline">\(y_{it}\)</span> en tendencia más ciclo?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\alpha = (-0{,}1,0{,}1)'\)</span>, y <span class="math inline">\(\alpha_\perp\)</span> debe cumplir <span class="math inline">\(\alpha'\alpha_\perp = 0\)</span>: <span class="math inline">\(\alpha_\perp = (1,1)'\)</span> (pues <span class="math inline">\(-0{,}1 + 0{,}1 = 0\)</span>). La tendencia común es <span class="math inline">\(\tau_t = \alpha_\perp'\sum_{s\le t}u_s = \sum_s(u_{1s} + u_{2s}) = s_t\)</span> (la suma <span class="math inline">\(y_1 + y_2\)</span>, una caminata aleatoria). Como <span class="math inline">\(y_{1t} = \tfrac12(s_t + d_t)\)</span> e <span class="math inline">\(y_{2t} = \tfrac12(s_t - d_t)\)</span> con <span class="math inline">\(d_t\)</span> estacionaria: <span class="math inline">\(y_{1t} = \tfrac12\tau_t + \tfrac12d_t\)</span> e <span class="math inline">\(y_{2t} = \tfrac12\tau_t - \tfrac12d_t\)</span>. Ambas series comparten la misma tendencia <span class="math inline">\(\tfrac12\tau_t\)</span> (con peso <span class="math inline">\(\tfrac12\)</span> cada una), más un ciclo transitorio opuesto, <span class="math inline">\(\pm\tfrac12d_t\)</span>. Es la representación de tendencias comunes.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 11.7 ★.</strong> Con la parte (b) del §★, cuenta las raíces unitarias de un VAR(1) con <span class="math inline">\(A = \begin{pmatrix}1&amp;0&amp;0\\0&amp;0{,}5&amp;0\\0{,}2&amp;0&amp;1\end{pmatrix}\)</span> y deduce <span class="math inline">\(r\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 11.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Pi = A - I = \begin{pmatrix}0&amp;0&amp;0\\0&amp;-0{,}5&amp;0\\0{,}2&amp;0&amp;0\end{pmatrix}\)</span>. Sus filas: la primera es cero, la segunda y la tercera son linealmente independientes (una tiene solo el elemento <span class="math inline">\((2,2)\)</span> y la otra solo el <span class="math inline">\((3,1)\)</span>): <span class="math inline">\(\operatorname{rango}(\Pi) = 2 = r\)</span>. Raíces unitarias: <span class="math inline">\(n - r = 1\)</span>. Verificación con los autovalores de <span class="math inline">\(A\)</span> (matriz triangular inferior por permutación: sus autovalores son los de la diagonal <span class="math inline">\(\{1,0{,}5,1\}\)</span>): <strong>dos</strong> autovalores iguales a <span class="math inline">\(1\)</span>. Hay una discrepancia: <span class="math inline">\(A\)</span> tiene dos autovalores unitarios pero <span class="math inline">\(n - r = 1\)</span>. La razón es que, en este ejemplo, <span class="math inline">\(\operatorname{rango}(\Pi) = 2\)</span> da <strong>multiplicidad geométrica</strong> <span class="math inline">\(1\)</span> del autovalor <span class="math inline">\(1\)</span> (el núcleo de <span class="math inline">\(A - I\)</span> es de dimensión <span class="math inline">\(1\)</span>), pero la <strong>multiplicidad algebraica</strong> es <span class="math inline">\(2\)</span> (un bloque de Jordan): hay una raíz <span class="math inline">\(I(2)\)</span>, lo que viola el supuesto de “a lo más <span class="math inline">\(I(1)\)</span>” del <a href="#thm-rango" class="quarto-xref">Teorema&nbsp;1</a> (la condición <span class="math inline">\(\alpha_\perp'\Gamma\beta_\perp\)</span> de rango completo falla). Es un recordatorio de que el conteo <span class="math inline">\(n - r\)</span> vale <strong>bajo</strong> el supuesto <span class="math inline">\(I(1)\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-10.html" class="pagination-link" aria-label="Clase 10 · Impulso-respuesta e identificación estructural">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 10 · Impulso-respuesta e identificación estructural</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

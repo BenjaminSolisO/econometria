@@ -1613,5 +1613,192 @@
       "Inicio",
       "Clase 8 · Cointegración"
     ]
+  },
+  {
+    "objectID": "econometria-3/clase-09.html",
+    "href": "econometria-3/clase-09.html",
+    "title": "Clase 9 · Vectores autorregresivos (VAR)",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Vectores autorregresivos (VAR)"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-09.html#la-forma-companion-y-la-condición-de-estacionariedad",
+    "href": "econometria-3/clase-09.html#la-forma-companion-y-la-condición-de-estacionariedad",
+    "title": "Clase 9 · Vectores autorregresivos (VAR)",
+    "section": "2.1 La forma companion y la condición de estacionariedad",
+    "text": "2.1 La forma companion y la condición de estacionariedad\nTodo VAR(\\(p\\)) se puede escribir como un VAR(1) más grande, apilando los rezagos. Sea \\(Y_t = (y_t',y_{t-1}',\\dots,y_{t-p + 1}')'\\) de dimensión \\(np\\): \\[\nY_t = \\mu + FY_{t-1} + U_t,\\qquad F = \\begin{pmatrix}A_1&A_2&\\cdots&A_{p-1}&A_p\\\\I_n&0&\\cdots&0&0\\\\0&I_n&\\cdots&0&0\\\\\\vdots&&\\ddots&&\\vdots\\\\0&0&\\cdots&I_n&0\\end{pmatrix},\n\\] con \\(\\mu = (c',0,\\dots,0)'\\) y \\(U_t = (u_t',0,\\dots,0)'\\). La matriz \\(F\\) (\\(np\\times np\\)) es la matriz companion. Con ella la estacionariedad se reduce a una condición sobre autovalores.\n\nTeorema 1 (Estacionariedad del VAR) Son equivalentes: (i) todos los autovalores de \\(F\\) tienen módulo menor que 1; (ii) \\(\\det\\big(I_n - A_1z - \\dots - A_pz^p\\big)\\ne0\\) para todo \\(|z|\\le1\\). Bajo esas condiciones el VAR tiene una única solución estacionaria, causal, dada por la representación MA(\\(\\infty\\)) \\[\ny_t = \\mu_y + \\sum_{j = 0}^\\infty\\Psi_ju_{t-j},\\qquad\\Psi_0 = I_n,\\quad\\Psi_j = \\sum_{k = 1}^{\\min(j,p)}A_k\\Psi_{j-k},\n\\] con \\(\\mu_y = (I_n - A_1 - \\dots - A_p)^{-1}c\\) y \\(\\|\\Psi_j\\|\\le Kr^j\\) para algún \\(r&lt;1\\).\n\n\nDemostración. (Esquema; la equivalencia (i)\\(\\iff\\)(ii) se prueba en la sección ★.) Si los autovalores de \\(F\\) están dentro del círculo unitario, \\(F^j\\to0\\) geométricamente (por la forma de Jordan). Iterando el VAR(1), \\(Y_t = \\sum_{j = 0}^{J - 1}F^j(\\mu + U_{t-j}) + F^JY_{t-J}\\), y el último término tiende a cero en media cuadrática. Luego \\(Y_t = (I - F)^{-1}\\mu + \\sum_{j\\ge0}F^jU_{t-j}\\) (la suma converge absolutamente por el decaimiento geométrico), y es la única solución estacionaria (el mismo argumento de unicidad del AR(1), Clase 2). El proceso es estacionario, pues su media es constante y su covarianza depende solo del rezago (Clase 2, proceso lineal). El bloque superior de \\(Y_t\\) es \\(y_t\\): \\(\\Psi_j\\) es el bloque \\(n\\times n\\) superior izquierdo de \\(F^j\\), y satisface la recursión enunciada (igualando coeficientes en \\((I - A_1L - \\dots - A_pL^p)\\Psi(L) = I\\)).\n\nEsta condición generaliza la del AR(\\(p\\)) de la Clase 2 (raíces de \\(\\phi(z)\\) fuera del círculo unitario) y es la que hay que verificar siempre después de estimar un VAR: se calculan los autovalores de \\(\\hat F\\) y se comprueba que el máximo módulo sea menor que uno. En el ejemplo, \\(A = \\begin{pmatrix}0{,}5&0{,}1\\\\0{,}2&0{,}4\\end{pmatrix}\\) tiene traza \\(0{,}9\\) y determinante \\(0{,}18\\), y sus autovalores son \\(\\lambda = (0{,}9\\pm\\sqrt{0{,}81 - 0{,}72})/2 = 0{,}6\\) y \\(0{,}3\\): es estacionario. La respuesta a un shock, \\(\\Psi_1 = A\\), \\(\\Psi_2 = A^2\\), etcétera, decae a tasa \\(0{,}6^j\\).\nLos momentos de segundo orden se obtienen de \\(\\Gamma_Y(0) = F\\Gamma_Y(0)F' + \\Sigma_U\\), es decir, \\(\\operatorname{vec}\\Gamma_Y(0) = (I - F\\otimes F)^{-1}\\operatorname{vec}\\Sigma_U\\), que existe porque \\(F\\) es estable.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Vectores autorregresivos (VAR)"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-09.html#mco-ecuación-por-ecuación-es-máxima-verosimilitud",
+    "href": "econometria-3/clase-09.html#mco-ecuación-por-ecuación-es-máxima-verosimilitud",
+    "title": "Clase 9 · Vectores autorregresivos (VAR)",
+    "section": "3.1 MCO ecuación por ecuación es máxima verosimilitud",
+    "text": "3.1 MCO ecuación por ecuación es máxima verosimilitud\nCon \\(T + p\\) observaciones, definamos \\(x_t = (1,y_{t-1}',\\dots,y_{t-p}')'\\) (\\(1 + np\\) regresores) y \\(B = [c,A_1,\\dots,A_p]\\) (\\(n\\times(1 + np)\\)), de modo que \\(y_t = Bx_t + u_t\\). Cada ecuación del sistema se estima por MCO: \\(\\hat B = \\big(\\sum_ty_tx_t'\\big)\\big(\\sum_tx_tx_t'\\big)^{-1}\\). Es un sistema de regresiones aparentemente no relacionadas (SUR) donde todas las ecuaciones tienen los mismos regresores, y en ese caso MCO coincide con MCG y con MV.\n\nTeorema 2 (MCO = MV gaussiano (condicional)) Si \\(u_t\\sim N(0,\\Sigma_u)\\), el estimador de máxima verosimilitud condicional en las primeras \\(p\\) observaciones es \\[\n\\hat B = \\sum_ty_tx_t'\\Big(\\sum_tx_tx_t'\\Big)^{-1}\\ \\ (\\text{MCO ecuación por ecuación}),\\qquad\\hat\\Sigma_u = \\frac1T\\sum_t\\hat u_t\\hat u_t',\\quad\\hat u_t = y_t - \\hat Bx_t.\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nLa log-verosimilitud condicional es \\(-\\frac T2\\log|\\Sigma_u| - \\frac12\\sum_t(y_t - Bx_t)'\\Sigma_u^{-1}(y_t - Bx_t)\\). Para cualquier \\(\\Sigma_u\\) fija, quiero minimizar la forma cuadrática \\(\\sum(y_t - Bx_t)'\\Sigma_u^{-1}(y_t - Bx_t) = \\operatorname{tr}\\big[\\Sigma_u^{-1}\\sum(y_t - Bx_t)(y_t - Bx_t)'\\big]\\) en \\(B\\). La suma de cuadrados \\(\\sum(y_t - Bx_t)(y_t - Bx_t)'\\) admite una descomposición ortogonal alrededor de \\(\\hat B\\) (como $ + $ distancia cuadrática, igual que en la Clase 3 de Econometría 1), y el término de distancia es semidefinido positivo e independiente de \\(\\Sigma_u\\). Entonces \\(\\hat B\\) minimiza la traza para cualquier \\(\\Sigma_u\\).\n\n\n\nDemostración. Sea \\(\\hat u_t = y_t - \\hat Bx_t\\), con \\(\\sum_t\\hat u_tx_t' = 0\\) (ortogonalidad de MCO). Para cualquier \\(B\\), \\(y_t - Bx_t = \\hat u_t + (\\hat B - B)x_t\\), así que \\[\n\\sum_t(y_t - Bx_t)(y_t - Bx_t)' = \\sum_t\\hat u_t\\hat u_t' + (\\hat B - B)\\Big(\\sum_tx_tx_t'\\Big)(\\hat B - B)',\n\\] pues los términos cruzados se anulan por \\(\\sum\\hat u_tx_t' = 0\\). El segundo término es semidefinido positivo y se anula si y solo si \\(B = \\hat B\\). Por lo tanto, para toda \\(\\Sigma_u^{-1}\\succ0\\), \\(\\operatorname{tr}\\big[\\Sigma_u^{-1}\\sum(y_t - Bx_t)(y_t - Bx_t)'\\big]\\ge\\operatorname{tr}\\big[\\Sigma_u^{-1}\\sum\\hat u_t\\hat u_t'\\big]\\) con igualdad solo en \\(\\hat B\\): \\(\\hat B\\) maximiza la verosimilitud para cada \\(\\Sigma_u\\), sin importar su valor. Sustituyendo, queda \\(-\\frac T2\\log|\\Sigma_u| - \\frac12\\operatorname{tr}[\\Sigma_u^{-1}T\\hat\\Sigma_u]\\), cuyo máximo en \\(\\Sigma_u\\) es \\(\\hat\\Sigma_u = \\frac1T\\sum\\hat u_t\\hat u_t'\\) (como en la Clase 2 de Econometría 2 para la normal multivariada).\n\nEste es un resultado muy cómodo: un VAR de \\(n\\) variables es solo \\(n\\) regresiones por MCO, y no hace falta estimación simultánea. Además, no se necesita normalidad: como en la Clase 4, \\(\\hat B\\) es la cuasi-MV y es consistente bajo condiciones leves.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Vectores autorregresivos (VAR)"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-09.html#distribución-asintótica",
+    "href": "econometria-3/clase-09.html#distribución-asintótica",
+    "title": "Clase 9 · Vectores autorregresivos (VAR)",
+    "section": "3.2 Distribución asintótica",
+    "text": "3.2 Distribución asintótica\n\nTeorema 3 (Normalidad asintótica del VAR por MCO) Sea \\(y_t\\) un VAR(\\(p\\)) estacionario con innovaciones i.i.d. \\((0,\\Sigma_u)\\) (o diferencias de martingala con las condiciones habituales), y \\(Q = \\mathbb{E}[x_tx_t']\\) definida positiva. Entonces \\[\n\\sqrt T\\operatorname{vec}\\big(\\hat B' - B'\\big)\\xrightarrow{d}N\\big(0,\\ \\Sigma_u\\otimes Q^{-1}\\big),\\qquad\\hat\\Sigma_u\\xrightarrow{p}\\Sigma_u.\n\\]\n\n\nDemostración. Para la ecuación \\(i\\), \\(\\hat b_i - b_i = \\big(\\sum x_tx_t'\\big)^{-1}\\sum x_tu_{it}\\). Apilando las \\(n\\) ecuaciones, \\(\\sqrt T\\operatorname{vec}(\\hat B' - B') = \\big(I_n\\otimes(T^{-1}\\sum x_tx_t')^{-1}\\big)T^{-1/2}\\sum_t(u_t\\otimes x_t)\\). Por el teorema ergódico (Clase 1), \\(T^{-1}\\sum x_tx_t'\\to_pQ\\). Y \\(u_t\\otimes x_t\\) es una diferencia de martingala (porque \\(x_t\\in\\mathcal{F}_{t-1}\\) y \\(\\mathbb{E}[u_t\\mid\\mathcal{F}_{t-1}] = 0\\)) con varianza \\(\\mathbb{E}[u_tu_t'\\otimes x_tx_t'] = \\Sigma_u\\otimes Q\\) (por independencia de \\(u_t\\) y \\(x_t\\)). Por el TCL para diferencias de martingala (Clase 5), \\(T^{-1/2}\\sum u_t\\otimes x_t\\to_dN(0,\\Sigma_u\\otimes Q)\\). Con Slutsky: la varianza es \\((I\\otimes Q^{-1})(\\Sigma_u\\otimes Q)(I\\otimes Q^{-1}) = \\Sigma_u\\otimes Q^{-1}\\).\n\nEs la generalización directa de \\(\\sigma^2\\Gamma_p^{-1}\\) del AR(\\(p\\)) de la Clase 4. Dos consecuencias: (i) los errores estándar de cada coeficiente son los habituales de MCO en cada ecuación, y (ii) los estimadores de distintas ecuaciones están correlacionados (a través de \\(\\Sigma_u\\)), lo que importa para tests conjuntos.\nPara restricciones sobre los coeficientes (\\(q\\) restricciones lineales): el test de Wald usa la varianza anterior, o el test de razón de verosimilitud (Clase 3 de Econometría 2): \\(LR = T\\big(\\log|\\hat\\Sigma_R| - \\log|\\hat\\Sigma_U|\\big)\\to_d\\chi^2_q\\), con \\(\\hat\\Sigma_R,\\hat\\Sigma_U\\) las matrices de covarianza de residuos restringida y sin restringir. En muestras pequeñas se usa la corrección de Sims: se reemplaza \\(T\\) por \\(T - c\\), con \\(c\\) el número de parámetros por ecuación del modelo sin restringir.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Vectores autorregresivos (VAR)"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-09.html#la-maldición-de-la-dimensionalidad",
+    "href": "econometria-3/clase-09.html#la-maldición-de-la-dimensionalidad",
+    "title": "Clase 9 · Vectores autorregresivos (VAR)",
+    "section": "3.3 La maldición de la dimensionalidad",
+    "text": "3.3 La maldición de la dimensionalidad\nUn VAR(\\(p\\)) con \\(n\\) variables tiene \\(n(1 + np)\\) coeficientes de la media y \\(n(n + 1)/2\\) en \\(\\Sigma_u\\): crece como \\(pn^2\\). Con \\(n = 4\\) y \\(p = 2\\) son \\(36 + 10 = 46\\) parámetros; con \\(n = 8\\) y \\(p = 4\\), son \\(264 + 36 = 300\\). En datos macro típicos (\\(T = 100\\) a \\(200\\)) esto es demasiado: cada ecuación tiene \\(1 + np\\) coeficientes para \\(T\\) observaciones (Ejercicio 9.2). La solución no es pensar que “más es mejor”. Hay tres salidas: (i) pocas variables (tres a seis), (ii) VAR bayesianos con una distribución a priori que contrae los coeficientes hacia un modelo simple (prior de Minnesota, Litterman), y (iii) modelos de factores (FAVAR) que resumen muchas series en pocos factores.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Vectores autorregresivos (VAR)"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html",
+    "href": "econometria-3/clase-10.html",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#la-respuesta-a-los-errores-de-forma-reducida",
+    "href": "econometria-3/clase-10.html#la-respuesta-a-los-errores-de-forma-reducida",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "2.1 La respuesta a los errores de forma reducida",
+    "text": "2.1 La respuesta a los errores de forma reducida\nDe la representación MA(\\(\\infty\\)) de la Clase 9, \\(y_t = \\mu_y + \\sum_{j\\ge0}\\Psi_ju_{t-j}\\), la matriz \\(\\Psi_h\\) de \\(n\\times n\\) da el efecto sobre \\(y_{t + h}\\) de un cambio en \\(u_t\\): su elemento \\((i,j)\\) es \\(\\partial y_{i,t + h}/\\partial u_{jt}\\). Pero un cambio “en \\(u_{jt}\\) solo” no es interpretable económicamente, porque los \\(u\\) están correlacionados: \\(u_{jt}\\) no se mueve solo.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#shocks-estructurales",
+    "href": "econometria-3/clase-10.html#shocks-estructurales",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "2.2 Shocks estructurales",
+    "text": "2.2 Shocks estructurales\nSupongamos que existen shocks estructurales \\(\\varepsilon_t = (\\varepsilon_{1t},\\dots,\\varepsilon_{nt})'\\) con \\(\\mathbb{E}[\\varepsilon_t\\varepsilon_t'] = I_n\\) (no correlacionados, varianza unitaria: la normalización) y que los errores de forma reducida son combinaciones lineales de ellos: \\[\nu_t = B\\,\\varepsilon_t,\\qquad\\Sigma_u = BB'.\n\\tag{1}\\] La matriz \\(B\\) (\\(n\\times n\\)) es la matriz de impacto: su columna \\(j\\), \\(B_{\\cdot j}\\), es el efecto contemporáneo del shock \\(j\\) sobre las \\(n\\) variables. Cada \\(\\varepsilon_{jt}\\) es un shock “con nombre”: política monetaria, demanda, oferta, tecnología.\n\nDefinición 1 (Función impulso-respuesta) La respuesta al impulso del shock estructural \\(j\\) sobre la variable \\(i\\) a \\(h\\) períodos es \\[\n\\theta_{ij,h} = \\frac{\\partial y_{i,t + h}}{\\partial\\varepsilon_{jt}} = \\big[\\Psi_hB\\big]_{ij},\\qquad\\Theta_h = \\Psi_hB,\\quad h = 0,1,2,\\dots\n\\] El gráfico de \\(h\\mapsto\\theta_{ij,h}\\) es la IRF (impulse response function). La respuesta acumulada es \\(\\sum_{k\\le h}\\theta_{ij,k}\\) (importante para variables en diferencias, como la respuesta del nivel del PIB a un shock sobre su tasa de crecimiento).\n\nComo \\(\\Psi_h\\) viene de los datos (de \\(\\hat A_1,\\dots,\\hat A_p\\)), la única incógnita es \\(B\\). Dada \\(B\\), todas las IRF y la descomposición de varianza se calculan.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#descomposición-de-varianza-del-error-de-pronóstico",
+    "href": "econometria-3/clase-10.html#descomposición-de-varianza-del-error-de-pronóstico",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "2.3 Descomposición de varianza del error de pronóstico",
+    "text": "2.3 Descomposición de varianza del error de pronóstico\nDel teorema de pronóstico a \\(h\\) pasos de la Clase 3 (versión matricial en la Clase 9), el error de pronóstico a \\(h\\) pasos es \\(e_{T + h|T} = \\sum_{k = 0}^{h-1}\\Psi_ku_{T + h - k} = \\sum_{k = 0}^{h-1}\\Theta_k\\varepsilon_{T + h - k}\\) y su ECM es \\(\\sum_{k&lt;h}\\Theta_k\\Theta_k'\\). Como los \\(\\varepsilon_j\\) son no correlacionados, la varianza del error de la variable \\(i\\) se descompone por shock: \\[\n\\operatorname{Var}\\big(e^{(i)}_{T + h|T}\\big) = \\sum_{k = 0}^{h-1}\\sum_{j = 1}^n\\theta_{ij,k}^2,\\qquad\n\\omega_{ij}(h) = \\frac{\\sum_{k = 0}^{h-1}\\theta_{ij,k}^2}{\\sum_{k = 0}^{h-1}\\sum_{l = 1}^n\\theta_{il,k}^2}.\n\\tag{2}\\] La descomposición de varianza del error de pronóstico (FEVD) \\(\\omega_{ij}(h)\\) es la fracción de la incertidumbre de \\(y_i\\) a \\(h\\) pasos atribuible al shock \\(j\\). Suma \\(1\\) sobre \\(j\\). Responde preguntas como “¿qué parte de la variabilidad del PIB a cuatro años se debe a shocks monetarios?”.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#restricciones-de-corto-plazo-cholesky",
+    "href": "econometria-3/clase-10.html#restricciones-de-corto-plazo-cholesky",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "4.1 Restricciones de corto plazo: Cholesky",
+    "text": "4.1 Restricciones de corto plazo: Cholesky\nEl método más usado es imponer que \\(B\\) sea triangular inferior, \\(B = \\operatorname{chol}(\\Sigma_u)\\) (el factor de Cholesky de \\(\\Sigma_u\\), con diagonal positiva). Eso son exactamente \\(n(n - 1)/2\\) ceros (los elementos sobre la diagonal), y es la restricción justa.\nLa interpretación económica es una estructura recursiva (o causal ordenada): el shock \\(\\varepsilon_{1t}\\) afecta a todas las variables en \\(t\\); el shock \\(\\varepsilon_{2t}\\) afecta a las variables \\(2,\\dots,n\\) pero no a la variable 1 en el mismo período; y así sucesivamente. La variable 1 es “la más exógena” y la última, “la más endógena”. El orden de las variables importa: en un caso con \\(\\Sigma_u\\) no diagonal, cambiarlo da shocks distintos y IRF distintas (Ejercicio 10.2). Por eso el orden debe estar justificado por argumentos económicos.\n\nEjemplo 1 (Un ejemplo con dos variables) Con \\(\\Sigma_u = \\begin{pmatrix}1&0{,}5\\\\0{,}5&1\\end{pmatrix}\\) y el orden \\((\\pi_t,x_t)\\), \\(B = \\begin{pmatrix}1&0\\\\0{,}5&0{,}866\\end{pmatrix}\\) (pues \\(B B' = \\begin{pmatrix}1&0{,}5\\\\0{,}5&0{,}25 + 0{,}75\\end{pmatrix}\\) ✓). Un shock estructural \\(\\varepsilon_{1t} = 1\\) (el que “mueve primero”) sube \\(\\pi\\) en \\(1\\) y \\(x\\) en \\(0{,}5\\) al impacto; un shock \\(\\varepsilon_{2t} = 1\\) no mueve \\(\\pi\\) en el mismo período y sube \\(x\\) en \\(0{,}866\\). Con el VAR(1) de la Clase 9 (\\(A = \\begin{pmatrix}0{,}5&0{,}1\\\\0{,}2&0{,}4\\end{pmatrix}\\)): \\(\\Theta_0 = B\\) y \\(\\Theta_1 = AB = \\begin{pmatrix}0{,}55&0{,}087\\\\0{,}40&0{,}346\\end{pmatrix}\\). Un shock del primer tipo eleva \\(x\\) en \\(0{,}40\\) un período después. Para \\(h = 1\\), la FEVD de \\(x\\) asigna al shock 1 la fracción \\(0{,}5^2/1 = 0{,}25\\) y al shock 2 la fracción \\(0{,}75\\) de la varianza del error de pronóstico de \\(x\\).\n\nUn clásico de política monetaria (Christiano, Eichenbaum y Evans, 1999) ordena primero las variables “lentas” (producto, precios), que no responden a la tasa de interés en el mismo trimestre (por rigideces), y después la tasa de política, que sí reacciona a la información contemporánea de esas variables. El shock identificado como \\(\\varepsilon_{R}\\) es el componente de política monetaria no sistemático.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#restricciones-de-largo-plazo-blanchardquah",
+    "href": "econometria-3/clase-10.html#restricciones-de-largo-plazo-blanchardquah",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "4.2 Restricciones de largo plazo: Blanchard–Quah",
+    "text": "4.2 Restricciones de largo plazo: Blanchard–Quah\nBlanchard y Quah (1989) identificaron shocks de demanda y oferta con una idea distinta: los shocks de demanda no tienen efecto permanente sobre el producto (los de oferta, sí). Para \\(y_t = (\\Delta\\text{PIB}_t,\\ \\text{desempleo}_t)'\\) estacionario con representación \\(y_t = \\Psi(L)u_t\\), el efecto acumulado de largo plazo de los shocks estructurales es \\(\\Theta(1) = \\Psi(1)B\\) con \\(\\Psi(1) = \\sum_j\\Psi_j = (I - A_1 - \\dots - A_p)^{-1}\\). La restricción es que la entrada de \\(\\Theta(1)\\) que mide el efecto del shock de demanda sobre el nivel del PIB sea cero, es decir, que \\(\\Theta(1)\\) sea triangular (por ejemplo, inferior con la demanda en la segunda columna).\nCómo se calcula: como \\(\\Theta(1)\\Theta(1)' = \\Psi(1)BB'\\Psi(1)' = \\Psi(1)\\Sigma_u\\Psi(1)'\\) es conocida, \\(\\Theta(1) = \\operatorname{chol}\\big(\\Psi(1)\\Sigma_u\\Psi(1)'\\big)\\) (la matriz triangular), y entonces \\[\nB = \\Psi(1)^{-1}\\Theta(1).\n\\tag{3}\\] Es Cholesky aplicado a la matriz de largo plazo. Ventaja: no exige ordenar contemporáneamente; las restricciones son sobre el efecto de largo plazo, que muchas teorías macro predicen (neutralidad monetaria, y que los shocks de demanda no cambian el potencial). Desventaja: depende de estimar bien \\(\\Psi(1)\\), que es la suma de infinitos coeficientes y por lo tanto imprecisa con series persistentes, y de la especificación en niveles o diferencias (la elección entre las dos cambia la IRF de largo plazo).",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#restricciones-de-signo",
+    "href": "econometria-3/clase-10.html#restricciones-de-signo",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "4.3 Restricciones de signo",
+    "text": "4.3 Restricciones de signo\nUhlig (2005) y otros propusieron algo más débil: en lugar de ceros, imponer signos de las respuestas sobre algunos horizontes (“un shock de política monetaria contractiva sube la tasa y no sube la inflación ni el producto durante cuatro trimestres”). Esas restricciones no identifican \\(B\\) de manera única, sino un conjunto: todas las \\(B = B_0Q\\) cuyas IRF cumplen los signos. El algoritmo: (1) generar \\(Q\\) ortogonal al azar (a partir de la descomposición QR de una matriz de normales); (2) calcular \\(B = B_0Q\\) y las IRF; (3) conservar la \\(Q\\) si los signos se cumplen. El resultado es un conjunto de IRF, y se reportan sus cuantiles. Es identificación por conjuntos: honesta sobre la incertidumbre de identificación, pero las bandas resultan anchas y su interpretación bayesiana depende de la distribución sobre \\(Q\\) (crítica de Baumeister y Hamilton, 2015).",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-10.html#instrumentos-externos-proxy-svar",
+    "href": "econometria-3/clase-10.html#instrumentos-externos-proxy-svar",
+    "title": "Clase 10 · Impulso-respuesta e identificación estructural",
+    "section": "4.4 Instrumentos externos (proxy-SVAR)",
+    "text": "4.4 Instrumentos externos (proxy-SVAR)\nSi existe una variable \\(z_t\\) (un instrumento) correlacionada con un shock estructural \\(\\varepsilon_{1t}\\) pero no con los demás, \\(\\mathbb{E}[z_t\\varepsilon_{1t}] = \\phi\\ne0\\) y \\(\\mathbb{E}[z_t\\varepsilon_{jt}] = 0\\) (\\(j\\ne1\\)) (por ejemplo, sorpresas de política monetaria medidas con futuros de tasas en una ventana angosta alrededor del anuncio), entonces \\[\n\\mathbb{E}[z_tu_t] = B\\,\\mathbb{E}[z_t\\varepsilon_t] = B_{\\cdot1}\\,\\phi.\n\\] La covarianza entre el instrumento y los errores de forma reducida da la primera columna de \\(B\\) salvo escala: \\(B_{i1}/B_{11} = \\operatorname{Cov}(z_t,u_{it})/\\operatorname{Cov}(z_t,u_{1t})\\). Con eso se identifica un shock (el de interés) sin ordenar el resto. Es el enfoque moderno dominante para política monetaria y fiscal, y es el análogo en VAR de la variable instrumental de la Clase 10 de Econometría 1.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Impulso-respuesta e identificación estructural"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-11.html",
+    "href": "econometria-3/clase-11.html",
+    "title": "Clase 11 · VECM y el método de Johansen",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · VECM y el método de Johansen"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-11.html#el-teorema-de-representación-de-granger",
+    "href": "econometria-3/clase-11.html#el-teorema-de-representación-de-granger",
+    "title": "Clase 11 · VECM y el método de Johansen",
+    "section": "2.1 El teorema de representación de Granger",
+    "text": "2.1 El teorema de representación de Granger\nEl recíproco de Teorema 1 también vale y es el resultado central: un sistema con una representación VECM de rango reducido es un sistema cointegrado. La representación de tendencias comunes (Stock–Watson, Johansen): bajo las condiciones del teorema, \\(y_t\\) admite la descomposición \\[\ny_t = C\\sum_{s = 1}^tu_s + C^*(L)u_t + \\text{(términos determinísticos)},\\qquad C = \\beta_\\perp\\big(\\alpha_\\perp'\\Gamma\\beta_\\perp\\big)^{-1}\\alpha_\\perp',\\quad\\Gamma = I - \\sum_{j = 1}^{p-1}\\Gamma_j,\n\\] donde \\(\\alpha_\\perp,\\beta_\\perp\\) (\\(n\\times(n - r)\\)) son los complementos ortogonales de \\(\\alpha\\) y \\(\\beta\\) (\\(\\alpha'\\alpha_\\perp = 0\\)) y \\(C^*(L)u_t\\) es estacionario. La parte permanente \\(C\\sum u_s\\) es una combinación de \\(n - r\\) tendencias estocásticas \\(\\alpha_\\perp'\\sum u_s\\), y \\(\\beta'C = 0\\) (los vectores de cointegración eliminan la tendencia). Se toma prestado (Johansen, 1995). En el Ejemplo 1, \\(\\alpha_\\perp = (1,1)'\\) y la tendencia común es \\(\\sum(u_{1s} + u_{2s})\\): ambas variables comparten esa caminata aleatoria, y la diferencia es estacionaria.",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · VECM y el método de Johansen"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-11.html#concentración-y-regresión-de-rango-reducido",
+    "href": "econometria-3/clase-11.html#concentración-y-regresión-de-rango-reducido",
+    "title": "Clase 11 · VECM y el método de Johansen",
+    "section": "3.1 Concentración y regresión de rango reducido",
+    "text": "3.1 Concentración y regresión de rango reducido\nPara limpiar el efecto de la dinámica de corto plazo (y de los términos determinísticos), se hacen dos regresiones por MCO sobre \\(z_t = (\\Delta y_{t-1},\\dots,\\Delta y_{t-p + 1},1)\\): de \\(\\Delta y_t\\) sobre \\(z_t\\), con residuos \\(R_{0t}\\); y de \\(y_{t-1}\\) sobre \\(z_t\\), con residuos \\(R_{1t}\\). Entonces el modelo se reduce a \\[\nR_{0t} = \\alpha\\beta'R_{1t} + e_t,\n\\] con las matrices de momentos \\(S_{ij} = T^{-1}\\sum_tR_{it}R_{jt}'\\) (\\(i,j\\in\\{0,1\\}\\)).\n\nTeorema 2 (Estimador de Johansen) Sea \\(M = S_{10}S_{00}^{-1}S_{01}\\) y sean \\(\\hat\\lambda_1&gt;\\hat\\lambda_2&gt;\\dots&gt;\\hat\\lambda_n\\) las raíces del problema de autovalores generalizado \\(\\big|\\lambda S_{11} - S_{10}S_{00}^{-1}S_{01}\\big| = 0\\) (los cuadrados de las correlaciones canónicas entre \\(R_{0t}\\) y \\(R_{1t}\\)), con autovectores \\(\\hat v_1,\\dots,\\hat v_n\\) normalizados por \\(\\hat v_i'S_{11}\\hat v_j = \\mathbf{1}\\{i = j\\}\\). Entonces el MV con rango \\(r\\) es \\[\n\\hat\\beta = [\\hat v_1,\\dots,\\hat v_r],\\qquad\\hat\\alpha = S_{01}\\hat\\beta,\\qquad\\ell_{\\max}(r) = \\text{cte} - \\frac T2\\Big[\\log|S_{00}| + \\sum_{i = 1}^r\\log\\big(1 - \\hat\\lambda_i\\big)\\Big].\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nPara un \\(\\beta\\) dado, \\(\\alpha\\) y \\(\\Sigma_u\\) se obtienen por MCO (regresión de \\(R_{0t}\\) sobre \\(\\beta'R_{1t}\\)), así que puedo concentrar \\(\\alpha\\) y \\(\\Sigma_u\\) y quedarme con una función de \\(\\beta\\): la verosimilitud concentrada es \\(-\\frac T2\\log\\big|S_{00} - S_{01}\\beta(\\beta'S_{11}\\beta)^{-1}\\beta'S_{10}\\big|\\). Maximizarla equivale a minimizar ese determinante. Un truco de determinantes por bloques lo convierte en un cociente, y minimizar un cociente de determinantes es un problema de autovalores.\n\n\n\nDemostración. Dado \\(\\beta\\) (\\(n\\times r\\)), la regresión de \\(R_{0t}\\) sobre \\(\\beta'R_{1t}\\) da \\(\\hat\\alpha(\\beta) = S_{01}\\beta(\\beta'S_{11}\\beta)^{-1}\\) y \\(\\hat\\Sigma_u(\\beta) = S_{00} - S_{01}\\beta(\\beta'S_{11}\\beta)^{-1}\\beta'S_{10}\\) (como en el teorema MCO = MV de la Clase 9). La verosimilitud concentrada es \\(-\\frac T2\\log|\\hat\\Sigma_u(\\beta)|\\). Para calcular el determinante usamos el complemento de Schur de la matriz de bloques \\(\\begin{pmatrix}S_{00}&S_{01}\\beta\\\\\\beta'S_{10}&\\beta'S_{11}\\beta\\end{pmatrix}\\) de dos maneras: \\[\n|\\beta'S_{11}\\beta|\\cdot\\big|S_{00} - S_{01}\\beta(\\beta'S_{11}\\beta)^{-1}\\beta'S_{10}\\big| = |S_{00}|\\cdot\\big|\\beta'S_{11}\\beta - \\beta'S_{10}S_{00}^{-1}S_{01}\\beta\\big|.\n\\] Entonces \\[\n|\\hat\\Sigma_u(\\beta)| = |S_{00}|\\,\\frac{\\big|\\beta'(S_{11} - M)\\beta\\big|}{|\\beta'S_{11}\\beta|} = |S_{00}|\\,\\big|I_r - (\\beta'S_{11}\\beta)^{-1}\\beta'M\\beta\\big|.\n\\] Se minimiza sobre \\(\\beta\\) (de rango \\(r\\)). Normalizando \\(\\beta'S_{11}\\beta = I_r\\), queda \\(|I_r - \\beta'M\\beta|\\), y por la teoría de autovalores generalizados (el resultado de separación de Poincaré: la suma/producto de autovalores de la restricción de una forma cuadrática a un subespacio de dimensión \\(r\\) es máxima/mínima en los \\(r\\) primeros autovectores; se toma prestado), el mínimo se alcanza cuando las columnas de \\(\\beta\\) son los autovectores de \\(|\\lambda S_{11} - M| = 0\\) correspondientes a los \\(r\\) mayores autovalores, y vale \\(\\prod_{i\\le r}(1 - \\hat\\lambda_i)\\). Luego \\(\\log|\\hat\\Sigma_u| = \\log|S_{00}| + \\sum_{i\\le r}\\log(1 - \\hat\\lambda_i)\\).\n\nLos \\(\\hat\\lambda_i\\in[0,1)\\) son los cuadrados de las correlaciones canónicas entre los cambios \\(\\Delta y_t\\) (ya limpios de la dinámica de corto plazo) y los niveles rezagados \\(y_{t-1}\\): miden cuánta predicción de \\(\\Delta y_t\\) dan combinaciones lineales de los niveles. Una correlación canónica grande significa que esa combinación de niveles (\\(\\hat v_i'y_{t-1}\\)) explica el cambio de la serie: es una relación de equilibrio con ajuste. Si los niveles no cointegran, esa correlación es cercana a cero.",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · VECM y el método de Johansen"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-11.html#procedimiento-secuencial",
+    "href": "econometria-3/clase-11.html#procedimiento-secuencial",
+    "title": "Clase 11 · VECM y el método de Johansen",
+    "section": "4.1 Procedimiento secuencial",
+    "text": "4.1 Procedimiento secuencial\nSe contrasta en orden creciente de \\(r_0\\): se testea \\(H_0:r = 0\\); si se rechaza, se testea \\(H_0:r\\le1\\); y así hasta el primer \\(r_0\\) en que no se rechaza: \\(\\hat r = r_0\\). (Cada nivel usa el crítico correspondiente a \\(n - r_0\\).)\n\nEjemplo 2 (Tres variables) Con \\(n = 3\\), \\(T = 100\\) y \\(\\hat\\lambda = (0{,}30,\\ 0{,}12,\\ 0{,}03)\\): \\(LR_{\\text{traza}}(0) = -100[\\log0{,}70 + \\log0{,}88 + \\log0{,}97] = 51{,}5\\); \\(LR_{\\text{traza}}(1) = -100[\\log0{,}88 + \\log0{,}97] = 15{,}8\\); \\(LR_{\\text{traza}}(2) = -100\\log0{,}97 = 3{,}05\\). Con críticos al 5 % de \\(29{,}68\\), \\(15{,}41\\) y \\(3{,}76\\): se rechaza \\(r = 0\\) (\\(51{,}5&gt;29{,}68\\)), se rechaza \\(r\\le1\\) (\\(15{,}8&gt;15{,}41\\), por poco), y no se rechaza \\(r\\le2\\) (\\(3{,}05&lt;3{,}76\\)): \\(\\hat r = 2\\). Los estadísticos de valor propio máximo son \\(35{,}7\\), \\(12{,}8\\) y \\(3{,}05\\).\n\nLos resultados dependen de dos decisiones que deben justificarse: el número de rezagos \\(p\\) (que debe blanquear los residuos del VAR en niveles) y los términos determinísticos. Johansen distingue cinco casos: sin determinísticos; constante restringida al espacio de cointegración (las relaciones de equilibrio tienen un intercepto; las series no tienen deriva); constante libre (las series tienen deriva lineal: el caso habitual para series con crecimiento); tendencia restringida; y tendencia libre (tendencias cuadráticas, raro). Elegir mal el caso cambia las distribuciones límite y las conclusiones; la regla práctica es mirar los gráficos y elegir la especificación coherente con el comportamiento de las series (¿tienen deriva?, ¿los desequilibrios tienen media cero?).",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · VECM y el método de Johansen"
+    ]
   }
 ]

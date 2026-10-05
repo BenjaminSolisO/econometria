@@ -1,0 +1,227 @@
+---
+title: "Clase 9 · Vectores autorregresivos (VAR)"
+subtitle: "Estacionariedad, estimación, selección de rezagos y causalidad de Granger"
+description: "El modelo VAR(p) como sistema de regresiones: forma companion y condición de estacionariedad, representación MA(∞), MCO equivale a MV, distribución asintótica, selección de rezagos, causalidad de Granger y pronóstico multivariado."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De una serie a un sistema
+
+Hasta aquí modelamos **una** serie a la vez. Pero las preguntas macroeconómicas son casi siempre sobre **interacciones**: ¿cómo responden la inflación y el producto a la política monetaria?, ¿el tipo de cambio predice los precios, o al revés?, ¿cómo se transmiten los shocks entre países? Un enfoque con ecuaciones simultáneas exigiría una teoría detallada de la estructura del sistema. Sims (1980) propuso la alternativa que domina la macroeconometría empírica desde entonces: **dejar hablar a los datos**, modelando el vector de variables de interés como un **vector autorregresivo** (VAR) donde cada variable depende de los rezagos de todas.[^sims]
+
+[^sims]: Christopher Sims recibió el Nobel de Economía de 2011 (junto con Thomas Sargent) por sus métodos empíricos sobre causa y efecto en la macroeconomía. Su artículo de 1980, "Macroeconomics and Reality", sostenía que las restricciones de exclusión "increíbles" de los grandes modelos de ecuaciones simultáneas eran un obstáculo, y que un VAR sin restricciones era una forma más honesta de resumir los datos. La discusión de cuánta estructura imponer sigue abierta (Clase 10).
+
+# El VAR($p$)
+
+Sea $y_t = (y_{1t},\dots,y_{nt})'$ un vector de $n$ series. El **VAR($p$)** en forma reducida es
+$$
+y_t = c + A_1y_{t-1} + A_2y_{t-2} + \dots + A_py_{t-p} + u_t,\qquad u_t\sim WN(0,\Sigma_u),
+$$ {#eq-var}
+con $A_j$ matrices de $n\times n$, $c$ un vector de constantes y $u_t$ un ruido blanco **vectorial**: $\mathbb{E}[u_t] = 0$, $\mathbb{E}[u_tu_t'] = \Sigma_u$ (definida positiva, **no necesariamente diagonal**) y $\mathbb{E}[u_tu_s'] = 0$ si $t\ne s$. Cada ecuación es una regresión de $y_{it}$ sobre una constante y $p$ rezagos de **todas** las variables. La covarianza contemporánea $\Sigma_u$ captura que los errores de distintas ecuaciones se mueven juntos en $t$.
+
+Un ejemplo bivariado, con $p = 1$: $y_t = (\pi_t,\ x_t)'$ (inflación y brecha del producto),
+$$
+\begin{pmatrix}\pi_t\\x_t\end{pmatrix} = \begin{pmatrix}0{,}5&0{,}1\\0{,}2&0{,}4\end{pmatrix}\begin{pmatrix}\pi_{t-1}\\x_{t-1}\end{pmatrix} + \begin{pmatrix}u_{\pi t}\\u_{xt}\end{pmatrix}.
+$$
+La inflación depende de la inflación pasada (coeficiente $0{,}5$) y de la brecha pasada ($0{,}1$); la brecha, de ambas. Este ejemplo se usa a lo largo de las Clases 9 y 10 (Ejercicios 9.1 y 9.6).
+
+## La forma companion y la condición de estacionariedad
+
+Todo VAR($p$) se puede escribir como un VAR(1) **más grande**, apilando los rezagos. Sea $Y_t = (y_t',y_{t-1}',\dots,y_{t-p + 1}')'$ de dimensión $np$:
+$$
+Y_t = \mu + FY_{t-1} + U_t,\qquad F = \begin{pmatrix}A_1&A_2&\cdots&A_{p-1}&A_p\\I_n&0&\cdots&0&0\\0&I_n&\cdots&0&0\\\vdots&&\ddots&&\vdots\\0&0&\cdots&I_n&0\end{pmatrix},
+$$
+con $\mu = (c',0,\dots,0)'$ y $U_t = (u_t',0,\dots,0)'$. La matriz $F$ ($np\times np$) es la **matriz companion**. Con ella la estacionariedad se reduce a una condición sobre autovalores.
+
+::: {#thm-var-est}
+## Estacionariedad del VAR
+Son equivalentes: (i) todos los autovalores de $F$ tienen módulo **menor que 1**; (ii) $\det\big(I_n - A_1z - \dots - A_pz^p\big)\ne0$ para todo $|z|\le1$. Bajo esas condiciones el VAR tiene una **única** solución estacionaria, causal, dada por la representación **MA($\infty$)**
+$$
+y_t = \mu_y + \sum_{j = 0}^\infty\Psi_ju_{t-j},\qquad\Psi_0 = I_n,\quad\Psi_j = \sum_{k = 1}^{\min(j,p)}A_k\Psi_{j-k},
+$$
+con $\mu_y = (I_n - A_1 - \dots - A_p)^{-1}c$ y $\|\Psi_j\|\le Kr^j$ para algún $r<1$.
+:::
+
+::: {.proof}
+(Esquema; la equivalencia (i)$\iff$(ii) se prueba en la sección ★.) Si los autovalores de $F$ están dentro del círculo unitario, $F^j\to0$ geométricamente (por la forma de Jordan). Iterando el VAR(1), $Y_t = \sum_{j = 0}^{J - 1}F^j(\mu + U_{t-j}) + F^JY_{t-J}$, y el último término tiende a cero en media cuadrática. Luego $Y_t = (I - F)^{-1}\mu + \sum_{j\ge0}F^jU_{t-j}$ (la suma converge absolutamente por el decaimiento geométrico), y es la única solución estacionaria (el mismo argumento de unicidad del AR(1), Clase 2). El proceso es estacionario, pues su media es constante y su covarianza depende solo del rezago (Clase 2, proceso lineal). El bloque superior de $Y_t$ es $y_t$: $\Psi_j$ es el bloque $n\times n$ superior izquierdo de $F^j$, y satisface la recursión enunciada (igualando coeficientes en $(I - A_1L - \dots - A_pL^p)\Psi(L) = I$).
+:::
+
+Esta condición generaliza la del AR($p$) de la Clase 2 (raíces de $\phi(z)$ fuera del círculo unitario) y es la que hay que verificar siempre después de estimar un VAR: se calculan los autovalores de $\hat F$ y se comprueba que el máximo módulo sea menor que uno. En el ejemplo, $A = \begin{pmatrix}0{,}5&0{,}1\\0{,}2&0{,}4\end{pmatrix}$ tiene traza $0{,}9$ y determinante $0{,}18$, y sus autovalores son $\lambda = (0{,}9\pm\sqrt{0{,}81 - 0{,}72})/2 = 0{,}6$ y $0{,}3$: es estacionario. La respuesta a un shock, $\Psi_1 = A$, $\Psi_2 = A^2$, etcétera, decae a tasa $0{,}6^j$.
+
+Los momentos de segundo orden se obtienen de $\Gamma_Y(0) = F\Gamma_Y(0)F' + \Sigma_U$, es decir, $\operatorname{vec}\Gamma_Y(0) = (I - F\otimes F)^{-1}\operatorname{vec}\Sigma_U$, que existe porque $F$ es estable.
+
+# Estimación
+
+## MCO ecuación por ecuación es máxima verosimilitud
+
+Con $T + p$ observaciones, definamos $x_t = (1,y_{t-1}',\dots,y_{t-p}')'$ ($1 + np$ regresores) y $B = [c,A_1,\dots,A_p]$ ($n\times(1 + np)$), de modo que $y_t = Bx_t + u_t$. Cada ecuación del sistema se estima por **MCO**: $\hat B = \big(\sum_ty_tx_t'\big)\big(\sum_tx_tx_t'\big)^{-1}$. Es un sistema de regresiones **aparentemente no relacionadas** (SUR) donde **todas las ecuaciones tienen los mismos regresores**, y en ese caso MCO coincide con MCG y con MV.
+
+::: {#thm-var-mco}
+## MCO = MV gaussiano (condicional)
+Si $u_t\sim N(0,\Sigma_u)$, el estimador de máxima verosimilitud **condicional** en las primeras $p$ observaciones es
+$$
+\hat B = \sum_ty_tx_t'\Big(\sum_tx_tx_t'\Big)^{-1}\ \ (\text{MCO ecuación por ecuación}),\qquad\hat\Sigma_u = \frac1T\sum_t\hat u_t\hat u_t',\quad\hat u_t = y_t - \hat Bx_t.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+La log-verosimilitud condicional es $-\frac T2\log|\Sigma_u| - \frac12\sum_t(y_t - Bx_t)'\Sigma_u^{-1}(y_t - Bx_t)$. Para cualquier $\Sigma_u$ fija, quiero minimizar la forma cuadrática $\sum(y_t - Bx_t)'\Sigma_u^{-1}(y_t - Bx_t) = \operatorname{tr}\big[\Sigma_u^{-1}\sum(y_t - Bx_t)(y_t - Bx_t)'\big]$ en $B$. La suma de cuadrados $\sum(y_t - Bx_t)(y_t - Bx_t)'$ admite una descomposición ortogonal alrededor de $\hat B$ (como $\text{SCR} + $ distancia cuadrática, igual que en la Clase 3 de Econometría 1), y el término de distancia es **semidefinido positivo e independiente de $\Sigma_u$**. Entonces $\hat B$ minimiza la traza para cualquier $\Sigma_u$.
+:::
+
+::: {.proof}
+Sea $\hat u_t = y_t - \hat Bx_t$, con $\sum_t\hat u_tx_t' = 0$ (ortogonalidad de MCO). Para cualquier $B$, $y_t - Bx_t = \hat u_t + (\hat B - B)x_t$, así que
+$$
+\sum_t(y_t - Bx_t)(y_t - Bx_t)' = \sum_t\hat u_t\hat u_t' + (\hat B - B)\Big(\sum_tx_tx_t'\Big)(\hat B - B)',
+$$
+pues los términos cruzados se anulan por $\sum\hat u_tx_t' = 0$. El segundo término es semidefinido positivo y se anula si y solo si $B = \hat B$. Por lo tanto, para toda $\Sigma_u^{-1}\succ0$, $\operatorname{tr}\big[\Sigma_u^{-1}\sum(y_t - Bx_t)(y_t - Bx_t)'\big]\ge\operatorname{tr}\big[\Sigma_u^{-1}\sum\hat u_t\hat u_t'\big]$ con igualdad solo en $\hat B$: $\hat B$ maximiza la verosimilitud para **cada** $\Sigma_u$, sin importar su valor. Sustituyendo, queda $-\frac T2\log|\Sigma_u| - \frac12\operatorname{tr}[\Sigma_u^{-1}T\hat\Sigma_u]$, cuyo máximo en $\Sigma_u$ es $\hat\Sigma_u = \frac1T\sum\hat u_t\hat u_t'$ (como en la Clase 2 de Econometría 2 para la normal multivariada).
+:::
+
+Este es un resultado muy cómodo: **un VAR de $n$ variables es solo $n$ regresiones por MCO**, y no hace falta estimación simultánea. Además, no se necesita normalidad: como en la Clase 4, $\hat B$ es la cuasi-MV y es consistente bajo condiciones leves.
+
+## Distribución asintótica
+
+::: {#thm-var-asint}
+## Normalidad asintótica del VAR por MCO
+Sea $y_t$ un VAR($p$) estacionario con innovaciones i.i.d. $(0,\Sigma_u)$ (o diferencias de martingala con las condiciones habituales), y $Q = \mathbb{E}[x_tx_t']$ definida positiva. Entonces
+$$
+\sqrt T\operatorname{vec}\big(\hat B' - B'\big)\xrightarrow{d}N\big(0,\ \Sigma_u\otimes Q^{-1}\big),\qquad\hat\Sigma_u\xrightarrow{p}\Sigma_u.
+$$
+:::
+
+::: {.proof}
+Para la ecuación $i$, $\hat b_i - b_i = \big(\sum x_tx_t'\big)^{-1}\sum x_tu_{it}$. Apilando las $n$ ecuaciones, $\sqrt T\operatorname{vec}(\hat B' - B') = \big(I_n\otimes(T^{-1}\sum x_tx_t')^{-1}\big)T^{-1/2}\sum_t(u_t\otimes x_t)$. Por el teorema ergódico (Clase 1), $T^{-1}\sum x_tx_t'\to_pQ$. Y $u_t\otimes x_t$ es una diferencia de martingala (porque $x_t\in\mathcal{F}_{t-1}$ y $\mathbb{E}[u_t\mid\mathcal{F}_{t-1}] = 0$) con varianza $\mathbb{E}[u_tu_t'\otimes x_tx_t'] = \Sigma_u\otimes Q$ (por independencia de $u_t$ y $x_t$). Por el TCL para diferencias de martingala (Clase 5), $T^{-1/2}\sum u_t\otimes x_t\to_dN(0,\Sigma_u\otimes Q)$. Con Slutsky: la varianza es $(I\otimes Q^{-1})(\Sigma_u\otimes Q)(I\otimes Q^{-1}) = \Sigma_u\otimes Q^{-1}$.
+:::
+
+Es la generalización directa de $\sigma^2\Gamma_p^{-1}$ del AR($p$) de la Clase 4. Dos consecuencias: **(i)** los errores estándar de cada coeficiente son los habituales de MCO en cada ecuación, y **(ii)** los estimadores de **distintas ecuaciones están correlacionados** (a través de $\Sigma_u$), lo que importa para tests conjuntos.
+
+Para **restricciones** sobre los coeficientes ($q$ restricciones lineales): el test de Wald usa la varianza anterior, o el test de razón de verosimilitud (Clase 3 de Econometría 2): $LR = T\big(\log|\hat\Sigma_R| - \log|\hat\Sigma_U|\big)\to_d\chi^2_q$, con $\hat\Sigma_R,\hat\Sigma_U$ las matrices de covarianza de residuos restringida y sin restringir. En muestras pequeñas se usa la corrección de Sims: se reemplaza $T$ por $T - c$, con $c$ el número de parámetros por ecuación del modelo sin restringir.
+
+## La maldición de la dimensionalidad
+
+Un VAR($p$) con $n$ variables tiene $n(1 + np)$ coeficientes de la media y $n(n + 1)/2$ en $\Sigma_u$: crece como **$pn^2$**. Con $n = 4$ y $p = 2$ son $36 + 10 = 46$ parámetros; con $n = 8$ y $p = 4$, son $264 + 36 = 300$. En datos macro típicos ($T = 100$ a $200$) esto es demasiado: cada ecuación tiene $1 + np$ coeficientes para $T$ observaciones (Ejercicio 9.2). La solución no es pensar que "más es mejor". Hay tres salidas: (i) **pocas variables** (tres a seis), (ii) **VAR bayesianos** con una distribución a priori que contrae los coeficientes hacia un modelo simple (*prior de Minnesota*, Litterman), y (iii) **modelos de factores** (FAVAR) que resumen muchas series en pocos factores.
+
+# Selección del número de rezagos
+
+Como en el AR($p$) de la Clase 4, se eligen los rezagos con **criterios de información**, que ahora usan el determinante de $\hat\Sigma_u(p)$:
+$$
+\text{AIC}(p) = \log|\hat\Sigma_u(p)| + \frac{2pn^2}T,\quad
+\text{BIC}(p) = \log|\hat\Sigma_u(p)| + \frac{pn^2\log T}T,\quad
+\text{HQ}(p) = \log|\hat\Sigma_u(p)| + \frac{2pn^2\log\log T}T.
+$$
+Se elige el $p$ que minimiza el criterio, **con la misma muestra efectiva** para todos los $p$ (usando los mismos $T$ datos al comparar). Las propiedades son las de la proposición sobre AIC y BIC de la Clase 4: BIC (y HQ) consistentes; AIC sobreajusta pero pronostica mejor. Alternativamente, **tests de razón de verosimilitud secuenciales** ($p$ frente a $p - 1$). Después de elegir $p$ se verifican: (a) **estabilidad** (autovalores de $\hat F$); (b) **ausencia de autocorrelación residual** (versión multivariada del test de Ljung–Box, el *portmanteau* de Hosking); (c) normalidad (Jarque–Bera multivariado) si se usa inferencia exacta o simulación.
+
+# Causalidad de Granger
+
+Una pregunta natural en un VAR es: ¿ayuda el pasado de una variable a pronosticar otra? Granger (1969) formalizó esa idea de **precedencia predictiva**.
+
+::: {#def-granger}
+## Causalidad de Granger
+Sea $(y_t,x_t)$ un par de procesos estacionarios. $x$ **no causa en el sentido de Granger** a $y$ si, para todo $h\ge1$, el mejor predictor lineal de $y_{t + h}$ basado en $\{y_s,x_s:s\le t\}$ tiene el **mismo error cuadrático medio** que el basado solo en $\{y_s:s\le t\}$. Es decir, el pasado de $x$ no aporta nada a la predicción de $y$ una vez usado el pasado de $y$.
+:::
+
+En un VAR, la condición se traduce en **ceros** de coeficientes.
+
+::: {#prp-granger-var}
+## Causalidad de Granger en un VAR
+Sea $(y_t,x_t)'$ un VAR($p$) estacionario bivariado, con la ecuación de $y$: $y_t = c_y + \sum_{k = 1}^p\big(a^{yy}_ky_{t-k} + a^{yx}_kx_{t-k}\big) + u_{yt}$. Entonces $x$ **no causa a Granger a $y$** si y solo si $a^{yx}_1 = \dots = a^{yx}_p = 0$.
+:::
+
+::: {.proof}
+($\Leftarrow$) Si todos los $a^{yx}_k = 0$, el valor $y_t$ depende solo del pasado de $y$ más $u_{yt}$, y $u_{yt}$ es no correlacionado con el pasado de **ambas** series. Luego $\sum_ka^{yy}_ky_{t-k}$ satisface las condiciones de ortogonalidad del mejor predictor lineal con información $\{y_s,x_s\}_{s<t}$ (Clase 3), y como esa solución es única, $x$ no aporta. Para $h>1$ se itera. ($\Rightarrow$) Si algún $a^{yx}_k\ne0$, los coeficientes verdaderos $(a^{yy},a^{yx})$ satisfacen las ecuaciones normales del predictor con ambos conjuntos de datos (porque $u_{yt}$ es ortogonal a todo el pasado), y la solución es única: el mejor predictor **usa** $x$ con coeficiente distinto de cero. Al incluir un regresor con coeficiente no nulo (y no perfectamente colineal con los otros), el ECM baja estrictamente (en $\delta'\operatorname{Var}(x\mid y\text{ pasado})\delta>0$).
+:::
+
+El **test** es entonces un test de Wald o $F$ de $H_0:a^{yx}_1 = \dots = a^{yx}_p = 0$, con distribución $\chi^2_p$ asintótica (por el @thm-var-asint). Con más de dos variables, la definición se generaliza por bloques (y la causalidad de Granger indirecta, a través de una tercera variable, requiere más cuidado).
+
+::: {.callout-warning title="Granger no es causalidad"}
+El nombre es engañoso. La causalidad de Granger es **precedencia predictiva**, no causalidad estructural. Las **expectativas** pueden invertir el orden: los precios de las acciones "causan a Granger" a los dividendos futuros porque los inversionistas anticipan los dividendos; el pronóstico meteorológico "causa a Granger" las ventas de paraguas sin ser su causa; un *tercer* factor omitido puede hacer que $x$ preceda a $y$ sin influir sobre él. Y el concepto ignora la relación **contemporánea** (que vive en $\Sigma_u$, no en los $A_k$). Es una herramienta de **pronóstico**, no de identificación. Para preguntas causales hacen falta supuestos estructurales (Clase 10).
+:::
+
+Dos cuidados técnicos. (1) Con variables $I(1)$, el test de Wald no tiene distribución $\chi^2$; el truco de **Toda y Yamamoto** (1995) es estimar un VAR en niveles con $p + d_{\max}$ rezagos ($d_{\max}$ el orden máximo de integración) y testear solo las restricciones sobre los primeros $p$, lo que recupera la distribución $\chi^2_p$ aun con raíces unitarias y cointegración. (2) La causalidad de Granger **depende del conjunto de información**: puede desaparecer al agregar una tercera variable.
+
+# Pronóstico con un VAR
+
+Por la misma proyección de la Clase 3, el pronóstico a $h$ pasos con un VAR estacionario es la **proyección** sobre el pasado: se calcula recursivamente, $\hat y_{T + h|T} = \hat c + \sum_{k = 1}^p\hat A_k\hat y_{T + h - k|T}$ (con $\hat y_{T + j|T} = y_{T + j}$ si $j\le0$). El **error** de pronóstico y su matriz de ECM son, por la representación MA($\infty$) (@thm-var-est),
+$$
+e_{T + h|T} = \sum_{j = 0}^{h-1}\Psi_ju_{T + h - j},\qquad\Sigma_y(h) = \sum_{j = 0}^{h-1}\Psi_j\Sigma_u\Psi_j',
+$$
+la versión matricial del teorema de pronóstico a $h$ pasos de la Clase 3: crece con $h$ y converge a la varianza incondicional $\Gamma_0$.
+
+# ★ Postgrado: la condición del determinante y los autovalores de $F$
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos la equivalencia (i)$\iff$(ii) del @thm-var-est: $\det(I_{np} - zF) = \det(I_n - A_1z - \dots - A_pz^p)$ para todo $z$. Los autovalores de $F$ son entonces los **recíprocos** de las raíces del polinomio matricial.
+:::
+
+::: {.proof}
+Para $p = 1$, $F = A_1$ y es inmediato. Para $p = 2$: $F = \begin{pmatrix}A_1&A_2\\I&0\end{pmatrix}$ y
+$$
+I_{2n} - zF = \begin{pmatrix}I - zA_1&-zA_2\\-zI&I\end{pmatrix}.
+$$
+Por el complemento de Schur respecto del bloque inferior derecho $D = I$ (invertible), $\det\begin{pmatrix}P&Q\\R&D\end{pmatrix} = \det(D)\det\big(P - QD^{-1}R\big)$, de modo que
+$$
+\det(I_{2n} - zF) = \det\big(I - zA_1 - (-zA_2)(-zI)\big) = \det\big(I - zA_1 - z^2A_2\big).
+$$
+Para $p$ general se procede por inducción (eliminando el último bloque de filas y columnas con el complemento de Schur, que agrega el término $-A_pz^p$). Ahora, $\lambda$ es autovalor de $F$ si y solo si $\det(\lambda I - F) = 0$, es decir, con $z = 1/\lambda$ ($\lambda\ne0$), $\det(I - zF) = 0$, o sea $\det(I - \sum A_kz^k) = 0$. Así los autovalores no nulos de $F$ son los recíprocos de las raíces $z$, y $|\lambda|<1\iff|z|>1$.
+:::
+
+Para $n = 1$ esto es la identidad de la Clase 2: $\lambda^2 - \phi_1\lambda - \phi_2 = 0$ si y solo si $z = 1/\lambda$ es raíz de $1 - \phi_1z - \phi_2z^2$ (Ejercicio 9.7). La condición del determinante es la que **generaliza** la causalidad del AR($p$) escalar a sistemas.
+
+# Resumen
+
+- Un **VAR($p$)** modela un vector $y_t$ con $p$ rezagos de todas las variables. Es **estacionario** si los autovalores de la matriz companion $F$ están dentro del círculo unitario (@thm-var-est); entonces tiene representación MA($\infty$) con $\Psi_j$.
+- **MCO ecuación por ecuación = MV gaussiano** (@thm-var-mco), porque todas las ecuaciones tienen los mismos regresores. Distribución: $\sqrt T\operatorname{vec}(\hat B' - B')\to N(0,\Sigma_u\otimes Q^{-1})$ (@thm-var-asint).
+- El número de parámetros crece como $pn^2$: pocas variables, VAR bayesianos o factores.
+- **Rezagos:** AIC, BIC, HQ con $\log|\hat\Sigma_u|$; verificar estabilidad y residuos.
+- **Causalidad de Granger** (@prp-granger-var): $x$ no causa a $y$ si los coeficientes de $x$ en la ecuación de $y$ son cero. Es precedencia predictiva, **no causalidad estructural**.
+- **Pronóstico:** ECM $\Sigma_y(h) = \sum_{j<h}\Psi_j\Sigma_u\Psi_j'$.
+
+# Ejercicios
+
+**Ejercicio 9.1.** Para el VAR(1) con $A = \begin{pmatrix}0{,}5&0{,}1\\0{,}2&0{,}4\end{pmatrix}$, verifica los autovalores $0{,}6$ y $0{,}3$ y calcula $\Psi_1,\Psi_2$.
+
+::: {.callout-tip collapse="true" title="Solución 9.1"}
+Traza $= 0{,}9$, determinante $= 0{,}5\cdot0{,}4 - 0{,}1\cdot0{,}2 = 0{,}18$. $\lambda^2 - 0{,}9\lambda + 0{,}18 = 0\Rightarrow\lambda = (0{,}9\pm\sqrt{0{,}81 - 0{,}72})/2 = (0{,}9\pm0{,}3)/2 = 0{,}6,\ 0{,}3$. Ambos con módulo menor que uno: estacionario. Para un VAR(1), $\Psi_j = A^j$: $\Psi_1 = A$ y $\Psi_2 = A^2 = \begin{pmatrix}0{,}25 + 0{,}02&0{,}05 + 0{,}04\\0{,}10 + 0{,}08&0{,}02 + 0{,}16\end{pmatrix} = \begin{pmatrix}0{,}27&0{,}09\\0{,}18&0{,}18\end{pmatrix}$. El efecto de un shock en $u_\pi$ sobre $x$ dos períodos después es $0{,}18$ (por unidad).
+:::
+
+**Ejercicio 9.2.** Cuenta los parámetros de la media de un VAR con $n = 4$, $p = 2$ y con $n = 8$, $p = 4$, y compara con $T = 100$ observaciones por ecuación.
+
+::: {.callout-tip collapse="true" title="Solución 9.2"}
+Por ecuación hay $1 + np$ coeficientes. $n = 4$, $p = 2$: $9$ por ecuación, $36$ en total (más $10$ en $\Sigma_u$); con $T = 100$, son $100/9\approx11$ observaciones por parámetro: razonable. $n = 8$, $p = 4$: $1 + 32 = 33$ por ecuación, $264$ en total (más $36$); con $T = 100$ quedan $100/33\approx3$ observaciones por parámetro: el estimador de MCO tiene varianzas enormes y el sobreajuste es severo. El número crece como $pn^2$: duplicar las variables cuadruplica los parámetros.
+:::
+
+**Ejercicio 9.3.** Con $n = 2$ y $T = 200$, los determinantes de las matrices de covarianza residual son $\log|\hat\Sigma(1)| = -1{,}20$, $\log|\hat\Sigma(2)| = -1{,}30$ y $\log|\hat\Sigma(3)| = -1{,}32$. ¿Qué eligen AIC y BIC?
+
+::: {.callout-tip collapse="true" title="Solución 9.3"}
+Penalizaciones: AIC: $2pn^2/T = 0{,}04p$. BIC: $pn^2\log T/T = p\cdot4\cdot5{,}298/200 = 0{,}106p$. AIC: $p = 1$: $-1{,}16$; $p = 2$: $-1{,}22$; $p = 3$: $-1{,}20$ $\Rightarrow$ **AIC elige $p = 2$**. BIC: $p = 1$: $-1{,}094$; $p = 2$: $-1{,}088$; $p = 3$: $-1{,}002$ $\Rightarrow$ **BIC elige $p = 1$**. Es el patrón habitual: BIC prefiere el modelo más corto. Un LR de $p = 1$ contra $p = 2$ da $200(1{,}30 - 1{,}20) = 20$, que supera el crítico $\chi^2_4 = 9{,}49$ (Ejercicio 9.4): el segundo rezago es significativo.
+:::
+
+**Ejercicio 9.4.** Con los datos del ejercicio anterior, calcula el test LR de $H_0:p = 1$ frente a $p = 2$ y la versión corregida de Sims.
+
+::: {.callout-tip collapse="true" title="Solución 9.4"}
+El VAR(2) añade $n^2 = 4$ coeficientes (una matriz $A_2$ de $2\times2$), de modo que hay $q = 4$ restricciones. $LR = T[\log|\hat\Sigma(1)| - \log|\hat\Sigma(2)|] = 200(-1{,}20 + 1{,}30) = 20{,}0$. Crítico $\chi^2_{4,0{,}95} = 9{,}49$: se rechaza $p = 1$. Con la corrección de Sims, $c = 1 + 2\cdot2 = 5$ parámetros por ecuación en el modelo sin restringir ($T - c = 195$): $195\cdot0{,}10 = 19{,}5$. La conclusión no cambia. Esto es consistente con AIC y contradice a BIC: la elección de $p$ depende del criterio.
+:::
+
+**Ejercicio 9.5.** En un VAR(2) bivariado, la ecuación de $y$ tiene coeficientes de $x$ iguales a $0{,}3$ y $-0{,}1$ y el test de Wald de $H_0:a^{yx}_1 = a^{yx}_2 = 0$ da $W = 11{,}2$. Concluye y explica qué **no** se puede concluir.
+
+::: {.callout-tip collapse="true" title="Solución 9.5"}
+$W\sim\chi^2_2$ bajo la nula, con crítico $5{,}99$ al 5 %: $11{,}2>5{,}99$ y se **rechaza** la no causalidad de Granger de $x$ hacia $y$: el pasado de $x$ ayuda a predecir $y$. **No** se puede concluir que $x$ cause a $y$ en sentido estructural: puede haber una tercera variable omitida, $x$ puede anticipar $y$ por expectativas, etc. Tampoco se dice nada de la relación contemporánea. Para saber si **$y$ causa a $x$** (causalidad inversa) hay que hacer el test análogo en la ecuación de $x$: puede haber causalidad en ambos sentidos (retroalimentación).
+:::
+
+**Ejercicio 9.6.** Para el VAR(1) del Ejercicio 9.1 con $\Sigma_u = I_2$, calcula la matriz de ECM de pronóstico a $h = 1$ y $h = 2$ pasos.
+
+::: {.callout-tip collapse="true" title="Solución 9.6"}
+$\Sigma_y(1) = \Psi_0\Sigma_u\Psi_0' = I_2$. $\Sigma_y(2) = I + A A' $ con $AA' = \begin{pmatrix}0{,}25 + 0{,}01&0{,}10 + 0{,}04\\0{,}10 + 0{,}04&0{,}04 + 0{,}16\end{pmatrix} = \begin{pmatrix}0{,}26&0{,}14\\0{,}14&0{,}20\end{pmatrix}$. Luego $\Sigma_y(2) = \begin{pmatrix}1{,}26&0{,}14\\0{,}14&1{,}20\end{pmatrix}$. La varianza del error del primer componente a dos pasos es $1{,}26$ (frente a $1$ a un paso). Los errores de pronóstico a dos pasos de las dos variables están correlacionados ($0{,}14$) aunque los shocks no lo estén.
+:::
+
+**Ejercicio 9.7 ★.** Para un AR(2) escalar, escribe la matriz companion y muestra que sus autovalores satisfacen $\lambda^2 - \phi_1\lambda - \phi_2 = 0$ y que son los recíprocos de las raíces de $\phi(z) = 1 - \phi_1z - \phi_2z^2$.
+
+::: {.callout-tip collapse="true" title="Solución 9.7 ★"}
+$F = \begin{pmatrix}\phi_1&\phi_2\\1&0\end{pmatrix}$. $\det(\lambda I - F) = (\lambda - \phi_1)\lambda - \phi_2 = \lambda^2 - \phi_1\lambda - \phi_2$. Si $z\ne0$ es raíz de $\phi$, $1 - \phi_1z - \phi_2z^2 = 0$; dividiendo por $z^2$ y escribiendo $\lambda = 1/z$: $\lambda^2 - \phi_1\lambda - \phi_2 = 0$. Entonces $\lambda = 1/z$ es autovalor de $F$. El proceso es estacionario si y solo si $|\lambda|<1$ para ambos, es decir $|z|>1$ para las dos raíces: la condición de la Clase 2. Ejemplo: $\phi = (0{,}5,0{,}3)$: $\lambda^2 - 0{,}5\lambda - 0{,}3 = 0\Rightarrow\lambda = (0{,}5\pm\sqrt{1{,}45})/2 = 0{,}852,\ -0{,}352$; sus recíprocos son $1{,}173$ y $-2{,}84$, que son las raíces de $\phi(z)$ de la Clase 2 (Ejercicio 2.1).
+:::

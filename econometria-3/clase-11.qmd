@@ -1,0 +1,226 @@
+---
+title: "Clase 11 · VECM y el método de Johansen"
+subtitle: "Cointegración en sistemas: rango reducido, tests de traza y valor propio máximo"
+description: "El VAR con raíces unitarias en forma de corrección de error, la matriz Π de rango reducido, el teorema de representación de Granger, la estimación por máxima verosimilitud de rango reducido de Johansen, los tests de traza y de máximo valor propio y su conexión con Dickey–Fuller."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-11.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cointegración con más de dos variables
+
+La Clase 8 trató la cointegración entre **dos** series con el método de Engle–Granger. Ese enfoque tiene límites: depende de cuál variable se usa como dependiente, detecta una sola relación y trata asimétricamente a las variables. Con $n>2$ series puede haber **varias** relaciones de equilibrio (hasta $n - 1$, Clase 8), y el desafío es **estimar cuántas hay** y **cuáles son**, de manera simétrica y eficiente. Johansen (1988, 1991) lo resolvió con un marco de máxima verosimilitud que parte del **VAR**. Es la herramienta estándar para cointegración multivariada.
+
+# El VAR integrado y su forma de corrección de error
+
+Sea $y_t$ ($n\times1$) un VAR($p$) en niveles: $y_t = c + A_1y_{t-1} + \dots + A_py_{t-p} + u_t$. Con el mismo álgebra de la ADF (Clase 7), pero ahora con matrices, se reescribe como
+
+::: {#prp-vecm}
+## Forma VECM
+$$
+\Delta y_t = c + \Pi y_{t-1} + \sum_{j = 1}^{p-1}\Gamma_j\Delta y_{t-j} + u_t,\qquad\Pi = \sum_{j = 1}^pA_j - I_n,\quad\Gamma_j = -\sum_{i = j + 1}^pA_i.
+$$
+:::
+
+::: {.proof}
+Es la reparametrización del AR($p$) de la Clase 7 aplicada a matrices: se escribe $y_{t-j} = y_{t-1} - \sum_{i = 1}^{j-1}\Delta y_{t-i}$ en cada rezago, se agrupa y se resta $y_{t-1}$ de ambos lados. Los coeficientes quedan $\Pi = \sum A_j - I$ y $\Gamma_j = -\sum_{i>j}A_i$.
+:::
+
+Esta forma separa la dinámica en **tres niveles**: $\Delta y_t$ (cambio), $\Pi y_{t-1}$ (**el término de nivel**, que contiene toda la información de largo plazo) y $\Gamma_j\Delta y_{t-j}$ (dinámica de corto plazo). La matriz $\Pi$ **resume las relaciones de cointegración** según su rango.
+
+::: {#thm-rango}
+## Rango de $\Pi$ y cointegración
+Sea $r = \operatorname{rango}(\Pi)$. Suponemos que $y_t$ es a lo más $I(1)$ (las raíces de $\det(I - \sum A_jz^j) = 0$ están fuera del círculo unitario o son exactamente $z = 1$). Entonces:
+
+1. **$r = n$** ($\Pi$ de rango completo): $y_t$ es **estacionario** (VAR en niveles).
+2. **$r = 0$** ($\Pi = 0$): no hay cointegración; $\Delta y_t$ sigue un **VAR en diferencias**.
+3. **$0<r<n$**: $\Pi = \alpha\beta'$ con $\alpha,\beta$ de $n\times r$ y rango columna completo. Las columnas de $\beta$ son los **vectores de cointegración** ($\beta'y_t$ es $I(0)$) y las de $\alpha$ son las **velocidades de ajuste** (cargas). Hay $n - r$ **tendencias estocásticas comunes**.
+:::
+
+El caso 3 se escribe
+$$
+\Delta y_t = c + \alpha\underbrace{\beta'y_{t-1}}_{\text{desequilibrios}} + \sum_{j = 1}^{p-1}\Gamma_j\Delta y_{t-j} + u_t.
+$$ {#eq-vecm}
+Es la generalización multivariada del ECM de la Clase 8: $\beta'y_{t-1}$ ($r$ desequilibrios, estacionarios) **corrigen** a las variables con velocidad $\alpha$. La condición "rango reducido" es lo que distingue al VECM de un VAR cualquiera.
+
+Una **propiedad de identificación importante**: $\Pi = \alpha\beta' = (\alpha M)(\beta M^{-\prime})'$ para cualquier $M$ invertible de $r\times r$. Solo el **espacio** generado por las columnas de $\beta$ (el *espacio de cointegración*) está identificado por los datos, no los vectores individuales. Para obtener unos específicos hay que **normalizar** (por ejemplo, $\beta = \begin{pmatrix}I_r\\-\beta_2\end{pmatrix}$: cada relación "normalizada" con coeficiente uno en una variable) o imponer **restricciones económicas** (por ejemplo, que una relación sea la paridad de poder de compra, con coeficientes $(1,-1,\dots)$).
+
+::: {#exm-vecm}
+## Un VAR(1) bivariado con una relación de cointegración
+Sea $y_t = Ay_{t-1} + u_t$ con $A = \begin{pmatrix}0{,}9&0{,}1\\0{,}1&0{,}9\end{pmatrix}$. Entonces $\Pi = A - I = \begin{pmatrix}-0{,}1&0{,}1\\0{,}1&-0{,}1\end{pmatrix} = \begin{pmatrix}-0{,}1\\0{,}1\end{pmatrix}\begin{pmatrix}1&-1\end{pmatrix}$, de rango $1$: $\alpha = (-0{,}1,\ 0{,}1)'$ y $\beta = (1,-1)'$. Los autovalores de $A$ son $1$ y $0{,}8$: **una raíz unitaria** y una raíz estable, como predice $n - r = 1$. La diferencia $d_t = y_{1t} - y_{2t}$ cumple $d_t = 0{,}8d_{t-1} + (u_{1t} - u_{2t})$ (**estacionaria**, AR(1) con coeficiente $0{,}8$), y la suma $s_t = y_{1t} + y_{2t}$ cumple $s_t = s_{t-1} + (u_{1t} + u_{2t})$ (**caminata aleatoria**: la tendencia común). Ambas variables se ajustan: $\Delta y_{1t} = -0{,}1\,d_{t-1} + u_{1t}$ baja cuando $y_1$ está por encima de $y_2$, y $\Delta y_{2t} = +0{,}1\,d_{t-1} + u_{2t}$ sube.
+:::
+
+## El teorema de representación de Granger
+
+El recíproco de @thm-rango también vale y es el resultado central: un sistema con una representación VECM de rango reducido **es** un sistema cointegrado. La representación de **tendencias comunes** (Stock–Watson, Johansen): bajo las condiciones del teorema, $y_t$ admite la descomposición
+$$
+y_t = C\sum_{s = 1}^tu_s + C^*(L)u_t + \text{(términos determinísticos)},\qquad C = \beta_\perp\big(\alpha_\perp'\Gamma\beta_\perp\big)^{-1}\alpha_\perp',\quad\Gamma = I - \sum_{j = 1}^{p-1}\Gamma_j,
+$$
+donde $\alpha_\perp,\beta_\perp$ ($n\times(n - r)$) son los **complementos ortogonales** de $\alpha$ y $\beta$ ($\alpha'\alpha_\perp = 0$) y $C^*(L)u_t$ es estacionario. La parte permanente $C\sum u_s$ es una combinación de $n - r$ **tendencias estocásticas** $\alpha_\perp'\sum u_s$, y $\beta'C = 0$ (los vectores de cointegración eliminan la tendencia). Se toma prestado (Johansen, 1995). En el @exm-vecm, $\alpha_\perp = (1,1)'$ y la tendencia común es $\sum(u_{1s} + u_{2s})$: ambas variables comparten esa caminata aleatoria, y la diferencia es estacionaria.
+
+# Estimación de Johansen: rango reducido por máxima verosimilitud
+
+Suponiendo $u_t\sim N(0,\Sigma_u)$, Johansen maximiza la verosimilitud **sujeta a $\Pi = \alpha\beta'$ de rango $r$**. La idea es reducirlo a un problema de **autovalores**.
+
+## Concentración y regresión de rango reducido
+
+Para limpiar el efecto de la dinámica de corto plazo (y de los términos determinísticos), se hacen dos regresiones por MCO sobre $z_t = (\Delta y_{t-1},\dots,\Delta y_{t-p + 1},1)$: de $\Delta y_t$ sobre $z_t$, con residuos $R_{0t}$; y de $y_{t-1}$ sobre $z_t$, con residuos $R_{1t}$. Entonces el modelo se reduce a
+$$
+R_{0t} = \alpha\beta'R_{1t} + e_t,
+$$
+con las matrices de momentos $S_{ij} = T^{-1}\sum_tR_{it}R_{jt}'$ ($i,j\in\{0,1\}$).
+
+::: {#thm-johansen}
+## Estimador de Johansen
+Sea $M = S_{10}S_{00}^{-1}S_{01}$ y sean $\hat\lambda_1>\hat\lambda_2>\dots>\hat\lambda_n$ las raíces del problema de **autovalores generalizado** $\big|\lambda S_{11} - S_{10}S_{00}^{-1}S_{01}\big| = 0$ (los cuadrados de las **correlaciones canónicas** entre $R_{0t}$ y $R_{1t}$), con autovectores $\hat v_1,\dots,\hat v_n$ normalizados por $\hat v_i'S_{11}\hat v_j = \mathbf{1}\{i = j\}$. Entonces el MV con rango $r$ es
+$$
+\hat\beta = [\hat v_1,\dots,\hat v_r],\qquad\hat\alpha = S_{01}\hat\beta,\qquad\ell_{\max}(r) = \text{cte} - \frac T2\Big[\log|S_{00}| + \sum_{i = 1}^r\log\big(1 - \hat\lambda_i\big)\Big].
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Para un $\beta$ dado, $\alpha$ y $\Sigma_u$ se obtienen por MCO (regresión de $R_{0t}$ sobre $\beta'R_{1t}$), así que puedo **concentrar** $\alpha$ y $\Sigma_u$ y quedarme con una función de $\beta$: la verosimilitud concentrada es $-\frac T2\log\big|S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}\big|$. Maximizarla equivale a minimizar ese determinante. Un truco de determinantes por bloques lo convierte en un cociente, y minimizar un cociente de determinantes es un problema de autovalores.
+:::
+
+::: {.proof}
+Dado $\beta$ ($n\times r$), la regresión de $R_{0t}$ sobre $\beta'R_{1t}$ da $\hat\alpha(\beta) = S_{01}\beta(\beta'S_{11}\beta)^{-1}$ y $\hat\Sigma_u(\beta) = S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}$ (como en el teorema MCO = MV de la Clase 9). La verosimilitud concentrada es $-\frac T2\log|\hat\Sigma_u(\beta)|$. Para calcular el determinante usamos el complemento de Schur de la matriz de bloques $\begin{pmatrix}S_{00}&S_{01}\beta\\\beta'S_{10}&\beta'S_{11}\beta\end{pmatrix}$ de dos maneras:
+$$
+|\beta'S_{11}\beta|\cdot\big|S_{00} - S_{01}\beta(\beta'S_{11}\beta)^{-1}\beta'S_{10}\big| = |S_{00}|\cdot\big|\beta'S_{11}\beta - \beta'S_{10}S_{00}^{-1}S_{01}\beta\big|.
+$$
+Entonces
+$$
+|\hat\Sigma_u(\beta)| = |S_{00}|\,\frac{\big|\beta'(S_{11} - M)\beta\big|}{|\beta'S_{11}\beta|} = |S_{00}|\,\big|I_r - (\beta'S_{11}\beta)^{-1}\beta'M\beta\big|.
+$$
+Se minimiza sobre $\beta$ (de rango $r$). Normalizando $\beta'S_{11}\beta = I_r$, queda $|I_r - \beta'M\beta|$, y por la teoría de autovalores generalizados (el resultado de separación de Poincaré: la suma/producto de autovalores de la restricción de una forma cuadrática a un subespacio de dimensión $r$ es máxima/mínima en los $r$ primeros autovectores; se toma prestado), el mínimo se alcanza cuando las columnas de $\beta$ son los autovectores de $|\lambda S_{11} - M| = 0$ correspondientes a los $r$ mayores autovalores, y vale $\prod_{i\le r}(1 - \hat\lambda_i)$. Luego $\log|\hat\Sigma_u| = \log|S_{00}| + \sum_{i\le r}\log(1 - \hat\lambda_i)$.
+:::
+
+Los $\hat\lambda_i\in[0,1)$ son los **cuadrados de las correlaciones canónicas** entre los cambios $\Delta y_t$ (ya limpios de la dinámica de corto plazo) y los niveles rezagados $y_{t-1}$: miden **cuánta predicción** de $\Delta y_t$ dan combinaciones lineales de los niveles. Una correlación canónica grande significa que esa combinación de niveles ($\hat v_i'y_{t-1}$) **explica** el cambio de la serie: es una relación de equilibrio con ajuste. Si los niveles no cointegran, esa correlación es cercana a cero.
+
+# Tests de rango: traza y valor propio máximo
+
+Como la verosimilitud máxima con rango $r$ es $\ell_{\max}(r) = \text{cte} - \frac T2\big[\log|S_{00}| + \sum_{i\le r}\log(1 - \hat\lambda_i)\big]$, la **razón de verosimilitud** para contrastar rango $\le r_0$ contra rango $n$ (sin restricción) es
+$$
+LR_{\text{traza}}(r_0) = 2\big[\ell_{\max}(n) - \ell_{\max}(r_0)\big] = -T\sum_{i = r_0 + 1}^n\log\big(1 - \hat\lambda_i\big).
+$$
+El de **valor propio máximo** contrasta rango $r_0$ contra rango $r_0 + 1$: $LR_{\max}(r_0) = -T\log\big(1 - \hat\lambda_{r_0 + 1}\big)$.
+
+La distribución bajo la nula **no es $\chi^2$**: es un funcional del movimiento browniano de dimensión $n - r_0$,
+$$
+LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\Big(\int_0^1WW'\Big)^{-1}\int_0^1W\,(dW)'\Big\},
+$$
+con $W$ un movimiento browniano $(n - r_0)$-dimensional (versión demedida o destendenciada según los términos determinísticos). Se **toma prestada** (Johansen, 1995); los cuantiles están tabulados (Osterwald-Lenum, 1992; MacKinnon, Haug y Michelis, 1999) y dependen de $n - r_0$ y del caso determinístico.
+
+::: {#prp-johansen-df}
+## El caso $n - r_0 = 1$ es Dickey–Fuller al cuadrado
+Cuando $n - r_0 = 1$ y no hay términos determinísticos, el límite del estadístico de traza es $\dfrac{\big(\int_0^1W\,dW\big)^2}{\int_0^1W^2}$, el **cuadrado del estadístico $t$ de Dickey–Fuller** de la Clase 6.
+:::
+
+::: {.proof}
+Con $W$ escalar, $\operatorname{tr}\big\{\int(dW)W\cdot(\int W^2)^{-1}\cdot\int W(dW)\big\} = \big(\int W\,dW\big)^2/\int W^2$ (los tres factores son escalares). Y el límite del $t$ de DF sin constante es $\int W\,dW/(\int W^2)^{1/2}$ (teorema de la distribución de Dickey–Fuller, Clase 6): su cuadrado es el enunciado.
+:::
+
+Es un buen chequeo: el crítico al 5 % del $t$ de DF es $-1{,}94$, y $(-1{,}94)^2 = 3{,}76$, que es **exactamente** el crítico de traza para $n - r_0 = 1$ sin determinísticos. El test de Johansen **contiene** al test de raíz unitaria univariado como caso particular ($n = 1$, $r_0 = 0$).
+
+## Procedimiento secuencial
+
+Se contrasta en orden creciente de $r_0$: se testea $H_0:r = 0$; si **se rechaza**, se testea $H_0:r\le1$; y así hasta el primer $r_0$ en que **no se rechaza**: $\hat r = r_0$. (Cada nivel usa el crítico correspondiente a $n - r_0$.)
+
+::: {#exm-traza}
+## Tres variables
+Con $n = 3$, $T = 100$ y $\hat\lambda = (0{,}30,\ 0{,}12,\ 0{,}03)$: $LR_{\text{traza}}(0) = -100[\log0{,}70 + \log0{,}88 + \log0{,}97] = 51{,}5$; $LR_{\text{traza}}(1) = -100[\log0{,}88 + \log0{,}97] = 15{,}8$; $LR_{\text{traza}}(2) = -100\log0{,}97 = 3{,}05$. Con críticos al 5 % de $29{,}68$, $15{,}41$ y $3{,}76$: se rechaza $r = 0$ ($51{,}5>29{,}68$), se rechaza $r\le1$ ($15{,}8>15{,}41$, **por poco**), y no se rechaza $r\le2$ ($3{,}05<3{,}76$): $\hat r = 2$. Los estadísticos de valor propio máximo son $35{,}7$, $12{,}8$ y $3{,}05$.
+:::
+
+Los resultados dependen de dos decisiones que deben justificarse: el **número de rezagos** $p$ (que debe blanquear los residuos del VAR en niveles) y los **términos determinísticos**. Johansen distingue cinco casos: sin determinísticos; constante **restringida** al espacio de cointegración (las relaciones de equilibrio tienen un intercepto; las series no tienen deriva); constante **libre** (las series tienen deriva lineal: el caso habitual para series con crecimiento); tendencia restringida; y tendencia libre (tendencias cuadráticas, raro). Elegir mal el caso cambia las distribuciones límite y las conclusiones; la regla práctica es mirar los gráficos y elegir la especificación coherente con el comportamiento de las series (¿tienen deriva?, ¿los desequilibrios tienen media cero?).
+
+# Inferencia sobre $\alpha$ y $\beta$
+
+Una vez fijado $r$, el estimador de Johansen de $\beta$ es **superconsistente** (tasa $T$, Clase 8) y **normal mixto**: tests de razón de verosimilitud sobre restricciones lineales de $\beta$ tienen distribución **$\chi^2$** asintótica. Los dos tipos de hipótesis más usadas:
+
+- **Restricciones sobre $\beta$:** probar si una relación económica dada ($\beta_1 = (1,-1,0)'$: paridad; coeficiente unitario entre consumo e ingreso) pertenece al espacio de cointegración. El LR compara los autovalores con y sin la restricción.
+- **Restricciones sobre $\alpha$:** si la fila $i$ de $\alpha$ es **cero**, la variable $i$ **no se ajusta** a los desequilibrios (es **débilmente exógena** para $\beta$): toda la corrección la hacen las otras. Permite estimar $\beta$ en el modelo condicional, más simple, y tiene la interpretación económica de "cuál variable lidera".
+
+# Comparación con Engle–Granger
+
+| | **Engle–Granger** | **Johansen** |
+|---|---|---|
+| Variables | $n = 2$ (extensible, con problemas) | $n\ge2$, múltiples vectores |
+| Simetría | depende de la variable dependiente | simétrico |
+| Número de relaciones | una | **estima $r$** |
+| Dinámica | dos pasos, ECM aparte | sistema completo (VECM) |
+| Eficiencia | MCO, bias de segundo orden | **MV**, normal mixta |
+| Fragilidad | críticos propios | sensible a $p$, determinísticos, y sobrerrechaza en muestras chicas |
+
+Johansen es más poderoso y flexible, pero **no es infalible**: con $T$ pequeño y muchas variables el test de traza **sobrerrechaza** (concluye más cointegración de la que hay; correcciones de Bartlett, Johansen, 2002) y tiene baja potencia contra alternativas cercanas (como en la Clase 7). Buenas prácticas: verificar que los **residuos del VAR** son ruido blanco, comprobar que el modelo tiene **exactamente $n - r$ raíces unitarias** en la matriz companion (y el resto dentro del círculo), mirar si los **vectores estimados** tienen sentido económico, y comparar con Engle–Granger.
+
+Por último, el VECM se integra con la identificación estructural de la Clase 10: se pueden identificar shocks **permanentes** (los que mueven las tendencias comunes) y **transitorios** (los que solo mueven los desequilibrios), una distinción clave en teoría del ciclo económico (King, Plosser, Stock y Watson, 1991).
+
+# ★ Postgrado: cointegración y conteo de raíces unitarias
+
+::: {.callout-important title="★ Postgrado"}
+Dos hechos algebraicos que sostienen el @thm-rango: (a) si $\Pi = \alpha\beta'$ y $\Delta y_t$ es estacionario, entonces $\beta'y_t$ es estacionario; (b) el número de raíces unitarias del VAR es $n - \operatorname{rango}(\Pi)$.
+:::
+
+**(a)** De @eq-vecm, $\alpha\beta'y_{t-1} = \Delta y_t - c - \sum\Gamma_j\Delta y_{t-j} - u_t$. El lado derecho es **estacionario** (si $\Delta y_t$ lo es). Como $\alpha$ tiene rango columna completo, $\alpha'\alpha$ es invertible y multiplicando por $(\alpha'\alpha)^{-1}\alpha'$ por la izquierda,
+$$
+\beta'y_{t-1} = (\alpha'\alpha)^{-1}\alpha'\Big[\Delta y_t - c - \sum_j\Gamma_j\Delta y_{t-j} - u_t\Big],
+$$
+una combinación lineal de variables estacionarias: **estacionaria**. Entonces las columnas de $\beta$ son vectores de cointegración.
+
+**(b)** Sea $A(z) = I - A_1z - \dots - A_pz^p$. En $z = 1$, $A(1) = I - \sum A_j = -\Pi$, de rango $r$, así que su **núcleo** tiene dimensión $n - r$: existen $n - r$ vectores linealmente independientes $v$ con $A(1)v = 0$, es decir, $\sum_jA_jv = v$. Para cada uno, el vector apilado $(v',v',\dots,v')'$ cumple $F(v',\dots,v')' = (\sum_jA_jv,\ v,\dots,v)' = (v',\dots,v')'$: es un **autovector de la matriz companion $F$ con autovalor $1$**. Luego $F$ tiene el autovalor $1$ con multiplicidad geométrica al menos $n - r$: hay (al menos) $n - r$ raíces unitarias. Con la hipótesis de que el sistema es a lo más $I(1)$ (sin raíces adicionales en el círculo ni $I(2)$), hay **exactamente** $n - r$. Por eso $r = n$ (sin raíces unitarias) es el caso estacionario, y $r = 0$ ($n$ raíces unitarias, $\Pi = 0$) el de un VAR en diferencias.
+
+# Resumen
+
+- Un VAR integrado se reescribe como **VECM**: $\Delta y_t = c + \Pi y_{t-1} + \sum\Gamma_j\Delta y_{t-j} + u_t$ (@prp-vecm). El **rango** de $\Pi$ da el **número de relaciones de cointegración**: $r = n$ estacionario, $r = 0$ sin cointegración, $0<r<n$: $\Pi = \alpha\beta'$ (@thm-rango).
+- Solo el **espacio** de $\beta$ está identificado: hace falta normalizar o imponer restricciones económicas. $n - r$ tendencias estocásticas comunes.
+- **Johansen** (@thm-johansen): MV de rango reducido = problema de **autovalores** (correlaciones canónicas entre $\Delta y_t$ y $y_{t-1}$ limpios de la dinámica de corto plazo).
+- **Tests:** $LR_{\text{traza}}(r_0) = -T\sum_{i>r_0}\log(1 - \hat\lambda_i)$ y $LR_{\max}$; distribución no estándar (funcional browniano); con $n - r_0 = 1$ es el cuadrado del $t$ de DF (@prp-johansen-df). Se aplica **secuencialmente**.
+- Tests de **restricciones en $\beta$** ($\chi^2$) y en $\alpha$ (**exogeneidad débil**). Sensible a rezagos y determinísticos; sobrerrechaza en muestras chicas.
+
+# Ejercicios
+
+**Ejercicio 11.1.** Para el VAR(1) con $A = \begin{pmatrix}0{,}9&0{,}1\\0{,}1&0{,}9\end{pmatrix}$ del @exm-vecm, verifica $\Pi$, su rango y los autovalores de $A$, y comprueba que $d_t = y_{1t} - y_{2t}$ es AR(1) con coeficiente $0{,}8$ y $s_t = y_{1t} + y_{2t}$ es una caminata aleatoria.
+
+::: {.callout-tip collapse="true" title="Solución 11.1"}
+$\Pi = A - I = \begin{pmatrix}-0{,}1&0{,}1\\0{,}1&-0{,}1\end{pmatrix}$, con determinante $0{,}01 - 0{,}01 = 0$ y una fila proporcional a la otra: rango $1$ ($r = 1$). Autovalores de $A$: traza $1{,}8$, determinante $0{,}81 - 0{,}01 = 0{,}8$, $\lambda^2 - 1{,}8\lambda + 0{,}8 = 0\Rightarrow\lambda = (1{,}8\pm\sqrt{3{,}24 - 3{,}2})/2 = (1{,}8\pm0{,}2)/2 = 1,\ 0{,}8$: una raíz unitaria ($n - r = 1$). $d_t = y_{1t} - y_{2t} = (0{,}9y_{1,t-1} + 0{,}1y_{2,t-1}) - (0{,}1y_{1,t-1} + 0{,}9y_{2,t-1}) + u_{1t} - u_{2t} = 0{,}8(y_{1,t-1} - y_{2,t-1}) + (u_{1t} - u_{2t})$ ✓. $s_t = (0{,}9 + 0{,}1)y_{1,t-1} + (0{,}1 + 0{,}9)y_{2,t-1} + u_{1t} + u_{2t} = s_{t-1} + (u_{1t} + u_{2t})$ ✓.
+:::
+
+**Ejercicio 11.2.** Con $n = 3$, $T = 100$ y $\hat\lambda = (0{,}30,\,0{,}12,\,0{,}03)$, calcula los estadísticos de traza y de valor propio máximo para $r_0 = 0,1,2$ y decide con críticos al 5 %: traza $29{,}68;\,15{,}41;\,3{,}76$ y máximo valor propio $20{,}97;\,14{,}07;\,3{,}76$.
+
+::: {.callout-tip collapse="true" title="Solución 11.2"}
+Traza: $r_0 = 0$: $-100[\ln0{,}70 + \ln0{,}88 + \ln0{,}97] = 100(0{,}3567 + 0{,}1278 + 0{,}0305) = 51{,}5$. $r_0 = 1$: $100(0{,}1278 + 0{,}0305) = 15{,}83$. $r_0 = 2$: $100\cdot0{,}0305 = 3{,}05$. Máximo valor propio: $-100\ln0{,}70 = 35{,}7$; $-100\ln0{,}88 = 12{,}8$; $-100\ln0{,}97 = 3{,}05$. Decisiones: **traza**: $51{,}5>29{,}68$ rechaza $r = 0$; $15{,}83>15{,}41$ rechaza $r\le1$ (por poco); $3{,}05<3{,}76$ no rechaza $r\le2$. $\hat r = 2$. **Máximo valor propio**: $35{,}7>20{,}97$ rechaza $r = 0$; $12{,}8<14{,}07$ **no** rechaza $r = 1$ contra $r = 2$. $\hat r = 1$. **Los dos tests discrepan** ($r = 2$ frente a $r = 1$) porque el segundo estadístico está cerca del crítico; es habitual con valores límites. En un caso así, se reportan ambos y se decide con consideraciones económicas y de estabilidad.
+:::
+
+**Ejercicio 11.3.** Con $n = 1$ ($r_0 = 0$, sin determinísticos), un test de Johansen da $LR_{\text{traza}} = 4{,}41$. ¿A qué estadístico $t$ de Dickey–Fuller corresponde y qué concluyes con el crítico $3{,}76$?
+
+::: {.callout-tip collapse="true" title="Solución 11.3"}
+$t^2 = 4{,}41\Rightarrow|t| = 2{,}1$ (con signo negativo, $t = -2{,}1$, porque el DF se rechaza con valores negativos). El crítico $3{,}76 = (-1{,}94)^2$. Como $4{,}41>3{,}76$ se **rechaza** la raíz unitaria al 5 %. Cuidado: el test de traza es de dos colas en el sentido de que el cuadrado no distingue el signo: un $t = +2{,}1$ (explosivo) daría el mismo estadístico, pero en el marco de Johansen se supone que no hay raíces explosivas.
+:::
+
+**Ejercicio 11.4.** Con $\alpha = (-0{,}2,\,0{,}1)'$ y $\beta = (1,-1)'$, escribe $\Pi$. Muestra que $(\alpha c,\beta/c)$ da la misma $\Pi$ y explica por qué hay que normalizar $\beta$.
+
+::: {.callout-tip collapse="true" title="Solución 11.4"}
+$\Pi = \alpha\beta' = \begin{pmatrix}-0{,}2&0{,}2\\0{,}1&-0{,}1\end{pmatrix}$. Con $c = 2$: $\tilde\alpha = (-0{,}4,0{,}2)'$ y $\tilde\beta = (0{,}5,-0{,}5)'$: $\tilde\alpha\tilde\beta' = \begin{pmatrix}-0{,}2&0{,}2\\0{,}1&-0{,}1\end{pmatrix} = \Pi$. Infinitos pares $(\alpha,\beta)$ dan la misma $\Pi$ (cualquier $M$ invertible, o aquí cualquier escalar): los datos solo identifican el **espacio** de cointegración y la matriz $\Pi$. Se normaliza (por ejemplo, el primer elemento de $\beta$ igual a $1$) para que el vector sea interpretable ("$y_1$ en función de $y_2$"); la normalización **no** es una restricción económica, es una convención. Para $r\ge2$ además hay que fijar cuál base del espacio se reporta, y eso sí exige restricciones identificantes (de la teoría).
+:::
+
+**Ejercicio 11.5.** En un VECM bivariado, el test de $H_0:\alpha_2 = 0$ no se rechaza. ¿Qué significa? ¿Cómo cambia la estimación?
+
+::: {.callout-tip collapse="true" title="Solución 11.5"}
+$\alpha_2 = 0$ dice que la variable $2$ **no reacciona** a los desequilibrios $\beta'y_{t-1}$ (**débilmente exógena** respecto de $\beta$): su ecuación $\Delta y_{2t} = \alpha_2\beta'y_{t-1} + \dots$ no contiene el término de corrección. Toda la corrección la hace la variable 1. La variable 2 "lidera" (puede ser, por ejemplo, el precio internacional de un bien en un modelo del precio local). Para estimar, se puede usar el modelo **condicional** de $\Delta y_{1t}$ dado $\Delta y_{2t}$ (más simple, un solo ECM) sin perder eficiencia en $\beta$. Es una forma de **identificar** cuál variable ajusta, algo que el vector de cointegración solo no dice.
+:::
+
+**Ejercicio 11.6.** En el @exm-vecm, calcula $\alpha_\perp$ y la tendencia estocástica común. ¿Cómo se descompone cada $y_{it}$ en tendencia más ciclo?
+
+::: {.callout-tip collapse="true" title="Solución 11.6"}
+$\alpha = (-0{,}1,0{,}1)'$, y $\alpha_\perp$ debe cumplir $\alpha'\alpha_\perp = 0$: $\alpha_\perp = (1,1)'$ (pues $-0{,}1 + 0{,}1 = 0$). La tendencia común es $\tau_t = \alpha_\perp'\sum_{s\le t}u_s = \sum_s(u_{1s} + u_{2s}) = s_t$ (la suma $y_1 + y_2$, una caminata aleatoria). Como $y_{1t} = \tfrac12(s_t + d_t)$ e $y_{2t} = \tfrac12(s_t - d_t)$ con $d_t$ estacionaria: $y_{1t} = \tfrac12\tau_t + \tfrac12d_t$ e $y_{2t} = \tfrac12\tau_t - \tfrac12d_t$. Ambas series comparten la misma tendencia $\tfrac12\tau_t$ (con peso $\tfrac12$ cada una), más un ciclo transitorio opuesto, $\pm\tfrac12d_t$. Es la representación de tendencias comunes.
+:::
+
+**Ejercicio 11.7 ★.** Con la parte (b) del §★, cuenta las raíces unitarias de un VAR(1) con $A = \begin{pmatrix}1&0&0\\0&0{,}5&0\\0{,}2&0&1\end{pmatrix}$ y deduce $r$.
+
+::: {.callout-tip collapse="true" title="Solución 11.7 ★"}
+$\Pi = A - I = \begin{pmatrix}0&0&0\\0&-0{,}5&0\\0{,}2&0&0\end{pmatrix}$. Sus filas: la primera es cero, la segunda y la tercera son linealmente independientes (una tiene solo el elemento $(2,2)$ y la otra solo el $(3,1)$): $\operatorname{rango}(\Pi) = 2 = r$. Raíces unitarias: $n - r = 1$. Verificación con los autovalores de $A$ (matriz triangular inferior por permutación: sus autovalores son los de la diagonal $\{1,0{,}5,1\}$): **dos** autovalores iguales a $1$. Hay una discrepancia: $A$ tiene dos autovalores unitarios pero $n - r = 1$. La razón es que, en este ejemplo, $\operatorname{rango}(\Pi) = 2$ da **multiplicidad geométrica** $1$ del autovalor $1$ (el núcleo de $A - I$ es de dimensión $1$), pero la **multiplicidad algebraica** es $2$ (un bloque de Jordan): hay una raíz $I(2)$, lo que viola el supuesto de "a lo más $I(1)$" del @thm-rango (la condición $\alpha_\perp'\Gamma\beta_\perp$ de rango completo falla). Es un recordatorio de que el conteo $n - r$ vale **bajo** el supuesto $I(1)$.
+:::

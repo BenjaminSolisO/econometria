@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El modelo VAR(p) como sistema de regresiones: forma companion y condición de estacionariedad, representación MA(∞), MCO equivale a MV, distribución asintótica, selección de rezagos, causalidad de Granger y pronóstico multivariado.">
+
+<title>Clase 9 · Vectores autorregresivos (VAR) – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-08.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-09.html">Clase 9 · Vectores autorregresivos (VAR)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#de-una-serie-a-un-sistema" id="toc-de-una-serie-a-un-sistema" class="nav-link active" data-scroll-target="#de-una-serie-a-un-sistema"><span class="header-section-number">1</span> De una serie a un sistema</a></li>
+  <li><a href="#el-varp" id="toc-el-varp" class="nav-link" data-scroll-target="#el-varp"><span class="header-section-number">2</span> El VAR(<span class="math inline">\(p\)</span>)</a>
+  <ul class="collapse">
+  <li><a href="#la-forma-companion-y-la-condición-de-estacionariedad" id="toc-la-forma-companion-y-la-condición-de-estacionariedad" class="nav-link" data-scroll-target="#la-forma-companion-y-la-condición-de-estacionariedad"><span class="header-section-number">2.1</span> La forma companion y la condición de estacionariedad</a></li>
+  </ul></li>
+  <li><a href="#estimación" id="toc-estimación" class="nav-link" data-scroll-target="#estimación"><span class="header-section-number">3</span> Estimación</a>
+  <ul class="collapse">
+  <li><a href="#mco-ecuación-por-ecuación-es-máxima-verosimilitud" id="toc-mco-ecuación-por-ecuación-es-máxima-verosimilitud" class="nav-link" data-scroll-target="#mco-ecuación-por-ecuación-es-máxima-verosimilitud"><span class="header-section-number">3.1</span> MCO ecuación por ecuación es máxima verosimilitud</a></li>
+  <li><a href="#distribución-asintótica" id="toc-distribución-asintótica" class="nav-link" data-scroll-target="#distribución-asintótica"><span class="header-section-number">3.2</span> Distribución asintótica</a></li>
+  <li><a href="#la-maldición-de-la-dimensionalidad" id="toc-la-maldición-de-la-dimensionalidad" class="nav-link" data-scroll-target="#la-maldición-de-la-dimensionalidad"><span class="header-section-number">3.3</span> La maldición de la dimensionalidad</a></li>
+  </ul></li>
+  <li><a href="#selección-del-número-de-rezagos" id="toc-selección-del-número-de-rezagos" class="nav-link" data-scroll-target="#selección-del-número-de-rezagos"><span class="header-section-number">4</span> Selección del número de rezagos</a></li>
+  <li><a href="#causalidad-de-granger" id="toc-causalidad-de-granger" class="nav-link" data-scroll-target="#causalidad-de-granger"><span class="header-section-number">5</span> Causalidad de Granger</a></li>
+  <li><a href="#pronóstico-con-un-var" id="toc-pronóstico-con-un-var" class="nav-link" data-scroll-target="#pronóstico-con-un-var"><span class="header-section-number">6</span> Pronóstico con un VAR</a></li>
+  <li><a href="#postgrado-la-condición-del-determinante-y-los-autovalores-de-f" id="toc-postgrado-la-condición-del-determinante-y-los-autovalores-de-f" class="nav-link" data-scroll-target="#postgrado-la-condición-del-determinante-y-los-autovalores-de-f"><span class="header-section-number">7</span> ★ Postgrado: la condición del determinante y los autovalores de <span class="math inline">\(F\)</span></a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-09.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 9 · Vectores autorregresivos (VAR)</h1>
+<p class="subtitle lead">Estacionariedad, estimación, selección de rezagos y causalidad de Granger</p>
+</div>
+
+<div>
+  <div class="description">
+    El modelo VAR(p) como sistema de regresiones: forma companion y condición de estacionariedad, representación MA(∞), MCO equivale a MV, distribución asintótica, selección de rezagos, causalidad de Granger y pronóstico multivariado.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a></p>
+<section id="de-una-serie-a-un-sistema" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> De una serie a un sistema</h1>
+<p>Hasta aquí modelamos <strong>una</strong> serie a la vez. Pero las preguntas macroeconómicas son casi siempre sobre <strong>interacciones</strong>: ¿cómo responden la inflación y el producto a la política monetaria?, ¿el tipo de cambio predice los precios, o al revés?, ¿cómo se transmiten los shocks entre países? Un enfoque con ecuaciones simultáneas exigiría una teoría detallada de la estructura del sistema. Sims (1980) propuso la alternativa que domina la macroeconometría empírica desde entonces: <strong>dejar hablar a los datos</strong>, modelando el vector de variables de interés como un <strong>vector autorregresivo</strong> (VAR) donde cada variable depende de los rezagos de todas.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Christopher Sims recibió el Nobel de Economía de 2011 (junto con Thomas Sargent) por sus métodos empíricos sobre causa y efecto en la macroeconomía. Su artículo de 1980, “Macroeconomics and Reality”, sostenía que las restricciones de exclusión “increíbles” de los grandes modelos de ecuaciones simultáneas eran un obstáculo, y que un VAR sin restricciones era una forma más honesta de resumir los datos. La discusión de cuánta estructura imponer sigue abierta (Clase 10).</p></div></div></section>
+<section id="el-varp" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El VAR(<span class="math inline">\(p\)</span>)</h1>
+<p>Sea <span class="math inline">\(y_t = (y_{1t},\dots,y_{nt})'\)</span> un vector de <span class="math inline">\(n\)</span> series. El <strong>VAR(<span class="math inline">\(p\)</span>)</strong> en forma reducida es <span id="eq-var"><span class="math display">\[
+y_t = c + A_1y_{t-1} + A_2y_{t-2} + \dots + A_py_{t-p} + u_t,\qquad u_t\sim WN(0,\Sigma_u),
+\tag{1}\]</span></span> con <span class="math inline">\(A_j\)</span> matrices de <span class="math inline">\(n\times n\)</span>, <span class="math inline">\(c\)</span> un vector de constantes y <span class="math inline">\(u_t\)</span> un ruido blanco <strong>vectorial</strong>: <span class="math inline">\(\mathbb{E}[u_t] = 0\)</span>, <span class="math inline">\(\mathbb{E}[u_tu_t'] = \Sigma_u\)</span> (definida positiva, <strong>no necesariamente diagonal</strong>) y <span class="math inline">\(\mathbb{E}[u_tu_s'] = 0\)</span> si <span class="math inline">\(t\ne s\)</span>. Cada ecuación es una regresión de <span class="math inline">\(y_{it}\)</span> sobre una constante y <span class="math inline">\(p\)</span> rezagos de <strong>todas</strong> las variables. La covarianza contemporánea <span class="math inline">\(\Sigma_u\)</span> captura que los errores de distintas ecuaciones se mueven juntos en <span class="math inline">\(t\)</span>.</p>
+<p>Un ejemplo bivariado, con <span class="math inline">\(p = 1\)</span>: <span class="math inline">\(y_t = (\pi_t,\ x_t)'\)</span> (inflación y brecha del producto), <span class="math display">\[
+\begin{pmatrix}\pi_t\\x_t\end{pmatrix} = \begin{pmatrix}0{,}5&amp;0{,}1\\0{,}2&amp;0{,}4\end{pmatrix}\begin{pmatrix}\pi_{t-1}\\x_{t-1}\end{pmatrix} + \begin{pmatrix}u_{\pi t}\\u_{xt}\end{pmatrix}.
+\]</span> La inflación depende de la inflación pasada (coeficiente <span class="math inline">\(0{,}5\)</span>) y de la brecha pasada (<span class="math inline">\(0{,}1\)</span>); la brecha, de ambas. Este ejemplo se usa a lo largo de las Clases 9 y 10 (Ejercicios 9.1 y 9.6).</p>
+<section id="la-forma-companion-y-la-condición-de-estacionariedad" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="la-forma-companion-y-la-condición-de-estacionariedad"><span class="header-section-number">2.1</span> La forma companion y la condición de estacionariedad</h2>
+<p>Todo VAR(<span class="math inline">\(p\)</span>) se puede escribir como un VAR(1) <strong>más grande</strong>, apilando los rezagos. Sea <span class="math inline">\(Y_t = (y_t',y_{t-1}',\dots,y_{t-p + 1}')'\)</span> de dimensión <span class="math inline">\(np\)</span>: <span class="math display">\[
+Y_t = \mu + FY_{t-1} + U_t,\qquad F = \begin{pmatrix}A_1&amp;A_2&amp;\cdots&amp;A_{p-1}&amp;A_p\\I_n&amp;0&amp;\cdots&amp;0&amp;0\\0&amp;I_n&amp;\cdots&amp;0&amp;0\\\vdots&amp;&amp;\ddots&amp;&amp;\vdots\\0&amp;0&amp;\cdots&amp;I_n&amp;0\end{pmatrix},
+\]</span> con <span class="math inline">\(\mu = (c',0,\dots,0)'\)</span> y <span class="math inline">\(U_t = (u_t',0,\dots,0)'\)</span>. La matriz <span class="math inline">\(F\)</span> (<span class="math inline">\(np\times np\)</span>) es la <strong>matriz companion</strong>. Con ella la estacionariedad se reduce a una condición sobre autovalores.</p>
+<div id="thm-var-est" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Estacionariedad del VAR)</strong></span> Son equivalentes: (i) todos los autovalores de <span class="math inline">\(F\)</span> tienen módulo <strong>menor que 1</strong>; (ii) <span class="math inline">\(\det\big(I_n - A_1z - \dots - A_pz^p\big)\ne0\)</span> para todo <span class="math inline">\(|z|\le1\)</span>. Bajo esas condiciones el VAR tiene una <strong>única</strong> solución estacionaria, causal, dada por la representación <strong>MA(<span class="math inline">\(\infty\)</span>)</strong> <span class="math display">\[
+y_t = \mu_y + \sum_{j = 0}^\infty\Psi_ju_{t-j},\qquad\Psi_0 = I_n,\quad\Psi_j = \sum_{k = 1}^{\min(j,p)}A_k\Psi_{j-k},
+\]</span> con <span class="math inline">\(\mu_y = (I_n - A_1 - \dots - A_p)^{-1}c\)</span> y <span class="math inline">\(\|\Psi_j\|\le Kr^j\)</span> para algún <span class="math inline">\(r&lt;1\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Esquema; la equivalencia (i)<span class="math inline">\(\iff\)</span>(ii) se prueba en la sección ★.) Si los autovalores de <span class="math inline">\(F\)</span> están dentro del círculo unitario, <span class="math inline">\(F^j\to0\)</span> geométricamente (por la forma de Jordan). Iterando el VAR(1), <span class="math inline">\(Y_t = \sum_{j = 0}^{J - 1}F^j(\mu + U_{t-j}) + F^JY_{t-J}\)</span>, y el último término tiende a cero en media cuadrática. Luego <span class="math inline">\(Y_t = (I - F)^{-1}\mu + \sum_{j\ge0}F^jU_{t-j}\)</span> (la suma converge absolutamente por el decaimiento geométrico), y es la única solución estacionaria (el mismo argumento de unicidad del AR(1), Clase 2). El proceso es estacionario, pues su media es constante y su covarianza depende solo del rezago (Clase 2, proceso lineal). El bloque superior de <span class="math inline">\(Y_t\)</span> es <span class="math inline">\(y_t\)</span>: <span class="math inline">\(\Psi_j\)</span> es el bloque <span class="math inline">\(n\times n\)</span> superior izquierdo de <span class="math inline">\(F^j\)</span>, y satisface la recursión enunciada (igualando coeficientes en <span class="math inline">\((I - A_1L - \dots - A_pL^p)\Psi(L) = I\)</span>).</p>
+</div>
+<p>Esta condición generaliza la del AR(<span class="math inline">\(p\)</span>) de la Clase 2 (raíces de <span class="math inline">\(\phi(z)\)</span> fuera del círculo unitario) y es la que hay que verificar siempre después de estimar un VAR: se calculan los autovalores de <span class="math inline">\(\hat F\)</span> y se comprueba que el máximo módulo sea menor que uno. En el ejemplo, <span class="math inline">\(A = \begin{pmatrix}0{,}5&amp;0{,}1\\0{,}2&amp;0{,}4\end{pmatrix}\)</span> tiene traza <span class="math inline">\(0{,}9\)</span> y determinante <span class="math inline">\(0{,}18\)</span>, y sus autovalores son <span class="math inline">\(\lambda = (0{,}9\pm\sqrt{0{,}81 - 0{,}72})/2 = 0{,}6\)</span> y <span class="math inline">\(0{,}3\)</span>: es estacionario. La respuesta a un shock, <span class="math inline">\(\Psi_1 = A\)</span>, <span class="math inline">\(\Psi_2 = A^2\)</span>, etcétera, decae a tasa <span class="math inline">\(0{,}6^j\)</span>.</p>
+<p>Los momentos de segundo orden se obtienen de <span class="math inline">\(\Gamma_Y(0) = F\Gamma_Y(0)F' + \Sigma_U\)</span>, es decir, <span class="math inline">\(\operatorname{vec}\Gamma_Y(0) = (I - F\otimes F)^{-1}\operatorname{vec}\Sigma_U\)</span>, que existe porque <span class="math inline">\(F\)</span> es estable.</p>
+</section>
+</section>
+<section id="estimación" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estimación</h1>
+<section id="mco-ecuación-por-ecuación-es-máxima-verosimilitud" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="mco-ecuación-por-ecuación-es-máxima-verosimilitud"><span class="header-section-number">3.1</span> MCO ecuación por ecuación es máxima verosimilitud</h2>
+<p>Con <span class="math inline">\(T + p\)</span> observaciones, definamos <span class="math inline">\(x_t = (1,y_{t-1}',\dots,y_{t-p}')'\)</span> (<span class="math inline">\(1 + np\)</span> regresores) y <span class="math inline">\(B = [c,A_1,\dots,A_p]\)</span> (<span class="math inline">\(n\times(1 + np)\)</span>), de modo que <span class="math inline">\(y_t = Bx_t + u_t\)</span>. Cada ecuación del sistema se estima por <strong>MCO</strong>: <span class="math inline">\(\hat B = \big(\sum_ty_tx_t'\big)\big(\sum_tx_tx_t'\big)^{-1}\)</span>. Es un sistema de regresiones <strong>aparentemente no relacionadas</strong> (SUR) donde <strong>todas las ecuaciones tienen los mismos regresores</strong>, y en ese caso MCO coincide con MCG y con MV.</p>
+<div id="thm-var-mco" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (MCO = MV gaussiano (condicional))</strong></span> Si <span class="math inline">\(u_t\sim N(0,\Sigma_u)\)</span>, el estimador de máxima verosimilitud <strong>condicional</strong> en las primeras <span class="math inline">\(p\)</span> observaciones es <span class="math display">\[
+\hat B = \sum_ty_tx_t'\Big(\sum_tx_tx_t'\Big)^{-1}\ \ (\text{MCO ecuación por ecuación}),\qquad\hat\Sigma_u = \frac1T\sum_t\hat u_t\hat u_t',\quad\hat u_t = y_t - \hat Bx_t.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La log-verosimilitud condicional es <span class="math inline">\(-\frac T2\log|\Sigma_u| - \frac12\sum_t(y_t - Bx_t)'\Sigma_u^{-1}(y_t - Bx_t)\)</span>. Para cualquier <span class="math inline">\(\Sigma_u\)</span> fija, quiero minimizar la forma cuadrática <span class="math inline">\(\sum(y_t - Bx_t)'\Sigma_u^{-1}(y_t - Bx_t) = \operatorname{tr}\big[\Sigma_u^{-1}\sum(y_t - Bx_t)(y_t - Bx_t)'\big]\)</span> en <span class="math inline">\(B\)</span>. La suma de cuadrados <span class="math inline">\(\sum(y_t - Bx_t)(y_t - Bx_t)'\)</span> admite una descomposición ortogonal alrededor de <span class="math inline">\(\hat B\)</span> (como $ + $ distancia cuadrática, igual que en la Clase 3 de Econometría 1), y el término de distancia es <strong>semidefinido positivo e independiente de <span class="math inline">\(\Sigma_u\)</span></strong>. Entonces <span class="math inline">\(\hat B\)</span> minimiza la traza para cualquier <span class="math inline">\(\Sigma_u\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\hat u_t = y_t - \hat Bx_t\)</span>, con <span class="math inline">\(\sum_t\hat u_tx_t' = 0\)</span> (ortogonalidad de MCO). Para cualquier <span class="math inline">\(B\)</span>, <span class="math inline">\(y_t - Bx_t = \hat u_t + (\hat B - B)x_t\)</span>, así que <span class="math display">\[
+\sum_t(y_t - Bx_t)(y_t - Bx_t)' = \sum_t\hat u_t\hat u_t' + (\hat B - B)\Big(\sum_tx_tx_t'\Big)(\hat B - B)',
+\]</span> pues los términos cruzados se anulan por <span class="math inline">\(\sum\hat u_tx_t' = 0\)</span>. El segundo término es semidefinido positivo y se anula si y solo si <span class="math inline">\(B = \hat B\)</span>. Por lo tanto, para toda <span class="math inline">\(\Sigma_u^{-1}\succ0\)</span>, <span class="math inline">\(\operatorname{tr}\big[\Sigma_u^{-1}\sum(y_t - Bx_t)(y_t - Bx_t)'\big]\ge\operatorname{tr}\big[\Sigma_u^{-1}\sum\hat u_t\hat u_t'\big]\)</span> con igualdad solo en <span class="math inline">\(\hat B\)</span>: <span class="math inline">\(\hat B\)</span> maximiza la verosimilitud para <strong>cada</strong> <span class="math inline">\(\Sigma_u\)</span>, sin importar su valor. Sustituyendo, queda <span class="math inline">\(-\frac T2\log|\Sigma_u| - \frac12\operatorname{tr}[\Sigma_u^{-1}T\hat\Sigma_u]\)</span>, cuyo máximo en <span class="math inline">\(\Sigma_u\)</span> es <span class="math inline">\(\hat\Sigma_u = \frac1T\sum\hat u_t\hat u_t'\)</span> (como en la Clase 2 de Econometría 2 para la normal multivariada).</p>
+</div>
+<p>Este es un resultado muy cómodo: <strong>un VAR de <span class="math inline">\(n\)</span> variables es solo <span class="math inline">\(n\)</span> regresiones por MCO</strong>, y no hace falta estimación simultánea. Además, no se necesita normalidad: como en la Clase 4, <span class="math inline">\(\hat B\)</span> es la cuasi-MV y es consistente bajo condiciones leves.</p>
+</section>
+<section id="distribución-asintótica" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="distribución-asintótica"><span class="header-section-number">3.2</span> Distribución asintótica</h2>
+<div id="thm-var-asint" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Normalidad asintótica del VAR por MCO)</strong></span> Sea <span class="math inline">\(y_t\)</span> un VAR(<span class="math inline">\(p\)</span>) estacionario con innovaciones i.i.d. <span class="math inline">\((0,\Sigma_u)\)</span> (o diferencias de martingala con las condiciones habituales), y <span class="math inline">\(Q = \mathbb{E}[x_tx_t']\)</span> definida positiva. Entonces <span class="math display">\[
+\sqrt T\operatorname{vec}\big(\hat B' - B'\big)\xrightarrow{d}N\big(0,\ \Sigma_u\otimes Q^{-1}\big),\qquad\hat\Sigma_u\xrightarrow{p}\Sigma_u.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para la ecuación <span class="math inline">\(i\)</span>, <span class="math inline">\(\hat b_i - b_i = \big(\sum x_tx_t'\big)^{-1}\sum x_tu_{it}\)</span>. Apilando las <span class="math inline">\(n\)</span> ecuaciones, <span class="math inline">\(\sqrt T\operatorname{vec}(\hat B' - B') = \big(I_n\otimes(T^{-1}\sum x_tx_t')^{-1}\big)T^{-1/2}\sum_t(u_t\otimes x_t)\)</span>. Por el teorema ergódico (Clase 1), <span class="math inline">\(T^{-1}\sum x_tx_t'\to_pQ\)</span>. Y <span class="math inline">\(u_t\otimes x_t\)</span> es una diferencia de martingala (porque <span class="math inline">\(x_t\in\mathcal{F}_{t-1}\)</span> y <span class="math inline">\(\mathbb{E}[u_t\mid\mathcal{F}_{t-1}] = 0\)</span>) con varianza <span class="math inline">\(\mathbb{E}[u_tu_t'\otimes x_tx_t'] = \Sigma_u\otimes Q\)</span> (por independencia de <span class="math inline">\(u_t\)</span> y <span class="math inline">\(x_t\)</span>). Por el TCL para diferencias de martingala (Clase 5), <span class="math inline">\(T^{-1/2}\sum u_t\otimes x_t\to_dN(0,\Sigma_u\otimes Q)\)</span>. Con Slutsky: la varianza es <span class="math inline">\((I\otimes Q^{-1})(\Sigma_u\otimes Q)(I\otimes Q^{-1}) = \Sigma_u\otimes Q^{-1}\)</span>.</p>
+</div>
+<p>Es la generalización directa de <span class="math inline">\(\sigma^2\Gamma_p^{-1}\)</span> del AR(<span class="math inline">\(p\)</span>) de la Clase 4. Dos consecuencias: <strong>(i)</strong> los errores estándar de cada coeficiente son los habituales de MCO en cada ecuación, y <strong>(ii)</strong> los estimadores de <strong>distintas ecuaciones están correlacionados</strong> (a través de <span class="math inline">\(\Sigma_u\)</span>), lo que importa para tests conjuntos.</p>
+<p>Para <strong>restricciones</strong> sobre los coeficientes (<span class="math inline">\(q\)</span> restricciones lineales): el test de Wald usa la varianza anterior, o el test de razón de verosimilitud (Clase 3 de Econometría 2): <span class="math inline">\(LR = T\big(\log|\hat\Sigma_R| - \log|\hat\Sigma_U|\big)\to_d\chi^2_q\)</span>, con <span class="math inline">\(\hat\Sigma_R,\hat\Sigma_U\)</span> las matrices de covarianza de residuos restringida y sin restringir. En muestras pequeñas se usa la corrección de Sims: se reemplaza <span class="math inline">\(T\)</span> por <span class="math inline">\(T - c\)</span>, con <span class="math inline">\(c\)</span> el número de parámetros por ecuación del modelo sin restringir.</p>
+</section>
+<section id="la-maldición-de-la-dimensionalidad" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="la-maldición-de-la-dimensionalidad"><span class="header-section-number">3.3</span> La maldición de la dimensionalidad</h2>
+<p>Un VAR(<span class="math inline">\(p\)</span>) con <span class="math inline">\(n\)</span> variables tiene <span class="math inline">\(n(1 + np)\)</span> coeficientes de la media y <span class="math inline">\(n(n + 1)/2\)</span> en <span class="math inline">\(\Sigma_u\)</span>: crece como <strong><span class="math inline">\(pn^2\)</span></strong>. Con <span class="math inline">\(n = 4\)</span> y <span class="math inline">\(p = 2\)</span> son <span class="math inline">\(36 + 10 = 46\)</span> parámetros; con <span class="math inline">\(n = 8\)</span> y <span class="math inline">\(p = 4\)</span>, son <span class="math inline">\(264 + 36 = 300\)</span>. En datos macro típicos (<span class="math inline">\(T = 100\)</span> a <span class="math inline">\(200\)</span>) esto es demasiado: cada ecuación tiene <span class="math inline">\(1 + np\)</span> coeficientes para <span class="math inline">\(T\)</span> observaciones (Ejercicio 9.2). La solución no es pensar que “más es mejor”. Hay tres salidas: (i) <strong>pocas variables</strong> (tres a seis), (ii) <strong>VAR bayesianos</strong> con una distribución a priori que contrae los coeficientes hacia un modelo simple (<em>prior de Minnesota</em>, Litterman), y (iii) <strong>modelos de factores</strong> (FAVAR) que resumen muchas series en pocos factores.</p>
+</section>
+</section>
+<section id="selección-del-número-de-rezagos" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Selección del número de rezagos</h1>
+<p>Como en el AR(<span class="math inline">\(p\)</span>) de la Clase 4, se eligen los rezagos con <strong>criterios de información</strong>, que ahora usan el determinante de <span class="math inline">\(\hat\Sigma_u(p)\)</span>: <span class="math display">\[
+\text{AIC}(p) = \log|\hat\Sigma_u(p)| + \frac{2pn^2}T,\quad
+\text{BIC}(p) = \log|\hat\Sigma_u(p)| + \frac{pn^2\log T}T,\quad
+\text{HQ}(p) = \log|\hat\Sigma_u(p)| + \frac{2pn^2\log\log T}T.
+\]</span> Se elige el <span class="math inline">\(p\)</span> que minimiza el criterio, <strong>con la misma muestra efectiva</strong> para todos los <span class="math inline">\(p\)</span> (usando los mismos <span class="math inline">\(T\)</span> datos al comparar). Las propiedades son las de la proposición sobre AIC y BIC de la Clase 4: BIC (y HQ) consistentes; AIC sobreajusta pero pronostica mejor. Alternativamente, <strong>tests de razón de verosimilitud secuenciales</strong> (<span class="math inline">\(p\)</span> frente a <span class="math inline">\(p - 1\)</span>). Después de elegir <span class="math inline">\(p\)</span> se verifican: (a) <strong>estabilidad</strong> (autovalores de <span class="math inline">\(\hat F\)</span>); (b) <strong>ausencia de autocorrelación residual</strong> (versión multivariada del test de Ljung–Box, el <em>portmanteau</em> de Hosking); (c) normalidad (Jarque–Bera multivariado) si se usa inferencia exacta o simulación.</p>
+</section>
+<section id="causalidad-de-granger" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Causalidad de Granger</h1>
+<p>Una pregunta natural en un VAR es: ¿ayuda el pasado de una variable a pronosticar otra? Granger (1969) formalizó esa idea de <strong>precedencia predictiva</strong>.</p>
+<div id="def-granger" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Causalidad de Granger)</strong></span> Sea <span class="math inline">\((y_t,x_t)\)</span> un par de procesos estacionarios. <span class="math inline">\(x\)</span> <strong>no causa en el sentido de Granger</strong> a <span class="math inline">\(y\)</span> si, para todo <span class="math inline">\(h\ge1\)</span>, el mejor predictor lineal de <span class="math inline">\(y_{t + h}\)</span> basado en <span class="math inline">\(\{y_s,x_s:s\le t\}\)</span> tiene el <strong>mismo error cuadrático medio</strong> que el basado solo en <span class="math inline">\(\{y_s:s\le t\}\)</span>. Es decir, el pasado de <span class="math inline">\(x\)</span> no aporta nada a la predicción de <span class="math inline">\(y\)</span> una vez usado el pasado de <span class="math inline">\(y\)</span>.</p>
+</div>
+<p>En un VAR, la condición se traduce en <strong>ceros</strong> de coeficientes.</p>
+<div id="prp-granger-var" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Causalidad de Granger en un VAR)</strong></span> Sea <span class="math inline">\((y_t,x_t)'\)</span> un VAR(<span class="math inline">\(p\)</span>) estacionario bivariado, con la ecuación de <span class="math inline">\(y\)</span>: <span class="math inline">\(y_t = c_y + \sum_{k = 1}^p\big(a^{yy}_ky_{t-k} + a^{yx}_kx_{t-k}\big) + u_{yt}\)</span>. Entonces <span class="math inline">\(x\)</span> <strong>no causa a Granger a <span class="math inline">\(y\)</span></strong> si y solo si <span class="math inline">\(a^{yx}_1 = \dots = a^{yx}_p = 0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(<span class="math inline">\(\Leftarrow\)</span>) Si todos los <span class="math inline">\(a^{yx}_k = 0\)</span>, el valor <span class="math inline">\(y_t\)</span> depende solo del pasado de <span class="math inline">\(y\)</span> más <span class="math inline">\(u_{yt}\)</span>, y <span class="math inline">\(u_{yt}\)</span> es no correlacionado con el pasado de <strong>ambas</strong> series. Luego <span class="math inline">\(\sum_ka^{yy}_ky_{t-k}\)</span> satisface las condiciones de ortogonalidad del mejor predictor lineal con información <span class="math inline">\(\{y_s,x_s\}_{s&lt;t}\)</span> (Clase 3), y como esa solución es única, <span class="math inline">\(x\)</span> no aporta. Para <span class="math inline">\(h&gt;1\)</span> se itera. (<span class="math inline">\(\Rightarrow\)</span>) Si algún <span class="math inline">\(a^{yx}_k\ne0\)</span>, los coeficientes verdaderos <span class="math inline">\((a^{yy},a^{yx})\)</span> satisfacen las ecuaciones normales del predictor con ambos conjuntos de datos (porque <span class="math inline">\(u_{yt}\)</span> es ortogonal a todo el pasado), y la solución es única: el mejor predictor <strong>usa</strong> <span class="math inline">\(x\)</span> con coeficiente distinto de cero. Al incluir un regresor con coeficiente no nulo (y no perfectamente colineal con los otros), el ECM baja estrictamente (en <span class="math inline">\(\delta'\operatorname{Var}(x\mid y\text{ pasado})\delta&gt;0\)</span>).</p>
+</div>
+<p>El <strong>test</strong> es entonces un test de Wald o <span class="math inline">\(F\)</span> de <span class="math inline">\(H_0:a^{yx}_1 = \dots = a^{yx}_p = 0\)</span>, con distribución <span class="math inline">\(\chi^2_p\)</span> asintótica (por el <a href="#thm-var-asint" class="quarto-xref">Teorema&nbsp;3</a>). Con más de dos variables, la definición se generaliza por bloques (y la causalidad de Granger indirecta, a través de una tercera variable, requiere más cuidado).</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Granger no es causalidad">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Granger no es causalidad
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El nombre es engañoso. La causalidad de Granger es <strong>precedencia predictiva</strong>, no causalidad estructural. Las <strong>expectativas</strong> pueden invertir el orden: los precios de las acciones “causan a Granger” a los dividendos futuros porque los inversionistas anticipan los dividendos; el pronóstico meteorológico “causa a Granger” las ventas de paraguas sin ser su causa; un <em>tercer</em> factor omitido puede hacer que <span class="math inline">\(x\)</span> preceda a <span class="math inline">\(y\)</span> sin influir sobre él. Y el concepto ignora la relación <strong>contemporánea</strong> (que vive en <span class="math inline">\(\Sigma_u\)</span>, no en los <span class="math inline">\(A_k\)</span>). Es una herramienta de <strong>pronóstico</strong>, no de identificación. Para preguntas causales hacen falta supuestos estructurales (Clase 10).</p>
+</div>
+</div>
+<p>Dos cuidados técnicos. (1) Con variables <span class="math inline">\(I(1)\)</span>, el test de Wald no tiene distribución <span class="math inline">\(\chi^2\)</span>; el truco de <strong>Toda y Yamamoto</strong> (1995) es estimar un VAR en niveles con <span class="math inline">\(p + d_{\max}\)</span> rezagos (<span class="math inline">\(d_{\max}\)</span> el orden máximo de integración) y testear solo las restricciones sobre los primeros <span class="math inline">\(p\)</span>, lo que recupera la distribución <span class="math inline">\(\chi^2_p\)</span> aun con raíces unitarias y cointegración. (2) La causalidad de Granger <strong>depende del conjunto de información</strong>: puede desaparecer al agregar una tercera variable.</p>
+</section>
+<section id="pronóstico-con-un-var" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Pronóstico con un VAR</h1>
+<p>Por la misma proyección de la Clase 3, el pronóstico a <span class="math inline">\(h\)</span> pasos con un VAR estacionario es la <strong>proyección</strong> sobre el pasado: se calcula recursivamente, <span class="math inline">\(\hat y_{T + h|T} = \hat c + \sum_{k = 1}^p\hat A_k\hat y_{T + h - k|T}\)</span> (con <span class="math inline">\(\hat y_{T + j|T} = y_{T + j}\)</span> si <span class="math inline">\(j\le0\)</span>). El <strong>error</strong> de pronóstico y su matriz de ECM son, por la representación MA(<span class="math inline">\(\infty\)</span>) (<a href="#thm-var-est" class="quarto-xref">Teorema&nbsp;1</a>), <span class="math display">\[
+e_{T + h|T} = \sum_{j = 0}^{h-1}\Psi_ju_{T + h - j},\qquad\Sigma_y(h) = \sum_{j = 0}^{h-1}\Psi_j\Sigma_u\Psi_j',
+\]</span> la versión matricial del teorema de pronóstico a <span class="math inline">\(h\)</span> pasos de la Clase 3: crece con <span class="math inline">\(h\)</span> y converge a la varianza incondicional <span class="math inline">\(\Gamma_0\)</span>.</p>
+</section>
+<section id="postgrado-la-condición-del-determinante-y-los-autovalores-de-f" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: la condición del determinante y los autovalores de <span class="math inline">\(F\)</span></h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Demostramos la equivalencia (i)<span class="math inline">\(\iff\)</span>(ii) del <a href="#thm-var-est" class="quarto-xref">Teorema&nbsp;1</a>: <span class="math inline">\(\det(I_{np} - zF) = \det(I_n - A_1z - \dots - A_pz^p)\)</span> para todo <span class="math inline">\(z\)</span>. Los autovalores de <span class="math inline">\(F\)</span> son entonces los <strong>recíprocos</strong> de las raíces del polinomio matricial.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para <span class="math inline">\(p = 1\)</span>, <span class="math inline">\(F = A_1\)</span> y es inmediato. Para <span class="math inline">\(p = 2\)</span>: <span class="math inline">\(F = \begin{pmatrix}A_1&amp;A_2\\I&amp;0\end{pmatrix}\)</span> y <span class="math display">\[
+I_{2n} - zF = \begin{pmatrix}I - zA_1&amp;-zA_2\\-zI&amp;I\end{pmatrix}.
+\]</span> Por el complemento de Schur respecto del bloque inferior derecho <span class="math inline">\(D = I\)</span> (invertible), <span class="math inline">\(\det\begin{pmatrix}P&amp;Q\\R&amp;D\end{pmatrix} = \det(D)\det\big(P - QD^{-1}R\big)\)</span>, de modo que <span class="math display">\[
+\det(I_{2n} - zF) = \det\big(I - zA_1 - (-zA_2)(-zI)\big) = \det\big(I - zA_1 - z^2A_2\big).
+\]</span> Para <span class="math inline">\(p\)</span> general se procede por inducción (eliminando el último bloque de filas y columnas con el complemento de Schur, que agrega el término <span class="math inline">\(-A_pz^p\)</span>). Ahora, <span class="math inline">\(\lambda\)</span> es autovalor de <span class="math inline">\(F\)</span> si y solo si <span class="math inline">\(\det(\lambda I - F) = 0\)</span>, es decir, con <span class="math inline">\(z = 1/\lambda\)</span> (<span class="math inline">\(\lambda\ne0\)</span>), <span class="math inline">\(\det(I - zF) = 0\)</span>, o sea <span class="math inline">\(\det(I - \sum A_kz^k) = 0\)</span>. Así los autovalores no nulos de <span class="math inline">\(F\)</span> son los recíprocos de las raíces <span class="math inline">\(z\)</span>, y <span class="math inline">\(|\lambda|&lt;1\iff|z|&gt;1\)</span>.</p>
+</div>
+<p>Para <span class="math inline">\(n = 1\)</span> esto es la identidad de la Clase 2: <span class="math inline">\(\lambda^2 - \phi_1\lambda - \phi_2 = 0\)</span> si y solo si <span class="math inline">\(z = 1/\lambda\)</span> es raíz de <span class="math inline">\(1 - \phi_1z - \phi_2z^2\)</span> (Ejercicio 9.7). La condición del determinante es la que <strong>generaliza</strong> la causalidad del AR(<span class="math inline">\(p\)</span>) escalar a sistemas.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>Un <strong>VAR(<span class="math inline">\(p\)</span>)</strong> modela un vector <span class="math inline">\(y_t\)</span> con <span class="math inline">\(p\)</span> rezagos de todas las variables. Es <strong>estacionario</strong> si los autovalores de la matriz companion <span class="math inline">\(F\)</span> están dentro del círculo unitario (<a href="#thm-var-est" class="quarto-xref">Teorema&nbsp;1</a>); entonces tiene representación MA(<span class="math inline">\(\infty\)</span>) con <span class="math inline">\(\Psi_j\)</span>.</li>
+<li><strong>MCO ecuación por ecuación = MV gaussiano</strong> (<a href="#thm-var-mco" class="quarto-xref">Teorema&nbsp;2</a>), porque todas las ecuaciones tienen los mismos regresores. Distribución: <span class="math inline">\(\sqrt T\operatorname{vec}(\hat B' - B')\to N(0,\Sigma_u\otimes Q^{-1})\)</span> (<a href="#thm-var-asint" class="quarto-xref">Teorema&nbsp;3</a>).</li>
+<li>El número de parámetros crece como <span class="math inline">\(pn^2\)</span>: pocas variables, VAR bayesianos o factores.</li>
+<li><strong>Rezagos:</strong> AIC, BIC, HQ con <span class="math inline">\(\log|\hat\Sigma_u|\)</span>; verificar estabilidad y residuos.</li>
+<li><strong>Causalidad de Granger</strong> (<a href="#prp-granger-var" class="quarto-xref">Proposición&nbsp;1</a>): <span class="math inline">\(x\)</span> no causa a <span class="math inline">\(y\)</span> si los coeficientes de <span class="math inline">\(x\)</span> en la ecuación de <span class="math inline">\(y\)</span> son cero. Es precedencia predictiva, <strong>no causalidad estructural</strong>.</li>
+<li><strong>Pronóstico:</strong> ECM <span class="math inline">\(\Sigma_y(h) = \sum_{j&lt;h}\Psi_j\Sigma_u\Psi_j'\)</span>.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 9.1.</strong> Para el VAR(1) con <span class="math inline">\(A = \begin{pmatrix}0{,}5&amp;0{,}1\\0{,}2&amp;0{,}4\end{pmatrix}\)</span>, verifica los autovalores <span class="math inline">\(0{,}6\)</span> y <span class="math inline">\(0{,}3\)</span> y calcula <span class="math inline">\(\Psi_1,\Psi_2\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Traza <span class="math inline">\(= 0{,}9\)</span>, determinante <span class="math inline">\(= 0{,}5\cdot0{,}4 - 0{,}1\cdot0{,}2 = 0{,}18\)</span>. <span class="math inline">\(\lambda^2 - 0{,}9\lambda + 0{,}18 = 0\Rightarrow\lambda = (0{,}9\pm\sqrt{0{,}81 - 0{,}72})/2 = (0{,}9\pm0{,}3)/2 = 0{,}6,\ 0{,}3\)</span>. Ambos con módulo menor que uno: estacionario. Para un VAR(1), <span class="math inline">\(\Psi_j = A^j\)</span>: <span class="math inline">\(\Psi_1 = A\)</span> y <span class="math inline">\(\Psi_2 = A^2 = \begin{pmatrix}0{,}25 + 0{,}02&amp;0{,}05 + 0{,}04\\0{,}10 + 0{,}08&amp;0{,}02 + 0{,}16\end{pmatrix} = \begin{pmatrix}0{,}27&amp;0{,}09\\0{,}18&amp;0{,}18\end{pmatrix}\)</span>. El efecto de un shock en <span class="math inline">\(u_\pi\)</span> sobre <span class="math inline">\(x\)</span> dos períodos después es <span class="math inline">\(0{,}18\)</span> (por unidad).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.2.</strong> Cuenta los parámetros de la media de un VAR con <span class="math inline">\(n = 4\)</span>, <span class="math inline">\(p = 2\)</span> y con <span class="math inline">\(n = 8\)</span>, <span class="math inline">\(p = 4\)</span>, y compara con <span class="math inline">\(T = 100\)</span> observaciones por ecuación.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por ecuación hay <span class="math inline">\(1 + np\)</span> coeficientes. <span class="math inline">\(n = 4\)</span>, <span class="math inline">\(p = 2\)</span>: <span class="math inline">\(9\)</span> por ecuación, <span class="math inline">\(36\)</span> en total (más <span class="math inline">\(10\)</span> en <span class="math inline">\(\Sigma_u\)</span>); con <span class="math inline">\(T = 100\)</span>, son <span class="math inline">\(100/9\approx11\)</span> observaciones por parámetro: razonable. <span class="math inline">\(n = 8\)</span>, <span class="math inline">\(p = 4\)</span>: <span class="math inline">\(1 + 32 = 33\)</span> por ecuación, <span class="math inline">\(264\)</span> en total (más <span class="math inline">\(36\)</span>); con <span class="math inline">\(T = 100\)</span> quedan <span class="math inline">\(100/33\approx3\)</span> observaciones por parámetro: el estimador de MCO tiene varianzas enormes y el sobreajuste es severo. El número crece como <span class="math inline">\(pn^2\)</span>: duplicar las variables cuadruplica los parámetros.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.3.</strong> Con <span class="math inline">\(n = 2\)</span> y <span class="math inline">\(T = 200\)</span>, los determinantes de las matrices de covarianza residual son <span class="math inline">\(\log|\hat\Sigma(1)| = -1{,}20\)</span>, <span class="math inline">\(\log|\hat\Sigma(2)| = -1{,}30\)</span> y <span class="math inline">\(\log|\hat\Sigma(3)| = -1{,}32\)</span>. ¿Qué eligen AIC y BIC?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Penalizaciones: AIC: <span class="math inline">\(2pn^2/T = 0{,}04p\)</span>. BIC: <span class="math inline">\(pn^2\log T/T = p\cdot4\cdot5{,}298/200 = 0{,}106p\)</span>. AIC: <span class="math inline">\(p = 1\)</span>: <span class="math inline">\(-1{,}16\)</span>; <span class="math inline">\(p = 2\)</span>: <span class="math inline">\(-1{,}22\)</span>; <span class="math inline">\(p = 3\)</span>: <span class="math inline">\(-1{,}20\)</span> <span class="math inline">\(\Rightarrow\)</span> <strong>AIC elige <span class="math inline">\(p = 2\)</span></strong>. BIC: <span class="math inline">\(p = 1\)</span>: <span class="math inline">\(-1{,}094\)</span>; <span class="math inline">\(p = 2\)</span>: <span class="math inline">\(-1{,}088\)</span>; <span class="math inline">\(p = 3\)</span>: <span class="math inline">\(-1{,}002\)</span> <span class="math inline">\(\Rightarrow\)</span> <strong>BIC elige <span class="math inline">\(p = 1\)</span></strong>. Es el patrón habitual: BIC prefiere el modelo más corto. Un LR de <span class="math inline">\(p = 1\)</span> contra <span class="math inline">\(p = 2\)</span> da <span class="math inline">\(200(1{,}30 - 1{,}20) = 20\)</span>, que supera el crítico <span class="math inline">\(\chi^2_4 = 9{,}49\)</span> (Ejercicio 9.4): el segundo rezago es significativo.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.4.</strong> Con los datos del ejercicio anterior, calcula el test LR de <span class="math inline">\(H_0:p = 1\)</span> frente a <span class="math inline">\(p = 2\)</span> y la versión corregida de Sims.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El VAR(2) añade <span class="math inline">\(n^2 = 4\)</span> coeficientes (una matriz <span class="math inline">\(A_2\)</span> de <span class="math inline">\(2\times2\)</span>), de modo que hay <span class="math inline">\(q = 4\)</span> restricciones. <span class="math inline">\(LR = T[\log|\hat\Sigma(1)| - \log|\hat\Sigma(2)|] = 200(-1{,}20 + 1{,}30) = 20{,}0\)</span>. Crítico <span class="math inline">\(\chi^2_{4,0{,}95} = 9{,}49\)</span>: se rechaza <span class="math inline">\(p = 1\)</span>. Con la corrección de Sims, <span class="math inline">\(c = 1 + 2\cdot2 = 5\)</span> parámetros por ecuación en el modelo sin restringir (<span class="math inline">\(T - c = 195\)</span>): <span class="math inline">\(195\cdot0{,}10 = 19{,}5\)</span>. La conclusión no cambia. Esto es consistente con AIC y contradice a BIC: la elección de <span class="math inline">\(p\)</span> depende del criterio.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.5.</strong> En un VAR(2) bivariado, la ecuación de <span class="math inline">\(y\)</span> tiene coeficientes de <span class="math inline">\(x\)</span> iguales a <span class="math inline">\(0{,}3\)</span> y <span class="math inline">\(-0{,}1\)</span> y el test de Wald de <span class="math inline">\(H_0:a^{yx}_1 = a^{yx}_2 = 0\)</span> da <span class="math inline">\(W = 11{,}2\)</span>. Concluye y explica qué <strong>no</strong> se puede concluir.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(W\sim\chi^2_2\)</span> bajo la nula, con crítico <span class="math inline">\(5{,}99\)</span> al 5 %: <span class="math inline">\(11{,}2&gt;5{,}99\)</span> y se <strong>rechaza</strong> la no causalidad de Granger de <span class="math inline">\(x\)</span> hacia <span class="math inline">\(y\)</span>: el pasado de <span class="math inline">\(x\)</span> ayuda a predecir <span class="math inline">\(y\)</span>. <strong>No</strong> se puede concluir que <span class="math inline">\(x\)</span> cause a <span class="math inline">\(y\)</span> en sentido estructural: puede haber una tercera variable omitida, <span class="math inline">\(x\)</span> puede anticipar <span class="math inline">\(y\)</span> por expectativas, etc. Tampoco se dice nada de la relación contemporánea. Para saber si <strong><span class="math inline">\(y\)</span> causa a <span class="math inline">\(x\)</span></strong> (causalidad inversa) hay que hacer el test análogo en la ecuación de <span class="math inline">\(x\)</span>: puede haber causalidad en ambos sentidos (retroalimentación).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.6.</strong> Para el VAR(1) del Ejercicio 9.1 con <span class="math inline">\(\Sigma_u = I_2\)</span>, calcula la matriz de ECM de pronóstico a <span class="math inline">\(h = 1\)</span> y <span class="math inline">\(h = 2\)</span> pasos.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Sigma_y(1) = \Psi_0\Sigma_u\Psi_0' = I_2\)</span>. $_y(2) = I + A A’ $ con <span class="math inline">\(AA' = \begin{pmatrix}0{,}25 + 0{,}01&amp;0{,}10 + 0{,}04\\0{,}10 + 0{,}04&amp;0{,}04 + 0{,}16\end{pmatrix} = \begin{pmatrix}0{,}26&amp;0{,}14\\0{,}14&amp;0{,}20\end{pmatrix}\)</span>. Luego <span class="math inline">\(\Sigma_y(2) = \begin{pmatrix}1{,}26&amp;0{,}14\\0{,}14&amp;1{,}20\end{pmatrix}\)</span>. La varianza del error del primer componente a dos pasos es <span class="math inline">\(1{,}26\)</span> (frente a <span class="math inline">\(1\)</span> a un paso). Los errores de pronóstico a dos pasos de las dos variables están correlacionados (<span class="math inline">\(0{,}14\)</span>) aunque los shocks no lo estén.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.7 ★.</strong> Para un AR(2) escalar, escribe la matriz companion y muestra que sus autovalores satisfacen <span class="math inline">\(\lambda^2 - \phi_1\lambda - \phi_2 = 0\)</span> y que son los recíprocos de las raíces de <span class="math inline">\(\phi(z) = 1 - \phi_1z - \phi_2z^2\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(F = \begin{pmatrix}\phi_1&amp;\phi_2\\1&amp;0\end{pmatrix}\)</span>. <span class="math inline">\(\det(\lambda I - F) = (\lambda - \phi_1)\lambda - \phi_2 = \lambda^2 - \phi_1\lambda - \phi_2\)</span>. Si <span class="math inline">\(z\ne0\)</span> es raíz de <span class="math inline">\(\phi\)</span>, <span class="math inline">\(1 - \phi_1z - \phi_2z^2 = 0\)</span>; dividiendo por <span class="math inline">\(z^2\)</span> y escribiendo <span class="math inline">\(\lambda = 1/z\)</span>: <span class="math inline">\(\lambda^2 - \phi_1\lambda - \phi_2 = 0\)</span>. Entonces <span class="math inline">\(\lambda = 1/z\)</span> es autovalor de <span class="math inline">\(F\)</span>. El proceso es estacionario si y solo si <span class="math inline">\(|\lambda|&lt;1\)</span> para ambos, es decir <span class="math inline">\(|z|&gt;1\)</span> para las dos raíces: la condición de la Clase 2. Ejemplo: <span class="math inline">\(\phi = (0{,}5,0{,}3)\)</span>: <span class="math inline">\(\lambda^2 - 0{,}5\lambda - 0{,}3 = 0\Rightarrow\lambda = (0{,}5\pm\sqrt{1{,}45})/2 = 0{,}852,\ -0{,}352\)</span>; sus recíprocos son <span class="math inline">\(1{,}173\)</span> y <span class="math inline">\(-2{,}84\)</span>, que son las raíces de <span class="math inline">\(\phi(z)\)</span> de la Clase 2 (Ejercicio 2.1).</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-08.html" class="pagination-link" aria-label="Clase 8 · Cointegración">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 8 · Cointegración</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
