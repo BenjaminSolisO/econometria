@@ -10,7 +10,7 @@ Sitio publicado: <https://benjaminsoliso.github.io/econometria/>
 index.qmd                 Landing page
 econometria-1/            10 clases teóricas (HTML + PDF)
 econometria-2/            13 clases teóricas (HTML + PDF)
-econometria-3/            Temario tentativo (en preparación)
+econometria-3/            13 clases de series de tiempo (HTML + PDF)
 assets/                   Estilos, preámbulo LaTeX y figuras (figuras.R las regenera)
 docs/                     Sitio renderizado (lo sirve GitHub Pages)
 ```

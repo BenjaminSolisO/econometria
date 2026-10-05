@@ -74,6 +74,8 @@ website:
         - econometria-3/clase-09.qmd
         - econometria-3/clase-10.qmd
         - econometria-3/clase-11.qmd
+        - econometria-3/clase-12.qmd
+        - econometria-3/clase-13.qmd
   page-footer:
     left: "© 2026 Benjamín Solís · Econometría"
     right: "Hecho con [Quarto](https://quarto.org)"

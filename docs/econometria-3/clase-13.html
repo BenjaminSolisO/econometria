@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Modelos de espacio de estados: el nivel local y su equivalencia con un ARIMA(0,1,1), derivación del filtro de Kalman por normal condicional, verosimilitud por errores de predicción, suavizador, datos faltantes, ARMA en espacio de estados y la relación con el filtro de Hodrick–Prescott.">
+
+<title>Clase 13 · Espacio de estados y filtro de Kalman – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-12.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-13.html">Clase 13 · Espacio de estados y filtro de Kalman</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-lo-que-importa-no-se-observa" id="toc-cuando-lo-que-importa-no-se-observa" class="nav-link active" data-scroll-target="#cuando-lo-que-importa-no-se-observa"><span class="header-section-number">1</span> Cuando lo que importa no se observa</a></li>
+  <li><a href="#el-modelo-de-espacio-de-estados" id="toc-el-modelo-de-espacio-de-estados" class="nav-link" data-scroll-target="#el-modelo-de-espacio-de-estados"><span class="header-section-number">2</span> El modelo de espacio de estados</a>
+  <ul class="collapse">
+  <li><a href="#el-modelo-de-nivel-local" id="toc-el-modelo-de-nivel-local" class="nav-link" data-scroll-target="#el-modelo-de-nivel-local"><span class="header-section-number">2.1</span> El modelo de nivel local</a></li>
+  </ul></li>
+  <li><a href="#el-filtro-de-kalman" id="toc-el-filtro-de-kalman" class="nav-link" data-scroll-target="#el-filtro-de-kalman"><span class="header-section-number">3</span> El filtro de Kalman</a>
+  <ul class="collapse">
+  <li><a href="#nivel-local-el-filtro-en-forma-cerrada" id="toc-nivel-local-el-filtro-en-forma-cerrada" class="nav-link" data-scroll-target="#nivel-local-el-filtro-en-forma-cerrada"><span class="header-section-number">3.1</span> Nivel local: el filtro en forma cerrada</a></li>
+  </ul></li>
+  <li><a href="#verosimilitud-y-estimación-de-parámetros" id="toc-verosimilitud-y-estimación-de-parámetros" class="nav-link" data-scroll-target="#verosimilitud-y-estimación-de-parámetros"><span class="header-section-number">4</span> Verosimilitud y estimación de parámetros</a></li>
+  <li><a href="#el-suavizador" id="toc-el-suavizador" class="nav-link" data-scroll-target="#el-suavizador"><span class="header-section-number">5</span> El suavizador</a></li>
+  <li><a href="#otros-modelos-como-espacio-de-estados" id="toc-otros-modelos-como-espacio-de-estados" class="nav-link" data-scroll-target="#otros-modelos-como-espacio-de-estados"><span class="header-section-number">6</span> Otros modelos como espacio de estados</a>
+  <ul class="collapse">
+  <li><a href="#arma" id="toc-arma" class="nav-link" data-scroll-target="#arma"><span class="header-section-number">6.1</span> ARMA</a></li>
+  <li><a href="#tendencia-local-lineal-y-el-filtro-de-hodrickprescott" id="toc-tendencia-local-lineal-y-el-filtro-de-hodrickprescott" class="nav-link" data-scroll-target="#tendencia-local-lineal-y-el-filtro-de-hodrickprescott"><span class="header-section-number">6.2</span> Tendencia local lineal y el filtro de Hodrick–Prescott</a></li>
+  </ul></li>
+  <li><a href="#postgrado-convergencia-del-filtro-al-estado-estacionario" id="toc-postgrado-convergencia-del-filtro-al-estado-estacionario" class="nav-link" data-scroll-target="#postgrado-convergencia-del-filtro-al-estado-estacionario"><span class="header-section-number">7</span> ★ Postgrado: convergencia del filtro al estado estacionario</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-13.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 13 · Espacio de estados y filtro de Kalman</h1>
+<p class="subtitle lead">Estados no observados, filtrado, verosimilitud y descomposición tendencia–ciclo</p>
+</div>
+
+<div>
+  <div class="description">
+    Modelos de espacio de estados: el nivel local y su equivalencia con un ARIMA(0,1,1), derivación del filtro de Kalman por normal condicional, verosimilitud por errores de predicción, suavizador, datos faltantes, ARMA en espacio de estados y la relación con el filtro de Hodrick–Prescott.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-13.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-lo-que-importa-no-se-observa" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando lo que importa no se observa</h1>
+<p>Muchas variables que interesan a la economía <strong>no se observan</strong>: la tendencia del producto (el PIB potencial), la inflación subyacente, el nivel “verdadero” de la tasa de interés neutral, la volatilidad de un activo (Clase 12), el estado de la economía en un modelo DSGE. Lo que se observa son <strong>señales ruidosas</strong> de ellas. Los <strong>modelos de espacio de estados</strong> son el lenguaje común para estos problemas: dos ecuaciones, una que describe cómo <strong>evoluciona</strong> el estado oculto y otra que dice cómo se <strong>mide</strong>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Y el <strong>filtro de Kalman</strong> es el algoritmo que, a cada fecha, <strong>estima el estado a partir de lo observado</strong>, de manera recursiva y óptima.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Rudolf Kálmán publicó el filtro en 1960, en el contexto de ingeniería de control. Una de sus primeras aplicaciones importantes fue la navegación del programa Apolo, donde había que estimar la posición de una nave a partir de mediciones ruidosas de radar y sensores. Que el mismo algoritmo se use hoy para estimar la tendencia del PIB, o el precio de un derivado, es una muestra de lo general que resulta la idea de “estimar un estado oculto a partir de señales ruidosas”.</p></div></div></section>
+<section id="el-modelo-de-espacio-de-estados" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El modelo de espacio de estados</h1>
+<div id="def-ss" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Modelo lineal gaussiano de espacio de estados)</strong></span> Sea <span class="math inline">\(y_t\)</span> (<span class="math inline">\(p\times1\)</span>) la serie observada y <span class="math inline">\(\alpha_t\)</span> (<span class="math inline">\(m\times1\)</span>) el <strong>estado</strong> no observado: <span class="math display">\[
+\begin{aligned}
+y_t &amp;= Z\alpha_t + d + \varepsilon_t,&amp;\varepsilon_t&amp;\sim N(0,H)&amp;&amp;\text{(ecuación de medición)},\\
+\alpha_{t + 1} &amp;= T\alpha_t + c + R\eta_t,&amp;\eta_t&amp;\sim N(0,Q)&amp;&amp;\text{(ecuación de transición)},
+\end{aligned}
+\]</span> con <span class="math inline">\(\varepsilon_t,\eta_t\)</span> independientes entre sí y en el tiempo, y estado inicial <span class="math inline">\(\alpha_1\sim N(a_1,P_1)\)</span>. Las matrices <span class="math inline">\(Z,T,R,H,Q,d,c\)</span> pueden depender de <span class="math inline">\(t\)</span> (y de un vector de parámetros <span class="math inline">\(\psi\)</span> a estimar).</p>
+</div>
+<p>La <strong>ecuación de medición</strong> dice que lo observado es una función lineal del estado más ruido. La <strong>de transición</strong> es un VAR(1) para el estado (cualquier proceso con más rezagos se reduce a este caso apilando, como la forma companion de la Clase 9). Con esta estructura entran como casos particulares:</p>
+<ul>
+<li><strong>Nivel local y tendencia local lineal</strong> (abajo).</li>
+<li><strong>ARMA</strong> (se escribe en espacio de estados, §).</li>
+<li><strong>Componentes no observados:</strong> tendencia + ciclo + estacionalidad + ruido.</li>
+<li><strong>Regresión con coeficientes variables en el tiempo:</strong> <span class="math inline">\(y_t = x_t'\beta_t + \varepsilon_t\)</span> con <span class="math inline">\(\beta_{t + 1} = \beta_t + \eta_t\)</span> (<span class="math inline">\(Z_t = x_t'\)</span>, estado <span class="math inline">\(=\beta_t\)</span>).</li>
+<li><strong>Modelos de factores dinámicos</strong> (pocos factores latentes que generan muchas series), y la solución linealizada de un modelo <strong>DSGE</strong>.</li>
+</ul>
+<section id="el-modelo-de-nivel-local" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-modelo-de-nivel-local"><span class="header-section-number">2.1</span> El modelo de nivel local</h2>
+<p>El ejemplo más simple y más instructivo es un nivel que <strong>vaga</strong> como caminata aleatoria, observado con ruido: <span id="eq-level"><span class="math display">\[
+y_t = \mu_t + \varepsilon_t,\quad\varepsilon_t\sim N(0,\sigma_\varepsilon^2);\qquad\mu_{t + 1} = \mu_t + \eta_t,\quad\eta_t\sim N(0,\sigma_\eta^2).
+\tag{1}\]</span></span> Aquí <span class="math inline">\(Z = T = R = 1\)</span>, <span class="math inline">\(H = \sigma_\varepsilon^2\)</span>, <span class="math inline">\(Q = \sigma_\eta^2\)</span>. El cociente <span class="math inline">\(q = \sigma_\eta^2/\sigma_\varepsilon^2\)</span> es la <strong>razón señal–ruido</strong>: cuánto se mueve el nivel verdadero respecto del ruido de medición.</p>
+<div id="prp-level-arima" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (El nivel local es un ARIMA(0,1,1))</strong></span> En el modelo <a href="#eq-level" class="quarto-xref">Ecuación&nbsp;1</a>, la serie <span class="math inline">\(y_t\)</span> es <span class="math inline">\(I(1)\)</span> y su primera diferencia es un <strong>MA(1)</strong> con <span class="math inline">\(\theta\in(-1,0]\)</span> que satisface <span class="math display">\[
+\frac\theta{1 + \theta^2} = -\frac{\sigma_\varepsilon^2}{2\sigma_\varepsilon^2 + \sigma_\eta^2},\qquad\theta = \frac{-(q + 2) + \sqrt{q^2 + 4q}}2.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\Delta y_t = \Delta\mu_t + \Delta\varepsilon_t = \eta_{t-1} + \varepsilon_t - \varepsilon_{t-1}\)</span>. Es una suma de procesos MA estacionarios, así que es estacionario con <span class="math inline">\(\gamma(0) = \sigma_\eta^2 + 2\sigma_\varepsilon^2\)</span>, <span class="math inline">\(\gamma(1) = -\sigma_\varepsilon^2\)</span> (el único término común entre <span class="math inline">\(\Delta y_t\)</span> y <span class="math inline">\(\Delta y_{t-1}\)</span> es <span class="math inline">\(\varepsilon_{t-1}\)</span>, con signos opuestos), y <span class="math inline">\(\gamma(h) = 0\)</span> para <span class="math inline">\(h\ge2\)</span>. Un proceso estacionario con autocovarianzas que se anulan después del rezago 1 es un MA(1) (Clase 2), con <span class="math inline">\(\rho(1) = \gamma(1)/\gamma(0) = -\sigma_\varepsilon^2/(\sigma_\eta^2 + 2\sigma_\varepsilon^2) = \theta/(1 + \theta^2)\)</span>. Dividiendo numerador y denominador por <span class="math inline">\(\sigma_\varepsilon^2\)</span>: <span class="math inline">\(\theta/(1 + \theta^2) = -1/(q + 2)\)</span>, es decir <span class="math inline">\((q + 2)\theta = -(1 + \theta^2)\)</span>, o bien <span class="math inline">\(\theta^2 + (q + 2)\theta + 1 = 0\)</span>. Las dos raíces de esta cuadrática son recíprocas entre sí (su producto es <span class="math inline">\(1\)</span>); eligiendo la invertible (<span class="math inline">\(|\theta|&lt;1\)</span>) se obtiene <span class="math inline">\(\theta = [-(q + 2) + \sqrt{(q + 2)^2 - 4}]/2 = [-(q + 2) + \sqrt{q^2 + 4q}]/2\)</span>.</p>
+</div>
+<p>Con <span class="math inline">\(q = 1\)</span> (<span class="math inline">\(\sigma_\eta^2 = \sigma_\varepsilon^2\)</span>): <span class="math inline">\(\theta = (-3 + \sqrt5)/2 = -0{,}382\)</span> y <span class="math inline">\(\rho(1) = -1/3\)</span>. Cuando <span class="math inline">\(q\to0\)</span> (el nivel casi no se mueve), <span class="math inline">\(\theta\to-1\)</span> (<strong>sobrediferenciación</strong>: <span class="math inline">\(\Delta y_t\)</span> es casi un MA(1) con raíz unitaria, Clase 6); cuando <span class="math inline">\(q\to\infty\)</span> (el ruido de medición es despreciable), <span class="math inline">\(\theta\to0\)</span> y <span class="math inline">\(y_t\)</span> es casi una caminata aleatoria pura. El resultado dice que <strong>un ARIMA(0,1,1) puede interpretarse como un nivel verdadero observado con error</strong>. Y el pronóstico óptimo a un paso de un ARIMA(0,1,1) es la <strong>media móvil exponencialmente ponderada</strong> (EWMA): <span class="math inline">\(\hat y_{t + 1|t} = (1 + \theta)y_t - \theta\hat y_{t|t-1}\)</span> (Muth, 1960), con peso <span class="math inline">\(-\theta\)</span> en el pronóstico anterior (Ejercicio 13.1).</p>
+</section>
+</section>
+<section id="el-filtro-de-kalman" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El filtro de Kalman</h1>
+<p><strong>Objetivo:</strong> dados <span class="math inline">\(y_1,\dots,y_t\)</span>, calcular el mejor estimador del estado. Definimos, para el modelo <a href="#def-ss" class="quarto-xref">Definición&nbsp;1</a>, <span class="math display">\[
+a_t = \mathbb{E}[\alpha_t\mid Y_{t-1}],\quad P_t = \operatorname{Var}(\alpha_t\mid Y_{t-1}),\qquad a_{t|t} = \mathbb{E}[\alpha_t\mid Y_t],\quad P_{t|t} = \operatorname{Var}(\alpha_t\mid Y_t),
+\]</span> con <span class="math inline">\(Y_t = (y_1,\dots,y_t)\)</span>. Los <span class="math inline">\(a_t,P_t\)</span> son el estado <strong>predicho</strong> (usando información hasta <span class="math inline">\(t - 1\)</span>) y los <span class="math inline">\(a_{t|t},P_{t|t}\)</span> el estado <strong>filtrado</strong> (usando también <span class="math inline">\(y_t\)</span>). Como todo es <strong>normal</strong>, la distribución condicional queda determinada por media y varianza, y la recursión se obtiene del siguiente hecho.</p>
+<div id="lem-normal-cond" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Condicionamiento en una normal conjunta)</strong></span> Si <span class="math inline">\((x',w')'\)</span> es normal con <span class="math inline">\(\mathbb{E}x = \mu_x\)</span>, <span class="math inline">\(\mathbb{E}w = \mu_w\)</span> y matrices de covarianza <span class="math inline">\(\Sigma_{xx},\Sigma_{xw},\Sigma_{ww}\)</span> (<span class="math inline">\(\Sigma_{ww}\)</span> invertible), entonces <span class="math inline">\(x\mid w\sim N(\mu_{x|w},\Sigma_{x|w})\)</span> con <span class="math display">\[
+\mu_{x|w} = \mu_x + \Sigma_{xw}\Sigma_{ww}^{-1}(w - \mu_w),\qquad\Sigma_{x|w} = \Sigma_{xx} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{wx}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(e = x - \mu_x - \Sigma_{xw}\Sigma_{ww}^{-1}(w - \mu_w)\)</span>. Entonces <span class="math inline">\(\operatorname{Cov}(e,w) = \Sigma_{xw} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{ww} = 0\)</span>. Como <span class="math inline">\((e,w)\)</span> son conjuntamente normales y no correlacionados, son <strong>independientes</strong> (Clase 5 de Econometría 1). Entonces <span class="math inline">\(x = \mu_{x|w} + e\)</span> con <span class="math inline">\(e\)</span> independiente de <span class="math inline">\(w\)</span> y <span class="math inline">\(e\sim N(0,\Sigma_{x|w})\)</span>, donde <span class="math inline">\(\operatorname{Var}(e) = \Sigma_{xx} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{wx}\)</span>. Condicionando en <span class="math inline">\(w\)</span> queda la distribución enunciada.</p>
+</div>
+<div id="thm-kalman" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Filtro de Kalman)</strong></span> Para el modelo <a href="#def-ss" class="quarto-xref">Definición&nbsp;1</a>, con <span class="math inline">\(a_1,P_1\)</span> dados, se definen para <span class="math inline">\(t = 1,\dots,T\)</span> el <strong>error de predicción</strong> <span class="math inline">\(v_t = y_t - Za_t - d\)</span> con varianza <span class="math inline">\(F_t = ZP_tZ' + H\)</span>, y las recursiones <span class="math display">\[
+\begin{aligned}
+\textbf{Actualización:}\quad&amp;a_{t|t} = a_t + P_tZ'F_t^{-1}v_t,\qquad P_{t|t} = P_t - P_tZ'F_t^{-1}ZP_t,\\
+\textbf{Predicción:}\quad&amp;a_{t + 1} = Ta_{t|t} + c,\qquad P_{t + 1} = TP_{t|t}T' + RQR'.
+\end{aligned}
+\]</span> Equivalentemente, <span class="math inline">\(a_{t + 1} = Ta_t + c + K_tv_t\)</span> con la <strong>ganancia de Kalman</strong> <span class="math inline">\(K_t = TP_tZ'F_t^{-1}\)</span>. Además, los errores de predicción <span class="math inline">\(v_t\)</span> son <strong>independientes</strong> entre sí, con <span class="math inline">\(v_t\sim N(0,F_t)\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La recursión tiene dos pasos. <strong>Predicción:</strong> conozco la distribución del estado hoy dado <span class="math inline">\(Y_{t-1}\)</span>, <span class="math inline">\(N(a_t,P_t)\)</span>; antes de ver <span class="math inline">\(y_t\)</span> ya puedo predecir lo que veré: <span class="math inline">\(y_t = Z\alpha_t + d + \varepsilon_t\)</span> es normal con media <span class="math inline">\(Za_t + d\)</span> y varianza <span class="math inline">\(ZP_tZ' + H\)</span>. <strong>Actualización:</strong> observo <span class="math inline">\(y_t\)</span>; el estado y la observación son conjuntamente normales (dado <span class="math inline">\(Y_{t-1}\)</span>), con covarianza <span class="math inline">\(\operatorname{Cov}(\alpha_t,y_t) = P_tZ'\)</span>. El lema de condicionamiento me da <span class="math inline">\(\alpha_t\mid y_t,Y_{t-1}\)</span>, que es la distribución filtrada. Después, la ecuación de transición pasa de <span class="math inline">\(\alpha_t\)</span> a <span class="math inline">\(\alpha_{t + 1}\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Supongamos <span class="math inline">\(\alpha_t\mid Y_{t-1}\sim N(a_t,P_t)\)</span> (cierto para <span class="math inline">\(t = 1\)</span> por supuesto). Dado <span class="math inline">\(Y_{t-1}\)</span>, el vector <span class="math inline">\((\alpha_t,y_t)\)</span> es normal con medias <span class="math inline">\((a_t,Za_t + d)\)</span> y covarianzas <span class="math inline">\(\operatorname{Var}(\alpha_t) = P_t\)</span>, <span class="math inline">\(\operatorname{Cov}(\alpha_t,y_t) = P_tZ'\)</span> (porque <span class="math inline">\(\varepsilon_t\)</span> es independiente de <span class="math inline">\(\alpha_t\)</span>) y <span class="math inline">\(\operatorname{Var}(y_t) = ZP_tZ' + H = F_t\)</span>. Condicionar en <span class="math inline">\(Y_t = (Y_{t-1},y_t)\)</span> equivale a condicionar en <span class="math inline">\(y_t\)</span> dentro de la distribución ya condicionada en <span class="math inline">\(Y_{t-1}\)</span>, y por el <a href="#lem-normal-cond" class="quarto-xref">Lema&nbsp;1</a>, <span class="math display">\[
+\mathbb{E}[\alpha_t\mid Y_t] = a_t + P_tZ'F_t^{-1}(y_t - Za_t - d),\qquad\operatorname{Var}(\alpha_t\mid Y_t) = P_t - P_tZ'F_t^{-1}ZP_t.
+\]</span> Para la predicción, <span class="math inline">\(\alpha_{t + 1} = T\alpha_t + c + R\eta_t\)</span> con <span class="math inline">\(\eta_t\)</span> independiente de <span class="math inline">\(Y_t\)</span> y de <span class="math inline">\(\alpha_t\)</span>: <span class="math inline">\(\mathbb{E}[\alpha_{t + 1}\mid Y_t] = Ta_{t|t} + c\)</span> y <span class="math inline">\(\operatorname{Var}(\alpha_{t + 1}\mid Y_t) = TP_{t|t}T' + RQR'\)</span>. Ya tenemos <span class="math inline">\(\alpha_{t + 1}\mid Y_t\sim N(a_{t + 1},P_{t + 1})\)</span>: la inducción continúa. Finalmente, <span class="math inline">\(v_t = y_t - \mathbb{E}[y_t\mid Y_{t-1}]\)</span> es el error de predicción: es independiente de <span class="math inline">\(Y_{t-1}\)</span> (en el caso normal, no correlacionado con <span class="math inline">\(Y_{t-1}\)</span> implica independiente) y por lo tanto de <span class="math inline">\(v_1,\dots,v_{t-1}\)</span>, que son función de <span class="math inline">\(Y_{t-1}\)</span>.</p>
+</div>
+<p>Algunas observaciones. (i) La <strong>actualización</strong> tiene una lectura natural: se corrige la predicción <span class="math inline">\(a_t\)</span> con el error de predicción <span class="math inline">\(v_t\)</span>, <strong>ponderado</strong> por <span class="math inline">\(P_tZ'F_t^{-1}\)</span>: cuanto más confiable la medición (menor <span class="math inline">\(H\)</span>, menor <span class="math inline">\(F_t\)</span>), mayor la corrección. (ii) <strong>Sin normalidad</strong>, el filtro entrega el mejor predictor <strong>lineal</strong> (proyección en <span class="math inline">\(L^2\)</span>, Clase 3) del estado, con el mismo ECM <span class="math inline">\(P_t\)</span> (usa solo medias y varianzas). (iii) La varianza <span class="math inline">\(P_t\)</span> <strong>no depende de los datos</strong>, solo de las matrices del sistema: puede calcularse de antemano.</p>
+<section id="nivel-local-el-filtro-en-forma-cerrada" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="nivel-local-el-filtro-en-forma-cerrada"><span class="header-section-number">3.1</span> Nivel local: el filtro en forma cerrada</h2>
+<p>Con <span class="math inline">\(Z = T = 1\)</span>, <span class="math inline">\(H = \sigma_\varepsilon^2\)</span>, <span class="math inline">\(Q = \sigma_\eta^2\)</span>: <span class="math inline">\(F_t = P_t + \sigma_\varepsilon^2\)</span>, <span class="math inline">\(K_t = P_t/(P_t + \sigma_\varepsilon^2)\)</span> y <span id="eq-kalman-level"><span class="math display">\[
+a_{t + 1} = a_t + K_t(y_t - a_t) = (1 - K_t)a_t + K_ty_t,\qquad P_{t + 1} = \frac{P_t\sigma_\varepsilon^2}{P_t + \sigma_\varepsilon^2} + \sigma_\eta^2.
+\tag{2}\]</span></span> La estimación del nivel es un <strong>promedio ponderado</strong> del valor anterior y el dato nuevo, con peso <span class="math inline">\(K_t\)</span> en el dato. Si <span class="math inline">\(P_t\)</span> es grande (mucha incertidumbre previa), <span class="math inline">\(K_t\to1\)</span>: se confía en el dato; si <span class="math inline">\(P_t\)</span> es chica, <span class="math inline">\(K_t\to0\)</span>: se confía en la estimación anterior. Con <span class="math inline">\(P_t\)</span> en estado estacionario <span class="math inline">\(P\)</span> (la ecuación de Riccati <span class="math inline">\(P^2 - \sigma_\eta^2P - \sigma_\eta^2\sigma_\varepsilon^2 = 0\)</span>), la ganancia es constante <span class="math inline">\(K = P/(P + \sigma_\varepsilon^2)\)</span> y el filtro es <strong>exactamente la EWMA</strong>, con <span class="math inline">\(1 - K = -\theta\)</span> (Ejercicio 13.1): el filtro de Kalman del nivel local es el pronóstico del ARIMA(0,1,1).</p>
+<div id="exm-kalman-num" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Dos pasos numéricos)</strong></span> Con <span class="math inline">\(\sigma_\varepsilon^2 = \sigma_\eta^2 = 1\)</span>, <span class="math inline">\(a_1 = 0\)</span>, <span class="math inline">\(P_1 = 10\)</span> (muy incierto) y datos <span class="math inline">\(y_1 = 1{,}2\)</span>, <span class="math inline">\(y_2 = 0{,}8\)</span>. <strong>Paso 1:</strong> <span class="math inline">\(F_1 = 11\)</span>, <span class="math inline">\(v_1 = 1{,}2\)</span>, <span class="math inline">\(K_1 = 10/11 = 0{,}909\)</span>; <span class="math inline">\(a_2 = 0 + 0{,}909\cdot1{,}2 = 1{,}091\)</span>, <span class="math inline">\(P_2 = 10/11 + 1 = 1{,}909\)</span>. <strong>Paso 2:</strong> <span class="math inline">\(F_2 = 2{,}909\)</span>, <span class="math inline">\(v_2 = 0{,}8 - 1{,}091 = -0{,}291\)</span>, <span class="math inline">\(K_2 = 1{,}909/2{,}909 = 0{,}656\)</span>; <span class="math inline">\(a_3 = 1{,}091 - 0{,}656\cdot0{,}291 = 0{,}900\)</span>, <span class="math inline">\(P_3 = 1{,}909/2{,}909 + 1 = 1{,}656\)</span>. La incertidumbre cae de <span class="math inline">\(10\)</span> a <span class="math inline">\(1{,}66\)</span> (converge a <span class="math inline">\(P = 1{,}618\)</span>) y la ganancia, de <span class="math inline">\(0{,}91\)</span> a <span class="math inline">\(0{,}66\)</span> (converge a <span class="math inline">\(0{,}618\)</span>). El filtro “aprende” cuánto confiar en los datos.</p>
+</div>
+</section>
+</section>
+<section id="verosimilitud-y-estimación-de-parámetros" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Verosimilitud y estimación de parámetros</h1>
+<p>Los parámetros del sistema (<span class="math inline">\(\sigma_\varepsilon^2,\sigma_\eta^2\)</span>, y los de <span class="math inline">\(T,Z,\dots\)</span>) se estiman por <strong>máxima verosimilitud</strong>. La clave es la <strong>descomposición por errores de predicción</strong> de la Clase 4 (proposición de verosimilitud por innovaciones): la densidad conjunta de <span class="math inline">\((y_1,\dots,y_T)\)</span> se factoriza como producto de las densidades condicionales <span class="math inline">\(y_t\mid Y_{t-1}\sim N(Za_t + d,F_t)\)</span>, y por lo tanto <span class="math display">\[
+\ell(\psi) = -\frac{Tp}2\log2\pi - \frac12\sum_{t = 1}^T\Big[\log|F_t| + v_t'F_t^{-1}v_t\Big],
+\]</span> donde <span class="math inline">\(v_t,F_t\)</span> se calculan con el filtro. Es la misma fórmula de la Clase 4 con <span class="math inline">\(F_t = v_{t-1}\)</span> (la varianza del error de predicción): <strong>el filtro de Kalman es el algoritmo de <span class="math inline">\(O(T)\)</span></strong> que esa clase prometía. Se maximiza numéricamente sobre <span class="math inline">\(\psi\)</span> con el filtro como subrutina; las propiedades asintóticas son las de la MV (Clase 2 de Econometría 2), salvo en la <strong>frontera</strong>: si el verdadero <span class="math inline">\(\sigma_\eta^2 = 0\)</span> (nivel determinístico), el estimador se “pega” en cero con probabilidad positiva y la distribución del LR no es <span class="math inline">\(\chi^2\)</span> (Clase 3 de Econometría 2, ejercicio 3.7). Para la inicialización con <strong>estados no estacionarios</strong> (como el nivel, que no tiene distribución estacionaria), se usa un a priori <strong>difuso</strong> (<span class="math inline">\(P_1 = \kappa I\)</span> con <span class="math inline">\(\kappa\to\infty\)</span>), tratado exactamente por el filtro difuso de Koopman.</p>
+<p>Un beneficio práctico enorme: los <strong>datos faltantes</strong> se manejan con naturalidad. Si <span class="math inline">\(y_t\)</span> no se observa, se <strong>omite el paso de actualización</strong> y se hace solo la predicción (<span class="math inline">\(a_{t + 1} = Ta_t + c\)</span>, <span class="math inline">\(P_{t + 1} = TP_tT' + RQR'\)</span>): la incertidumbre sobre el estado <strong>crece</strong> durante el hueco y vuelve a bajar cuando reaparecen datos. En el ejemplo anterior, si <span class="math inline">\(y_2\)</span> faltara: <span class="math inline">\(a_3 = a_2 = 1{,}091\)</span> y <span class="math inline">\(P_3 = P_2 + \sigma_\eta^2 = 2{,}909\)</span> (en vez de <span class="math inline">\(1{,}656\)</span>). Esto permite trabajar con series de frecuencias mixtas (mensuales y trimestrales), con observaciones irregulares y con <em>nowcasting</em>.</p>
+</section>
+<section id="el-suavizador" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El suavizador</h1>
+<p>El filtro usa solo <strong>información pasada</strong>: <span class="math inline">\(a_{t|t} = \mathbb{E}[\alpha_t\mid Y_t]\)</span>. Para estimar el estado histórico (la tendencia de los últimos 20 años) se quiere usar <strong>toda</strong> la muestra: <span class="math inline">\(\hat\alpha_t = \mathbb{E}[\alpha_t\mid Y_T]\)</span>. El <strong>suavizador de Kalman</strong> lo obtiene con una recursión hacia atrás (Rauch–Tung–Striebel; Durbin–Koopman): con <span class="math inline">\(L_t = T - K_tZ\)</span> y <span class="math inline">\(r_T = 0\)</span>, <span class="math display">\[
+r_{t-1} = Z'F_t^{-1}v_t + L_t'r_t,\qquad\hat\alpha_t = a_t + P_tr_{t-1}\qquad(t = T,\dots,1),
+\]</span> más una recursión análoga para la varianza suavizada (se toman prestadas). La intuición: <span class="math inline">\(r_{t-1}\)</span> acumula la información <strong>de los errores de predicción futuros</strong> que es relevante para <span class="math inline">\(\alpha_t\)</span>. El estimador suavizado tiene <strong>menor varianza</strong> que el filtrado (<span class="math inline">\(\operatorname{Var}(\alpha_t\mid Y_T)\le\operatorname{Var}(\alpha_t\mid Y_t)\)</span>, porque se condiciona en más información) y es <strong>más suave</strong> en el tiempo; pero no es utilizable en tiempo real, y se <strong>revisa</strong> cada vez que llega un dato nuevo (el problema de las revisiones del PIB potencial).</p>
+</section>
+<section id="otros-modelos-como-espacio-de-estados" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Otros modelos como espacio de estados</h1>
+<section id="arma" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="arma"><span class="header-section-number">6.1</span> ARMA</h2>
+<p>Cualquier ARMA se escribe en espacio de estados. Para el ARMA(1,1) <span class="math inline">\(y_t = \phi y_{t-1} + \varepsilon_t + \theta\varepsilon_{t-1}\)</span>, tomemos el estado <span class="math inline">\(\alpha_t = (y_t,\ \theta\varepsilon_t)'\)</span> y <span class="math display">\[
+y_t = (1\ \ 0)\,\alpha_t,\qquad\alpha_{t + 1} = \begin{pmatrix}\phi&amp;1\\0&amp;0\end{pmatrix}\alpha_t + \begin{pmatrix}1\\\theta\end{pmatrix}\varepsilon_{t + 1},
+\]</span> con <span class="math inline">\(H = 0\)</span> (sin ruido de medición) y <span class="math inline">\(Q = \sigma^2\)</span>. Verificación: la primera fila da <span class="math inline">\(y_{t + 1} = \phi y_t + \theta\varepsilon_t + \varepsilon_{t + 1}\)</span> ✓ y la segunda, <span class="math inline">\(\alpha_{2,t + 1} = \theta\varepsilon_{t + 1}\)</span> ✓. Esto permite evaluar la verosimilitud exacta de un ARMA con el filtro de Kalman en <span class="math inline">\(O(T)\)</span> (el cálculo que la Clase 4 llamó “por innovaciones”), y manejar ARMA con datos faltantes.</p>
+</section>
+<section id="tendencia-local-lineal-y-el-filtro-de-hodrickprescott" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="tendencia-local-lineal-y-el-filtro-de-hodrickprescott"><span class="header-section-number">6.2</span> Tendencia local lineal y el filtro de Hodrick–Prescott</h2>
+<p>Una tendencia con <strong>pendiente</strong> que también cambia: <span class="math inline">\(y_t = \mu_t + \varepsilon_t\)</span>, <span class="math inline">\(\mu_{t + 1} = \mu_t + \beta_t + \eta_t\)</span>, <span class="math inline">\(\beta_{t + 1} = \beta_t + \zeta_t\)</span>. Si <span class="math inline">\(\sigma_\eta^2 = 0\)</span>, la tendencia es una <strong>caminata aleatoria integrada</strong> (suave: la segunda diferencia de <span class="math inline">\(\mu_t\)</span> es un ruido blanco).</p>
+<p>El <strong>filtro de Hodrick–Prescott</strong> (HP) es el más usado para separar tendencia y ciclo en macroeconomía: dada la serie <span class="math inline">\(y_t\)</span>, la tendencia <span class="math inline">\(\tau_t\)</span> minimiza <span class="math inline">\(\sum_t(y_t - \tau_t)^2 + \lambda\sum_t(\Delta^2\tau_t)^2\)</span>, con <span class="math inline">\(\lambda\)</span> el parámetro de suavidad (<span class="math inline">\(1600\)</span> para datos trimestrales). Aparece una conexión sorprendente.</p>
+<div id="prp-hp" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (HP es el suavizador de Kalman de una tendencia integrada)</strong></span> Sea el modelo <span class="math inline">\(y_t = \tau_t + \varepsilon_t\)</span> con <span class="math inline">\(\Delta^2\tau_{t + 1} = \zeta_t\)</span>, <span class="math inline">\(\varepsilon_t\sim N(0,\sigma_\varepsilon^2)\)</span> y <span class="math inline">\(\zeta_t\sim N(0,\sigma_\zeta^2)\)</span> (tendencia local lineal con <span class="math inline">\(\sigma_\eta^2 = 0\)</span>). Entonces la <strong>tendencia suavizada</strong> <span class="math inline">\(\mathbb{E}[\tau_t\mid Y_T]\)</span> coincide con la tendencia HP con <span class="math inline">\(\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con un a priori difuso sobre las condiciones iniciales, la <strong>densidad conjunta</strong> de <span class="math inline">\((y_t,\tau_t)\)</span> es proporcional a <span class="math inline">\(\exp\big\{-\frac1{2\sigma_\varepsilon^2}\sum_t(y_t - \tau_t)^2 - \frac1{2\sigma_\zeta^2}\sum_t(\Delta^2\tau_t)^2\big\}\)</span> (los <span class="math inline">\(\varepsilon_t\)</span> y <span class="math inline">\(\zeta_t\)</span> son normales independientes). En un modelo gaussiano, la <strong>media condicional</strong> <span class="math inline">\(\mathbb{E}[\tau\mid Y_T]\)</span> coincide con la <strong>moda</strong> de la densidad posterior de <span class="math inline">\(\tau\)</span> dado <span class="math inline">\(Y_T\)</span> (la normal es simétrica y unimodal), que es el minimizador de <span class="math inline">\(\frac1{2\sigma_\varepsilon^2}\sum(y_t - \tau_t)^2 + \frac1{2\sigma_\zeta^2}\sum(\Delta^2\tau_t)^2\)</span>. Multiplicando por <span class="math inline">\(2\sigma_\varepsilon^2\)</span>: minimizar <span class="math inline">\(\sum(y_t - \tau_t)^2 + (\sigma_\varepsilon^2/\sigma_\zeta^2)\sum(\Delta^2\tau_t)^2\)</span>, que es el problema de HP con <span class="math inline">\(\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2\)</span>.</p>
+</div>
+<p>Esto da a HP una <strong>interpretación estadística</strong>: <span class="math inline">\(\lambda = 1600\)</span> equivale a suponer una razón <span class="math inline">\(\sigma_\zeta^2/\sigma_\varepsilon^2 = 1/1600 = 0{,}000625\)</span> entre la varianza del cambio de la pendiente y la del ciclo (Ejercicio 13.4). También revela sus <strong>limitaciones</strong>: el HP es óptimo solo si la serie sigue exactamente ese modelo (que no es el caso de una serie con raíz unitaria + ciclo persistente), y puede generar <strong>ciclos espurios</strong> (Cogley y Nason, 1995; Hamilton, 2018). Los modelos de <strong>componentes no observados</strong> de Harvey estiman <span class="math inline">\(\sigma_\varepsilon^2,\sigma_\zeta^2\)</span> y los parámetros del ciclo <strong>por máxima verosimilitud</strong>, en vez de fijar <span class="math inline">\(\lambda\)</span> a mano.</p>
+</section>
+</section>
+<section id="postgrado-convergencia-del-filtro-al-estado-estacionario" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: convergencia del filtro al estado estacionario</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En el nivel local, la varianza <span class="math inline">\(P_t\)</span> del estado converge <strong>geométricamente</strong> a un punto fijo <span class="math inline">\(P\)</span> independiente de <span class="math inline">\(P_1\)</span>. Es una versión simple del resultado general (para sistemas <strong>estabilizables y detectables</strong>, la ecuación de Riccati tiene una solución estable única).</p>
+</div>
+</div>
+<div id="prp-riccati" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Convergencia de <span class="math inline">\(P_t\)</span> en el nivel local)</strong></span> La recursión <span class="math inline">\(P_{t + 1} = f(P_t)\)</span> con <span class="math inline">\(f(P) = \dfrac{P\sigma_\varepsilon^2}{P + \sigma_\varepsilon^2} + \sigma_\eta^2\)</span> tiene un único punto fijo positivo, <span class="math display">\[
+P = \frac{\sigma_\eta^2 + \sqrt{\sigma_\eta^4 + 4\sigma_\eta^2\sigma_\varepsilon^2}}2,
+\]</span> y para todo <span class="math inline">\(P_1\ge0\)</span>, <span class="math inline">\(P_t\to P\)</span> a velocidad <strong>geométrica</strong> de razón <span class="math inline">\(f'(P) = \sigma_\varepsilon^4/(P + \sigma_\varepsilon^2)^2&lt;1\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La ecuación <span class="math inline">\(f(P) = P\)</span> es <span class="math inline">\(P\sigma_\varepsilon^2 + \sigma_\eta^2(P + \sigma_\varepsilon^2) = P(P + \sigma_\varepsilon^2)\)</span>, es decir <span class="math inline">\(P^2 - \sigma_\eta^2P - \sigma_\eta^2\sigma_\varepsilon^2 = 0\)</span>, con una única raíz positiva (el producto de las raíces es negativo): la expresión del enunciado. La derivada es <span class="math inline">\(f'(P) = \sigma_\varepsilon^4/(P + \sigma_\varepsilon^2)^2\)</span>, que para todo <span class="math inline">\(P\ge0\)</span> está en <span class="math inline">\((0,1]\)</span> y es <strong>estrictamente menor que 1</strong> para <span class="math inline">\(P&gt;0\)</span> (porque <span class="math inline">\(P + \sigma_\varepsilon^2&gt;\sigma_\varepsilon^2\)</span>). Como <span class="math inline">\(\sigma_\eta^2&gt;0\)</span>, <span class="math inline">\(P_t&gt;0\)</span> para <span class="math inline">\(t\ge2\)</span>, y en <span class="math inline">\([\sigma_\eta^2,\infty)\)</span> (donde viven <span class="math inline">\(P_t\)</span>, <span class="math inline">\(t\ge2\)</span>) <span class="math inline">\(|f'|\le\sigma_\varepsilon^4/(\sigma_\eta^2 + \sigma_\varepsilon^2)^2&lt;1\)</span>: <span class="math inline">\(f\)</span> es una <strong>contracción</strong> de constante <span class="math inline">\(\rho&lt;1\)</span>. Por el teorema del punto fijo de Banach, <span class="math inline">\(|P_t - P|\le\rho^{t-2}|P_2 - P|\to0\)</span> geométricamente.</p>
+</div>
+<p>Para <span class="math inline">\(\sigma_\varepsilon^2 = \sigma_\eta^2 = 1\)</span>: <span class="math inline">\(P = (1 + \sqrt5)/2 = 1{,}618\)</span>, <span class="math inline">\(K = 0{,}618\)</span>, y <span class="math inline">\(f'(P) = 1/(2{,}618)^2 = 0{,}146\)</span>: el error de <span class="math inline">\(P_t\)</span> se reduce <span class="math inline">\(85\)</span> % cada período (Ejercicio 13.7). Por eso en la práctica el filtro alcanza el estado estacionario en pocas observaciones y se puede usar la <strong>ganancia constante</strong> (EWMA). Y por eso, también, el filtro “olvida” la inicialización <span class="math inline">\(a_1,P_1\)</span> rápidamente.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li><strong>Espacio de estados:</strong> <span class="math inline">\(y_t = Z\alpha_t + d + \varepsilon_t\)</span> (medición), <span class="math inline">\(\alpha_{t + 1} = T\alpha_t + c + R\eta_t\)</span> (transición). Incluye ARMA, componentes no observados, regresiones con parámetros variables y factores (<a href="#def-ss" class="quarto-xref">Definición&nbsp;1</a>).</li>
+<li><strong>Nivel local:</strong> equivale a un <strong>ARIMA(0,1,1)</strong> con <span class="math inline">\(\theta = [-(q + 2) + \sqrt{q^2 + 4q}]/2\)</span> (<a href="#prp-level-arima" class="quarto-xref">Proposición&nbsp;1</a>); su pronóstico es la EWMA.</li>
+<li><strong>Filtro de Kalman</strong> (<a href="#thm-kalman" class="quarto-xref">Teorema&nbsp;1</a>): predicción más actualización con la ganancia <span class="math inline">\(K_t = TP_tZ'F_t^{-1}\)</span>, derivado del condicionamiento en una normal conjunta (<a href="#lem-normal-cond" class="quarto-xref">Lema&nbsp;1</a>). Sin normalidad es el mejor predictor <strong>lineal</strong>.</li>
+<li><strong>Verosimilitud</strong> por errores de predicción: <span class="math inline">\(\ell = -\frac12\sum[\log|F_t| + v_t'F_t^{-1}v_t]\)</span>. Maneja <strong>datos faltantes</strong> (omitir la actualización).</li>
+<li><strong>Suavizador:</strong> usa toda la muestra; menor varianza que el filtro pero con revisiones.</li>
+<li><strong>HP</strong> es el suavizador de una tendencia integrada con <span class="math inline">\(\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2\)</span> (<a href="#prp-hp" class="quarto-xref">Proposición&nbsp;2</a>). <span class="math inline">\(P_t\)</span> <strong>converge</strong> geométricamente (<a href="#prp-riccati" class="quarto-xref">Proposición&nbsp;3</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 13.1.</strong> En el nivel local con <span class="math inline">\(\sigma_\varepsilon^2 = \sigma_\eta^2 = 1\)</span>, calcula <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\rho(1)\)</span> de <span class="math inline">\(\Delta y_t\)</span>, el estado estacionario <span class="math inline">\(P\)</span>, la ganancia <span class="math inline">\(K\)</span> y comprueba que <span class="math inline">\(1 - K = -\theta\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(q = 1\)</span>: <span class="math inline">\(\theta = (-3 + \sqrt{1 + 4})/2 = (-3 + 2{,}236)/2 = -0{,}382\)</span>. <span class="math inline">\(\rho(1) = -1/(q + 2) = -1/3\)</span>; verificación: <span class="math inline">\(\theta/(1 + \theta^2) = -0{,}382/1{,}146 = -0{,}333\)</span> ✓. Estado estacionario: <span class="math inline">\(P^2 - P - 1 = 0\Rightarrow P = (1 + \sqrt5)/2 = 1{,}618\)</span>. <span class="math inline">\(K = P/(P + 1) = 1{,}618/2{,}618 = 0{,}618\)</span>. <span class="math inline">\(1 - K = 0{,}382 = -\theta\)</span> ✓. La EWMA del filtro asigna el peso <span class="math inline">\(0{,}618\)</span> al dato nuevo y <span class="math inline">\(0{,}382\)</span> a la estimación previa: coincide con el pronóstico de un ARIMA(0,1,1) con <span class="math inline">\(\theta = -0{,}382\)</span> (peso <span class="math inline">\(-\theta\)</span> en el pronóstico anterior).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.2.</strong> Con los datos del <a href="#exm-kalman-num" class="quarto-xref">Ejemplo&nbsp;1</a>, supón que <span class="math inline">\(y_2\)</span> no se observa. Calcula <span class="math inline">\(a_3\)</span> y <span class="math inline">\(P_3\)</span> y compara con el caso en que sí se observa.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sin <span class="math inline">\(y_2\)</span>: no hay actualización, solo predicción: <span class="math inline">\(a_3 = a_2 = 1{,}091\)</span> y <span class="math inline">\(P_3 = P_2 + \sigma_\eta^2 = 1{,}909 + 1 = 2{,}909\)</span>. Con <span class="math inline">\(y_2\)</span>: <span class="math inline">\(a_3 = 0{,}900\)</span> y <span class="math inline">\(P_3 = 1{,}656\)</span>. El dato faltante deja la estimación en <span class="math inline">\(1{,}091\)</span> (sin corrección) y una incertidumbre de <span class="math inline">\(2{,}909\)</span> (frente a <span class="math inline">\(1{,}656\)</span>): se paga la falta de información con mayor varianza de la estimación, pero el filtro <strong>no se detiene</strong> ni requiere imputar.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.3.</strong> Calcula las contribuciones <span class="math inline">\(\ell_1\)</span> y <span class="math inline">\(\ell_2\)</span> a la log-verosimilitud en el <a href="#exm-kalman-num" class="quarto-xref">Ejemplo&nbsp;1</a> y su suma.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\ell_t = -\tfrac12[\log(2\pi F_t) + v_t^2/F_t]\)</span>. <span class="math inline">\(t = 1\)</span>: <span class="math inline">\(F_1 = 11\)</span>, <span class="math inline">\(v_1 = 1{,}2\)</span>: <span class="math inline">\(\log(2\pi\cdot11) = 4{,}236\)</span> y <span class="math inline">\(v_1^2/F_1 = 1{,}44/11 = 0{,}131\)</span>: <span class="math inline">\(\ell_1 = -\tfrac12(4{,}367) = -2{,}183\)</span>. <span class="math inline">\(t = 2\)</span>: <span class="math inline">\(F_2 = 2{,}909\)</span>, <span class="math inline">\(v_2 = -0{,}291\)</span>: <span class="math inline">\(\log(2\pi\cdot2{,}909) = 2{,}906\)</span> y <span class="math inline">\(v_2^2/F_2 = 0{,}0846/2{,}909 = 0{,}029\)</span>: <span class="math inline">\(\ell_2 = -\tfrac12(2{,}935) = -1{,}467\)</span>. Suma: <span class="math inline">\(-3{,}651\)</span>. Para estimar <span class="math inline">\(\sigma_\varepsilon^2,\sigma_\eta^2\)</span> se maximizaría esta suma (sobre todos los <span class="math inline">\(t\)</span> de la muestra) variando los parámetros que entran en <span class="math inline">\(F_t\)</span> y <span class="math inline">\(v_t\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.4.</strong> Calcula la razón <span class="math inline">\(\sigma_\zeta^2/\sigma_\varepsilon^2\)</span> implícita en <span class="math inline">\(\lambda = 1600\)</span> (trimestral) y <span class="math inline">\(\lambda = 100\)</span> (anual). ¿Cuántas desviaciones estándar del ciclo equivale la desviación estándar del cambio de la pendiente en el caso trimestral?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2\Rightarrow\sigma_\zeta^2/\sigma_\varepsilon^2 = 1/\lambda\)</span>: trimestral, <span class="math inline">\(1/1600 = 0{,}000625\)</span>; anual, <span class="math inline">\(1/100 = 0{,}01\)</span>. Trimestral: <span class="math inline">\(\sigma_\zeta/\sigma_\varepsilon = \sqrt{0{,}000625} = 0{,}025\)</span>: el cambio de la pendiente de la tendencia tiene una desviación estándar de <span class="math inline">\(2{,}5\)</span> % de la del ciclo (la pendiente casi no cambia: tendencia muy suave). Anual: <span class="math inline">\(0{,}1\)</span> (más cambios, dado que <span class="math inline">\(\lambda\)</span> es menor). Notar que <span class="math inline">\(\lambda\)</span> <strong>no es un parámetro con significado económico</strong>: es la razón de dos varianzas que el econometrista no estima, sino que fija por convención.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.5.</strong> Para el ARMA(1,1) con <span class="math inline">\(\phi = 0{,}5\)</span> y <span class="math inline">\(\theta = 0{,}4\)</span> en espacio de estados, con <span class="math inline">\(\alpha_t = (y_t,0{,}4\varepsilon_t)'\)</span>: si <span class="math inline">\(y_t = 2\)</span>, <span class="math inline">\(\varepsilon_t = 1\)</span> y llega <span class="math inline">\(\varepsilon_{t + 1} = 0{,}5\)</span>, calcula <span class="math inline">\(\alpha_{t + 1}\)</span> y verifica que <span class="math inline">\(y_{t + 1}\)</span> coincide con la ecuación ARMA.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\alpha_t = (2,\ 0{,}4)'\)</span>. <span class="math inline">\(\alpha_{t + 1} = \begin{pmatrix}0{,}5&amp;1\\0&amp;0\end{pmatrix}\begin{pmatrix}2\\0{,}4\end{pmatrix} + \begin{pmatrix}1\\0{,}4\end{pmatrix}0{,}5 = \begin{pmatrix}1 + 0{,}4\\0\end{pmatrix} + \begin{pmatrix}0{,}5\\0{,}2\end{pmatrix} = \begin{pmatrix}1{,}9\\0{,}2\end{pmatrix}\)</span>. Entonces <span class="math inline">\(y_{t + 1} = 1{,}9\)</span>. Por la ecuación ARMA: <span class="math inline">\(y_{t + 1} = 0{,}5\cdot2 + 0{,}5 + 0{,}4\cdot1 = 1 + 0{,}5 + 0{,}4 = 1{,}9\)</span> ✓. La segunda componente del estado, <span class="math inline">\(0{,}2 = 0{,}4\cdot\varepsilon_{t + 1}\)</span>, guarda el término MA para el período siguiente.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.6.</strong> Para <span class="math inline">\(\sigma_\varepsilon^2 = 1\)</span> y <span class="math inline">\(\sigma_\eta^2 = 0{,}1\)</span>, calcula <span class="math inline">\(P\)</span>, <span class="math inline">\(K\)</span> y la “memoria efectiva” del filtro (<span class="math inline">\(1/K\)</span> observaciones). Compara con <span class="math inline">\(\sigma_\eta^2 = 1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\sigma_\eta^2 = 0{,}1\)</span>: <span class="math inline">\(P = (0{,}1 + \sqrt{0{,}01 + 0{,}4})/2 = (0{,}1 + 0{,}640)/2 = 0{,}370\)</span>. <span class="math inline">\(K = 0{,}370/1{,}370 = 0{,}270\)</span>; memoria efectiva <span class="math inline">\(1/K = 3{,}7\)</span> observaciones. Con <span class="math inline">\(\sigma_\eta^2 = 1\)</span>: <span class="math inline">\(K = 0{,}618\)</span> y memoria <span class="math inline">\(1{,}6\)</span>. Cuando el nivel se mueve poco respecto del ruido de medición (<span class="math inline">\(q\)</span> chico), el filtro <strong>promedia más</strong> (mayor memoria) para sacar el ruido: razonable, porque cada dato nuevo informa poco sobre un nivel que cambia despacio.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.7 ★.</strong> Para <span class="math inline">\(\sigma_\varepsilon^2 = \sigma_\eta^2 = 1\)</span> y <span class="math inline">\(P_1 = 10\)</span>, itera la recursión de <span class="math inline">\(P_t\)</span> cuatro pasos y verifica que el error <span class="math inline">\(|P_t - P|\)</span> se reduce según la razón <span class="math inline">\(f'(P) = 0{,}146\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(f(P) = P/(P + 1) + 1\)</span>. <span class="math inline">\(P_1 = 10\)</span>; <span class="math inline">\(P_2 = 10/11 + 1 = 1{,}9091\)</span>; <span class="math inline">\(P_3 = 1{,}9091/2{,}9091 + 1 = 1{,}6563\)</span>; <span class="math inline">\(P_4 = 1{,}6563/2{,}6563 + 1 = 1{,}6235\)</span>; <span class="math inline">\(P_5 = 1{,}6235/2{,}6235 + 1 = 1{,}6189\)</span>. Límite <span class="math inline">\(P = 1{,}6180\)</span>. Errores: <span class="math inline">\(P_2 - P = 0{,}2911\)</span>; <span class="math inline">\(P_3 - P = 0{,}0383\)</span>; <span class="math inline">\(P_4 - P = 0{,}0055\)</span>; <span class="math inline">\(P_5 - P = 0{,}0009\)</span>. Cocientes sucesivos de errores: <span class="math inline">\(0{,}13\)</span>, <span class="math inline">\(0{,}14\)</span>, <span class="math inline">\(0{,}14\)</span>, valores cercanos a <span class="math inline">\(f'(P) = 0{,}146\)</span> (el primer paso, desde <span class="math inline">\(P_1 = 10\)</span>, parte lejos del punto fijo y por eso reduce el error más de lo que sugiere la derivada local). En cuatro iteraciones el error cae de <span class="math inline">\(8{,}4\)</span> a <span class="math inline">\(0{,}001\)</span>: el filtro alcanza su ganancia de estado estacionario casi inmediatamente.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-12.html" class="pagination-link" aria-label="Clase 12 · Volatilidad condicional: ARCH y GARCH">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

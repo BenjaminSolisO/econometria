@@ -1,0 +1,245 @@
+---
+title: "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+subtitle: "Varianza cambiante, estimación por cuasi-máxima verosimilitud y pronóstico de riesgo"
+description: "Heterocedasticidad condicional autorregresiva: ARCH(1) y su curtosis, GARCH(1,1), estacionariedad, representación ARMA de los cuadrados, QMLE gaussiano con varianza sándwich, tests ARCH-LM, asimetrías (GJR, EGARCH), pronóstico de varianza y valor en riesgo."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-12.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando la varianza también cambia
+
+Todo el curso hasta aquí modeló la **media condicional** de una serie: ARMA, VAR, cointegración. Los errores se supusieron ruido blanco con varianza **constante**. Pero basta mirar el gráfico de los retornos diarios de cualquier activo financiero para ver que eso es falso: hay **períodos tranquilos** y **períodos turbulentos**, agrupados. Después de una crisis, la volatilidad sigue alta durante semanas; en un mercado calmo, los movimientos grandes son raros. Mandelbrot (1963) lo describió con una frase célebre: *"los cambios grandes tienden a ser seguidos por cambios grandes, de cualquier signo, y los pequeños por pequeños"*.
+
+Los hechos estilizados de los retornos financieros son:
+
+1. **Los retornos casi no tienen autocorrelación** (son imposibles de pronosticar linealmente, Clase 3), con media cercana a cero.
+2. **Los retornos al cuadrado (o en valor absoluto) sí están fuertemente autocorrelacionados**, y por mucho tiempo (*agrupamiento de volatilidad*).
+3. **Colas gordas:** la distribución incondicional tiene **exceso de curtosis** (más eventos extremos que una normal).
+4. **Efecto apalancamiento** (*leverage*): los retornos negativos aumentan la volatilidad futura más que los positivos del mismo tamaño.
+
+Engle (1982) propuso el modelo que capta los dos primeros hechos y genera el tercero: **ARCH** (*autoregressive conditional heteroskedasticity*); Bollerslev (1986) lo generalizó a **GARCH**. Engle recibió el Nobel de 2003 por este trabajo.
+
+# El marco: media constante, varianza condicional cambiante
+
+Sea $r_t$ el retorno, con $r_t = \mu + \varepsilon_t$ (o, con una media condicional ARMA). El shock se descompone así:
+$$
+\varepsilon_t = \sigma_tz_t,\qquad z_t\ \text{i.i.d.},\ \mathbb{E}[z_t] = 0,\ \mathbb{E}[z_t^2] = 1,\qquad\sigma_t^2 = \operatorname{Var}(\varepsilon_t\mid\mathcal{F}_{t-1})\in\mathcal{F}_{t-1}.
+$$ {#eq-garch-gen}
+La **volatilidad condicional** $\sigma_t$ es una función del pasado (es **predecible**), y $z_t$ es la innovación estandarizada. Entonces $\mathbb{E}[\varepsilon_t\mid\mathcal{F}_{t-1}] = \sigma_t\mathbb{E}[z_t] = 0$: **$\varepsilon_t$ es una diferencia de martingala** (Clase 5): no correlacionada con su pasado, pero **no independiente**, porque su *varianza* depende del pasado. Es el ejemplo 3 de la Clase 5 y la advertencia de la Clase 3: el mejor predictor lineal del nivel es $0$, pero la varianza es muy predecible.
+
+## ARCH(1)
+
+El modelo más simple hace que la varianza dependa del **último shock al cuadrado**:
+$$
+\sigma_t^2 = \omega + \alpha\varepsilon_{t-1}^2,\qquad\omega>0,\ \alpha\ge0.
+$$ {#eq-arch1}
+Un shock grande ayer ($\varepsilon_{t-1}^2$ alto) eleva la varianza de hoy: eso es el agrupamiento.
+
+::: {#prp-arch1}
+## Propiedades del ARCH(1)
+Si $\alpha<1$, el proceso $\varepsilon_t$ es débilmente estacionario con
+$$
+\mathbb{E}[\varepsilon_t] = 0,\qquad\operatorname{Var}(\varepsilon_t) = \frac\omega{1 - \alpha},\qquad\operatorname{Cov}(\varepsilon_t,\varepsilon_{t-h}) = 0\ (h\ne0).
+$$
+Con $z_t\sim N(0,1)$ y $3\alpha^2<1$ existe el cuarto momento, y la **curtosis** es
+$$
+\kappa = \frac{\mathbb{E}[\varepsilon_t^4]}{\big(\mathbb{E}[\varepsilon_t^2]\big)^2} = \frac{3(1 - \alpha^2)}{1 - 3\alpha^2}>3.
+$$
+Además, $\varepsilon_t^2$ sigue un **AR(1)**: $\varepsilon_t^2 = \omega + \alpha\varepsilon_{t-1}^2 + v_t$ con $v_t = \sigma_t^2(z_t^2 - 1)$ una diferencia de martingala, y su autocorrelación es $\rho_{\varepsilon^2}(h) = \alpha^h$.
+:::
+
+::: {.proof}
+*Varianza:* $\mathbb{E}[\varepsilon_t^2] = \mathbb{E}[\sigma_t^2] = \omega + \alpha\mathbb{E}[\varepsilon_{t-1}^2]$; bajo estacionariedad, $\sigma^2 = \omega + \alpha\sigma^2\Rightarrow\sigma^2 = \omega/(1 - \alpha)$, que es finita y positiva solo si $\alpha<1$. La autocovarianza de $\varepsilon_t$ es cero por ser MDS.
+
+*Representación AR(1) de $\varepsilon_t^2$:* $\varepsilon_t^2 = \sigma_t^2z_t^2 = \sigma_t^2 + \sigma_t^2(z_t^2 - 1) = \omega + \alpha\varepsilon_{t-1}^2 + v_t$, y $\mathbb{E}[v_t\mid\mathcal{F}_{t-1}] = \sigma_t^2\mathbb{E}[z_t^2 - 1] = 0$. Un AR(1) con coeficiente $\alpha$ tiene ACF $\alpha^h$ (Clase 2).
+
+*Curtosis:* $\mathbb{E}[\varepsilon_t^4] = \mathbb{E}[\sigma_t^4]\mathbb{E}[z_t^4] = 3\mathbb{E}\big[(\omega + \alpha\varepsilon_{t-1}^2)^2\big] = 3\big[\omega^2 + 2\omega\alpha\sigma^2 + \alpha^2\mathbb{E}[\varepsilon_t^4]\big]$ (por independencia entre $z_t$ y $\sigma_t$; $\mathbb{E}z^4 = 3$). Despejando, $\mathbb{E}[\varepsilon^4](1 - 3\alpha^2) = 3\omega^2\big(1 + \tfrac{2\alpha}{1 - \alpha}\big) = 3\omega^2\tfrac{1 + \alpha}{1 - \alpha}$, que es positivo y finito solo si $3\alpha^2<1$. Dividiendo por $\sigma^4 = \omega^2/(1 - \alpha)^2$: $\kappa = 3\dfrac{(1 + \alpha)(1 - \alpha)}{1 - 3\alpha^2} = \dfrac{3(1 - \alpha^2)}{1 - 3\alpha^2}$, mayor que $3$ porque $(1 - \alpha^2)>(1 - 3\alpha^2)$.
+:::
+
+Es la gran virtud del modelo: **aunque $z_t$ sea normal, $\varepsilon_t$ tiene colas gordas** (curtosis $>3$). Con $\alpha = 0{,}5$, $\kappa = 3(0{,}75)/0{,}25 = 9$. Condicional en el pasado, $\varepsilon_t$ es normal con varianza $\sigma_t^2$; **incondicionalmente** es una **mezcla de normales** con distintas varianzas, que tiene colas más pesadas. La existencia del cuarto momento exige $\alpha<1/\sqrt3\approx0{,}577$: con $\alpha = 0{,}6$ la varianza es finita pero el cuarto momento **no existe** (Ejercicio 12.2).
+
+## GARCH(1,1)
+
+Con datos reales, el ARCH exige muchos rezagos para capturar la persistencia de la volatilidad. Bollerslev (1986) propuso agregar la propia varianza rezagada:
+$$
+\sigma_t^2 = \omega + \alpha\varepsilon_{t-1}^2 + \beta\sigma_{t-1}^2,\qquad\omega>0,\ \alpha,\beta\ge0.
+$$ {#eq-garch11}
+Con **tres parámetros** reproduce el comportamiento de un ARCH de orden alto. La varianza de hoy es un **promedio ponderado** de una constante, el último shock al cuadrado y la varianza de ayer.
+
+::: {#prp-garch11}
+## Propiedades del GARCH(1,1)
+Si $\alpha + \beta<1$, $\varepsilon_t$ es débilmente estacionario con $\operatorname{Var}(\varepsilon_t) = \bar\sigma^2 = \omega/(1 - \alpha - \beta)$. Los cuadrados siguen un **ARMA(1,1)**:
+$$
+\varepsilon_t^2 = \omega + (\alpha + \beta)\varepsilon_{t-1}^2 + v_t - \beta v_{t-1},\qquad v_t = \sigma_t^2(z_t^2 - 1).
+$$
+Con $z_t$ normal, la curtosis es $\kappa = \dfrac{3\big[1 - (\alpha + \beta)^2\big]}{1 - (\alpha + \beta)^2 - 2\alpha^2}$ siempre que el denominador sea positivo.
+:::
+
+::: {.proof}
+La varianza sale de $\sigma^2 = \omega + \alpha\sigma^2 + \beta\sigma^2$. Para la representación ARMA: como $\varepsilon_t^2 = \sigma_t^2 + v_t$, se tiene $\sigma_t^2 = \varepsilon_t^2 - v_t$. Reemplazando en @eq-garch11 (con $\sigma_{t-1}^2 = \varepsilon_{t-1}^2 - v_{t-1}$):
+$$
+\varepsilon_t^2 - v_t = \omega + \alpha\varepsilon_{t-1}^2 + \beta(\varepsilon_{t-1}^2 - v_{t-1})\ \Longrightarrow\ \varepsilon_t^2 = \omega + (\alpha + \beta)\varepsilon_{t-1}^2 + v_t - \beta v_{t-1}.
+$$
+La fórmula de la curtosis es el resultado de Bollerslev (1986), que se obtiene calculando $\mathbb{E}[\sigma_t^4]$ por recursión (se toma prestada). Con $\alpha = 0{,}1$ y $\beta = 0{,}85$: $\kappa = 3(1 - 0{,}9025)/(1 - 0{,}9025 - 0{,}02) = 0{,}2925/0{,}0775 = 3{,}77$.
+:::
+
+La **persistencia** de la volatilidad es $\alpha + \beta$. En datos financieros diarios es típicamente muy cercana a uno ($0{,}97$–$0{,}99$): los shocks a la volatilidad son casi permanentes. Un $\alpha$ chico (el "reactivo") y un $\beta$ grande (el "persistente") es el patrón habitual. Cuando $\alpha + \beta = 1$, el modelo se llama **IGARCH** (*integrated*): la varianza incondicional es infinita pero el proceso puede ser **estrictamente estacionario** (§★).
+
+## Pronóstico de la varianza
+
+El proceso de varianza es **predecible**, y su pronóstico revierte a la media a tasa $\alpha + \beta$.
+
+::: {#prp-pron-var}
+## Pronóstico de varianza a $h$ pasos
+$$
+\mathbb{E}\big[\sigma_{T + h}^2\mid\mathcal{F}_T\big] = \bar\sigma^2 + (\alpha + \beta)^{h - 1}\big(\sigma_{T + 1}^2 - \bar\sigma^2\big),\qquad h\ge1.
+$$
+:::
+
+::: {.proof}
+Para $h\ge1$, $\sigma_{T + h + 1}^2 = \omega + \alpha\varepsilon_{T + h}^2 + \beta\sigma_{T + h}^2$ y $\mathbb{E}[\varepsilon_{T + h}^2\mid\mathcal{F}_T] = \mathbb{E}[\sigma_{T + h}^2\mid\mathcal{F}_T]$. Entonces $m_{h + 1} = \omega + (\alpha + \beta)m_h$ con $m_h = \mathbb{E}[\sigma_{T + h}^2\mid\mathcal{F}_T]$, que tiene la forma de un AR(1) con media $\bar\sigma^2 = \omega/(1 - \alpha - \beta)$: $m_{h + 1} - \bar\sigma^2 = (\alpha + \beta)(m_h - \bar\sigma^2)$, y $m_1 = \sigma_{T + 1}^2$ es conocida en $T$.
+:::
+
+La **vida media** de un shock de volatilidad es $\log0{,}5/\log(\alpha + \beta)$: con $\alpha + \beta = 0{,}97$, son $22{,}8$ días hábiles (Ejercicio 12.3). Para una varianza acumulada a $H$ pasos (por ejemplo, el riesgo de un portafolio mantenido una semana), se suman los pronósticos $\sum_{h = 1}^H\mathbb{E}[\sigma_{T + h}^2\mid\mathcal{F}_T]$ (si los retornos son no correlacionados).
+
+# Estimación por cuasi-máxima verosimilitud
+
+Sea $\theta = (\omega,\alpha,\beta)'$ (y los parámetros de la media). Suponiendo $z_t\sim N(0,1)$, la log-verosimilitud condicional es
+$$
+\ell_T(\theta) = \sum_{t = 1}^T\ell_t(\theta),\qquad\ell_t(\theta) = -\frac12\Big[\log\sigma_t^2(\theta) + \frac{\varepsilon_t^2}{\sigma_t^2(\theta)}\Big],
+$$
+donde $\sigma_t^2(\theta)$ se calcula **recursivamente** con @eq-garch11 (con un valor inicial, por ejemplo, la varianza muestral). Es la misma estructura de la verosimilitud por innovaciones de la Clase 4, con varianza condicional en lugar de constante. Los parámetros se encuentran por optimización numérica.
+
+Lo notable es que **no hace falta que $z_t$ sea normal**: el estimador que maximiza esta verosimilitud gaussiana, aunque la verdadera distribución sea otra (por ejemplo, una $t$ de Student), es **consistente y asintóticamente normal**. Es un **cuasi-MV** (QMLE, Clase 2 de Econometría 2: el score tiene media cero porque la especificación de la varianza condicional es correcta, aunque la densidad no lo sea).
+
+::: {#thm-qmle-garch}
+## Distribución asintótica del QMLE de GARCH
+Bajo las condiciones de regularidad de Weiss (1986), Lee y Hansen (1994) y Francq y Zakoïan (2004), si $z_t$ es i.i.d. $(0,1)$ con $\kappa_z = \mathbb{E}[z_t^4]<\infty$,
+$$
+\sqrt T(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ (\kappa_z - 1)\,J_*^{-1}\big),\qquad J_* = \mathbb{E}\Big[\frac1{\sigma_t^4}\frac{\partial\sigma_t^2}{\partial\theta}\frac{\partial\sigma_t^2}{\partial\theta'}\Big].
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Es el teorema de normalidad de M-estimadores de la Clase 1 de Econometría 2, con $A$ = hessiano esperado y $B$ = varianza del score. Calculo las dos. El score de la observación $t$ es $\partial\ell_t/\partial\theta = \frac12(z_t^2 - 1)\sigma_t^{-2}\partial\sigma_t^2/\partial\theta$: es el producto de $(z_t^2 - 1)$ (media cero, **independiente del pasado**) por una cantidad del pasado, así que es una **diferencia de martingala**. Su varianza usa $\mathbb{E}[(z^2 - 1)^2] = \kappa_z - 1$. En el hessiano, el término que involucra $(z_t^2 - 1)$ tiene esperanza cero y solo sobrevive el otro.
+:::
+
+::: {.proof}
+Derivando $\ell_t = -\frac12[\log\sigma_t^2 + \varepsilon_t^2/\sigma_t^2]$ con $\varepsilon_t^2 = \sigma_t^2z_t^2$ en el verdadero parámetro: $\partial\ell_t/\partial\theta = -\frac12\big[\sigma_t^{-2} - \varepsilon_t^2\sigma_t^{-4}\big]\partial\sigma_t^2/\partial\theta = \frac12(z_t^2 - 1)\sigma_t^{-2}\partial\sigma_t^2/\partial\theta$. Como $\mathbb{E}[z_t^2 - 1\mid\mathcal{F}_{t-1}] = 0$, es una MDS, de modo que (Clase 5) el TCL aplica con varianza
+$$
+B = \mathbb{E}\big[s_ts_t'\big] = \tfrac14\mathbb{E}\big[(z_t^2 - 1)^2\big]J_* = \tfrac14(\kappa_z - 1)J_*.
+$$
+Para el hessiano, derivando otra vez, $\dfrac{\partial^2\ell_t}{\partial\theta\partial\theta'} = -\tfrac12\big(\sigma_t^{-2} - \varepsilon_t^2\sigma_t^{-4}\big)\dfrac{\partial^2\sigma_t^2}{\partial\theta\partial\theta'} - \tfrac12\big(2\varepsilon_t^2\sigma_t^{-6} - \sigma_t^{-4}\big)\dfrac{\partial\sigma_t^2}{\partial\theta}\dfrac{\partial\sigma_t^2}{\partial\theta'}$. En el verdadero parámetro, $\varepsilon_t^2 = \sigma_t^2z_t^2$, así que el primer coeficiente es $\tfrac12\sigma_t^{-2}(z_t^2 - 1)$, de esperanza condicional cero, y el segundo es $-\tfrac12\sigma_t^{-4}(2z_t^2 - 1)$, de esperanza condicional $-\tfrac12\sigma_t^{-4}$. Luego $A = \mathbb{E}[\partial^2\ell_t/\partial\theta\partial\theta'] = -\tfrac12J_*$. Entonces $A^{-1}BA^{-1} = 4J_*^{-1}\cdot\tfrac14(\kappa_z - 1)J_*\cdot J_*^{-1} = (\kappa_z - 1)J_*^{-1}$.
+:::
+
+Dos lecturas. Si $z_t$ es **gaussiano**, $\kappa_z = 3$ y la varianza es $2J_*^{-1}$: la inversa de la información de Fisher (Clase 2 de Econometría 2), como debe ser. Si $z_t$ tiene **colas más gordas** ($\kappa_z>3$), la varianza verdadera es $(\kappa_z - 1)/2$ veces **mayor** que la "de manual": con $\kappa_z = 6$, los errores estándar reportados por el programa (que suponen normalidad) son demasiado chicos en un factor $\sqrt{5/2} = 1{,}58$ (Ejercicio 12.4). Por eso, con datos financieros, se usan **errores estándar robustos** (sándwich, Bollerslev–Wooldridge, 1992), o se estima por MV con una densidad más realista (**$t$ de Student**), cuyo parámetro de grados de libertad se estima junto con el resto. Pero **ojo**: si la densidad supuesta es incorrecta, esa MV ya **no** es un QMLE con todas las propiedades (solo la gaussiana lo es en general).
+
+## Diagnóstico
+
+Una vez estimado, los **residuos estandarizados** $\hat z_t = \hat\varepsilon_t/\hat\sigma_t$ deberían ser **i.i.d.**: ni ellos ni sus cuadrados deben tener autocorrelación. Se usa Ljung–Box (Clase 4) sobre $\hat z_t$ y sobre $\hat z_t^2$. Para **detectar** si hace falta un modelo ARCH, el **test ARCH-LM** de Engle: se regresa $\hat\varepsilon_t^2$ sobre $q$ rezagos y una constante, y se calcula $LM = T\cdot R^2\xrightarrow{d}\chi^2_q$ bajo $H_0$: no hay ARCH (los $\hat\varepsilon_t^2$ son ruido blanco). Es el test LM de la Clase 3 de Econometría 2 en su forma $nR^2$.
+
+# Asimetrías y extensiones
+
+El GARCH(1,1) trata igual un shock positivo y uno negativo de la misma magnitud (solo depende de $\varepsilon_{t-1}^2$). Pero los datos de acciones muestran el **efecto apalancamiento**: una caída del precio aumenta el apalancamiento financiero de la empresa y su volatilidad futura más que una subida. Los modelos asimétricos más usados:
+
+- **GJR-GARCH** (Glosten, Jagannathan y Runkle, 1993): $\sigma_t^2 = \omega + (\alpha + \gamma\mathbf{1}\{\varepsilon_{t-1}<0\})\varepsilon_{t-1}^2 + \beta\sigma_{t-1}^2$. Si $\gamma>0$, los shocks negativos pesan más. La persistencia (con $z$ simétrica) es $\alpha + \gamma/2 + \beta$.
+- **EGARCH** (Nelson, 1991): $\log\sigma_t^2 = \omega + \beta\log\sigma_{t-1}^2 + \alpha(|z_{t-1}| - \mathbb{E}|z|) + \gamma z_{t-1}$. Modela el **logaritmo**, de modo que no hacen falta restricciones de positividad, y $\gamma<0$ da apalancamiento.
+
+La **curva de impacto de noticias** (*news impact curve*), $\sigma_t^2$ como función de $\varepsilon_{t-1}$ con lo demás fijo, es simétrica (parábola) para el GARCH y **asimétrica** (más pendiente a la izquierda) para GJR y EGARCH.
+
+Otras extensiones, mencionadas sin desarrollo: **GARCH multivariado** (BEKK, DCC de Engle: covarianzas condicionales entre activos, esenciales para la gestión de portafolios), **volatilidad estocástica** (la volatilidad es un proceso latente con su propio shock, $\log\sigma_t^2 = \omega + \phi\log\sigma_{t-1}^2 + \eta_t$, que se estima como un modelo de espacio de estados no lineal, Clase 13), **volatilidad realizada** (usa datos de alta frecuencia para medir la volatilidad directamente) y **memoria larga** (FIGARCH).
+
+# Valor en riesgo
+
+Un uso central de GARCH es la medición de riesgo. El **valor en riesgo** (VaR) al nivel $\tau$ es el monto tal que la pérdida de mañana solo lo excede con probabilidad $\tau$. Con $r_{T + 1} = \mu + \sigma_{T + 1}z_{T + 1}$ y $q_\tau$ el cuantil $\tau$ de $z$:
+$$
+\operatorname{VaR}_\tau = -\big(\hat\mu + \hat\sigma_{T + 1}q_\tau\big).
+$$
+Con normalidad, $q_{0{,}05} = -1{,}645$. Con $\hat\mu = 0{,}05$ y $\hat\sigma_{T + 1} = 1{,}5$ (en puntos porcentuales, diario), el VaR al 95 % es $-(0{,}05 - 1{,}645\cdot1{,}5) = 2{,}42$ puntos porcentuales: con probabilidad 5 % se pierde más de 2,42 % del valor del portafolio en el día. La ventaja de GARCH sobre una volatilidad histórica constante es que **el VaR se ajusta a las condiciones**: sube rápidamente tras un episodio turbulento. Con colas gordas, $q_\tau$ se toma de una $t$ de Student o de los cuantiles empíricos de $\hat z_t$ (simulación histórica filtrada). La evaluación del VaR (*backtesting*) cuenta las violaciones: bajo el modelo correcto, la frecuencia de días con pérdida $>\operatorname{VaR}_\tau$ debe ser $\tau$ y las violaciones, independientes (tests de Kupiec y Christoffersen).
+
+# ★ Postgrado: estacionariedad estricta del GARCH(1,1)
+
+::: {.callout-important title="★ Postgrado"}
+La condición $\alpha + \beta<1$ garantiza varianza finita. Pero un GARCH puede ser **estrictamente estacionario** con varianza infinita. La condición exacta fue obtenida por Nelson (1990).
+:::
+
+::: {#prp-nelson}
+## Condición de Nelson
+El GARCH(1,1) tiene una solución **estrictamente estacionaria** y ergódica si y solo si $\mathbb{E}\big[\log(\beta + \alpha z_t^2)\big]<0$. Esta condición es **más débil** que $\alpha + \beta<1$.
+:::
+
+::: {.proof}
+(Suficiencia.) De @eq-garch11 con $\varepsilon_{t-1}^2 = \sigma_{t-1}^2z_{t-1}^2$, $\sigma_t^2 = \omega + (\beta + \alpha z_{t-1}^2)\sigma_{t-1}^2 = \omega + a_{t-1}\sigma_{t-1}^2$, con $a_{t-1} = \beta + \alpha z_{t-1}^2$ i.i.d. positivas. Es una **ecuación estocástica de recurrencia**; iterando hacia atrás,
+$$
+\sigma_t^2 = \omega\Big[1 + \sum_{k = 1}^\infty a_{t-1}a_{t-2}\cdots a_{t-k}\Big].
+$$
+Cada producto es $\exp\big(\sum_{j = 1}^k\log a_{t-j}\big)$. Por la ley fuerte de los grandes números, $\frac1k\sum_j\log a_{t-j}\to\mathbb{E}\log a<0$ casi seguramente, de modo que los productos decaen **exponencialmente** y la serie converge casi seguramente: $\sigma_t^2$ está bien definida, es una función medible de $(z_s)_{s<t}$ y, por lo tanto, estrictamente estacionaria y ergódica. (La necesidad usa que, si $\mathbb{E}\log a\ge0$, los productos no decaen y la serie diverge.) Para comparar con $\alpha + \beta<1$: por la desigualdad de Jensen estricta (porque $\log$ es estrictamente cóncava y $a_t$ no es constante si $\alpha>0$), $\mathbb{E}\log(\beta + \alpha z^2)<\log\mathbb{E}(\beta + \alpha z^2) = \log(\alpha + \beta)$. Entonces $\alpha + \beta\le1$ **implica** $\mathbb{E}\log a<0$: **IGARCH** ($\alpha + \beta = 1$) también es estrictamente estacionario.
+:::
+
+Con $\alpha = 0{,}1$ y $\beta = 0{,}9$ (IGARCH, $z$ normal), $\mathbb{E}\log(0{,}9 + 0{,}1z^2)\approx\mathbb{E}[0{,}1(z^2 - 1) - \tfrac12(0{,}1)^2(z^2 - 1)^2] = 0 - 0{,}005\cdot2 = -0{,}01<0$ (expansión de segundo orden de $\log(1 + x)$ con $x = 0{,}1(z^2 - 1)$ y $\mathbb{E}(z^2 - 1)^2 = 2$). El proceso es estrictamente estacionario, pero $\operatorname{Var}(\varepsilon_t) = \omega/(1 - \alpha - \beta) = \infty$: **es ergódico, tiene una distribución incondicional, pero no segundo momento**. Es consistente con la observación empírica de volatilidades muy persistentes.
+
+# Resumen
+
+- Los retornos tienen volatilidad **agrupada** y colas gordas: $\varepsilon_t = \sigma_tz_t$ es una **diferencia de martingala** con varianza condicional **predecible**.
+- **ARCH(1):** $\sigma_t^2 = \omega + \alpha\varepsilon_{t-1}^2$; $\varepsilon_t^2$ es AR(1); curtosis $3(1 - \alpha^2)/(1 - 3\alpha^2)>3$ (@prp-arch1).
+- **GARCH(1,1):** $\sigma_t^2 = \omega + \alpha\varepsilon_{t-1}^2 + \beta\sigma_{t-1}^2$; $\varepsilon_t^2$ es ARMA(1,1); persistencia $\alpha + \beta$; **pronóstico** de varianza que revierte a $\bar\sigma^2$ a tasa $(\alpha + \beta)$ (@prp-pron-var).
+- **QMLE gaussiano:** consistente sin normalidad; varianza sándwich $(\kappa_z - 1)J_*^{-1}$ (@thm-qmle-garch): con colas gordas, los errores "de manual" son demasiado chicos.
+- **Diagnóstico:** Ljung–Box de $\hat z_t$ y $\hat z_t^2$; test **ARCH-LM** ($TR^2\sim\chi^2_q$).
+- **Asimetrías:** GJR y EGARCH. **VaR:** $-(\hat\mu + \hat\sigma_{T + 1}q_\tau)$.
+- **Nelson:** estacionariedad estricta si $\mathbb{E}\log(\beta + \alpha z^2)<0$, más débil que $\alpha + \beta<1$ (@prp-nelson).
+
+# Ejercicios
+
+**Ejercicio 12.1.** Para un ARCH(1) con $\omega = 0{,}2$, $\alpha = 0{,}5$ y $z\sim N(0,1)$, calcula la varianza incondicional, $\mathbb{E}[\varepsilon_t^4]$ y la curtosis. ¿Cuál es la varianza condicional si $\varepsilon_{t-1} = 1$? ¿Y si $\varepsilon_{t-1} = 0$?
+
+::: {.callout-tip collapse="true" title="Solución 12.1"}
+$\sigma^2 = \omega/(1 - \alpha) = 0{,}4$. $\mathbb{E}[\varepsilon^4] = 3\omega^2(1 + \alpha)/[(1 - \alpha)(1 - 3\alpha^2)] = 3(0{,}04)(1{,}5)/[0{,}5\cdot0{,}25] = 0{,}18/0{,}125 = 1{,}44$. Curtosis: $1{,}44/0{,}4^2 = 9$ ($= 3\cdot0{,}75/0{,}25$ ✓). Varianza condicional: con $\varepsilon_{t-1} = 1$, $\sigma_t^2 = 0{,}2 + 0{,}5 = 0{,}7$; con $\varepsilon_{t-1} = 0$, $\sigma_t^2 = 0{,}2$. Tras un shock de tamaño $1$ la varianza es $3{,}5$ veces la de un día sin shock.
+:::
+
+**Ejercicio 12.2.** ¿Existe el cuarto momento de un ARCH(1) gaussiano con $\alpha = 0{,}6$? ¿Y la varianza? ¿Qué implica para la curtosis?
+
+::: {.callout-tip collapse="true" title="Solución 12.2"}
+La varianza existe ($\alpha<1$): $\omega/0{,}4$. El cuarto momento exige $3\alpha^2<1$, y $3(0{,}36) = 1{,}08>1$: **no existe** ($\mathbb{E}[\varepsilon^4] = \infty$). La curtosis es infinita: las colas son tan gordas que los eventos extremos dominan al promedio de las cuartas potencias. Consecuencia práctica: la autocorrelación muestral de $\varepsilon_t^2$ (que usa cuartos momentos en su varianza) tiene distribución no estándar, y el test $LM$ sobre $\varepsilon^2$ pierde la teoría usual. Con $\alpha\ge1/\sqrt3\approx0{,}577$ hay que trabajar con transformaciones robustas (valores absolutos).
+:::
+
+**Ejercicio 12.3.** Un GARCH(1,1) tiene $\omega = 0{,}05$, $\alpha = 0{,}1$, $\beta = 0{,}85$ y $\sigma_{T + 1}^2 = 1{,}8$. Calcula la varianza incondicional, la persistencia, la vida media, los pronósticos de varianza para $h = 1,2,5,20$ y la varianza acumulada a 5 días.
+
+::: {.callout-tip collapse="true" title="Solución 12.3"}
+$\bar\sigma^2 = 0{,}05/0{,}05 = 1$. Persistencia $\alpha + \beta = 0{,}95$. Vida media: $\log0{,}5/\log0{,}95 = 13{,}5$ días. $\mathbb{E}[\sigma^2_{T + h}] = 1 + 0{,}95^{h-1}\cdot0{,}8$: $h = 1$: $1{,}8$; $h = 2$: $1{,}76$; $h = 5$: $1 + 0{,}8145\cdot0{,}8 = 1{,}652$; $h = 20$: $1 + 0{,}3774\cdot0{,}8 = 1{,}302$. Acumulada a 5 días: $1{,}8 + 1{,}76 + 1{,}722 + 1{,}686 + 1{,}652 = 8{,}82$ (desviación estándar $2{,}97$), frente a $5\bar\sigma^2 = 5$ ($2{,}24$) si se usara la varianza incondicional: **ignorar el estado actual de la volatilidad subestima la varianza a 5 días en 43 % ($1 - 5/8{,}82$) y la desviación estándar en 25 %** tras un shock.
+:::
+
+**Ejercicio 12.4.** Con $\kappa_z = 6$ (colas gordas), ¿en qué factor se subestiman los errores estándar del QMLE si se usa la fórmula gaussiana? ¿Y con $\kappa_z = 3$?
+
+::: {.callout-tip collapse="true" title="Solución 12.4"}
+La varianza verdadera es $(\kappa_z - 1)J_*^{-1}$ y la gaussiana $2J_*^{-1}$. El cociente de varianzas es $(\kappa_z - 1)/2$, y el de errores estándar $\sqrt{(\kappa_z - 1)/2}$. Con $\kappa_z = 6$: $\sqrt{5/2} = 1{,}58$: los errores estándar de manual son $58$ % demasiado chicos (los $t$ quedan inflados por $1{,}58$). Con $\kappa_z = 3$ (normal): $\sqrt{2/2} = 1$: sin problema. Es la misma lección de la Clase 2 de Econometría 2: la consistencia sobrevive a la mala especificación de la distribución, pero la inferencia requiere el sándwich.
+:::
+
+**Ejercicio 12.5.** En una serie de $T = 1000$ residuos se regresa $\hat\varepsilon_t^2$ sobre 5 rezagos y se obtiene $R^2 = 0{,}02$. Calcula el test ARCH-LM y decide al 5 % (crítico $\chi^2_5 = 11{,}07$).
+
+::: {.callout-tip collapse="true" title="Solución 12.5"}
+$LM = T R^2 = 1000\cdot0{,}02 = 20{,}0>11{,}07$: **se rechaza** la hipótesis de ausencia de ARCH. Aunque el $R^2$ sea solo $0{,}02$ (2 %;la volatilidad pasada explica poco de la variabilidad de $\varepsilon_t^2$, que es muy ruidosa), con $T = 1000$ la evidencia es clara. Hay efectos ARCH: la media de cada residuo cuadrático depende del pasado.
+:::
+
+**Ejercicio 12.6.** Un GJR-GARCH tiene $\omega = 0{,}01$, $\alpha = 0{,}05$, $\gamma = 0{,}10$, $\beta = 0{,}90$. Con $\sigma_{t-1}^2 = 1$, calcula $\sigma_t^2$ después de un shock de $-1$ y de uno de $+1$. ¿Cuál es la persistencia?
+
+::: {.callout-tip collapse="true" title="Solución 12.6"}
+Tras $\varepsilon_{t-1} = -1$: $\sigma_t^2 = 0{,}01 + (0{,}05 + 0{,}10)(1) + 0{,}90 = 1{,}06$. Tras $\varepsilon_{t-1} = +1$: $\sigma_t^2 = 0{,}01 + 0{,}05 + 0{,}90 = 0{,}96$. El shock negativo deja una varianza $10{,}4$ % mayor que el positivo del mismo tamaño (diferencia de $\gamma = 0{,}10$). Persistencia: $\alpha + \gamma/2 + \beta = 0{,}05 + 0{,}05 + 0{,}90 = 1{,}00$ (integrado), típico de series con volatilidad muy persistente: la varianza incondicional no existe, pero el proceso puede ser estrictamente estacionario (§★).
+:::
+
+**Ejercicio 12.7.** Calcula el VaR diario al 99 % de un portafolio con $\hat\mu = 0$ y $\hat\sigma_{T + 1} = 2$ (por ciento diario) bajo normalidad ($q_{0{,}01} = -2{,}326$). ¿Cómo cambia si la volatilidad pasa a $3{,}5$ tras un día turbulento?
+
+::: {.callout-tip collapse="true" title="Solución 12.7"}
+$\operatorname{VaR}_{99} = 2{,}326\cdot2 = 4{,}65$ %. Con $\hat\sigma = 3{,}5$ %: $2{,}326\cdot3{,}5 = 8{,}14$ %. El VaR sube un $75$ % porque es proporcional a $\sigma_{T + 1}$. Un VaR basado en una volatilidad histórica constante de, digamos, $2$ %, **subestimaría** el riesgo justo en los días de mayor turbulencia, que es cuando más importa: ese es el argumento de GARCH para gestión de riesgo.
+:::
+
+**Ejercicio 12.8 ★.** Con $\alpha = 0{,}1$, $\beta = 0{,}9$ y $z\sim N(0,1)$, verifica la condición de Nelson usando la aproximación de segundo orden de $\mathbb{E}\log(\beta + \alpha z^2)$, y explica por qué $\alpha + \beta = 1$ no impide la estacionariedad estricta.
+
+::: {.callout-tip collapse="true" title="Solución 12.8 ★"}
+$\beta + \alpha z^2 = 1 + \alpha(z^2 - 1)$ (porque $\alpha + \beta = 1$). Con $x = 0{,}1(z^2 - 1)$, $\log(1 + x)\approx x - x^2/2$. $\mathbb{E}[x] = 0$ y $\mathbb{E}[x^2] = 0{,}01\cdot\mathbb{E}(z^2 - 1)^2 = 0{,}01\cdot2 = 0{,}02$ (varianza de una $\chi^2_1$ es $2$). Entonces $\mathbb{E}\log\approx-0{,}01<0$. Jensen lo garantiza: $\mathbb{E}\log a<\log\mathbb{E}a = \log1 = 0$ para $a$ no constante. Por la @prp-nelson, el proceso es estrictamente estacionario, aunque $\mathbb{E}[\varepsilon^2] = \infty$: la **esperanza** de $a_t$ es uno (la "varianza" crece en media sin cota) pero **típicamente** $\log a_t$ tiene media negativa, de modo que la volatilidad casi siempre vuelve a niveles normales: son raras excursiones enormes las que hacen infinita la esperanza.
+:::

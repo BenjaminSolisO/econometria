@@ -4,7 +4,11 @@
     "href": "econometria-3/index.html",
     "title": "Econometría 3",
     "section": "",
-    "text": "PrecauciónEn preparación\n\n\n\nEste curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1."
+    "text": "Este curso construye la econometría de series de tiempo desde sus fundamentos. Una serie es una única realización de un proceso estocástico, con observaciones dependientes: no hay muestra i.i.d. a la cual aplicar la ley de los grandes números ni el teorema central del límite de Econometría 1 y 2. Todo el curso gira alrededor de tres preguntas: qué hace falta (estacionariedad y ergodicidad) para aprender de una sola historia; cómo cambia la inferencia cuando hay dependencia (la varianza de largo plazo reemplaza a la varianza simple); y qué ocurre cuando la serie no es estacionaria, es decir, cuando los shocks son permanentes (raíces unitarias y cointegración).\nComo en los cursos anteriores, cada resultado está demostrado o marcado como un hecho que se toma prestado (el teorema de Wold, el TCL funcional, la distribución de Johansen y pocos más), y cada demostración va precedida de un recuadro Borrador donde se piensa en voz alta cómo encontrarla. Las secciones ★ Postgrado profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).",
+    "crumbs": [
+      "Inicio",
+      "Econometría 3"
+    ]
   },
   {
     "objectID": "econometria-3/index.html#temario-tentativo",
@@ -1799,6 +1803,149 @@
     "crumbs": [
       "Inicio",
       "Clase 11 · VECM y el método de Johansen"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-12.html",
+    "href": "econometria-3/clase-12.html",
+    "title": "Clase 12 · Volatilidad condicional: ARCH y GARCH",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-12.html#arch1",
+    "href": "econometria-3/clase-12.html#arch1",
+    "title": "Clase 12 · Volatilidad condicional: ARCH y GARCH",
+    "section": "2.1 ARCH(1)",
+    "text": "2.1 ARCH(1)\nEl modelo más simple hace que la varianza dependa del último shock al cuadrado: \\[\n\\sigma_t^2 = \\omega + \\alpha\\varepsilon_{t-1}^2,\\qquad\\omega&gt;0,\\ \\alpha\\ge0.\n\\tag{2}\\] Un shock grande ayer (\\(\\varepsilon_{t-1}^2\\) alto) eleva la varianza de hoy: eso es el agrupamiento.\n\nProposición 1 (Propiedades del ARCH(1)) Si \\(\\alpha&lt;1\\), el proceso \\(\\varepsilon_t\\) es débilmente estacionario con \\[\n\\mathbb{E}[\\varepsilon_t] = 0,\\qquad\\operatorname{Var}(\\varepsilon_t) = \\frac\\omega{1 - \\alpha},\\qquad\\operatorname{Cov}(\\varepsilon_t,\\varepsilon_{t-h}) = 0\\ (h\\ne0).\n\\] Con \\(z_t\\sim N(0,1)\\) y \\(3\\alpha^2&lt;1\\) existe el cuarto momento, y la curtosis es \\[\n\\kappa = \\frac{\\mathbb{E}[\\varepsilon_t^4]}{\\big(\\mathbb{E}[\\varepsilon_t^2]\\big)^2} = \\frac{3(1 - \\alpha^2)}{1 - 3\\alpha^2}&gt;3.\n\\] Además, \\(\\varepsilon_t^2\\) sigue un AR(1): \\(\\varepsilon_t^2 = \\omega + \\alpha\\varepsilon_{t-1}^2 + v_t\\) con \\(v_t = \\sigma_t^2(z_t^2 - 1)\\) una diferencia de martingala, y su autocorrelación es \\(\\rho_{\\varepsilon^2}(h) = \\alpha^h\\).\n\n\nDemostración. Varianza: \\(\\mathbb{E}[\\varepsilon_t^2] = \\mathbb{E}[\\sigma_t^2] = \\omega + \\alpha\\mathbb{E}[\\varepsilon_{t-1}^2]\\); bajo estacionariedad, \\(\\sigma^2 = \\omega + \\alpha\\sigma^2\\Rightarrow\\sigma^2 = \\omega/(1 - \\alpha)\\), que es finita y positiva solo si \\(\\alpha&lt;1\\). La autocovarianza de \\(\\varepsilon_t\\) es cero por ser MDS.\nRepresentación AR(1) de \\(\\varepsilon_t^2\\): \\(\\varepsilon_t^2 = \\sigma_t^2z_t^2 = \\sigma_t^2 + \\sigma_t^2(z_t^2 - 1) = \\omega + \\alpha\\varepsilon_{t-1}^2 + v_t\\), y \\(\\mathbb{E}[v_t\\mid\\mathcal{F}_{t-1}] = \\sigma_t^2\\mathbb{E}[z_t^2 - 1] = 0\\). Un AR(1) con coeficiente \\(\\alpha\\) tiene ACF \\(\\alpha^h\\) (Clase 2).\nCurtosis: \\(\\mathbb{E}[\\varepsilon_t^4] = \\mathbb{E}[\\sigma_t^4]\\mathbb{E}[z_t^4] = 3\\mathbb{E}\\big[(\\omega + \\alpha\\varepsilon_{t-1}^2)^2\\big] = 3\\big[\\omega^2 + 2\\omega\\alpha\\sigma^2 + \\alpha^2\\mathbb{E}[\\varepsilon_t^4]\\big]\\) (por independencia entre \\(z_t\\) y \\(\\sigma_t\\); \\(\\mathbb{E}z^4 = 3\\)). Despejando, \\(\\mathbb{E}[\\varepsilon^4](1 - 3\\alpha^2) = 3\\omega^2\\big(1 + \\tfrac{2\\alpha}{1 - \\alpha}\\big) = 3\\omega^2\\tfrac{1 + \\alpha}{1 - \\alpha}\\), que es positivo y finito solo si \\(3\\alpha^2&lt;1\\). Dividiendo por \\(\\sigma^4 = \\omega^2/(1 - \\alpha)^2\\): \\(\\kappa = 3\\dfrac{(1 + \\alpha)(1 - \\alpha)}{1 - 3\\alpha^2} = \\dfrac{3(1 - \\alpha^2)}{1 - 3\\alpha^2}\\), mayor que \\(3\\) porque \\((1 - \\alpha^2)&gt;(1 - 3\\alpha^2)\\).\n\nEs la gran virtud del modelo: aunque \\(z_t\\) sea normal, \\(\\varepsilon_t\\) tiene colas gordas (curtosis \\(&gt;3\\)). Con \\(\\alpha = 0{,}5\\), \\(\\kappa = 3(0{,}75)/0{,}25 = 9\\). Condicional en el pasado, \\(\\varepsilon_t\\) es normal con varianza \\(\\sigma_t^2\\); incondicionalmente es una mezcla de normales con distintas varianzas, que tiene colas más pesadas. La existencia del cuarto momento exige \\(\\alpha&lt;1/\\sqrt3\\approx0{,}577\\): con \\(\\alpha = 0{,}6\\) la varianza es finita pero el cuarto momento no existe (Ejercicio 12.2).",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-12.html#garch11",
+    "href": "econometria-3/clase-12.html#garch11",
+    "title": "Clase 12 · Volatilidad condicional: ARCH y GARCH",
+    "section": "2.2 GARCH(1,1)",
+    "text": "2.2 GARCH(1,1)\nCon datos reales, el ARCH exige muchos rezagos para capturar la persistencia de la volatilidad. Bollerslev (1986) propuso agregar la propia varianza rezagada: \\[\n\\sigma_t^2 = \\omega + \\alpha\\varepsilon_{t-1}^2 + \\beta\\sigma_{t-1}^2,\\qquad\\omega&gt;0,\\ \\alpha,\\beta\\ge0.\n\\tag{3}\\] Con tres parámetros reproduce el comportamiento de un ARCH de orden alto. La varianza de hoy es un promedio ponderado de una constante, el último shock al cuadrado y la varianza de ayer.\n\nProposición 2 (Propiedades del GARCH(1,1)) Si \\(\\alpha + \\beta&lt;1\\), \\(\\varepsilon_t\\) es débilmente estacionario con \\(\\operatorname{Var}(\\varepsilon_t) = \\bar\\sigma^2 = \\omega/(1 - \\alpha - \\beta)\\). Los cuadrados siguen un ARMA(1,1): \\[\n\\varepsilon_t^2 = \\omega + (\\alpha + \\beta)\\varepsilon_{t-1}^2 + v_t - \\beta v_{t-1},\\qquad v_t = \\sigma_t^2(z_t^2 - 1).\n\\] Con \\(z_t\\) normal, la curtosis es \\(\\kappa = \\dfrac{3\\big[1 - (\\alpha + \\beta)^2\\big]}{1 - (\\alpha + \\beta)^2 - 2\\alpha^2}\\) siempre que el denominador sea positivo.\n\n\nDemostración. La varianza sale de \\(\\sigma^2 = \\omega + \\alpha\\sigma^2 + \\beta\\sigma^2\\). Para la representación ARMA: como \\(\\varepsilon_t^2 = \\sigma_t^2 + v_t\\), se tiene \\(\\sigma_t^2 = \\varepsilon_t^2 - v_t\\). Reemplazando en Ecuación 3 (con \\(\\sigma_{t-1}^2 = \\varepsilon_{t-1}^2 - v_{t-1}\\)): \\[\n\\varepsilon_t^2 - v_t = \\omega + \\alpha\\varepsilon_{t-1}^2 + \\beta(\\varepsilon_{t-1}^2 - v_{t-1})\\ \\Longrightarrow\\ \\varepsilon_t^2 = \\omega + (\\alpha + \\beta)\\varepsilon_{t-1}^2 + v_t - \\beta v_{t-1}.\n\\] La fórmula de la curtosis es el resultado de Bollerslev (1986), que se obtiene calculando \\(\\mathbb{E}[\\sigma_t^4]\\) por recursión (se toma prestada). Con \\(\\alpha = 0{,}1\\) y \\(\\beta = 0{,}85\\): \\(\\kappa = 3(1 - 0{,}9025)/(1 - 0{,}9025 - 0{,}02) = 0{,}2925/0{,}0775 = 3{,}77\\).\n\nLa persistencia de la volatilidad es \\(\\alpha + \\beta\\). En datos financieros diarios es típicamente muy cercana a uno (\\(0{,}97\\)–\\(0{,}99\\)): los shocks a la volatilidad son casi permanentes. Un \\(\\alpha\\) chico (el “reactivo”) y un \\(\\beta\\) grande (el “persistente”) es el patrón habitual. Cuando \\(\\alpha + \\beta = 1\\), el modelo se llama IGARCH (integrated): la varianza incondicional es infinita pero el proceso puede ser estrictamente estacionario (§★).",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-12.html#pronóstico-de-la-varianza",
+    "href": "econometria-3/clase-12.html#pronóstico-de-la-varianza",
+    "title": "Clase 12 · Volatilidad condicional: ARCH y GARCH",
+    "section": "2.3 Pronóstico de la varianza",
+    "text": "2.3 Pronóstico de la varianza\nEl proceso de varianza es predecible, y su pronóstico revierte a la media a tasa \\(\\alpha + \\beta\\).\n\nProposición 3 (Pronóstico de varianza a \\(h\\) pasos) \\[\n\\mathbb{E}\\big[\\sigma_{T + h}^2\\mid\\mathcal{F}_T\\big] = \\bar\\sigma^2 + (\\alpha + \\beta)^{h - 1}\\big(\\sigma_{T + 1}^2 - \\bar\\sigma^2\\big),\\qquad h\\ge1.\n\\]\n\n\nDemostración. Para \\(h\\ge1\\), \\(\\sigma_{T + h + 1}^2 = \\omega + \\alpha\\varepsilon_{T + h}^2 + \\beta\\sigma_{T + h}^2\\) y \\(\\mathbb{E}[\\varepsilon_{T + h}^2\\mid\\mathcal{F}_T] = \\mathbb{E}[\\sigma_{T + h}^2\\mid\\mathcal{F}_T]\\). Entonces \\(m_{h + 1} = \\omega + (\\alpha + \\beta)m_h\\) con \\(m_h = \\mathbb{E}[\\sigma_{T + h}^2\\mid\\mathcal{F}_T]\\), que tiene la forma de un AR(1) con media \\(\\bar\\sigma^2 = \\omega/(1 - \\alpha - \\beta)\\): \\(m_{h + 1} - \\bar\\sigma^2 = (\\alpha + \\beta)(m_h - \\bar\\sigma^2)\\), y \\(m_1 = \\sigma_{T + 1}^2\\) es conocida en \\(T\\).\n\nLa vida media de un shock de volatilidad es \\(\\log0{,}5/\\log(\\alpha + \\beta)\\): con \\(\\alpha + \\beta = 0{,}97\\), son \\(22{,}8\\) días hábiles (Ejercicio 12.3). Para una varianza acumulada a \\(H\\) pasos (por ejemplo, el riesgo de un portafolio mantenido una semana), se suman los pronósticos \\(\\sum_{h = 1}^H\\mathbb{E}[\\sigma_{T + h}^2\\mid\\mathcal{F}_T]\\) (si los retornos son no correlacionados).",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-12.html#diagnóstico",
+    "href": "econometria-3/clase-12.html#diagnóstico",
+    "title": "Clase 12 · Volatilidad condicional: ARCH y GARCH",
+    "section": "3.1 Diagnóstico",
+    "text": "3.1 Diagnóstico\nUna vez estimado, los residuos estandarizados \\(\\hat z_t = \\hat\\varepsilon_t/\\hat\\sigma_t\\) deberían ser i.i.d.: ni ellos ni sus cuadrados deben tener autocorrelación. Se usa Ljung–Box (Clase 4) sobre \\(\\hat z_t\\) y sobre \\(\\hat z_t^2\\). Para detectar si hace falta un modelo ARCH, el test ARCH-LM de Engle: se regresa \\(\\hat\\varepsilon_t^2\\) sobre \\(q\\) rezagos y una constante, y se calcula \\(LM = T\\cdot R^2\\xrightarrow{d}\\chi^2_q\\) bajo \\(H_0\\): no hay ARCH (los \\(\\hat\\varepsilon_t^2\\) son ruido blanco). Es el test LM de la Clase 3 de Econometría 2 en su forma \\(nR^2\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Volatilidad condicional: ARCH y GARCH"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-13.html",
+    "href": "econometria-3/clase-13.html",
+    "title": "Clase 13 · Espacio de estados y filtro de Kalman",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Espacio de estados y filtro de Kalman"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-13.html#el-modelo-de-nivel-local",
+    "href": "econometria-3/clase-13.html#el-modelo-de-nivel-local",
+    "title": "Clase 13 · Espacio de estados y filtro de Kalman",
+    "section": "2.1 El modelo de nivel local",
+    "text": "2.1 El modelo de nivel local\nEl ejemplo más simple y más instructivo es un nivel que vaga como caminata aleatoria, observado con ruido: \\[\ny_t = \\mu_t + \\varepsilon_t,\\quad\\varepsilon_t\\sim N(0,\\sigma_\\varepsilon^2);\\qquad\\mu_{t + 1} = \\mu_t + \\eta_t,\\quad\\eta_t\\sim N(0,\\sigma_\\eta^2).\n\\tag{1}\\] Aquí \\(Z = T = R = 1\\), \\(H = \\sigma_\\varepsilon^2\\), \\(Q = \\sigma_\\eta^2\\). El cociente \\(q = \\sigma_\\eta^2/\\sigma_\\varepsilon^2\\) es la razón señal–ruido: cuánto se mueve el nivel verdadero respecto del ruido de medición.\n\nProposición 1 (El nivel local es un ARIMA(0,1,1)) En el modelo Ecuación 1, la serie \\(y_t\\) es \\(I(1)\\) y su primera diferencia es un MA(1) con \\(\\theta\\in(-1,0]\\) que satisface \\[\n\\frac\\theta{1 + \\theta^2} = -\\frac{\\sigma_\\varepsilon^2}{2\\sigma_\\varepsilon^2 + \\sigma_\\eta^2},\\qquad\\theta = \\frac{-(q + 2) + \\sqrt{q^2 + 4q}}2.\n\\]\n\n\nDemostración. \\(\\Delta y_t = \\Delta\\mu_t + \\Delta\\varepsilon_t = \\eta_{t-1} + \\varepsilon_t - \\varepsilon_{t-1}\\). Es una suma de procesos MA estacionarios, así que es estacionario con \\(\\gamma(0) = \\sigma_\\eta^2 + 2\\sigma_\\varepsilon^2\\), \\(\\gamma(1) = -\\sigma_\\varepsilon^2\\) (el único término común entre \\(\\Delta y_t\\) y \\(\\Delta y_{t-1}\\) es \\(\\varepsilon_{t-1}\\), con signos opuestos), y \\(\\gamma(h) = 0\\) para \\(h\\ge2\\). Un proceso estacionario con autocovarianzas que se anulan después del rezago 1 es un MA(1) (Clase 2), con \\(\\rho(1) = \\gamma(1)/\\gamma(0) = -\\sigma_\\varepsilon^2/(\\sigma_\\eta^2 + 2\\sigma_\\varepsilon^2) = \\theta/(1 + \\theta^2)\\). Dividiendo numerador y denominador por \\(\\sigma_\\varepsilon^2\\): \\(\\theta/(1 + \\theta^2) = -1/(q + 2)\\), es decir \\((q + 2)\\theta = -(1 + \\theta^2)\\), o bien \\(\\theta^2 + (q + 2)\\theta + 1 = 0\\). Las dos raíces de esta cuadrática son recíprocas entre sí (su producto es \\(1\\)); eligiendo la invertible (\\(|\\theta|&lt;1\\)) se obtiene \\(\\theta = [-(q + 2) + \\sqrt{(q + 2)^2 - 4}]/2 = [-(q + 2) + \\sqrt{q^2 + 4q}]/2\\).\n\nCon \\(q = 1\\) (\\(\\sigma_\\eta^2 = \\sigma_\\varepsilon^2\\)): \\(\\theta = (-3 + \\sqrt5)/2 = -0{,}382\\) y \\(\\rho(1) = -1/3\\). Cuando \\(q\\to0\\) (el nivel casi no se mueve), \\(\\theta\\to-1\\) (sobrediferenciación: \\(\\Delta y_t\\) es casi un MA(1) con raíz unitaria, Clase 6); cuando \\(q\\to\\infty\\) (el ruido de medición es despreciable), \\(\\theta\\to0\\) y \\(y_t\\) es casi una caminata aleatoria pura. El resultado dice que un ARIMA(0,1,1) puede interpretarse como un nivel verdadero observado con error. Y el pronóstico óptimo a un paso de un ARIMA(0,1,1) es la media móvil exponencialmente ponderada (EWMA): \\(\\hat y_{t + 1|t} = (1 + \\theta)y_t - \\theta\\hat y_{t|t-1}\\) (Muth, 1960), con peso \\(-\\theta\\) en el pronóstico anterior (Ejercicio 13.1).",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Espacio de estados y filtro de Kalman"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-13.html#nivel-local-el-filtro-en-forma-cerrada",
+    "href": "econometria-3/clase-13.html#nivel-local-el-filtro-en-forma-cerrada",
+    "title": "Clase 13 · Espacio de estados y filtro de Kalman",
+    "section": "3.1 Nivel local: el filtro en forma cerrada",
+    "text": "3.1 Nivel local: el filtro en forma cerrada\nCon \\(Z = T = 1\\), \\(H = \\sigma_\\varepsilon^2\\), \\(Q = \\sigma_\\eta^2\\): \\(F_t = P_t + \\sigma_\\varepsilon^2\\), \\(K_t = P_t/(P_t + \\sigma_\\varepsilon^2)\\) y \\[\na_{t + 1} = a_t + K_t(y_t - a_t) = (1 - K_t)a_t + K_ty_t,\\qquad P_{t + 1} = \\frac{P_t\\sigma_\\varepsilon^2}{P_t + \\sigma_\\varepsilon^2} + \\sigma_\\eta^2.\n\\tag{2}\\] La estimación del nivel es un promedio ponderado del valor anterior y el dato nuevo, con peso \\(K_t\\) en el dato. Si \\(P_t\\) es grande (mucha incertidumbre previa), \\(K_t\\to1\\): se confía en el dato; si \\(P_t\\) es chica, \\(K_t\\to0\\): se confía en la estimación anterior. Con \\(P_t\\) en estado estacionario \\(P\\) (la ecuación de Riccati \\(P^2 - \\sigma_\\eta^2P - \\sigma_\\eta^2\\sigma_\\varepsilon^2 = 0\\)), la ganancia es constante \\(K = P/(P + \\sigma_\\varepsilon^2)\\) y el filtro es exactamente la EWMA, con \\(1 - K = -\\theta\\) (Ejercicio 13.1): el filtro de Kalman del nivel local es el pronóstico del ARIMA(0,1,1).\n\nEjemplo 1 (Dos pasos numéricos) Con \\(\\sigma_\\varepsilon^2 = \\sigma_\\eta^2 = 1\\), \\(a_1 = 0\\), \\(P_1 = 10\\) (muy incierto) y datos \\(y_1 = 1{,}2\\), \\(y_2 = 0{,}8\\). Paso 1: \\(F_1 = 11\\), \\(v_1 = 1{,}2\\), \\(K_1 = 10/11 = 0{,}909\\); \\(a_2 = 0 + 0{,}909\\cdot1{,}2 = 1{,}091\\), \\(P_2 = 10/11 + 1 = 1{,}909\\). Paso 2: \\(F_2 = 2{,}909\\), \\(v_2 = 0{,}8 - 1{,}091 = -0{,}291\\), \\(K_2 = 1{,}909/2{,}909 = 0{,}656\\); \\(a_3 = 1{,}091 - 0{,}656\\cdot0{,}291 = 0{,}900\\), \\(P_3 = 1{,}909/2{,}909 + 1 = 1{,}656\\). La incertidumbre cae de \\(10\\) a \\(1{,}66\\) (converge a \\(P = 1{,}618\\)) y la ganancia, de \\(0{,}91\\) a \\(0{,}66\\) (converge a \\(0{,}618\\)). El filtro “aprende” cuánto confiar en los datos.",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Espacio de estados y filtro de Kalman"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-13.html#arma",
+    "href": "econometria-3/clase-13.html#arma",
+    "title": "Clase 13 · Espacio de estados y filtro de Kalman",
+    "section": "6.1 ARMA",
+    "text": "6.1 ARMA\nCualquier ARMA se escribe en espacio de estados. Para el ARMA(1,1) \\(y_t = \\phi y_{t-1} + \\varepsilon_t + \\theta\\varepsilon_{t-1}\\), tomemos el estado \\(\\alpha_t = (y_t,\\ \\theta\\varepsilon_t)'\\) y \\[\ny_t = (1\\ \\ 0)\\,\\alpha_t,\\qquad\\alpha_{t + 1} = \\begin{pmatrix}\\phi&1\\\\0&0\\end{pmatrix}\\alpha_t + \\begin{pmatrix}1\\\\\\theta\\end{pmatrix}\\varepsilon_{t + 1},\n\\] con \\(H = 0\\) (sin ruido de medición) y \\(Q = \\sigma^2\\). Verificación: la primera fila da \\(y_{t + 1} = \\phi y_t + \\theta\\varepsilon_t + \\varepsilon_{t + 1}\\) ✓ y la segunda, \\(\\alpha_{2,t + 1} = \\theta\\varepsilon_{t + 1}\\) ✓. Esto permite evaluar la verosimilitud exacta de un ARMA con el filtro de Kalman en \\(O(T)\\) (el cálculo que la Clase 4 llamó “por innovaciones”), y manejar ARMA con datos faltantes.",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Espacio de estados y filtro de Kalman"
+    ]
+  },
+  {
+    "objectID": "econometria-3/clase-13.html#tendencia-local-lineal-y-el-filtro-de-hodrickprescott",
+    "href": "econometria-3/clase-13.html#tendencia-local-lineal-y-el-filtro-de-hodrickprescott",
+    "title": "Clase 13 · Espacio de estados y filtro de Kalman",
+    "section": "6.2 Tendencia local lineal y el filtro de Hodrick–Prescott",
+    "text": "6.2 Tendencia local lineal y el filtro de Hodrick–Prescott\nUna tendencia con pendiente que también cambia: \\(y_t = \\mu_t + \\varepsilon_t\\), \\(\\mu_{t + 1} = \\mu_t + \\beta_t + \\eta_t\\), \\(\\beta_{t + 1} = \\beta_t + \\zeta_t\\). Si \\(\\sigma_\\eta^2 = 0\\), la tendencia es una caminata aleatoria integrada (suave: la segunda diferencia de \\(\\mu_t\\) es un ruido blanco).\nEl filtro de Hodrick–Prescott (HP) es el más usado para separar tendencia y ciclo en macroeconomía: dada la serie \\(y_t\\), la tendencia \\(\\tau_t\\) minimiza \\(\\sum_t(y_t - \\tau_t)^2 + \\lambda\\sum_t(\\Delta^2\\tau_t)^2\\), con \\(\\lambda\\) el parámetro de suavidad (\\(1600\\) para datos trimestrales). Aparece una conexión sorprendente.\n\nProposición 2 (HP es el suavizador de Kalman de una tendencia integrada) Sea el modelo \\(y_t = \\tau_t + \\varepsilon_t\\) con \\(\\Delta^2\\tau_{t + 1} = \\zeta_t\\), \\(\\varepsilon_t\\sim N(0,\\sigma_\\varepsilon^2)\\) y \\(\\zeta_t\\sim N(0,\\sigma_\\zeta^2)\\) (tendencia local lineal con \\(\\sigma_\\eta^2 = 0\\)). Entonces la tendencia suavizada \\(\\mathbb{E}[\\tau_t\\mid Y_T]\\) coincide con la tendencia HP con \\(\\lambda = \\sigma_\\varepsilon^2/\\sigma_\\zeta^2\\).\n\n\nDemostración. Con un a priori difuso sobre las condiciones iniciales, la densidad conjunta de \\((y_t,\\tau_t)\\) es proporcional a \\(\\exp\\big\\{-\\frac1{2\\sigma_\\varepsilon^2}\\sum_t(y_t - \\tau_t)^2 - \\frac1{2\\sigma_\\zeta^2}\\sum_t(\\Delta^2\\tau_t)^2\\big\\}\\) (los \\(\\varepsilon_t\\) y \\(\\zeta_t\\) son normales independientes). En un modelo gaussiano, la media condicional \\(\\mathbb{E}[\\tau\\mid Y_T]\\) coincide con la moda de la densidad posterior de \\(\\tau\\) dado \\(Y_T\\) (la normal es simétrica y unimodal), que es el minimizador de \\(\\frac1{2\\sigma_\\varepsilon^2}\\sum(y_t - \\tau_t)^2 + \\frac1{2\\sigma_\\zeta^2}\\sum(\\Delta^2\\tau_t)^2\\). Multiplicando por \\(2\\sigma_\\varepsilon^2\\): minimizar \\(\\sum(y_t - \\tau_t)^2 + (\\sigma_\\varepsilon^2/\\sigma_\\zeta^2)\\sum(\\Delta^2\\tau_t)^2\\), que es el problema de HP con \\(\\lambda = \\sigma_\\varepsilon^2/\\sigma_\\zeta^2\\).\n\nEsto da a HP una interpretación estadística: \\(\\lambda = 1600\\) equivale a suponer una razón \\(\\sigma_\\zeta^2/\\sigma_\\varepsilon^2 = 1/1600 = 0{,}000625\\) entre la varianza del cambio de la pendiente y la del ciclo (Ejercicio 13.4). También revela sus limitaciones: el HP es óptimo solo si la serie sigue exactamente ese modelo (que no es el caso de una serie con raíz unitaria + ciclo persistente), y puede generar ciclos espurios (Cogley y Nason, 1995; Hamilton, 2018). Los modelos de componentes no observados de Harvey estiman \\(\\sigma_\\varepsilon^2,\\sigma_\\zeta^2\\) y los parámetros del ciclo por máxima verosimilitud, en vez de fijar \\(\\lambda\\) a mano.",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Espacio de estados y filtro de Kalman"
+    ]
+  },
+  {
+    "objectID": "econometria-3/index.html#clases",
+    "href": "econometria-3/index.html#clases",
+    "title": "Econometría 3",
+    "section": "Clases",
+    "text": "Clases\n\n\n01Procesos estocásticos y estacionariedadEstacionariedad débil y estricta, autocovarianza, ergodicidad, la varianza de largo plazo y la autocorrelación muestral. ★ Densidad espectral.\n\n\n02Procesos lineales: MA, AR y ARMAOperador de rezago, Wold, causalidad e invertibilidad demostradas, ecuaciones de Yule–Walker, ACF y PACF. ★ Factorización espectral.\n\n\n03PronósticoMejor predictor lineal como proyección, Durbin–Levinson, innovaciones, pronóstico a h pasos y el test de Diebold–Mariano. ★ Wold por proyecciones.\n\n\n04Estimación e inferencia en modelos ARMAMCO en AR, Yule–Walker, verosimilitud gaussiana por innovaciones, AIC y BIC, Ljung–Box. ★ Información de Fisher del ARMA.\n\n\n05Asintótica con dependencia y errores HACDiferencias de martingala, TCL por Beveridge–Nelson, varianza de largo plazo y estimador de Newey–West. ★ El periodograma.\n\n\n06Raíces unitarias ICaminata aleatoria, TCL funcional, la distribución de Dickey–Fuller derivada y la regresión espuria. ★ La integral de Itô.\n\n\n07Raíces unitarias IIADF, Phillips–Perron, KPSS, DF-GLS, el problema del poder y los quiebres de Perron. ★ Potencia local.\n\n\n08CointegraciónTendencias comunes, superconsistencia, Engle–Granger, corrección de error, FM-OLS y DOLS. ★ Sesgo de segundo orden.\n\n\n09Vectores autorregresivos (VAR)Forma companion, MCO = MV, distribución asintótica, selección de rezagos y causalidad de Granger. ★ Autovalores de la matriz companion.\n\n\n10Impulso-respuesta e identificación estructuralIRF y FEVD, el conteo n(n−1)/2, Cholesky, Blanchard–Quah, signos, instrumentos externos y proyecciones locales. ★ VAR y LP.\n\n\n11VECM y el método de JohansenRango reducido, representación de Granger, tests de traza y valor propio máximo y su conexión con Dickey–Fuller. ★ Conteo de raíces unitarias.\n\n\n12Volatilidad condicional: ARCH y GARCHAgrupamiento de volatilidad, curtosis, QMLE con varianza sándwich, ARCH-LM, asimetrías y valor en riesgo. ★ Condición de Nelson.\n\n\n13Espacio de estados y filtro de KalmanNivel local, filtro de Kalman derivado, verosimilitud, suavizador, ARMA en espacio de estados y el filtro de Hodrick–Prescott. ★ Convergencia del filtro.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 3"
+    ]
+  },
+  {
+    "objectID": "econometria-3/index.html#notación",
+    "href": "econometria-3/index.html#notación",
+    "title": "Econometría 3",
+    "section": "Notación",
+    "text": "Notación\nLa serie es \\(\\{y_t\\}\\) y \\(\\varepsilon_t\\) es un ruido blanco, \\(\\varepsilon_t\\sim WN(0,\\sigma^2)\\); \\(L\\) es el operador de rezago (\\(Ly_t = y_{t-1}\\)) y \\(\\Delta = 1 - L\\). La autocovarianza es \\(\\gamma(h) = \\operatorname{Cov}(y_t,y_{t+h})\\) y la autocorrelación \\(\\rho(h) = \\gamma(h)/\\gamma(0)\\). La varianza de largo plazo es \\(\\sigma^2_{LR} = \\sum_h\\gamma(h)\\). Un proceso es \\(I(d)\\) si hay que diferenciarlo \\(d\\) veces para hacerlo estacionario. \\(W(r)\\) es un movimiento browniano estándar y \\(\\Rightarrow\\) denota convergencia débil de procesos. En los modelos multivariados, \\(y_t\\) es un vector de \\(n\\) series, \\(\\Sigma_u\\) la covarianza de los errores de forma reducida y \\(A_j\\), \\(\\Psi_j\\) las matrices de coeficientes y de la representación MA(\\(\\infty\\)).",
+    "crumbs": [
+      "Inicio",
+      "Econometría 3"
+    ]
+  },
+  {
+    "objectID": "econometria-3/index.html#bibliografía",
+    "href": "econometria-3/index.html#bibliografía",
+    "title": "Econometría 3",
+    "section": "Bibliografía",
+    "text": "Bibliografía\n\nHamilton, J. (1994). Time Series Analysis. Princeton University Press. (La referencia clásica; casi todo el curso está ahí.)\nBrockwell, P. y Davis, R. (1991). Time Series: Theory and Methods, 2.ª ed. Springer. (Proyecciones, Wold, Durbin–Levinson, ARMA con rigor.)\nHayashi, F. (2000). Econometrics, cap. 6. Princeton University Press. (Asintótica con dependencia y HAC.)\nLütkepohl, H. (2005). New Introduction to Multiple Time Series Analysis. Springer. (VAR, IRF, identificación.)\nJohansen, S. (1995). Likelihood-Based Inference in Cointegrated Vector Autoregressive Models. Oxford University Press. (Cointegración y VECM.)\nFrancq, C. y Zakoïan, J.-M. (2019). GARCH Models, 2.ª ed. Wiley. (Volatilidad condicional.)\nDurbin, J. y Koopman, S. J. (2012). Time Series Analysis by State Space Methods, 2.ª ed. Oxford University Press. (Espacio de estados y Kalman.)\nHansen, B. (2022). Econometrics, caps. 14 a 17. Princeton University Press. (Postgrado; marco moderno.)",
+    "crumbs": [
+      "Inicio",
+      "Econometría 3"
     ]
   }
 ]

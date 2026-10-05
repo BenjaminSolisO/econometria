@@ -1,0 +1,241 @@
+---
+title: "Clase 13 · Espacio de estados y filtro de Kalman"
+subtitle: "Estados no observados, filtrado, verosimilitud y descomposición tendencia–ciclo"
+description: "Modelos de espacio de estados: el nivel local y su equivalencia con un ARIMA(0,1,1), derivación del filtro de Kalman por normal condicional, verosimilitud por errores de predicción, suavizador, datos faltantes, ARMA en espacio de estados y la relación con el filtro de Hodrick–Prescott."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-13.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando lo que importa no se observa
+
+Muchas variables que interesan a la economía **no se observan**: la tendencia del producto (el PIB potencial), la inflación subyacente, el nivel "verdadero" de la tasa de interés neutral, la volatilidad de un activo (Clase 12), el estado de la economía en un modelo DSGE. Lo que se observa son **señales ruidosas** de ellas. Los **modelos de espacio de estados** son el lenguaje común para estos problemas: dos ecuaciones, una que describe cómo **evoluciona** el estado oculto y otra que dice cómo se **mide**.[^kalman] Y el **filtro de Kalman** es el algoritmo que, a cada fecha, **estima el estado a partir de lo observado**, de manera recursiva y óptima.
+
+[^kalman]: Rudolf Kálmán publicó el filtro en 1960, en el contexto de ingeniería de control. Una de sus primeras aplicaciones importantes fue la navegación del programa Apolo, donde había que estimar la posición de una nave a partir de mediciones ruidosas de radar y sensores. Que el mismo algoritmo se use hoy para estimar la tendencia del PIB, o el precio de un derivado, es una muestra de lo general que resulta la idea de "estimar un estado oculto a partir de señales ruidosas".
+
+# El modelo de espacio de estados
+
+::: {#def-ss}
+## Modelo lineal gaussiano de espacio de estados
+Sea $y_t$ ($p\times1$) la serie observada y $\alpha_t$ ($m\times1$) el **estado** no observado:
+$$
+\begin{aligned}
+y_t &= Z\alpha_t + d + \varepsilon_t,&\varepsilon_t&\sim N(0,H)&&\text{(ecuación de medición)},\\
+\alpha_{t + 1} &= T\alpha_t + c + R\eta_t,&\eta_t&\sim N(0,Q)&&\text{(ecuación de transición)},
+\end{aligned}
+$$
+con $\varepsilon_t,\eta_t$ independientes entre sí y en el tiempo, y estado inicial $\alpha_1\sim N(a_1,P_1)$. Las matrices $Z,T,R,H,Q,d,c$ pueden depender de $t$ (y de un vector de parámetros $\psi$ a estimar).
+:::
+
+La **ecuación de medición** dice que lo observado es una función lineal del estado más ruido. La **de transición** es un VAR(1) para el estado (cualquier proceso con más rezagos se reduce a este caso apilando, como la forma companion de la Clase 9). Con esta estructura entran como casos particulares:
+
+- **Nivel local y tendencia local lineal** (abajo).
+- **ARMA** (se escribe en espacio de estados, §).
+- **Componentes no observados:** tendencia + ciclo + estacionalidad + ruido.
+- **Regresión con coeficientes variables en el tiempo:** $y_t = x_t'\beta_t + \varepsilon_t$ con $\beta_{t + 1} = \beta_t + \eta_t$ ($Z_t = x_t'$, estado $=\beta_t$).
+- **Modelos de factores dinámicos** (pocos factores latentes que generan muchas series), y la solución linealizada de un modelo **DSGE**.
+
+## El modelo de nivel local
+
+El ejemplo más simple y más instructivo es un nivel que **vaga** como caminata aleatoria, observado con ruido:
+$$
+y_t = \mu_t + \varepsilon_t,\quad\varepsilon_t\sim N(0,\sigma_\varepsilon^2);\qquad\mu_{t + 1} = \mu_t + \eta_t,\quad\eta_t\sim N(0,\sigma_\eta^2).
+$$ {#eq-level}
+Aquí $Z = T = R = 1$, $H = \sigma_\varepsilon^2$, $Q = \sigma_\eta^2$. El cociente $q = \sigma_\eta^2/\sigma_\varepsilon^2$ es la **razón señal–ruido**: cuánto se mueve el nivel verdadero respecto del ruido de medición.
+
+::: {#prp-level-arima}
+## El nivel local es un ARIMA(0,1,1)
+En el modelo @eq-level, la serie $y_t$ es $I(1)$ y su primera diferencia es un **MA(1)** con $\theta\in(-1,0]$ que satisface
+$$
+\frac\theta{1 + \theta^2} = -\frac{\sigma_\varepsilon^2}{2\sigma_\varepsilon^2 + \sigma_\eta^2},\qquad\theta = \frac{-(q + 2) + \sqrt{q^2 + 4q}}2.
+$$
+:::
+
+::: {.proof}
+$\Delta y_t = \Delta\mu_t + \Delta\varepsilon_t = \eta_{t-1} + \varepsilon_t - \varepsilon_{t-1}$. Es una suma de procesos MA estacionarios, así que es estacionario con $\gamma(0) = \sigma_\eta^2 + 2\sigma_\varepsilon^2$, $\gamma(1) = -\sigma_\varepsilon^2$ (el único término común entre $\Delta y_t$ y $\Delta y_{t-1}$ es $\varepsilon_{t-1}$, con signos opuestos), y $\gamma(h) = 0$ para $h\ge2$. Un proceso estacionario con autocovarianzas que se anulan después del rezago 1 es un MA(1) (Clase 2), con $\rho(1) = \gamma(1)/\gamma(0) = -\sigma_\varepsilon^2/(\sigma_\eta^2 + 2\sigma_\varepsilon^2) = \theta/(1 + \theta^2)$. Dividiendo numerador y denominador por $\sigma_\varepsilon^2$: $\theta/(1 + \theta^2) = -1/(q + 2)$, es decir $(q + 2)\theta = -(1 + \theta^2)$, o bien $\theta^2 + (q + 2)\theta + 1 = 0$. Las dos raíces de esta cuadrática son recíprocas entre sí (su producto es $1$); eligiendo la invertible ($|\theta|<1$) se obtiene $\theta = [-(q + 2) + \sqrt{(q + 2)^2 - 4}]/2 = [-(q + 2) + \sqrt{q^2 + 4q}]/2$.
+:::
+
+Con $q = 1$ ($\sigma_\eta^2 = \sigma_\varepsilon^2$): $\theta = (-3 + \sqrt5)/2 = -0{,}382$ y $\rho(1) = -1/3$. Cuando $q\to0$ (el nivel casi no se mueve), $\theta\to-1$ (**sobrediferenciación**: $\Delta y_t$ es casi un MA(1) con raíz unitaria, Clase 6); cuando $q\to\infty$ (el ruido de medición es despreciable), $\theta\to0$ y $y_t$ es casi una caminata aleatoria pura. El resultado dice que **un ARIMA(0,1,1) puede interpretarse como un nivel verdadero observado con error**. Y el pronóstico óptimo a un paso de un ARIMA(0,1,1) es la **media móvil exponencialmente ponderada** (EWMA): $\hat y_{t + 1|t} = (1 + \theta)y_t - \theta\hat y_{t|t-1}$ (Muth, 1960), con peso $-\theta$ en el pronóstico anterior (Ejercicio 13.1).
+
+# El filtro de Kalman
+
+**Objetivo:** dados $y_1,\dots,y_t$, calcular el mejor estimador del estado. Definimos, para el modelo @def-ss,
+$$
+a_t = \mathbb{E}[\alpha_t\mid Y_{t-1}],\quad P_t = \operatorname{Var}(\alpha_t\mid Y_{t-1}),\qquad a_{t|t} = \mathbb{E}[\alpha_t\mid Y_t],\quad P_{t|t} = \operatorname{Var}(\alpha_t\mid Y_t),
+$$
+con $Y_t = (y_1,\dots,y_t)$. Los $a_t,P_t$ son el estado **predicho** (usando información hasta $t - 1$) y los $a_{t|t},P_{t|t}$ el estado **filtrado** (usando también $y_t$). Como todo es **normal**, la distribución condicional queda determinada por media y varianza, y la recursión se obtiene del siguiente hecho.
+
+::: {#lem-normal-cond}
+## Condicionamiento en una normal conjunta
+Si $(x',w')'$ es normal con $\mathbb{E}x = \mu_x$, $\mathbb{E}w = \mu_w$ y matrices de covarianza $\Sigma_{xx},\Sigma_{xw},\Sigma_{ww}$ ($\Sigma_{ww}$ invertible), entonces $x\mid w\sim N(\mu_{x|w},\Sigma_{x|w})$ con
+$$
+\mu_{x|w} = \mu_x + \Sigma_{xw}\Sigma_{ww}^{-1}(w - \mu_w),\qquad\Sigma_{x|w} = \Sigma_{xx} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{wx}.
+$$
+:::
+
+::: {.proof}
+Sea $e = x - \mu_x - \Sigma_{xw}\Sigma_{ww}^{-1}(w - \mu_w)$. Entonces $\operatorname{Cov}(e,w) = \Sigma_{xw} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{ww} = 0$. Como $(e,w)$ son conjuntamente normales y no correlacionados, son **independientes** (Clase 5 de Econometría 1). Entonces $x = \mu_{x|w} + e$ con $e$ independiente de $w$ y $e\sim N(0,\Sigma_{x|w})$, donde $\operatorname{Var}(e) = \Sigma_{xx} - \Sigma_{xw}\Sigma_{ww}^{-1}\Sigma_{wx}$. Condicionando en $w$ queda la distribución enunciada.
+:::
+
+::: {#thm-kalman}
+## Filtro de Kalman
+Para el modelo @def-ss, con $a_1,P_1$ dados, se definen para $t = 1,\dots,T$ el **error de predicción** $v_t = y_t - Za_t - d$ con varianza $F_t = ZP_tZ' + H$, y las recursiones
+$$
+\begin{aligned}
+\textbf{Actualización:}\quad&a_{t|t} = a_t + P_tZ'F_t^{-1}v_t,\qquad P_{t|t} = P_t - P_tZ'F_t^{-1}ZP_t,\\
+\textbf{Predicción:}\quad&a_{t + 1} = Ta_{t|t} + c,\qquad P_{t + 1} = TP_{t|t}T' + RQR'.
+\end{aligned}
+$$
+Equivalentemente, $a_{t + 1} = Ta_t + c + K_tv_t$ con la **ganancia de Kalman** $K_t = TP_tZ'F_t^{-1}$. Además, los errores de predicción $v_t$ son **independientes** entre sí, con $v_t\sim N(0,F_t)$.
+:::
+
+::: {.callout-note title="Borrador"}
+La recursión tiene dos pasos. **Predicción:** conozco la distribución del estado hoy dado $Y_{t-1}$, $N(a_t,P_t)$; antes de ver $y_t$ ya puedo predecir lo que veré: $y_t = Z\alpha_t + d + \varepsilon_t$ es normal con media $Za_t + d$ y varianza $ZP_tZ' + H$. **Actualización:** observo $y_t$; el estado y la observación son conjuntamente normales (dado $Y_{t-1}$), con covarianza $\operatorname{Cov}(\alpha_t,y_t) = P_tZ'$. El lema de condicionamiento me da $\alpha_t\mid y_t,Y_{t-1}$, que es la distribución filtrada. Después, la ecuación de transición pasa de $\alpha_t$ a $\alpha_{t + 1}$.
+:::
+
+::: {.proof}
+Supongamos $\alpha_t\mid Y_{t-1}\sim N(a_t,P_t)$ (cierto para $t = 1$ por supuesto). Dado $Y_{t-1}$, el vector $(\alpha_t,y_t)$ es normal con medias $(a_t,Za_t + d)$ y covarianzas $\operatorname{Var}(\alpha_t) = P_t$, $\operatorname{Cov}(\alpha_t,y_t) = P_tZ'$ (porque $\varepsilon_t$ es independiente de $\alpha_t$) y $\operatorname{Var}(y_t) = ZP_tZ' + H = F_t$. Condicionar en $Y_t = (Y_{t-1},y_t)$ equivale a condicionar en $y_t$ dentro de la distribución ya condicionada en $Y_{t-1}$, y por el @lem-normal-cond,
+$$
+\mathbb{E}[\alpha_t\mid Y_t] = a_t + P_tZ'F_t^{-1}(y_t - Za_t - d),\qquad\operatorname{Var}(\alpha_t\mid Y_t) = P_t - P_tZ'F_t^{-1}ZP_t.
+$$
+Para la predicción, $\alpha_{t + 1} = T\alpha_t + c + R\eta_t$ con $\eta_t$ independiente de $Y_t$ y de $\alpha_t$: $\mathbb{E}[\alpha_{t + 1}\mid Y_t] = Ta_{t|t} + c$ y $\operatorname{Var}(\alpha_{t + 1}\mid Y_t) = TP_{t|t}T' + RQR'$. Ya tenemos $\alpha_{t + 1}\mid Y_t\sim N(a_{t + 1},P_{t + 1})$: la inducción continúa. Finalmente, $v_t = y_t - \mathbb{E}[y_t\mid Y_{t-1}]$ es el error de predicción: es independiente de $Y_{t-1}$ (en el caso normal, no correlacionado con $Y_{t-1}$ implica independiente) y por lo tanto de $v_1,\dots,v_{t-1}$, que son función de $Y_{t-1}$.
+:::
+
+Algunas observaciones. (i) La **actualización** tiene una lectura natural: se corrige la predicción $a_t$ con el error de predicción $v_t$, **ponderado** por $P_tZ'F_t^{-1}$: cuanto más confiable la medición (menor $H$, menor $F_t$), mayor la corrección. (ii) **Sin normalidad**, el filtro entrega el mejor predictor **lineal** (proyección en $L^2$, Clase 3) del estado, con el mismo ECM $P_t$ (usa solo medias y varianzas). (iii) La varianza $P_t$ **no depende de los datos**, solo de las matrices del sistema: puede calcularse de antemano.
+
+## Nivel local: el filtro en forma cerrada
+
+Con $Z = T = 1$, $H = \sigma_\varepsilon^2$, $Q = \sigma_\eta^2$: $F_t = P_t + \sigma_\varepsilon^2$, $K_t = P_t/(P_t + \sigma_\varepsilon^2)$ y
+$$
+a_{t + 1} = a_t + K_t(y_t - a_t) = (1 - K_t)a_t + K_ty_t,\qquad P_{t + 1} = \frac{P_t\sigma_\varepsilon^2}{P_t + \sigma_\varepsilon^2} + \sigma_\eta^2.
+$$ {#eq-kalman-level}
+La estimación del nivel es un **promedio ponderado** del valor anterior y el dato nuevo, con peso $K_t$ en el dato. Si $P_t$ es grande (mucha incertidumbre previa), $K_t\to1$: se confía en el dato; si $P_t$ es chica, $K_t\to0$: se confía en la estimación anterior. Con $P_t$ en estado estacionario $P$ (la ecuación de Riccati $P^2 - \sigma_\eta^2P - \sigma_\eta^2\sigma_\varepsilon^2 = 0$), la ganancia es constante $K = P/(P + \sigma_\varepsilon^2)$ y el filtro es **exactamente la EWMA**, con $1 - K = -\theta$ (Ejercicio 13.1): el filtro de Kalman del nivel local es el pronóstico del ARIMA(0,1,1).
+
+::: {#exm-kalman-num}
+## Dos pasos numéricos
+Con $\sigma_\varepsilon^2 = \sigma_\eta^2 = 1$, $a_1 = 0$, $P_1 = 10$ (muy incierto) y datos $y_1 = 1{,}2$, $y_2 = 0{,}8$. **Paso 1:** $F_1 = 11$, $v_1 = 1{,}2$, $K_1 = 10/11 = 0{,}909$; $a_2 = 0 + 0{,}909\cdot1{,}2 = 1{,}091$, $P_2 = 10/11 + 1 = 1{,}909$. **Paso 2:** $F_2 = 2{,}909$, $v_2 = 0{,}8 - 1{,}091 = -0{,}291$, $K_2 = 1{,}909/2{,}909 = 0{,}656$; $a_3 = 1{,}091 - 0{,}656\cdot0{,}291 = 0{,}900$, $P_3 = 1{,}909/2{,}909 + 1 = 1{,}656$. La incertidumbre cae de $10$ a $1{,}66$ (converge a $P = 1{,}618$) y la ganancia, de $0{,}91$ a $0{,}66$ (converge a $0{,}618$). El filtro "aprende" cuánto confiar en los datos.
+:::
+
+# Verosimilitud y estimación de parámetros
+
+Los parámetros del sistema ($\sigma_\varepsilon^2,\sigma_\eta^2$, y los de $T,Z,\dots$) se estiman por **máxima verosimilitud**. La clave es la **descomposición por errores de predicción** de la Clase 4 (proposición de verosimilitud por innovaciones): la densidad conjunta de $(y_1,\dots,y_T)$ se factoriza como producto de las densidades condicionales $y_t\mid Y_{t-1}\sim N(Za_t + d,F_t)$, y por lo tanto
+$$
+\ell(\psi) = -\frac{Tp}2\log2\pi - \frac12\sum_{t = 1}^T\Big[\log|F_t| + v_t'F_t^{-1}v_t\Big],
+$$
+donde $v_t,F_t$ se calculan con el filtro. Es la misma fórmula de la Clase 4 con $F_t = v_{t-1}$ (la varianza del error de predicción): **el filtro de Kalman es el algoritmo de $O(T)$** que esa clase prometía. Se maximiza numéricamente sobre $\psi$ con el filtro como subrutina; las propiedades asintóticas son las de la MV (Clase 2 de Econometría 2), salvo en la **frontera**: si el verdadero $\sigma_\eta^2 = 0$ (nivel determinístico), el estimador se "pega" en cero con probabilidad positiva y la distribución del LR no es $\chi^2$ (Clase 3 de Econometría 2, ejercicio 3.7). Para la inicialización con **estados no estacionarios** (como el nivel, que no tiene distribución estacionaria), se usa un a priori **difuso** ($P_1 = \kappa I$ con $\kappa\to\infty$), tratado exactamente por el filtro difuso de Koopman.
+
+Un beneficio práctico enorme: los **datos faltantes** se manejan con naturalidad. Si $y_t$ no se observa, se **omite el paso de actualización** y se hace solo la predicción ($a_{t + 1} = Ta_t + c$, $P_{t + 1} = TP_tT' + RQR'$): la incertidumbre sobre el estado **crece** durante el hueco y vuelve a bajar cuando reaparecen datos. En el ejemplo anterior, si $y_2$ faltara: $a_3 = a_2 = 1{,}091$ y $P_3 = P_2 + \sigma_\eta^2 = 2{,}909$ (en vez de $1{,}656$). Esto permite trabajar con series de frecuencias mixtas (mensuales y trimestrales), con observaciones irregulares y con *nowcasting*.
+
+# El suavizador
+
+El filtro usa solo **información pasada**: $a_{t|t} = \mathbb{E}[\alpha_t\mid Y_t]$. Para estimar el estado histórico (la tendencia de los últimos 20 años) se quiere usar **toda** la muestra: $\hat\alpha_t = \mathbb{E}[\alpha_t\mid Y_T]$. El **suavizador de Kalman** lo obtiene con una recursión hacia atrás (Rauch–Tung–Striebel; Durbin–Koopman): con $L_t = T - K_tZ$ y $r_T = 0$,
+$$
+r_{t-1} = Z'F_t^{-1}v_t + L_t'r_t,\qquad\hat\alpha_t = a_t + P_tr_{t-1}\qquad(t = T,\dots,1),
+$$
+más una recursión análoga para la varianza suavizada (se toman prestadas). La intuición: $r_{t-1}$ acumula la información **de los errores de predicción futuros** que es relevante para $\alpha_t$. El estimador suavizado tiene **menor varianza** que el filtrado ($\operatorname{Var}(\alpha_t\mid Y_T)\le\operatorname{Var}(\alpha_t\mid Y_t)$, porque se condiciona en más información) y es **más suave** en el tiempo; pero no es utilizable en tiempo real, y se **revisa** cada vez que llega un dato nuevo (el problema de las revisiones del PIB potencial).
+
+# Otros modelos como espacio de estados
+
+## ARMA
+
+Cualquier ARMA se escribe en espacio de estados. Para el ARMA(1,1) $y_t = \phi y_{t-1} + \varepsilon_t + \theta\varepsilon_{t-1}$, tomemos el estado $\alpha_t = (y_t,\ \theta\varepsilon_t)'$ y
+$$
+y_t = (1\ \ 0)\,\alpha_t,\qquad\alpha_{t + 1} = \begin{pmatrix}\phi&1\\0&0\end{pmatrix}\alpha_t + \begin{pmatrix}1\\\theta\end{pmatrix}\varepsilon_{t + 1},
+$$
+con $H = 0$ (sin ruido de medición) y $Q = \sigma^2$. Verificación: la primera fila da $y_{t + 1} = \phi y_t + \theta\varepsilon_t + \varepsilon_{t + 1}$ ✓ y la segunda, $\alpha_{2,t + 1} = \theta\varepsilon_{t + 1}$ ✓. Esto permite evaluar la verosimilitud exacta de un ARMA con el filtro de Kalman en $O(T)$ (el cálculo que la Clase 4 llamó "por innovaciones"), y manejar ARMA con datos faltantes.
+
+## Tendencia local lineal y el filtro de Hodrick–Prescott
+
+Una tendencia con **pendiente** que también cambia: $y_t = \mu_t + \varepsilon_t$, $\mu_{t + 1} = \mu_t + \beta_t + \eta_t$, $\beta_{t + 1} = \beta_t + \zeta_t$. Si $\sigma_\eta^2 = 0$, la tendencia es una **caminata aleatoria integrada** (suave: la segunda diferencia de $\mu_t$ es un ruido blanco).
+
+El **filtro de Hodrick–Prescott** (HP) es el más usado para separar tendencia y ciclo en macroeconomía: dada la serie $y_t$, la tendencia $\tau_t$ minimiza $\sum_t(y_t - \tau_t)^2 + \lambda\sum_t(\Delta^2\tau_t)^2$, con $\lambda$ el parámetro de suavidad ($1600$ para datos trimestrales). Aparece una conexión sorprendente.
+
+::: {#prp-hp}
+## HP es el suavizador de Kalman de una tendencia integrada
+Sea el modelo $y_t = \tau_t + \varepsilon_t$ con $\Delta^2\tau_{t + 1} = \zeta_t$, $\varepsilon_t\sim N(0,\sigma_\varepsilon^2)$ y $\zeta_t\sim N(0,\sigma_\zeta^2)$ (tendencia local lineal con $\sigma_\eta^2 = 0$). Entonces la **tendencia suavizada** $\mathbb{E}[\tau_t\mid Y_T]$ coincide con la tendencia HP con $\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2$.
+:::
+
+::: {.proof}
+Con un a priori difuso sobre las condiciones iniciales, la **densidad conjunta** de $(y_t,\tau_t)$ es proporcional a $\exp\big\{-\frac1{2\sigma_\varepsilon^2}\sum_t(y_t - \tau_t)^2 - \frac1{2\sigma_\zeta^2}\sum_t(\Delta^2\tau_t)^2\big\}$ (los $\varepsilon_t$ y $\zeta_t$ son normales independientes). En un modelo gaussiano, la **media condicional** $\mathbb{E}[\tau\mid Y_T]$ coincide con la **moda** de la densidad posterior de $\tau$ dado $Y_T$ (la normal es simétrica y unimodal), que es el minimizador de $\frac1{2\sigma_\varepsilon^2}\sum(y_t - \tau_t)^2 + \frac1{2\sigma_\zeta^2}\sum(\Delta^2\tau_t)^2$. Multiplicando por $2\sigma_\varepsilon^2$: minimizar $\sum(y_t - \tau_t)^2 + (\sigma_\varepsilon^2/\sigma_\zeta^2)\sum(\Delta^2\tau_t)^2$, que es el problema de HP con $\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2$.
+:::
+
+Esto da a HP una **interpretación estadística**: $\lambda = 1600$ equivale a suponer una razón $\sigma_\zeta^2/\sigma_\varepsilon^2 = 1/1600 = 0{,}000625$ entre la varianza del cambio de la pendiente y la del ciclo (Ejercicio 13.4). También revela sus **limitaciones**: el HP es óptimo solo si la serie sigue exactamente ese modelo (que no es el caso de una serie con raíz unitaria + ciclo persistente), y puede generar **ciclos espurios** (Cogley y Nason, 1995; Hamilton, 2018). Los modelos de **componentes no observados** de Harvey estiman $\sigma_\varepsilon^2,\sigma_\zeta^2$ y los parámetros del ciclo **por máxima verosimilitud**, en vez de fijar $\lambda$ a mano.
+
+# ★ Postgrado: convergencia del filtro al estado estacionario
+
+::: {.callout-important title="★ Postgrado"}
+En el nivel local, la varianza $P_t$ del estado converge **geométricamente** a un punto fijo $P$ independiente de $P_1$. Es una versión simple del resultado general (para sistemas **estabilizables y detectables**, la ecuación de Riccati tiene una solución estable única).
+:::
+
+::: {#prp-riccati}
+## Convergencia de $P_t$ en el nivel local
+La recursión $P_{t + 1} = f(P_t)$ con $f(P) = \dfrac{P\sigma_\varepsilon^2}{P + \sigma_\varepsilon^2} + \sigma_\eta^2$ tiene un único punto fijo positivo,
+$$
+P = \frac{\sigma_\eta^2 + \sqrt{\sigma_\eta^4 + 4\sigma_\eta^2\sigma_\varepsilon^2}}2,
+$$
+y para todo $P_1\ge0$, $P_t\to P$ a velocidad **geométrica** de razón $f'(P) = \sigma_\varepsilon^4/(P + \sigma_\varepsilon^2)^2<1$.
+:::
+
+::: {.proof}
+La ecuación $f(P) = P$ es $P\sigma_\varepsilon^2 + \sigma_\eta^2(P + \sigma_\varepsilon^2) = P(P + \sigma_\varepsilon^2)$, es decir $P^2 - \sigma_\eta^2P - \sigma_\eta^2\sigma_\varepsilon^2 = 0$, con una única raíz positiva (el producto de las raíces es negativo): la expresión del enunciado. La derivada es $f'(P) = \sigma_\varepsilon^4/(P + \sigma_\varepsilon^2)^2$, que para todo $P\ge0$ está en $(0,1]$ y es **estrictamente menor que 1** para $P>0$ (porque $P + \sigma_\varepsilon^2>\sigma_\varepsilon^2$). Como $\sigma_\eta^2>0$, $P_t>0$ para $t\ge2$, y en $[\sigma_\eta^2,\infty)$ (donde viven $P_t$, $t\ge2$) $|f'|\le\sigma_\varepsilon^4/(\sigma_\eta^2 + \sigma_\varepsilon^2)^2<1$: $f$ es una **contracción** de constante $\rho<1$. Por el teorema del punto fijo de Banach, $|P_t - P|\le\rho^{t-2}|P_2 - P|\to0$ geométricamente.
+:::
+
+Para $\sigma_\varepsilon^2 = \sigma_\eta^2 = 1$: $P = (1 + \sqrt5)/2 = 1{,}618$, $K = 0{,}618$, y $f'(P) = 1/(2{,}618)^2 = 0{,}146$: el error de $P_t$ se reduce $85$ % cada período (Ejercicio 13.7). Por eso en la práctica el filtro alcanza el estado estacionario en pocas observaciones y se puede usar la **ganancia constante** (EWMA). Y por eso, también, el filtro "olvida" la inicialización $a_1,P_1$ rápidamente.
+
+# Resumen
+
+- **Espacio de estados:** $y_t = Z\alpha_t + d + \varepsilon_t$ (medición), $\alpha_{t + 1} = T\alpha_t + c + R\eta_t$ (transición). Incluye ARMA, componentes no observados, regresiones con parámetros variables y factores (@def-ss).
+- **Nivel local:** equivale a un **ARIMA(0,1,1)** con $\theta = [-(q + 2) + \sqrt{q^2 + 4q}]/2$ (@prp-level-arima); su pronóstico es la EWMA.
+- **Filtro de Kalman** (@thm-kalman): predicción más actualización con la ganancia $K_t = TP_tZ'F_t^{-1}$, derivado del condicionamiento en una normal conjunta (@lem-normal-cond). Sin normalidad es el mejor predictor **lineal**.
+- **Verosimilitud** por errores de predicción: $\ell = -\frac12\sum[\log|F_t| + v_t'F_t^{-1}v_t]$. Maneja **datos faltantes** (omitir la actualización).
+- **Suavizador:** usa toda la muestra; menor varianza que el filtro pero con revisiones.
+- **HP** es el suavizador de una tendencia integrada con $\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2$ (@prp-hp). $P_t$ **converge** geométricamente (@prp-riccati).
+
+# Ejercicios
+
+**Ejercicio 13.1.** En el nivel local con $\sigma_\varepsilon^2 = \sigma_\eta^2 = 1$, calcula $\theta$, $\rho(1)$ de $\Delta y_t$, el estado estacionario $P$, la ganancia $K$ y comprueba que $1 - K = -\theta$.
+
+::: {.callout-tip collapse="true" title="Solución 13.1"}
+$q = 1$: $\theta = (-3 + \sqrt{1 + 4})/2 = (-3 + 2{,}236)/2 = -0{,}382$. $\rho(1) = -1/(q + 2) = -1/3$; verificación: $\theta/(1 + \theta^2) = -0{,}382/1{,}146 = -0{,}333$ ✓. Estado estacionario: $P^2 - P - 1 = 0\Rightarrow P = (1 + \sqrt5)/2 = 1{,}618$. $K = P/(P + 1) = 1{,}618/2{,}618 = 0{,}618$. $1 - K = 0{,}382 = -\theta$ ✓. La EWMA del filtro asigna el peso $0{,}618$ al dato nuevo y $0{,}382$ a la estimación previa: coincide con el pronóstico de un ARIMA(0,1,1) con $\theta = -0{,}382$ (peso $-\theta$ en el pronóstico anterior).
+:::
+
+**Ejercicio 13.2.** Con los datos del @exm-kalman-num, supón que $y_2$ no se observa. Calcula $a_3$ y $P_3$ y compara con el caso en que sí se observa.
+
+::: {.callout-tip collapse="true" title="Solución 13.2"}
+Sin $y_2$: no hay actualización, solo predicción: $a_3 = a_2 = 1{,}091$ y $P_3 = P_2 + \sigma_\eta^2 = 1{,}909 + 1 = 2{,}909$. Con $y_2$: $a_3 = 0{,}900$ y $P_3 = 1{,}656$. El dato faltante deja la estimación en $1{,}091$ (sin corrección) y una incertidumbre de $2{,}909$ (frente a $1{,}656$): se paga la falta de información con mayor varianza de la estimación, pero el filtro **no se detiene** ni requiere imputar.
+:::
+
+**Ejercicio 13.3.** Calcula las contribuciones $\ell_1$ y $\ell_2$ a la log-verosimilitud en el @exm-kalman-num y su suma.
+
+::: {.callout-tip collapse="true" title="Solución 13.3"}
+$\ell_t = -\tfrac12[\log(2\pi F_t) + v_t^2/F_t]$. $t = 1$: $F_1 = 11$, $v_1 = 1{,}2$: $\log(2\pi\cdot11) = 4{,}236$ y $v_1^2/F_1 = 1{,}44/11 = 0{,}131$: $\ell_1 = -\tfrac12(4{,}367) = -2{,}183$. $t = 2$: $F_2 = 2{,}909$, $v_2 = -0{,}291$: $\log(2\pi\cdot2{,}909) = 2{,}906$ y $v_2^2/F_2 = 0{,}0846/2{,}909 = 0{,}029$: $\ell_2 = -\tfrac12(2{,}935) = -1{,}467$. Suma: $-3{,}651$. Para estimar $\sigma_\varepsilon^2,\sigma_\eta^2$ se maximizaría esta suma (sobre todos los $t$ de la muestra) variando los parámetros que entran en $F_t$ y $v_t$.
+:::
+
+**Ejercicio 13.4.** Calcula la razón $\sigma_\zeta^2/\sigma_\varepsilon^2$ implícita en $\lambda = 1600$ (trimestral) y $\lambda = 100$ (anual). ¿Cuántas desviaciones estándar del ciclo equivale la desviación estándar del cambio de la pendiente en el caso trimestral?
+
+::: {.callout-tip collapse="true" title="Solución 13.4"}
+$\lambda = \sigma_\varepsilon^2/\sigma_\zeta^2\Rightarrow\sigma_\zeta^2/\sigma_\varepsilon^2 = 1/\lambda$: trimestral, $1/1600 = 0{,}000625$; anual, $1/100 = 0{,}01$. Trimestral: $\sigma_\zeta/\sigma_\varepsilon = \sqrt{0{,}000625} = 0{,}025$: el cambio de la pendiente de la tendencia tiene una desviación estándar de $2{,}5$ % de la del ciclo (la pendiente casi no cambia: tendencia muy suave). Anual: $0{,}1$ (más cambios, dado que $\lambda$ es menor). Notar que $\lambda$ **no es un parámetro con significado económico**: es la razón de dos varianzas que el econometrista no estima, sino que fija por convención.
+:::
+
+**Ejercicio 13.5.** Para el ARMA(1,1) con $\phi = 0{,}5$ y $\theta = 0{,}4$ en espacio de estados, con $\alpha_t = (y_t,0{,}4\varepsilon_t)'$: si $y_t = 2$, $\varepsilon_t = 1$ y llega $\varepsilon_{t + 1} = 0{,}5$, calcula $\alpha_{t + 1}$ y verifica que $y_{t + 1}$ coincide con la ecuación ARMA.
+
+::: {.callout-tip collapse="true" title="Solución 13.5"}
+$\alpha_t = (2,\ 0{,}4)'$. $\alpha_{t + 1} = \begin{pmatrix}0{,}5&1\\0&0\end{pmatrix}\begin{pmatrix}2\\0{,}4\end{pmatrix} + \begin{pmatrix}1\\0{,}4\end{pmatrix}0{,}5 = \begin{pmatrix}1 + 0{,}4\\0\end{pmatrix} + \begin{pmatrix}0{,}5\\0{,}2\end{pmatrix} = \begin{pmatrix}1{,}9\\0{,}2\end{pmatrix}$. Entonces $y_{t + 1} = 1{,}9$. Por la ecuación ARMA: $y_{t + 1} = 0{,}5\cdot2 + 0{,}5 + 0{,}4\cdot1 = 1 + 0{,}5 + 0{,}4 = 1{,}9$ ✓. La segunda componente del estado, $0{,}2 = 0{,}4\cdot\varepsilon_{t + 1}$, guarda el término MA para el período siguiente.
+:::
+
+**Ejercicio 13.6.** Para $\sigma_\varepsilon^2 = 1$ y $\sigma_\eta^2 = 0{,}1$, calcula $P$, $K$ y la "memoria efectiva" del filtro ($1/K$ observaciones). Compara con $\sigma_\eta^2 = 1$.
+
+::: {.callout-tip collapse="true" title="Solución 13.6"}
+$\sigma_\eta^2 = 0{,}1$: $P = (0{,}1 + \sqrt{0{,}01 + 0{,}4})/2 = (0{,}1 + 0{,}640)/2 = 0{,}370$. $K = 0{,}370/1{,}370 = 0{,}270$; memoria efectiva $1/K = 3{,}7$ observaciones. Con $\sigma_\eta^2 = 1$: $K = 0{,}618$ y memoria $1{,}6$. Cuando el nivel se mueve poco respecto del ruido de medición ($q$ chico), el filtro **promedia más** (mayor memoria) para sacar el ruido: razonable, porque cada dato nuevo informa poco sobre un nivel que cambia despacio.
+:::
+
+**Ejercicio 13.7 ★.** Para $\sigma_\varepsilon^2 = \sigma_\eta^2 = 1$ y $P_1 = 10$, itera la recursión de $P_t$ cuatro pasos y verifica que el error $|P_t - P|$ se reduce según la razón $f'(P) = 0{,}146$.
+
+::: {.callout-tip collapse="true" title="Solución 13.7 ★"}
+$f(P) = P/(P + 1) + 1$. $P_1 = 10$; $P_2 = 10/11 + 1 = 1{,}9091$; $P_3 = 1{,}9091/2{,}9091 + 1 = 1{,}6563$; $P_4 = 1{,}6563/2{,}6563 + 1 = 1{,}6235$; $P_5 = 1{,}6235/2{,}6235 + 1 = 1{,}6189$. Límite $P = 1{,}6180$. Errores: $P_2 - P = 0{,}2911$; $P_3 - P = 0{,}0383$; $P_4 - P = 0{,}0055$; $P_5 - P = 0{,}0009$. Cocientes sucesivos de errores: $0{,}13$, $0{,}14$, $0{,}14$, valores cercanos a $f'(P) = 0{,}146$ (el primer paso, desde $P_1 = 10$, parte lejos del punto fijo y por eso reduce el error más de lo que sugiere la derivada local). En cuatro iteraciones el error cae de $8{,}4$ a $0{,}001$: el filtro alcanza su ganancia de estado estacionario casi inmediatamente.
+:::
