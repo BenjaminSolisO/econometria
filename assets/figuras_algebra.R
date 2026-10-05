@@ -512,3 +512,78 @@ text(Ha[1], Ha[2], "Ha = (5, 0)", pos = 3, col = teal)
 text(vv[1], vv[2], "v = a − 5e1 = (−2, 4)", pos = 4, col = ocre)
 text(3.0, 0.7, "espejo (perpendicular a v)", col = rojo, cex = 0.9)
 dev.off()
+
+# ===========================================================================
+# Clase 6: mínimos cuadrados
+# ---------------------------------------------------------------------------
+ejesdat <- function(xlim, ylim, xlab = "t", ylab = "b", ...) {
+  plot(NA, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, las = 1, ...)
+  abline(h = pretty(ylim), v = pretty(xlim), col = adjustcolor(gris, 0.18))
+  abline(h = 0, col = adjustcolor(tinta, 0.4))
+}
+# 6a. Recta de mínimos cuadrados por (0,6), (1,0), (2,0)
+abrir("c06_recta.png", w = 6, h = 4.6)
+ejesdat(c(-0.3, 2.4), c(-2, 7))
+tt <- 0:2; bb <- c(6, 0, 0); ff <- 5 - 3 * tt
+abline(5, -3, col = teal, lwd = 2.6)
+segments(tt, bb, tt, ff, col = rojo, lwd = 2.2, lty = 2)
+points(tt, ff, pch = 21, bg = "white", col = teal, cex = 1.3)
+points(tt, bb, pch = 21, bg = ocre, cex = 1.7)
+text(0.07, 5.5, "e1 = 1", col = rojo, adj = 0); text(0.93, 1, "e2 = −2", col = rojo, adj = 1); text(2.07, -0.5, "e3 = 1", col = rojo, adj = 0)
+text(1.55, 3.4, "b = 5 − 3t", col = teal, cex = 1.1)
+dev.off()
+
+# 6b. b = (6,0,0) proyectado sobre el plano C(A) generado por (1,1,1) y (0,1,2)
+abrir("c06_proy_plano.png", w = 6.6, h = 5.4)
+a1 <- c(1, 1, 1); a2 <- c(0, 1, 2); B <- c(6, 0, 0); P <- c(5, 2, -1)
+S <- rbind(c(-0.4, -3.6), c(5.8, -3.6), c(5.8, 1.2), c(-0.4, 1.2))
+X <- t(apply(S, 1, function(s) s[1] * a1 + s[2] * a2))
+pm <- marco3d(range(c(X[, 1], 0, 6)), range(c(X[, 2], 0)), range(c(X[, 3], 0)), theta = 100, phi = 18)
+poli3(pm, X, col = adjustcolor(teal, 0.22), border = adjustcolor(teal, 0.6))
+flecha3(pm, c(0, 0, 0), a1, col = ocre, lwd = 2); flecha3(pm, c(0, 0, 0), a2, col = ocre, lwd = 2)
+flecha3(pm, c(0, 0, 0), B, col = tinta); flecha3(pm, c(0, 0, 0), P, col = teal)
+seg3(pm, P, B, col = rojo, lwd = 2.5, lty = 2)
+text(p3(pm, B[1], B[2], B[3]), "b = (6, 0, 0)", pos = 2, col = tinta)
+text(p3(pm, P[1], P[2], P[3]), "p = (5, 2, −1)", pos = 4, col = teal)
+M <- (P + B) / 2; text(p3(pm, M[1], M[2], M[3]), "e = (1, −2, 1)", pos = 1, col = rojo)
+text(p3(pm, a1[1], a1[2], a1[3]), expression(a[1]), pos = 3, col = ocre)
+text(p3(pm, a2[1], a2[2], a2[3]), expression(a[2]), pos = 2, col = ocre)
+dev.off()
+
+# 6c. Parábola de mínimos cuadrados por cuatro puntos
+abrir("c06_parabola.png", w = 6, h = 4.6)
+ejesdat(c(-1.4, 2.4), c(-2, 7))
+tt <- -1:2; bb <- c(1, 4, -1, 6); ff <- 1 + tt^2
+curve(1 + x^2, from = -1.4, to = 2.4, add = TRUE, col = teal, lwd = 2.6)
+segments(tt, bb, tt, ff, col = rojo, lwd = 2.2, lty = 2)
+points(tt, ff, pch = 21, bg = "white", col = teal, cex = 1.3)
+points(tt, bb, pch = 21, bg = ocre, cex = 1.7)
+text(1.2, 5.3, expression(b == 1 + t^2), col = teal, cex = 1.1)
+dev.off()
+
+# 6d. Ajuste exponencial: escala original y escala logarítmica
+abrir("c06_exponencial.png", w = 9.4, h = 4.2)
+par(mfrow = c(1, 2), mar = c(4, 4.2, 2.4, 0.8))
+tt <- 0:2; yy <- exp(c(0, 1, 3))
+ejesdat(c(-0.2, 2.3), c(0, 24), ylab = "y"); title("Escala original", col.main = tinta, font.main = 1, cex.main = 1.15)
+curve(exp(-1 / 6 + 1.5 * x), from = -0.2, to = 2.3, add = TRUE, col = teal, lwd = 2.6)
+points(tt, yy, pch = 21, bg = ocre, cex = 1.7)
+text(0.85, 15, expression(y == e^{-1/6} * e^{1.5 * t}), col = teal, cex = 1.05)
+ejesdat(c(-0.2, 2.3), c(-0.6, 3.4), ylab = "ln y"); title("Escala logarítmica", col.main = tinta, font.main = 1, cex.main = 1.15)
+abline(-1 / 6, 1.5, col = teal, lwd = 2.6)
+segments(tt, c(0, 1, 3), tt, -1 / 6 + 1.5 * tt, col = rojo, lwd = 2, lty = 2)
+points(tt, c(0, 1, 3), pch = 21, bg = ocre, cex = 1.7)
+text(0.55, 2.4, expression(ln ~ y == -1/6 + 1.5 * t), col = teal, cex = 1.05)
+dev.off()
+
+# 6e. Tres rectas para los mismos datos: MC, ponderados y Tikhonov
+abrir("c06_comparacion.png", w = 6.2, h = 4.6)
+ejesdat(c(-0.3, 2.4), c(-2.5, 7))
+abline(5, -3, col = teal, lwd = 2.6)
+abline(4.5, -3, col = ocre, lwd = 2.6, lty = 2)
+abline(2.4, -1.2, col = rojo, lwd = 2.6, lty = 4)
+points(0:2, c(6, 0, 0), pch = 21, bg = tinta, cex = 1.6)
+legend("topright", c("mínimos cuadrados: 5 − 3t", "ponderados W = diag(1, 2, 1): 4,5 − 3t",
+       "Tikhonov λ = 1: 2,4 − 1,2t"), col = c(teal, ocre, rojo), lty = c(1, 2, 4), lwd = 2.4,
+       bg = fondo, box.col = gris, cex = 0.85)
+dev.off()
