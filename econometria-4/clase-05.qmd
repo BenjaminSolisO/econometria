@@ -1,0 +1,253 @@
+---
+title: "Clase 5 · Econometría no paramétrica"
+subtitle: "Estimación kernel, regresión local, series y la maldición de la dimensionalidad"
+description: "Estimación de densidades y de la esperanza condicional sin forma funcional: estimador kernel de la densidad y de Nadaraya–Watson con sesgo y varianza demostrados, ancho de banda óptimo y tasa n^{-2/5}, regresión local lineal, validación cruzada, series, la maldición de la dimensionalidad y modelos semiparamétricos."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-05.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Dejar que los datos elijan la forma
+
+Toda la econometría de los primeros cursos descansó en modelos **paramétricos**: una función lineal, un logit, un ARMA. Si el modelo es correcto, estimarlo es eficiente (tasa $\sqrt n$). Si no lo es, los parámetros estiman un **objeto de aproximación** (la proyección lineal, el pseudo-verdadero) que puede no ser el que interesa. La alternativa es **no suponer forma funcional**: estimar directamente la **función de regresión** $m(x) = \mathbb{E}[Y\mid X = x]$, o la **densidad** $f(x)$, con métodos que dejan que los datos, localmente, decidan.
+
+Como en la Clase 2 de Econometría 1, el objeto fundamental es la esperanza condicional: es el mejor predictor de $Y$ dado $X$, y es lo que se necesita para estimar efectos de tratamiento sin supuestos de forma (Clases 2 y 6 de este curso). Pero ahora la **estimamos** sin restringirla a una familia de dimensión finita. El precio que se paga es de **tasa de convergencia**: los estimadores no paramétricos convergen **más lento** que $\sqrt n$, y cada vez más lento cuanto más variables hay. Entender por qué y cuánto es el objetivo de esta clase.[^nw]
+
+[^nw]: Elizbar Nadaraya y Geoffrey Watson propusieron de manera independiente, en 1964, el estimador de regresión kernel que lleva sus nombres. Lo curioso es que el artículo de Watson se publicó en una revista india de estadística (*Sankhyā*) y el de Nadaraya en una revista soviética de teoría de probabilidades, en una época en que ambos mundos casi no se comunicaban. Que dos autores llegaran a lo mismo a la vez es una buena señal de que la idea de "promediar localmente" es natural.
+
+# Estimación de la densidad por kernel
+
+Sea $X_1,\dots,X_n$ una muestra i.i.d. con densidad $f$. El histograma es el estimador más simple; el **estimador kernel** (Rosenblatt, 1956; Parzen, 1962) lo suaviza:
+$$
+\hat f(x) = \frac1{nh}\sum_{i = 1}^nK\Big(\frac{X_i - x}h\Big) = \frac1n\sum_{i = 1}^nK_h(X_i - x),\qquad K_h(u) = \frac1hK(u/h).
+$$ {#eq-kde}
+Cada observación aporta una "campana" $K$ centrada en ella, de **ancho** $h>0$ (el **ancho de banda**), y $\hat f(x)$ es el promedio de las campanas evaluado en $x$.
+
+::: {.callout-caution title="Supuestos"}
+- **Kernel:** $K$ simétrica, $\int K = 1$, con $\kappa_2 = \int u^2K(u)\,du<\infty$ y $R(K) = \int K(u)^2\,du<\infty$. (Ejemplos: Gaussiano, Epanechnikov $\tfrac34(1 - u^2)\mathbf{1}\{|u|\le1\}$.)
+- **Densidad:** $f$ dos veces continuamente diferenciable en el punto $x$ de interés, con $f(x)>0$.
+- **Ancho de banda:** $h = h_n\to0$ y $nh\to\infty$.
+:::
+
+::: {#thm-kde}
+## Sesgo y varianza del estimador kernel de la densidad
+Bajo los supuestos,
+$$
+\mathbb{E}\hat f(x) - f(x) = \tfrac12h^2\kappa_2f''(x) + o(h^2),\qquad\operatorname{Var}\hat f(x) = \frac{R(K)f(x)}{nh} + o\Big(\frac1{nh}\Big).
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+$\hat f(x)$ es un promedio de $n$ variables i.i.d. $K_h(X_i - x)$, así que su esperanza es la de **una** de ellas y su varianza es $1/n$ veces la de una. La esperanza es una integral que se calcula con el cambio de variable $u = (t - x)/h$ y una expansión de Taylor de $f$ alrededor de $x$ (como el kernel es simétrico, el término de primer orden se anula). La varianza usa que $K_h^2$ es una función que se concentra: su integral es $R(K)/h$.
+:::
+
+::: {.proof}
+*Sesgo.* $\mathbb{E}\hat f(x) = \mathbb{E}K_h(X - x) = \int\frac1hK\big(\tfrac{t - x}h\big)f(t)\,dt = \int K(u)f(x + hu)\,du$ (con $t = x + hu$). Por Taylor, $f(x + hu) = f(x) + huf'(x) + \tfrac12h^2u^2f''(x) + o(h^2)$. Integrando contra $K$ y usando $\int K = 1$, $\int uK = 0$ (simetría) y $\int u^2K = \kappa_2$: $\mathbb{E}\hat f(x) = f(x) + \tfrac12h^2\kappa_2f''(x) + o(h^2)$.
+
+*Varianza.* $\operatorname{Var}\hat f(x) = \frac1n\operatorname{Var}\big(K_h(X - x)\big) = \frac1n\big[\mathbb{E}K_h(X - x)^2 - (\mathbb{E}K_h(X - x))^2\big]$. El segundo término es $O(1)$, y el primero: $\mathbb{E}K_h(X - x)^2 = \int\frac1{h^2}K^2\big(\tfrac{t - x}h\big)f(t)\,dt = \frac1h\int K(u)^2f(x + hu)\,du = \frac{R(K)f(x)}h + o(1/h)$. Luego $\operatorname{Var}\hat f(x) = \frac{R(K)f(x)}{nh} + O(1/n) = \frac{R(K)f(x)}{nh}(1 + o(1))$ porque $h\to0$.
+:::
+
+El resultado muestra el **compromiso sesgo–varianza** del que se desprende toda la teoría no paramétrica:
+
+- **Sesgo** $\approx h^2$: crece con el ancho de banda (se promedia sobre una vecindad más grande, y la curvatura de $f$ hace que el promedio local difiera del valor en $x$).
+- **Varianza** $\approx1/(nh)$: decrece con $h$ (más observaciones por vecindad: unas $nh$ de ellas).
+
+El **error cuadrático medio asintótico** es $\text{AMSE}(h) = \tfrac14h^4\kappa_2^2f''(x)^2 + R(K)f(x)/(nh)$, y su derivada respecto de $h$ se anula en
+$$
+h^* = \Big[\frac{R(K)f(x)}{\kappa_2^2f''(x)^2}\Big]^{1/5}n^{-1/5},\qquad\text{AMSE}(h^*) = O\big(n^{-4/5}\big).
+$$ {#eq-h-opt}
+Dos cosas se ven de inmediato. El ancho óptimo es de orden $n^{-1/5}$ y el error cuadrático medio, de orden $n^{-4/5}$: el estimador converge a tasa $n^{-2/5}$, **más lenta** que la tasa $n^{-1/2}$ de los estimadores paramétricos. Es el costo de no suponer una forma. Además, $h^*$ depende de $f''(x)$, que es desconocida: se necesitan **reglas prácticas** (la de Silverman, $h = 1{,}06\hat\sigma n^{-1/5}$ para un kernel gaussiano, que es óptima si $f$ es normal) o selección con los datos (validación cruzada, abajo). Bajo condiciones de Lindeberg, $\sqrt{nh}\big[\hat f(x) - \mathbb{E}\hat f(x)\big]\to_dN\big(0,R(K)f(x)\big)$ (se toma prestado): la normalidad asintótica vale para la parte aleatoria, pero **no está centrada en $f(x)$** si $h\sim n^{-1/5}$ (el sesgo es del mismo orden que la desviación estándar).
+
+# Regresión kernel: el estimador de Nadaraya–Watson
+
+Para la esperanza condicional $m(x) = \mathbb{E}[Y\mid X = x]$ con datos $(Y_i,X_i)$ i.i.d., la idea es **promediar los $Y_i$ de las observaciones cuyo $X_i$ está cerca de $x$**, con pesos que decrecen con la distancia:
+$$
+\hat m(x) = \frac{\sum_iK\big(\frac{X_i - x}h\big)Y_i}{\sum_iK\big(\frac{X_i - x}h\big)} = \frac{\hat g(x)}{\hat f(x)},\qquad\hat g(x) = \frac1{nh}\sum_iK\Big(\frac{X_i - x}h\Big)Y_i.
+$$ {#eq-nw}
+Es un **promedio local ponderado**: un MCO sobre una constante, solo con las observaciones cercanas.
+
+::: {#thm-nw}
+## Sesgo y varianza de Nadaraya–Watson
+Si $m$ y $f$ son dos veces continuamente diferenciables en $x$, $f(x)>0$, $\sigma^2(x) = \operatorname{Var}(Y\mid X = x)$ continua y valen los supuestos de $K$ y $h$, entonces
+$$
+\mathbb{E}\hat m(x) - m(x)\approx h^2\kappa_2\Big[\tfrac12m''(x) + \frac{m'(x)f'(x)}{f(x)}\Big],\qquad\operatorname{Var}\hat m(x)\approx\frac{\sigma^2(x)R(K)}{nhf(x)}.
+$$
+:::
+
+::: {.proof}
+(Esquema.) Escribimos $\hat m(x) - m(x) = \hat N(x)/\hat f(x)$ con $\hat N(x) = \frac1{nh}\sum_iK\big(\tfrac{X_i - x}h\big)\big(Y_i - m(x)\big)$. Como $\hat f(x)\to_pf(x)$ (@thm-kde), basta calcular los momentos del numerador. *Esperanza:* condicionando en $X_i$ y usando $\mathbb{E}[Y_i\mid X_i] = m(X_i)$,
+$$
+\mathbb{E}\hat N(x) = \int K(u)\big(m(x + hu) - m(x)\big)f(x + hu)\,du.
+$$
+Por Taylor, $m(x + hu) - m(x) = hum' + \tfrac12h^2u^2m'' + o(h^2)$ y $f(x + hu) = f + huf' + o(h)$. El producto es $hu\,m'f + h^2u^2\big(m'f' + \tfrac12m''f\big) + o(h^2)$; integrando contra $K$ (el término lineal se anula por simetría), $\mathbb{E}\hat N(x) = h^2\kappa_2\big(m'f' + \tfrac12m''f\big) + o(h^2)$. Dividiendo por $f(x)$ se obtiene el sesgo. *Varianza:* $\operatorname{Var}\hat N(x)\approx\frac1{nh^2}\mathbb{E}\big[K^2\big(\tfrac{X - x}h\big)\sigma^2(X)\big]\approx\frac{\sigma^2(x)f(x)R(K)}{nh}$ (el término de la media $m(X) - m(x)$ es de orden menor). Dividiendo por $f(x)^2$ queda la varianza enunciada.
+:::
+
+Tres lecturas. **(1)** El sesgo tiene **dos términos**: la curvatura de $m$ (como en la densidad) y un término $m'f'/f$ que depende de **cómo se reparten los datos**: si hay más observaciones a un lado de $x$ que a otro ($f'\ne0$), el promedio local queda sesgado hacia ese lado. Ese término es incómodo y lo elimina la regresión local lineal (abajo). **(2)** La varianza es **mayor donde hay pocos datos** ($f(x)$ chico) y donde el ruido $\sigma^2(x)$ es grande: la precisión es **local**. **(3)** El comportamiento en $h$ es el mismo: sesgo $\propto h^2$, varianza $\propto1/(nh)$; con $h\sim n^{-1/5}$ se obtiene la tasa $n^{-2/5}$.
+
+## La maldición de la dimensionalidad
+
+Con $d$ regresores continuos, la vecindad de $x$ es un cubo de lado $h$ y volumen $h^d$, que contiene en promedio solo $nh^d$ observaciones. La varianza pasa a ser $\propto1/(nh^d)$, mientras que el sesgo sigue siendo $\propto h^2$. Balanceando $h^4\sim1/(nh^d)$:
+$$
+h^*\propto n^{-1/(4 + d)},\qquad\text{MSE}^*\propto n^{-4/(4 + d)},\qquad\text{tasa de convergencia: }n^{-2/(4 + d)}.
+$$
+La tasa **se deteriora con la dimensión**: $n^{-2/5} = n^{-0{,}40}$ para $d = 1$, $n^{-0{,}33}$ para $d = 2$, $n^{-0{,}22}$ para $d = 5$ y $n^{-0{,}14}$ para $d = 10$. Es la **maldición de la dimensionalidad** (Bellman; la nota de la Clase 2 de Econometría 1). En términos de datos necesarios: para igualar el error que se obtiene con $n_1 = 100$ observaciones en $d = 1$, se necesitan $n_d = n_1^{(4 + d)/5}$ observaciones en $d$ dimensiones: **$3\,981$ para $d = 5$** y **$398\,107$ para $d = 10$** (Ejercicio 5.3). Es la razón de que la regresión no paramétrica pura no sea una herramienta general: con más de dos o tres regresores continuos, hay que **imponer estructura** (aditividad, índices, semiparamétricos, abajo; o aprendizaje automático regularizado, Clases 7 y 8).
+
+# Regresión local lineal
+
+El estimador de Nadaraya–Watson ajusta localmente una **constante**. Una mejora natural es ajustar localmente una **recta**:
+$$
+\big(\hat a(x),\hat b(x)\big) = \arg\min_{a,b}\sum_i\Big(Y_i - a - b(X_i - x)\Big)^2K\Big(\frac{X_i - x}h\Big),\qquad\hat m_{LL}(x) = \hat a(x).
+$$ {#eq-ll}
+Es **mínimos cuadrados ponderados** (Clase 9 de Econometría 1) con pesos kernel, y el valor ajustado en $x$ es la constante $\hat a$. (Se puede ajustar un polinomio de grado $p$: *regresión polinomial local*.)
+
+::: {#prp-ll}
+## Propiedades de la regresión local lineal
+Bajo los supuestos del @thm-nw, el estimador local lineal tiene la **misma varianza** que Nadaraya–Watson, $\sigma^2(x)R(K)/(nhf(x))$, y sesgo
+$$
+\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12h^2\kappa_2m''(x),
+$$
+**sin** el término $m'f'/f$: es **adaptativo al diseño**. Además es **insesgado para funciones lineales** y su sesgo en la **frontera** del soporte es del mismo orden $O(h^2)$ (el de Nadaraya–Watson es $O(h)$).
+:::
+
+::: {.proof}
+(Esquema.) El estimador es un **suavizador lineal**: $\hat m_{LL}(x) = \sum_i\ell_i(x)Y_i$ con pesos $\ell_i(x)$ que, por las ecuaciones normales de @eq-ll, satisfacen
+$$
+\sum_i\ell_i(x) = 1,\qquad\sum_i\ell_i(x)(X_i - x) = 0.
+$$
+(Los pesos reproducen la constante y la función lineal.) Entonces, si $m$ es **lineal**, $\hat m_{LL}(x) = \sum\ell_im(X_i) = m(x)\sum\ell_i + m'(x)\sum\ell_i(X_i - x) = m(x)$: sin sesgo. Para $m$ general, la expansión de Taylor $m(X_i) = m(x) + m'(x)(X_i - x) + \tfrac12m''(x)(X_i - x)^2 + \dots$ da, por las dos identidades, $\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12m''(x)\sum_i\ell_i(x)(X_i - x)^2\approx\tfrac12m''(x)h^2\kappa_2$: **solo** la curvatura de $m$ importa, y no el término de la densidad. La demostración detallada del sesgo y de la frontera usa una aproximación de $\sum\ell_i(X_i - x)^2$ con los momentos del kernel (§ de la Clase 6).
+:::
+
+Por estas razones, **la regresión local lineal es la opción por defecto** en la práctica (y en regresión discontinua, Clase 6, donde el punto de interés está en la frontera de cada lado del umbral). Un polinomio de grado más alto reduce el sesgo para funciones más suaves.
+
+# Elección del ancho de banda: validación cruzada
+
+El ancho $h$ debe elegirse con los datos. El criterio más usado es la **validación cruzada de dejar uno afuera**: elegir $h$ que minimice el error de predicción de cada observación **cuando no se usa para ajustar**:
+$$
+\text{CV}(h) = \frac1n\sum_{i = 1}^n\big(Y_i - \hat m_{-i}(X_i)\big)^2,
+$$
+donde $\hat m_{-i}$ es el estimador calculado sin la observación $i$. (Calcularlo literalmente exige $n$ re-estimaciones, pero para suavizadores lineales hay un atajo.)
+
+::: {#prp-cv}
+## Atajo para la validación cruzada
+Si $\hat m(x) = \sum_jS_j(x)Y_j$ con $\sum_jS_j(x) = 1$ (por ejemplo, Nadaraya–Watson o local lineal), y $S_{ii} = S_i(X_i)$, entonces
+$$
+Y_i - \hat m_{-i}(X_i) = \frac{Y_i - \hat m(X_i)}{1 - S_{ii}}\quad\Longrightarrow\quad\text{CV}(h) = \frac1n\sum_i\Big(\frac{Y_i - \hat m(X_i)}{1 - S_{ii}}\Big)^2.
+$$
+:::
+
+::: {.proof}
+Sin la observación $i$, los pesos se renormalizan: $\hat m_{-i}(X_i) = \sum_{j\ne i}S_{ij}Y_j/(1 - S_{ii})$, porque $\sum_{j\ne i}S_{ij} = 1 - S_{ii}$. Pero $\sum_{j\ne i}S_{ij}Y_j = \hat m(X_i) - S_{ii}Y_i$. Entonces
+$$
+Y_i - \hat m_{-i}(X_i) = Y_i - \frac{\hat m(X_i) - S_{ii}Y_i}{1 - S_{ii}} = \frac{Y_i(1 - S_{ii}) - \hat m(X_i) + S_{ii}Y_i}{1 - S_{ii}} = \frac{Y_i - \hat m(X_i)}{1 - S_{ii}}.
+$$
+:::
+
+El atajo es el análogo del resultado de MCO de que el residuo "dejando uno afuera" es $\hat u_i/(1 - h_{ii})$ (Clase 3 de Econometría 1, *leverage*). La validación cruzada es asintóticamente óptima (el $h$ elegido es de orden $n^{-1/5}$ y la razón $h_{CV}/h^*\to1$; Härdle, Hall y Marron, 1988; se toma prestado), pero con **alta variabilidad**: es común que $h_{CV}$ sea inestable entre muestras. Alternativas: reglas **plug-in** (estiman $m''$ con un estimador piloto) y el **ancho que minimiza un criterio corregido** (AICc).
+
+# Series (sieves)
+
+Un enfoque **global**, en vez de local, aproxima $m$ con una combinación de $K$ funciones base $\phi_1,\dots,\phi_K$ (polinomios, **splines**, Fourier) y estima los coeficientes **por MCO**:
+$$
+\hat m(x) = \sum_{j = 1}^K\hat\theta_j\phi_j(x),\qquad\hat\theta = (\Phi'\Phi)^{-1}\Phi'Y.
+$$
+Es una regresión lineal con $K = K_n\to\infty$ regresores. Su error tiene dos partes: el de **estimación**, que crece con el número de parámetros (varianza $\propto K/n$), y el de **aproximación**, que decrece con $K$. Si $m$ pertenece a una clase de funciones de suavidad $s$ (con $s$ derivadas acotadas) en $d$ dimensiones, el error de aproximación (sesgo cuadrático) es $\propto K^{-2s/d}$, de modo que
+$$
+\text{MSE}\approx\frac Kn + K^{-2s/d}\ \Longrightarrow\ K^*\propto n^{d/(2s + d)},\quad\text{MSE}^*\propto n^{-2s/(2s + d)}.
+$$
+Con $s = 2$ y $d = 1$ resulta $n^{-4/5}$ (la misma que kernel), y con $d$ grande y $s$ chico, la tasa **empeora**: la maldición de la dimensionalidad reaparece **en los dos enfoques**, y refleja el hecho de que la clase de funciones es grande. Las ventajas de las series: (i) usa **MCO** y toda la teoría de la regresión lineal (errores estándar, tests de Wald; Newey, 1997), (ii) permite **imponer restricciones** (monotonía, convexidad, aditividad) y (iii) es fácil de combinar con otros términos paramétricos. Las desventajas: la elección de la base y de $K$ (se elige con validación cruzada o con criterios de información, Li, 1987), y la menor **localidad**: un cambio en un lugar del soporte puede afectar el ajuste en otro (con splines se atenúa).
+
+# Inferencia y modelos semiparamétricos
+
+Un intervalo de confianza **puntual** $\hat m(x)\pm1{,}96\sqrt{\hat\sigma^2(x)R(K)/(nh\hat f(x))}$ ignora el **sesgo**, y con $h\sim n^{-1/5}$ el sesgo es del mismo orden que la desviación estándar, de modo que la cobertura es incorrecta. Hay tres salidas: **subsuavizar** ($h = o(n^{-1/5})$, para que el sesgo sea de orden menor), **corregir el sesgo** y ajustar el error estándar (Calonico, Cattaneo y Titiunik, 2014; es la base de la Clase 6), o usar intervalos que incorporen explícitamente una cota del sesgo (intervalos *honest*, Armstrong y Kolesár).
+
+Para atacar la maldición de la dimensionalidad, una familia importante de modelos **semiparamétricos** combina una parte paramétrica (de interés) con una función desconocida (de perturbación). El caso más conocido es el **modelo parcialmente lineal** (Robinson, 1988):
+$$
+Y = X'\beta + g(Z) + u,\qquad\mathbb{E}[u\mid X,Z] = 0,
+$$
+donde $\beta$ es el parámetro de interés y $g$ una función desconocida de variables de control $Z$. Tomando esperanza condicional en $Z$: $\mathbb{E}[Y\mid Z] = \mathbb{E}[X\mid Z]'\beta + g(Z)$. Restando,
+$$
+Y - \mathbb{E}[Y\mid Z] = \big(X - \mathbb{E}[X\mid Z]\big)'\beta + u.
+$$
+El **estimador de Robinson** estima $\mathbb{E}[Y\mid Z]$ y $\mathbb{E}[X\mid Z]$ con métodos no paramétricos (kernel o series) y hace una regresión de **residuos sobre residuos**: es el teorema de **Frisch–Waugh–Lovell** (Clase 3 de Econometría 1) con "residuos" no paramétricos. Notablemente, $\hat\beta$ es **$\sqrt n$-consistente** y asintóticamente normal **aunque los estimadores de $g$ y de las medias condicionales converjan lento** ($n^{-2/5}$): hace falta que los errores de estimación de las dos medias condicionales sean $o_p(n^{-1/4})$ cada uno, porque entran como **producto** (como en la doble robustez de la Clase 2). Esta estructura (residuos ortogonalizados, errores de segundo orden) es exactamente la de **DML**, y Robinson (1988) es su antecedente directo (Clase 8). Otros modelos semiparamétricos que reducen la dimensión: **aditivos** $m(x) = \sum_jm_j(x_j)$ (tasa de una dimensión), **de índice único** $m(x) = G(x'\beta)$ y **de coeficientes variables**.
+
+# ★ Postgrado: la cota inferior minimax
+
+::: {.callout-important title="★ Postgrado"}
+¿Es la tasa $n^{-2/5}$ una limitación del kernel, o de **cualquier** estimador? Stone (1980, 1982) mostró que es la mejor posible, de modo que ningún método puede hacerlo mejor sin más estructura. Esbozamos el argumento de **dos puntos** de Le Cam en el caso más simple.
+:::
+
+Sea el modelo $Y_i = m(x_i) + \varepsilon_i$ con $\varepsilon_i\sim N(0,\sigma^2)$, diseño fijo y la clase de funciones **Lipschitz** ($|m(x) - m(y)|\le L|x - y|$, el caso $s = 1$, $d = 1$) y queremos estimar $\theta = m(x_0)$. Consideramos dos funciones: $m_0\equiv0$ y $m_1(x) = Lh\,\Lambda\big(\tfrac{x - x_0}h\big)$ con $\Lambda(u) = (1 - |u|)_+$ (un "sombrerito" triangular de altura $Lh$ y ancho $2h$, que es $L$-Lipschitz). Las dos están en la clase, y $\theta_1 - \theta_0 = Lh$.
+
+::: {#prp-lecam}
+## Cota de Le Cam de dos puntos
+Para cualquier estimador $\hat\theta$, $\displaystyle\max_{j = 0,1}\mathbb{E}_{m_j}\big(\hat\theta - \theta_j\big)^2\ \ge\ \frac{(\theta_1 - \theta_0)^2}8\big(1 - \operatorname{TV}(P_0,P_1)\big)$, donde $\operatorname{TV}$ es la distancia en variación total entre las distribuciones de los datos bajo $m_0$ y $m_1$.
+:::
+
+::: {.proof}
+Sea $\Delta = \theta_1 - \theta_0$. Para toda realización, $|\hat\theta - \theta_0| + |\hat\theta - \theta_1|\ge\Delta$, de modo que $\max_j(\hat\theta - \theta_j)^2\ge\Delta^2/4$ en el evento en que $\hat\theta$ está más cerca del valor equivocado. Por el lema de Le Cam, la suma de las probabilidades de error de los dos "tests" inducidos es al menos $1 - \operatorname{TV}(P_0,P_1)$, y $\max_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ge\tfrac12\sum_j\mathbb{E}_j(\cdot)^2\ge\tfrac12\cdot\tfrac{\Delta^2}4\big(1 - \operatorname{TV}\big)$.
+:::
+
+Falta controlar la variación total. Por la desigualdad de Pinsker, $\operatorname{TV}\le\sqrt{\text{KL}/2}$, y para ruido gaussiano la divergencia de Kullback–Leibler entre los dos modelos es $\text{KL}(P_0\Vert P_1) = \frac1{2\sigma^2}\sum_im_1(x_i)^2\approx\frac n{2\sigma^2}\int m_1^2 = \frac n{2\sigma^2}L^2h^2\cdot h\int\Lambda^2 = \frac{n L^2h^3}{2\sigma^2}\cdot\frac23$ (con diseño uniforme en $[0,1]$ y $\int\Lambda^2 = 2/3$). Si elegimos $h = c\,n^{-1/3}$, la divergencia queda **acotada por una constante** ($\text{KL}\approx\frac{L^2c^3}{3\sigma^2}$), y entonces $\operatorname{TV}$ queda acotada por debajo de uno: **no hay manera de distinguir** las dos funciones con $n$ datos. Por la @prp-lecam, el riesgo máximo es al menos una constante por $(Lh)^2 = L^2c^2n^{-2/3}$:
+$$
+\inf_{\hat\theta}\sup_{m\in\text{Lip}(L)}\mathbb{E}\big(\hat\theta - m(x_0)\big)^2\ \ge\ C\,n^{-2/3} = C\,n^{-2s/(2s + d)}\ \ (s = 1,\ d = 1).
+$$
+Es la tasa de la clase de suavidad $s = 1$. El mismo argumento con un sombrero de $s$ derivadas ($h^s\cdot\Lambda(\cdot/h)$) da $n^{-2s/(2s + d)}$ en general. Como el kernel, las series y la regresión local lineal **alcanzan** esa tasa, son **minimax óptimos**: la tasa lenta es **intrínseca** al problema de estimar una función de una clase grande, no una debilidad del método.
+
+# Resumen
+
+- Los estimadores no paramétricos estiman $f(x)$ o $m(x) = \mathbb{E}[Y\mid X = x]$ **sin forma funcional**, promediando localmente con un **kernel** y un ancho de banda $h$.
+- **Densidad kernel** (@thm-kde): sesgo $\tfrac12h^2\kappa_2f''$, varianza $R(K)f/(nh)$. **Nadaraya–Watson** (@thm-nw): sesgo $h^2\kappa_2[\tfrac12m'' + m'f'/f]$, varianza $\sigma^2R(K)/(nhf)$.
+- **Compromiso sesgo–varianza:** $h^*\propto n^{-1/5}$, MSE $\propto n^{-4/5}$, tasa $n^{-2/5}$ (más lenta que $\sqrt n$). Con $d$ regresores, la tasa es $n^{-2/(4 + d)}$: **maldición de la dimensionalidad**.
+- **Local lineal** (@prp-ll): sin el término $m'f'/f$, **adaptativo a la frontera**; es la opción por defecto.
+- **Validación cruzada** con atajo $\hat u_i/(1 - S_{ii})$ (@prp-cv). **Series:** MCO con $K\to\infty$ funciones base; MSE $\propto n^{-2s/(2s + d)}$.
+- **Inferencia:** hay que lidiar con el sesgo (subsuavizar o corregir). **Robinson:** modelo parcialmente lineal con residuos no paramétricos: $\sqrt n$-consistente; antecedente de DML.
+- **Minimax** (@prp-lecam): la tasa $n^{-2s/(2s + d)}$ no se puede mejorar sin más estructura.
+
+# Ejercicios
+
+**Ejercicio 5.1.** Para estimar una densidad normal estándar en $x = 0$ con kernel gaussiano ($\kappa_2 = 1$, $R(K) = 1/(2\sqrt\pi) = 0{,}282$), calcula el ancho óptimo del @eq-h-opt para $n = 100$ y $n = 1\,000$.
+
+::: {.callout-tip collapse="true" title="Solución 5.1"}
+$f(0) = 0{,}399$ y $f''(0) = -f(0) = -0{,}399$ (para la normal estándar, $f'' = (x^2 - 1)f$). $\dfrac{R(K)f(0)}{\kappa_2^2f''(0)^2} = \dfrac{0{,}282\cdot0{,}399}{0{,}159} = 0{,}707$; $h^* = 0{,}707^{1/5}n^{-1/5} = 0{,}933\,n^{-1/5}$. Con $n = 100$: $0{,}933\cdot0{,}398 = 0{,}371$. Con $n = 1\,000$: $0{,}933\cdot0{,}251 = 0{,}234$. (La regla de Silverman, $1{,}06\,n^{-1/5}$, da $0{,}42$ y $0{,}27$: algo mayor, porque está pensada para toda la densidad y no para el punto $x = 0$ de máxima curvatura.) Cuadruplicar el tamaño muestral **solo reduce $h$ un $24$ %** ($4^{-1/5} = 0{,}76$).
+:::
+
+**Ejercicio 5.2.** Con diseño uniforme en $[0,1]$ ($f' = 0$ en el interior) y $m(x) = x^2$, calcula el sesgo asintótico de Nadaraya–Watson en un punto interior para $h = 0{,}1$ con kernel Epanechnikov ($\kappa_2 = 1/5$) y compáralo con el de local lineal.
+
+::: {.callout-tip collapse="true" title="Solución 5.2"}
+Con $f' = 0$, el término extra $m'f'/f$ desaparece y los sesgos de NW y local lineal coinciden: $\tfrac12h^2\kappa_2m''(x) = \tfrac12(0{,}01)(0{,}2)(2) = 0{,}002$. Con un diseño **no uniforme** ($f'\ne0$), NW añade $h^2\kappa_2m'f'/f$: por ejemplo con $f'/f = 1$ en $x = 0{,}5$ ($m' = 1$), el término vale $0{,}01\cdot0{,}2\cdot1\cdot1 = 0{,}002$, el **doble** del sesgo total ($0{,}004$ frente a $0{,}002$), mientras que local lineal sigue en $0{,}002$. En la frontera ($x = 0$), NW tiene sesgo de orden $h$ (un orden mayor), y local lineal conserva el orden $h^2$.
+:::
+
+**Ejercicio 5.3.** Con $n_1 = 100$ observaciones en $d = 1$, ¿cuántas observaciones hacen falta en $d = 2,5,10$ para obtener la misma precisión (mismo MSE)? Usa $n_d = n_1^{(4 + d)/5}$.
+
+::: {.callout-tip collapse="true" title="Solución 5.3"}
+El MSE es $\propto n^{-4/(4 + d)}$; igualarlo al de $d = 1$ con $n_1$ requiere $n_d^{4/(4 + d)} = n_1^{4/5}$, es decir $n_d = n_1^{(4 + d)/5}$. $d = 2$: $100^{6/5} = 100^{1{,}2} = 251$. $d = 5$: $100^{9/5} = 100^{1{,}8} = 3\,981$. $d = 10$: $100^{14/5} = 100^{2{,}8} = 398\,107$. Para tener en $d = 10$ la precisión que $100$ observaciones dan en $d = 1$ hacen falta **casi cuatrocientas mil**. Con datos reales, esto significa que la regresión no paramétrica completa es inviable con muchos regresores, y hay que asumir estructura.
+:::
+
+**Ejercicio 5.4.** En un ajuste local lineal, la observación $i$ tiene residuo $Y_i - \hat m(X_i) = 0{,}6$ y $S_{ii} = 0{,}4$. Calcula el residuo "dejando uno afuera". ¿Y si $S_{ii} = 0{,}8$?
+
+::: {.callout-tip collapse="true" title="Solución 5.4"}
+Por la @prp-cv, residuo LOO $=0{,}6/(1 - 0{,}4) = 1{,}0$. Con $S_{ii} = 0{,}8$: $0{,}6/0{,}2 = 3{,}0$. Cuando una observación tiene **mucha influencia en su propio ajuste** ($S_{ii}$ alto: $h$ muy chico, la observación casi se predice a sí misma), el residuo "honesto" es mucho mayor que el residuo dentro de la muestra: la validación cruzada **penaliza** los anchos de banda demasiado chicos que sobreajustan.
+:::
+
+**Ejercicio 5.5.** Para series con $s = 2$ derivadas, calcula la tasa del MSE y el $K$ óptimo para $d = 1$ y $d = 2$ con $n = 1\,000$.
+
+::: {.callout-tip collapse="true" title="Solución 5.5"}
+$K^* = n^{d/(2s + d)}$ y MSE $=n^{-2s/(2s + d)}$. $d = 1$: $K^* = 1\,000^{1/5} = 3{,}98\approx4$ funciones base, MSE $=1\,000^{-4/5} = 0{,}004$. $d = 2$: $K^* = 1\,000^{2/6} = 10$, MSE $=1\,000^{-4/6} = 0{,}01$. Doblar la dimensión multiplica por $2{,}5$ el número de términos y por $2{,}5$ el error cuadrático medio, con el mismo $n$.
+:::
+
+**Ejercicio 5.6.** En el modelo parcialmente lineal $Y = X\beta + g(Z) + u$, demuestra que $Y - \mathbb{E}[Y\mid Z] = (X - \mathbb{E}[X\mid Z])\beta + u$ y explica por qué elimina la función desconocida $g$.
+
+::: {.callout-tip collapse="true" title="Solución 5.6"}
+Tomando $\mathbb{E}[\cdot\mid Z]$ en el modelo y usando $\mathbb{E}[u\mid Z] = 0$: $\mathbb{E}[Y\mid Z] = \mathbb{E}[X\mid Z]\beta + g(Z)$. Restando esta ecuación de la original, $Y - \mathbb{E}[Y\mid Z] = \big(X - \mathbb{E}[X\mid Z]\big)\beta + g(Z) - g(Z) + u$, y $g(Z)$ **se cancela**. El resultado es una regresión lineal de $\tilde Y$ sobre $\tilde X$ con error $u$ (ortogonal a $\tilde X$), de la cual se estima $\beta$ por MCO usando las versiones estimadas de $\tilde Y,\tilde X$. Es la regla de Frisch–Waugh–Lovell: "limpiar" ambas variables de $Z$ (aquí de manera no lineal) y regresar los residuos.
+:::
+
+**Ejercicio 5.7 ★.** Con $s = 1$, $d = 1$, $L = 1$, $\sigma = 1$ y $n = 1\,000$, toma $h = n^{-1/3} = 0{,}1$. Calcula la divergencia KL, la cota de Pinsker para TV y la cota inferior del @prp-lecam.
+
+::: {.callout-tip collapse="true" title="Solución 5.7 ★"}
+$\text{KL} = \dfrac{nL^2h^3}{2\sigma^2}\cdot\dfrac23 = \dfrac{1\,000\cdot1\cdot0{,}001}2\cdot\dfrac23 = 0{,}5\cdot0{,}667 = 0{,}333$. Pinsker: $\operatorname{TV}\le\sqrt{0{,}333/2} = 0{,}408$. $\Delta = Lh = 0{,}1$. Cota: $\dfrac{\Delta^2}8(1 - \operatorname{TV})\ge\dfrac{0{,}01}8(0{,}592) = 0{,}00074$; en raíz del error cuadrático, $\ge0{,}027$. Lectura: con $1\,000$ datos, ningún estimador puede garantizar un error por debajo de $\approx0{,}03$ **para toda** función Lipschitz con $L = 1$ en un punto: los datos no pueden distinguir $m_0\equiv0$ de un sombrerito de altura $0{,}1$. La cota se logra con la elección de $h\propto n^{-1/3}$ que **equilibra** la distinguibilidad con la altura del sombrero.
+:::

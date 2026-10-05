@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Diseños de regresión discontinua nítida y difusa: identificación del efecto en el umbral por continuidad de los resultados potenciales, estimación local lineal con sesgo de frontera, elección del ancho de banda, inferencia robusta con corrección de sesgo, validación (manipulación, covariables, placebos) y el estimador de Wald en el corte.">
+
+<title>Clase 6 · Regresión discontinua – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-05.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-06.html">Clase 6 · Regresión discontinua</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#un-umbral-que-reparte-el-tratamiento" id="toc-un-umbral-que-reparte-el-tratamiento" class="nav-link active" data-scroll-target="#un-umbral-que-reparte-el-tratamiento"><span class="header-section-number">1</span> Un umbral que reparte el tratamiento</a></li>
+  <li><a href="#rd-nítida" id="toc-rd-nítida" class="nav-link" data-scroll-target="#rd-nítida"><span class="header-section-number">2</span> RD nítida</a></li>
+  <li><a href="#estimación-regresión-local-lineal-en-cada-lado" id="toc-estimación-regresión-local-lineal-en-cada-lado" class="nav-link" data-scroll-target="#estimación-regresión-local-lineal-en-cada-lado"><span class="header-section-number">3</span> Estimación: regresión local lineal en cada lado</a>
+  <ul class="collapse">
+  <li><a href="#elección-del-ancho-de-banda-y-de-la-forma-funcional" id="toc-elección-del-ancho-de-banda-y-de-la-forma-funcional" class="nav-link" data-scroll-target="#elección-del-ancho-de-banda-y-de-la-forma-funcional"><span class="header-section-number">3.1</span> Elección del ancho de banda y de la forma funcional</a></li>
+  <li><a href="#inferencia-robusta-con-corrección-de-sesgo" id="toc-inferencia-robusta-con-corrección-de-sesgo" class="nav-link" data-scroll-target="#inferencia-robusta-con-corrección-de-sesgo"><span class="header-section-number">3.2</span> Inferencia robusta con corrección de sesgo</a></li>
+  </ul></li>
+  <li><a href="#validez-qué-se-puede-y-se-debe-revisar" id="toc-validez-qué-se-puede-y-se-debe-revisar" class="nav-link" data-scroll-target="#validez-qué-se-puede-y-se-debe-revisar"><span class="header-section-number">4</span> Validez: qué se puede (y se debe) revisar</a></li>
+  <li><a href="#rd-difusa" id="toc-rd-difusa" class="nav-link" data-scroll-target="#rd-difusa"><span class="header-section-number">5</span> RD difusa</a></li>
+  <li><a href="#postgrado-el-sesgo-de-frontera-de-la-regresión-local-lineal" id="toc-postgrado-el-sesgo-de-frontera-de-la-regresión-local-lineal" class="nav-link" data-scroll-target="#postgrado-el-sesgo-de-frontera-de-la-regresión-local-lineal"><span class="header-section-number">6</span> ★ Postgrado: el sesgo de frontera de la regresión local lineal</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-06.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 6 · Regresión discontinua</h1>
+<p class="subtitle lead">Identificación por continuidad, estimación local lineal e inferencia robusta</p>
+</div>
+
+<div>
+  <div class="description">
+    Diseños de regresión discontinua nítida y difusa: identificación del efecto en el umbral por continuidad de los resultados potenciales, estimación local lineal con sesgo de frontera, elección del ancho de banda, inferencia robusta con corrección de sesgo, validación (manipulación, covariables, placebos) y el estimador de Wald en el corte.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a></p>
+<section id="un-umbral-que-reparte-el-tratamiento" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Un umbral que reparte el tratamiento</h1>
+<p>Muchas políticas se asignan con una <strong>regla de corte</strong>: una beca para quienes superan un puntaje en una prueba, un programa social para hogares con un índice de pobreza bajo cierto valor, un candidato que asume el cargo si obtiene más de la mitad de los votos, una clase que se divide si supera cierto número de alumnos, una prestación que se activa a cierta edad. En todos estos casos hay una <strong>variable de asignación</strong> (<em>running variable</em>) <span class="math inline">\(X_i\)</span> y un <strong>umbral</strong> <span class="math inline">\(c\)</span>: el tratamiento depende de si <span class="math inline">\(X_i\ge c\)</span>.</p>
+<p>La intuición del <strong>diseño de regresión discontinua</strong> (RD) es que <strong>quienes quedan justo debajo y justo sobre el umbral son casi idénticos</strong>: una persona con <span class="math inline">\(59{,}9\)</span> puntos y otra con <span class="math inline">\(60{,}1\)</span> difieren, a lo más, en algún grano de azar. Si el tratamiento cambia de manera abrupta en el umbral, cualquier <strong>salto</strong> en el resultado en ese punto se puede atribuir al tratamiento. Es una versión “natural” del experimento aleatorizado de la Clase 1, <strong>localizada en el umbral</strong>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;El diseño fue introducido por Donald Thistlethwaite y Donald Campbell en 1960, psicólogos educacionales que estudiaron el efecto de recibir un reconocimiento por mérito (una “carta de mérito”) comparando a estudiantes justo sobre y justo bajo el puntaje de corte. El diseño fue casi olvidado en economía por cerca de cuatro décadas, hasta que Hahn, Todd y van der Klaauw (2001) establecieron su identificación formal y Lee (2008) lo aplicó a elecciones; hoy es uno de los métodos más usados en evaluación de políticas.</p></div></div></section>
+<section id="rd-nítida" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> RD nítida</h1>
+<p>Sea <span class="math inline">\(D_i = \mathbf{1}\{X_i\ge c\}\)</span>: el tratamiento es una <strong>función determinística</strong> de <span class="math inline">\(X_i\)</span>. Los resultados potenciales son <span class="math inline">\(Y_i(0),Y_i(1)\)</span>, y el observado, <span class="math inline">\(Y_i = Y_i(D_i)\)</span>. El parámetro es el efecto <strong>en el umbral</strong>: <span class="math display">\[
+\tau_{SRD} = \mathbb{E}\big[Y_i(1) - Y_i(0)\mid X_i = c\big].
+\]</span></p>
+<div id="thm-srd" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Identificación de RD nítida)</strong></span> Si las funciones <span class="math inline">\(x\mapsto\mathbb{E}[Y(0)\mid X = x]\)</span> y <span class="math inline">\(x\mapsto\mathbb{E}[Y(1)\mid X = x]\)</span> son <strong>continuas</strong> en <span class="math inline">\(x = c\)</span>, y la densidad de <span class="math inline">\(X\)</span> es positiva en un entorno de <span class="math inline">\(c\)</span>, entonces <span class="math display">\[
+\tau_{SRD} = \lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[Y\mid X = x].
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por la regla de asignación, para <span class="math inline">\(x\ge c\)</span>, <span class="math inline">\(Y = Y(1)\)</span> y <span class="math inline">\(\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(1)\mid X = x]\)</span>; para <span class="math inline">\(x&lt;c\)</span>, <span class="math inline">\(\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(0)\mid X = x]\)</span>. Tomando límites y usando la continuidad de ambas funciones en <span class="math inline">\(c\)</span>: <span class="math display">\[
+\lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(1)\mid X = c],\qquad\lim_{x\uparrow c}\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(0)\mid X = c].
+\]</span> La diferencia es <span class="math inline">\(\mathbb{E}[Y(1) - Y(0)\mid X = c] = \tau_{SRD}\)</span>.</p>
+</div>
+<p>Es un resultado de <strong>identificación muy simple</strong>: el efecto es el salto de la esperanza condicional <span class="math inline">\(m(x) = \mathbb{E}[Y\mid X = x]\)</span> en el umbral. Observa que <strong>no hay traslape</strong> (nadie con <span class="math inline">\(X&lt;c\)</span> es tratado y nadie con <span class="math inline">\(X\ge c\)</span> es control): la comparación se hace por <strong>extrapolación mínima</strong> desde ambos lados hasta <span class="math inline">\(c\)</span>. El supuesto es de <strong>continuidad</strong>: en ausencia del tratamiento, el resultado esperado <strong>no salta</strong> en <span class="math inline">\(c\)</span>, es decir, no hay otra cosa que cambie abruptamente en el umbral. Es un supuesto mucho más débil que el insesgamiento condicional de la Clase 2 (que supone observar todos los confusores): aquí los confusores pueden ser <strong>no observados</strong>, mientras varíen suavemente con <span class="math inline">\(X\)</span>.</p>
+<p>Dos lecturas importantes. <strong>(1) El parámetro es local</strong>: es el efecto para quienes están <strong>en el umbral</strong>, que puede no representar al resto de la población (la <strong>validez externa</strong> es un problema serio de RD). <strong>(2) El supuesto de continuidad no se puede testear directamente</strong> (involucra los resultados potenciales), pero tiene implicaciones testeables que se verifican (abajo).</p>
+</section>
+<section id="estimación-regresión-local-lineal-en-cada-lado" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estimación: regresión local lineal en cada lado</h1>
+<p>El problema de estimación es el de la Clase 5: estimar el valor de una función en un <strong>punto de frontera</strong> (el umbral es el borde del soporte de cada lado). Por lo visto, <strong>Nadaraya–Watson</strong> tiene sesgo de orden <span class="math inline">\(h\)</span> en la frontera, de modo que se usa <strong>regresión local lineal</strong> (sesgo <span class="math inline">\(O(h^2)\)</span>): se ajusta una recta ponderada con kernel <strong>a cada lado</strong> y se toma la diferencia de los interceptos en <span class="math inline">\(c\)</span>.</p>
+<div id="def-rd-est" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Estimador RD local lineal)</strong></span> Con kernel <span class="math inline">\(K\)</span> y ancho de banda <span class="math inline">\(h\)</span>, <span class="math display">\[
+\hat\tau = \hat a_+ - \hat a_-,\qquad(\hat a_\pm,\hat b_\pm) = \arg\min_{a,b}\sum_{i:\,\pm(X_i - c)\ge0}\big(Y_i - a - b(X_i - c)\big)^2K\Big(\frac{X_i - c}h\Big).
+\]</span></p>
+</div>
+<p>Es una regresión ponderada con <strong>pendientes distintas a cada lado</strong>. Equivale a regresar <span class="math inline">\(Y_i\)</span> sobre <span class="math inline">\(D_i\)</span>, <span class="math inline">\((X_i - c)\)</span> y <span class="math inline">\(D_i(X_i - c)\)</span>, con pesos <span class="math inline">\(K((X_i - c)/h)\)</span>, usando solo las observaciones con <span class="math inline">\(|X_i - c|\le h\)</span>: el coeficiente de <span class="math inline">\(D_i\)</span> es <span class="math inline">\(\hat\tau\)</span>. El bias y la varianza son los de la regresión local lineal en la frontera.</p>
+<div id="prp-rd-asint" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Sesgo y varianza de <span class="math inline">\(\hat\tau\)</span>)</strong></span> Sea <span class="math inline">\(\tilde\kappa_j = \int_0^\infty u^jK(u)\,du\)</span> y <span class="math inline">\(\tilde\rho_j = \int_0^\infty u^jK(u)^2\,du\)</span>. Bajo continuidad y suavidad de <span class="math inline">\(m_\pm\)</span>, con <span class="math inline">\(h\to0\)</span> y <span class="math inline">\(nh\to\infty\)</span>, <span class="math display">\[
+\mathbb{E}\hat\tau - \tau\approx\tfrac12h^2C_K\big(m_+''(c) - m_-''(c)\big),\qquad C_K = \frac{\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3}{\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2},\qquad\operatorname{Var}(\hat\tau)\approx\frac{V_K}{nhf(c)}\big(\sigma_+^2(c) + \sigma_-^2(c)\big),
+\]</span> con <span class="math inline">\(V_K = \dfrac{\tilde\kappa_2^2\tilde\rho_0 - 2\tilde\kappa_1\tilde\kappa_2\tilde\rho_1 + \tilde\kappa_1^2\tilde\rho_2}{(\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2)^2}\)</span> y $m_’’ = $ la segunda derivada de <span class="math inline">\(\mathbb{E}[Y\mid X = x]\)</span> a cada lado del umbral.</p>
+</div>
+<p>La demostración del sesgo está en la sección ★; la de la varianza es el cálculo estándar de un estimador ponderado (como en el teorema de Nadaraya–Watson de la Clase 5, ahora con los momentos de kernel de <strong>un lado</strong>, <span class="math inline">\(\tilde\kappa_j\)</span>). Para el kernel uniforme, <span class="math inline">\(C_K = -1/6\)</span>; para Epanechnikov, <span class="math inline">\(C_K\approx-0{,}116\)</span> (Ejercicio 6.7). Observa que el sesgo depende de la <strong>diferencia de curvaturas</strong> a ambos lados: si la función es lineal en cada lado, no hay sesgo aun con un ancho grande. Como en la Clase 5, el compromiso sesgo–varianza da <span class="math inline">\(h^*\propto n^{-1/5}\)</span> y una tasa <span class="math inline">\(n^{-2/5}\)</span> para <span class="math inline">\(\hat\tau\)</span> (más lenta que <span class="math inline">\(\sqrt n\)</span>): el RD es un diseño <strong>con alta variabilidad</strong>, porque solo usa las observaciones cercanas al umbral.</p>
+<section id="elección-del-ancho-de-banda-y-de-la-forma-funcional" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="elección-del-ancho-de-banda-y-de-la-forma-funcional"><span class="header-section-number">3.1</span> Elección del ancho de banda y de la forma funcional</h2>
+<p>Dos prácticas que conviene evitar: (i) ajustar un <strong>polinomio global de orden alto</strong> (cuártico, por ejemplo) a toda la muestra. Con una función de varios grados, los polinomios globales dan pesos extraños a observaciones <strong>lejanas al umbral</strong> y producen estimaciones ruidosas y sensibles al grado del polinomio (Gelman e Imbens, 2019); y (ii) elegir el ancho “a ojo” o por ensayo y error para obtener significancia. La práctica recomendada es <strong>regresión local lineal (o cuadrática) con un ancho de banda basado en datos</strong>, el que minimiza el error cuadrático medio (<strong>MSE-óptimo</strong>): el de Imbens y Kalyanaraman (2012) o el de Calonico, Cattaneo y Titiunik (2014), que usan estimadores piloto de <span class="math inline">\(m_\pm''\)</span> para evaluar <span class="math inline">\(h^*\propto[\,V_K\sigma^2/(f\cdot C_K^2(\Delta m'')^2)]^{1/5}n^{-1/5}\)</span>. Además se presenta <strong>sensibilidad</strong>: estimaciones con el doble y la mitad del ancho y con distintos kernels y órdenes.</p>
+</section>
+<section id="inferencia-robusta-con-corrección-de-sesgo" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="inferencia-robusta-con-corrección-de-sesgo"><span class="header-section-number">3.2</span> Inferencia robusta con corrección de sesgo</h2>
+<p>Surge un problema que ya conocemos de la Clase 5: al <strong>ancho óptimo en MSE</strong>, el sesgo es del <strong>mismo orden</strong> que el error estándar, de modo que un intervalo <span class="math inline">\(\hat\tau\pm1{,}96\,\widehat{\text{ee}}\)</span> <strong>no tiene la cobertura nominal</strong> (el estadístico no está centrado en cero). La solución de Calonico, Cattaneo y Titiunik (2014) es la <strong>inferencia robusta con corrección de sesgo</strong>:</p>
+<ol type="1">
+<li><strong>Estimar el sesgo</strong> <span class="math inline">\(\hat B\)</span> con un ajuste local <strong>cuadrático</strong> (que reduce el sesgo de segundo orden) y un ancho <span class="math inline">\(b\)</span> propio.</li>
+<li><strong>Restar</strong> el sesgo estimado: <span class="math inline">\(\hat\tau_{bc} = \hat\tau - \hat B\)</span>.</li>
+<li><strong>Ajustar el error estándar</strong> para reconocer que <span class="math inline">\(\hat B\)</span> es estimado con error (el estimador corregido tiene una varianza <strong>mayor</strong> que la de <span class="math inline">\(\hat\tau\)</span>): <span class="math inline">\(\hat\tau_{bc}\)</span> es equivalente a un estimador <strong>local cuadrático</strong> con un ancho “ancho”, con varianza <span class="math inline">\(V_{bc}&gt;V\)</span>.</li>
+<li>Usar el estadístico <span class="math inline">\((\hat\tau - \hat B)/\sqrt{\hat V_{bc}}\to_dN(0,1)\)</span> aún con <span class="math inline">\(h = h^*_{MSE}\)</span>.</li>
+</ol>
+<p>El resultado es un intervalo con <strong>cobertura correcta</strong> a costa de ser algo más ancho. Es el estándar actual y está implementado en software (<code>rdrobust</code>).</p>
+</section>
+</section>
+<section id="validez-qué-se-puede-y-se-debe-revisar" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Validez: qué se puede (y se debe) revisar</h1>
+<p>El supuesto de continuidad no se prueba, pero <strong>tiene implicaciones testeables</strong>. Un análisis RD serio incluye siempre:</p>
+<ol type="1">
+<li><strong>Gráfico de promedios por intervalos</strong> del resultado contra <span class="math inline">\(X\)</span> (<em>binned scatter</em>), con el umbral marcado: la herramienta más persuasiva, que permite <strong>ver</strong> el salto (o su ausencia) y la forma funcional.</li>
+<li><strong>Test de manipulación</strong> (McCrary, 2008; Cattaneo, Jansson y Ma, 2020): si las personas pueden <strong>manipular</strong> <span class="math inline">\(X\)</span> para quedar sobre el umbral (un profesor que sube la nota a quien le falta un punto), los que quedan justo arriba difieren de los de justo abajo y la continuidad falla. Se testea la <strong>continuidad de la densidad</strong> de <span class="math inline">\(X\)</span> en <span class="math inline">\(c\)</span>: una <strong>acumulación</strong> de observaciones justo sobre el umbral es señal de manipulación (Ejercicio 6.4).</li>
+<li><strong>Continuidad de covariables previas</strong> al tratamiento: las características predeterminadas (edad, sexo, nivel previo) <strong>no</strong> deben saltar en <span class="math inline">\(c\)</span>. Se repite el RD con cada covariable como “resultado”: el salto debe ser cero.</li>
+<li><strong>Umbrales placebo</strong>: en puntos donde no hay tratamiento (<span class="math inline">\(c' \ne c\)</span>), el “efecto” debe ser nulo.</li>
+<li><strong>Sensibilidad</strong> a <span class="math inline">\(h\)</span>, al kernel, al orden del polinomio y a <strong>excluir</strong> observaciones muy cercanas al umbral (<em>donut RD</em>, que descarta una vecindad en caso de redondeo o manipulación fina).</li>
+</ol>
+<p>Si el running variable es <strong>discreto</strong> (por ejemplo, una edad en años), hay pocos valores distintos cerca de <span class="math inline">\(c\)</span> y la teoría de regresión local (que supone una variable continua) no se aplica directamente; hay que usar métodos específicos o interpretar el RD como comparación de celdas.</p>
+</section>
+<section id="rd-difusa" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> RD difusa</h1>
+<p>En muchos diseños el umbral <strong>no determina exactamente</strong> el tratamiento, solo <strong>cambia su probabilidad</strong>: la beca se <strong>ofrece</strong> a quienes superan el puntaje, pero algunos de ellos no la aceptan, y algunos de los que no la reciben consiguen otra. Entonces <span class="math inline">\(D_i\ne\mathbf{1}\{X_i\ge c\}\)</span>, y <span class="math inline">\(P(D = 1\mid X = x)\)</span> <strong>salta</strong> en <span class="math inline">\(c\)</span>, pero no de <span class="math inline">\(0\)</span> a <span class="math inline">\(1\)</span>. Es la <strong>RD difusa</strong> (<em>fuzzy</em>), y tiene la misma estructura que <strong>VI</strong> de la Clase 3: el umbral actúa como <strong>instrumento</strong> local, <span class="math inline">\(Z_i = \mathbf{1}\{X_i\ge c\}\)</span>.</p>
+<div id="thm-frd" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Identificación de RD difusa)</strong></span> Si <span class="math inline">\(\mathbb{E}[Y(d)\mid X]\)</span> y la distribución de los tratamientos potenciales <span class="math inline">\(D(z)\)</span> son continuas en <span class="math inline">\(c\)</span>, y se cumplen <strong>exclusión</strong> (el umbral afecta a <span class="math inline">\(Y\)</span> solo vía <span class="math inline">\(D\)</span>) y <strong>monotonía</strong> en el umbral, entonces <span class="math display">\[
+\tau_{FRD} = \frac{\lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[Y\mid X = x]}{\lim_{x\downarrow c}\mathbb{E}[D\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[D\mid X = x]} = \mathbb{E}\big[Y(1) - Y(0)\mid X = c,\text{ complier}\big],
+\]</span> el <strong>LATE en el umbral</strong>: el efecto para los compliers (quienes reciben el tratamiento si <span class="math inline">\(X\ge c\)</span> y no lo reciben si <span class="math inline">\(X&lt;c\)</span>) <strong>cuya <span class="math inline">\(X\)</span> está en <span class="math inline">\(c\)</span></strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Esquema.) Es el teorema de Imbens–Angrist de la Clase 3 aplicado <strong>condicionando en <span class="math inline">\(X = c\)</span></strong> (en un entorno que se achica). Por continuidad, cerca del umbral los grupos “arriba” y “abajo” de <span class="math inline">\(c\)</span> son comparables en todo salvo en el valor de <span class="math inline">\(Z = \mathbf{1}\{X\ge c\}\)</span>, y juegan el papel de la <strong>independencia</strong> del instrumento. Aplicando la demostración de Imbens–Angrist: el salto en <span class="math inline">\(\mathbb{E}[Y\mid X]\)</span> es el efecto de <span class="math inline">\(Z\)</span> sobre <span class="math inline">\(Y\)</span>, que por exclusión es <span class="math inline">\(\mathbb{E}[(D(1) - D(0))(Y(1) - Y(0))\mid X = c]\)</span>, y por monotonía es el efecto sobre los compliers multiplicado por su proporción <span class="math inline">\(P(\text{complier}\mid X = c)\)</span>, que es el salto en <span class="math inline">\(\mathbb{E}[D\mid X]\)</span>. Dividiendo se obtiene el cociente.</p>
+</div>
+<p>La estimación es el <strong>cociente de dos saltos</strong>, cada uno estimado con regresión local lineal (equivalente a <strong>MC2E local</strong>: <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(D\)</span> instrumentando con <span class="math inline">\(Z\)</span>, ambas con la misma ventana y los mismos pesos). Se aplica toda la advertencia de la Clase 3: el estimador es <strong>local en dos sentidos</strong> (en el umbral y para los compliers), y si el salto en <span class="math inline">\(D\)</span> es chico, es un instrumento <strong>débil</strong> (Clase 10). Ejemplo: si <span class="math inline">\(\mathbb{E}[Y\mid X]\)</span> salta <span class="math inline">\(1{,}2\)</span> en <span class="math inline">\(c\)</span> y <span class="math inline">\(\mathbb{E}[D\mid X]\)</span> salta <span class="math inline">\(0{,}6\)</span>, <span class="math inline">\(\tau_{FRD} = 1{,}2/0{,}6 = 2\)</span> (Ejercicio 6.2).</p>
+<p>Extensión: el <strong>diseño de <em>kink</em> de regresión</strong> (RK) se usa cuando lo que cambia en el umbral es la <strong>pendiente</strong> del tratamiento (la intensidad), por ejemplo la tasa de reemplazo de un seguro de desempleo que cambia de regla en un nivel de ingreso previo: el efecto es el cociente del <strong>cambio de pendiente</strong> del resultado y del tratamiento.</p>
+</section>
+<section id="postgrado-el-sesgo-de-frontera-de-la-regresión-local-lineal" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: el sesgo de frontera de la regresión local lineal</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Deducimos la constante <span class="math inline">\(C_K\)</span> del sesgo de la <a href="#prp-rd-asint" class="quarto-xref">Proposición&nbsp;1</a>, y confirmamos que el sesgo de local lineal en la frontera es <span class="math inline">\(O(h^2)\)</span> (frente al <span class="math inline">\(O(h)\)</span> de Nadaraya–Watson).</p>
+</div>
+</div>
+<p>Consideramos el lado derecho (<span class="math inline">\(X_i\ge c\)</span>) y escribimos <span class="math inline">\(S_j = \sum_iK\big(\tfrac{X_i - c}h\big)(X_i - c)^j\)</span> y, para <span class="math inline">\(m\)</span> dos veces diferenciable, <span class="math inline">\(m(X_i) = m(c) + m'(c)(X_i - c) + \tfrac12m''(c)(X_i - c)^2 + o\big((X_i - c)^2\big)\)</span>. El estimador del intercepto es la primera componente de <span class="math inline">\(S^{-1}T\)</span> con <span class="math inline">\(S = \begin{pmatrix}S_0&amp;S_1\\S_1&amp;S_2\end{pmatrix}\)</span> y <span class="math inline">\(T = (\sum K_iY_i,\ \sum K_i(X_i - c)Y_i)'\)</span>. Sustituyendo el desarrollo de <span class="math inline">\(m\)</span> en <span class="math inline">\(Y_i\)</span> (con <span class="math inline">\(\mathbb{E}[Y_i\mid X_i] = m(X_i)\)</span>), <span class="math inline">\(T\)</span> es igual a <span class="math inline">\(S\cdot(m(c),m'(c))'\)</span> <strong>más</strong> el término <span class="math inline">\(\tfrac12m''(c)(S_2,S_3)'\)</span>. Entonces</p>
+<p><span id="eq-sesgo-frontera"><span class="math display">\[
+\mathbb{E}\hat a - m(c) = \tfrac12m''(c)\,e_1'S^{-1}\begin{pmatrix}S_2\\S_3\end{pmatrix} = \tfrac12m''(c)\frac{S_2^2 - S_1S_3}{S_0S_2 - S_1^2}.
+\tag{1}\]</span></span></p>
+<p>(Los términos con <span class="math inline">\(m(c)\)</span> y <span class="math inline">\(m'(c)\)</span> se recuperan <strong>exactamente</strong>: el estimador es insesgado para funciones lineales, la propiedad de la regresión local lineal de la Clase 5.) Ahora, <span class="math inline">\(S_j\approx nh^{j + 1}f(c)\tilde\kappa_j\)</span> (suma que aproxima una integral sobre <span class="math inline">\(u\in[0,\infty)\)</span>: <span class="math inline">\(\sum_iK(\cdot)(X_i - c)^j\approx nf(c)\int_0^\infty K(u/h)\,t^j\,dt = nf(c)h^{j + 1}\tilde\kappa_j\)</span>). Reemplazando, <span class="math inline">\(S_2^2 - S_1S_3\approx(nhf(c))^2h^4(\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3)\)</span> y <span class="math inline">\(S_0S_2 - S_1^2\approx(nhf(c))^2h^2(\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2)\)</span>; los factores <span class="math inline">\((nhf(c))^2\)</span> se cancelan y queda un factor <span class="math inline">\(h^2\)</span>: <span class="math display">\[
+\mathbb{E}\hat a - m(c)\approx\tfrac12m''(c)h^2\,\frac{\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3}{\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2} = \tfrac12m''(c)h^2C_K.
+\]</span> Es de orden <span class="math inline">\(h^2\)</span>: el estimador local lineal <strong>no pierde un orden</strong> en la frontera, a diferencia de Nadaraya–Watson. En el lado izquierdo, por simetría, el cálculo es el mismo con <span class="math inline">\(m_-''\)</span>. El signo de <span class="math inline">\(C_K\)</span> es <strong>negativo</strong>: ajustar una recta a una función convexa (<span class="math inline">\(m''&gt;0\)</span>) en un intervalo de <strong>un solo lado</strong>, y evaluar el ajuste en el <strong>extremo</strong>, lo subestima (Ejercicio 6.7). Con kernel uniforme sobre <span class="math inline">\([0,1]\)</span> (en unidades de <span class="math inline">\(h\)</span>): <span class="math inline">\(\tilde\kappa_j = 1/(j + 1)\)</span> y <span class="math inline">\(C_K = \dfrac{1/9 - 1/8}{1/3 - 1/4} = -\dfrac16\)</span>: para <span class="math inline">\(m(x) = x^2\)</span> en <span class="math inline">\([0,h]\)</span>, el intercepto de la recta de mínimos cuadrados es <span class="math inline">\(-h^2/6\)</span>, coincidente con <span class="math inline">\(\tfrac12m''h^2C_K = \tfrac12\cdot2\cdot h^2\cdot(-\tfrac16)\)</span> ✓.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li><strong>RD nítida:</strong> <span class="math inline">\(D = \mathbf{1}\{X\ge c\}\)</span>; el efecto en el umbral es el <strong>salto</strong> de <span class="math inline">\(\mathbb{E}[Y\mid X = x]\)</span> en <span class="math inline">\(c\)</span>, identificado por <strong>continuidad</strong> de los resultados potenciales (<a href="#thm-srd" class="quarto-xref">Teorema&nbsp;1</a>). Es un efecto <strong>local</strong>.</li>
+<li><strong>Estimación:</strong> regresión <strong>local lineal</strong> a cada lado con kernel; <span class="math inline">\(\hat\tau = \hat a_+ - \hat a_-\)</span> (<a href="#def-rd-est" class="quarto-xref">Definición&nbsp;1</a>). Sesgo <span class="math inline">\(\tfrac12h^2C_K(m_+'' - m_-'')\)</span> y varianza <span class="math inline">\(V_K(\sigma_+^2 + \sigma_-^2)/(nhf)\)</span> (<a href="#prp-rd-asint" class="quarto-xref">Proposición&nbsp;1</a>); tasa <span class="math inline">\(n^{-2/5}\)</span>.</li>
+<li><strong>Evitar</strong> polinomios globales de orden alto. Usar ancho MSE-óptimo y mostrar <strong>sensibilidad</strong>.</li>
+<li><strong>Inferencia robusta con corrección de sesgo</strong> (CCT): cobertura correcta aun con el ancho óptimo.</li>
+<li><strong>Validez:</strong> gráfico por intervalos, test de <strong>manipulación</strong> (densidad), continuidad de <strong>covariables</strong>, <strong>placebos</strong>, sensibilidad.</li>
+<li><strong>RD difusa</strong> (<a href="#thm-frd" class="quarto-xref">Teorema&nbsp;2</a>): cociente de saltos = <strong>LATE en el umbral</strong> (Wald local).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 6.1.</strong> Una beca se otorga con un puntaje <span class="math inline">\(X\ge60\)</span>. Con regresión local, el límite del promedio de matrícula universitaria es <span class="math inline">\(0{,}38\)</span> por la izquierda y <span class="math inline">\(0{,}52\)</span> por la derecha. Calcula <span class="math inline">\(\hat\tau\)</span> e interpreta. ¿Qué diría un salto de <span class="math inline">\(0{,}02\)</span> en la edad promedio en <span class="math inline">\(c\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\tau = 0{,}52 - 0{,}38 = 0{,}14\)</span>: la beca <strong>aumenta 14 puntos porcentuales</strong> la probabilidad de matrícula para los estudiantes con puntaje cercano a <span class="math inline">\(60\)</span>. Es un efecto <strong>local</strong>: no dice cuánto aumentaría la matrícula para alguien con puntaje <span class="math inline">\(30\)</span> o <span class="math inline">\(90\)</span>. Un salto de <span class="math inline">\(0{,}02\)</span> años en la edad promedio es, en la práctica, <strong>nulo</strong> (si el error estándar es del orden de <span class="math inline">\(0{,}05\)</span>): las covariables previas no saltan, lo que respalda la continuidad. Si saltara mucho (por ejemplo, <span class="math inline">\(2\)</span> años), sería señal de que la variable de asignación se <strong>manipula</strong> o de que algo más cambia en <span class="math inline">\(c\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.2.</strong> En una RD difusa, <span class="math inline">\(\mathbb{E}[Y\mid X]\)</span> salta <span class="math inline">\(1{,}2\)</span> en <span class="math inline">\(c\)</span> y <span class="math inline">\(\mathbb{E}[D\mid X]\)</span> salta de <span class="math inline">\(0{,}2\)</span> a <span class="math inline">\(0{,}8\)</span>. Calcula <span class="math inline">\(\tau_{FRD}\)</span> y la proporción de compliers en el umbral.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El salto en <span class="math inline">\(D\)</span> es <span class="math inline">\(0{,}8 - 0{,}2 = 0{,}6\)</span>, que es la proporción de compliers en <span class="math inline">\(c\)</span> (como en la proposición de las proporciones de los estratos, Clase 3: <span class="math inline">\(\pi_c\)</span> es la primera etapa). <span class="math inline">\(\tau_{FRD} = 1{,}2/0{,}6 = 2{,}0\)</span>. Entre quienes cumplen (el <span class="math inline">\(60\)</span> % que recibe el tratamiento solo si <span class="math inline">\(X\ge c\)</span>, y no recibe si <span class="math inline">\(X&lt;c\)</span>), el efecto del tratamiento en el umbral es <span class="math inline">\(2\)</span>. Los always-takers (<span class="math inline">\(20\)</span> %) y los never-takers (<span class="math inline">\(20\)</span> %) no entran en el LATE. El efecto de <strong>superar el umbral</strong> (el ITT) es <span class="math inline">\(1{,}2\)</span>, el <span class="math inline">\(60\)</span> % del efecto sobre los compliers.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.3.</strong> Con kernel uniforme (<span class="math inline">\(C_K = -1/6\)</span>), <span class="math inline">\(m_+''(c) = 4\)</span> y <span class="math inline">\(m_-''(c) = 0\)</span>, calcula el sesgo de <span class="math inline">\(\hat\tau\)</span> para <span class="math inline">\(h = 0{,}5\)</span> y para <span class="math inline">\(h = 0{,}25\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sesgo <span class="math inline">\(=\tfrac12h^2C_K(m_+'' - m_-'') = \tfrac12h^2\cdot(-\tfrac16)\cdot4 = -h^2/3\)</span>. <span class="math inline">\(h = 0{,}5\)</span>: <span class="math inline">\(-0{,}25/3 = -0{,}0833\)</span>. <span class="math inline">\(h = 0{,}25\)</span>: <span class="math inline">\(-0{,}0625/3 = -0{,}0208\)</span>. Reducir el ancho a la mitad divide el sesgo por <span class="math inline">\(4\)</span> (es <span class="math inline">\(\propto h^2\)</span>), pero multiplica la desviación estándar por <span class="math inline">\(\sqrt2\approx1{,}41\)</span> (la varianza es <span class="math inline">\(\propto1/(nh)\)</span>): el compromiso sesgo–varianza. El sesgo es negativo: como la curvatura positiva está solo del lado derecho, el ajuste lineal subestima el intercepto derecho y, por lo tanto, <strong>subestima el efecto</strong>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.4.</strong> Un test de manipulación cuenta, en una ventana angosta alrededor del umbral, <span class="math inline">\(120\)</span> observaciones sobre <span class="math inline">\(c\)</span> y <span class="math inline">\(80\)</span> bajo <span class="math inline">\(c\)</span>. Bajo continuidad de la densidad se esperaría la mitad en cada lado. Calcula el estadístico <span class="math inline">\(z\)</span> y concluye al 5 %.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(N = 200\)</span> y <span class="math inline">\(p_0 = 0{,}5\)</span>: media <span class="math inline">\(100\)</span> y varianza <span class="math inline">\(200\cdot0{,}25 = 50\)</span>. <span class="math inline">\(z = (120 - 100)/\sqrt{50} = 2{,}83&gt;1{,}96\)</span>: <strong>se rechaza</strong> la continuidad de la densidad: hay <strong>acumulación</strong> justo sobre el umbral, señal de que algunas personas manipulan su <span class="math inline">\(X\)</span> para superar <span class="math inline">\(c\)</span> (por ejemplo, profesores que suben notas, o empresas que declaran ingresos justo bajo un límite). Si la manipulación es <strong>selectiva</strong> (quienes pasan son los más hábiles), los grupos a ambos lados dejan de ser comparables, y el RD pierde validez. Una salida parcial es el <em>donut RD</em> (excluir los más cercanos al umbral), si la manipulación se concentra ahí.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.5.</strong> Un investigador ajusta un polinomio de <strong>grado 4</strong> a toda la muestra y encuentra un efecto significativo; con grado 2 desaparece; con regresión local lineal con ancho óptimo, es pequeño y no significativo. ¿Qué concluyes?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El resultado <strong>depende de la forma funcional global</strong>, una señal de que el “salto” puede ser un artefacto de la curvatura: un polinomio de grado alto ajustado a toda la muestra <strong>da un peso desproporcionado a observaciones lejanas</strong> y puede crear un salto espurio en <span class="math inline">\(c\)</span> (Gelman–Imbens, 2019). La regresión <strong>local</strong> lineal, que usa solo observaciones cercanas al umbral y tiene mejores propiedades en la frontera, es más confiable. Conclusión: no hay evidencia sólida de un efecto; hay que reportar los resultados del RD local con inferencia robusta (CCT) y los gráficos, y <strong>no</strong> quedarse con la especificación que da significancia.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.6.</strong> Las estimaciones puntuales de <span class="math inline">\(\tau\)</span> (error estándar) con anchos <span class="math inline">\(h = 0{,}5,\,1{,}0,\,2{,}0\)</span> son <span class="math inline">\(2{,}4\ (0{,}9)\)</span>, <span class="math inline">\(2{,}1\ (0{,}6)\)</span> y <span class="math inline">\(1{,}2\ (0{,}4)\)</span>. ¿Qué sugiere el patrón?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Las estimaciones <strong>caen</strong> al aumentar <span class="math inline">\(h\)</span> (<span class="math inline">\(2{,}4\to2{,}1\to1{,}2\)</span>) mientras los errores estándar caen (más datos): con anchos grandes entra más observaciones <strong>lejanas</strong>, y si la función tiene curvatura el <strong>sesgo</strong> aumenta. Los dos anchos pequeños dan resultados similares (<span class="math inline">\(2{,}4\)</span> y <span class="math inline">\(2{,}1\)</span>) pero el tercero se aparta bastante: el sesgo domina a <span class="math inline">\(h = 2\)</span>. Se elegiría el ancho <strong>MSE-óptimo</strong> (cercano a <span class="math inline">\(h = 0{,}5\)</span> a <span class="math inline">\(1\)</span>) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para <span class="math inline">\(h = 1\)</span> sería algo mayor que <span class="math inline">\(2{,}1\pm1{,}96(0{,}6)\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.7 ★.</strong> Calcula <span class="math inline">\(\tilde\kappa_0,\dots,\tilde\kappa_3\)</span> y <span class="math inline">\(C_K\)</span> para el kernel de Epanechnikov <span class="math inline">\(K(u) = \tfrac34(1 - u^2)\)</span> en <span class="math inline">\([0,1]\)</span> (lado derecho). Verifica el caso uniforme.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\tilde\kappa_j = \tfrac34\int_0^1u^j(1 - u^2)\,du = \tfrac34\Big[\tfrac1{j + 1} - \tfrac1{j + 3}\Big]\)</span>: <span class="math inline">\(\tilde\kappa_0 = \tfrac34\cdot\tfrac23 = \tfrac12\)</span>; <span class="math inline">\(\tilde\kappa_1 = \tfrac34(\tfrac12 - \tfrac14) = \tfrac3{16}\)</span>; <span class="math inline">\(\tilde\kappa_2 = \tfrac34(\tfrac13 - \tfrac15) = \tfrac1{10}\)</span>; <span class="math inline">\(\tilde\kappa_3 = \tfrac34(\tfrac14 - \tfrac16) = \tfrac1{16}\)</span>. Numerador: <span class="math inline">\(\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3 = 0{,}01 - \tfrac3{256} = 0{,}01 - 0{,}01172 = -0{,}00172\)</span>. Denominador: <span class="math inline">\(\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2 = 0{,}05 - \tfrac9{256} = 0{,}05 - 0{,}03516 = 0{,}01484\)</span>. <span class="math inline">\(C_K = -0{,}1158\approx-0{,}116\)</span>. Caso uniforme: <span class="math inline">\(\tilde\kappa_j = 1/(j + 1)\)</span>, <span class="math inline">\(C_K = (1/9 - 1/8)/(1/3 - 1/4) = (-1/72)/(1/12) = -1/6 = -0{,}167\)</span> ✓. Para el kernel interior (dos lados) el sesgo es <span class="math inline">\(\tfrac12\kappa_2m''h^2\)</span> con <span class="math inline">\(\kappa_2 = 0{,}2\)</span> (Epanechnikov): <span class="math inline">\(0{,}1\,m''h^2\)</span> en <strong>valor absoluto</strong>; en la frontera <span class="math inline">\(|C_K|/2 = 0{,}058\,m''h^2\)</span> con signo negativo: de la misma magnitud (más chico, incluso) pero con otro signo y con una <strong>varianza mayor</strong> (menos datos efectivos), que es el costo real del diseño en la frontera.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-05.html" class="pagination-link" aria-label="Clase 5 · Econometría no paramétrica">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 5 · Econometría no paramétrica</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

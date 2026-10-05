@@ -1,0 +1,192 @@
+---
+title: "Clase 6 · Regresión discontinua"
+subtitle: "Identificación por continuidad, estimación local lineal e inferencia robusta"
+description: "Diseños de regresión discontinua nítida y difusa: identificación del efecto en el umbral por continuidad de los resultados potenciales, estimación local lineal con sesgo de frontera, elección del ancho de banda, inferencia robusta con corrección de sesgo, validación (manipulación, covariables, placebos) y el estimador de Wald en el corte."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Un umbral que reparte el tratamiento
+
+Muchas políticas se asignan con una **regla de corte**: una beca para quienes superan un puntaje en una prueba, un programa social para hogares con un índice de pobreza bajo cierto valor, un candidato que asume el cargo si obtiene más de la mitad de los votos, una clase que se divide si supera cierto número de alumnos, una prestación que se activa a cierta edad. En todos estos casos hay una **variable de asignación** (*running variable*) $X_i$ y un **umbral** $c$: el tratamiento depende de si $X_i\ge c$.
+
+La intuición del **diseño de regresión discontinua** (RD) es que **quienes quedan justo debajo y justo sobre el umbral son casi idénticos**: una persona con $59{,}9$ puntos y otra con $60{,}1$ difieren, a lo más, en algún grano de azar. Si el tratamiento cambia de manera abrupta en el umbral, cualquier **salto** en el resultado en ese punto se puede atribuir al tratamiento. Es una versión "natural" del experimento aleatorizado de la Clase 1, **localizada en el umbral**.[^thistlethwaite]
+
+[^thistlethwaite]: El diseño fue introducido por Donald Thistlethwaite y Donald Campbell en 1960, psicólogos educacionales que estudiaron el efecto de recibir un reconocimiento por mérito (una "carta de mérito") comparando a estudiantes justo sobre y justo bajo el puntaje de corte. El diseño fue casi olvidado en economía por cerca de cuatro décadas, hasta que Hahn, Todd y van der Klaauw (2001) establecieron su identificación formal y Lee (2008) lo aplicó a elecciones; hoy es uno de los métodos más usados en evaluación de políticas.
+
+# RD nítida
+
+Sea $D_i = \mathbf{1}\{X_i\ge c\}$: el tratamiento es una **función determinística** de $X_i$. Los resultados potenciales son $Y_i(0),Y_i(1)$, y el observado, $Y_i = Y_i(D_i)$. El parámetro es el efecto **en el umbral**:
+$$
+\tau_{SRD} = \mathbb{E}\big[Y_i(1) - Y_i(0)\mid X_i = c\big].
+$$
+
+::: {#thm-srd}
+## Identificación de RD nítida
+Si las funciones $x\mapsto\mathbb{E}[Y(0)\mid X = x]$ y $x\mapsto\mathbb{E}[Y(1)\mid X = x]$ son **continuas** en $x = c$, y la densidad de $X$ es positiva en un entorno de $c$, entonces
+$$
+\tau_{SRD} = \lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[Y\mid X = x].
+$$
+:::
+
+::: {.proof}
+Por la regla de asignación, para $x\ge c$, $Y = Y(1)$ y $\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(1)\mid X = x]$; para $x<c$, $\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(0)\mid X = x]$. Tomando límites y usando la continuidad de ambas funciones en $c$:
+$$
+\lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(1)\mid X = c],\qquad\lim_{x\uparrow c}\mathbb{E}[Y\mid X = x] = \mathbb{E}[Y(0)\mid X = c].
+$$
+La diferencia es $\mathbb{E}[Y(1) - Y(0)\mid X = c] = \tau_{SRD}$.
+:::
+
+Es un resultado de **identificación muy simple**: el efecto es el salto de la esperanza condicional $m(x) = \mathbb{E}[Y\mid X = x]$ en el umbral. Observa que **no hay traslape** (nadie con $X<c$ es tratado y nadie con $X\ge c$ es control): la comparación se hace por **extrapolación mínima** desde ambos lados hasta $c$. El supuesto es de **continuidad**: en ausencia del tratamiento, el resultado esperado **no salta** en $c$, es decir, no hay otra cosa que cambie abruptamente en el umbral. Es un supuesto mucho más débil que el insesgamiento condicional de la Clase 2 (que supone observar todos los confusores): aquí los confusores pueden ser **no observados**, mientras varíen suavemente con $X$.
+
+Dos lecturas importantes. **(1) El parámetro es local**: es el efecto para quienes están **en el umbral**, que puede no representar al resto de la población (la **validez externa** es un problema serio de RD). **(2) El supuesto de continuidad no se puede testear directamente** (involucra los resultados potenciales), pero tiene implicaciones testeables que se verifican (abajo).
+
+# Estimación: regresión local lineal en cada lado
+
+El problema de estimación es el de la Clase 5: estimar el valor de una función en un **punto de frontera** (el umbral es el borde del soporte de cada lado). Por lo visto, **Nadaraya–Watson** tiene sesgo de orden $h$ en la frontera, de modo que se usa **regresión local lineal** (sesgo $O(h^2)$): se ajusta una recta ponderada con kernel **a cada lado** y se toma la diferencia de los interceptos en $c$.
+
+::: {#def-rd-est}
+## Estimador RD local lineal
+Con kernel $K$ y ancho de banda $h$,
+$$
+\hat\tau = \hat a_+ - \hat a_-,\qquad(\hat a_\pm,\hat b_\pm) = \arg\min_{a,b}\sum_{i:\,\pm(X_i - c)\ge0}\big(Y_i - a - b(X_i - c)\big)^2K\Big(\frac{X_i - c}h\Big).
+$$
+:::
+
+Es una regresión ponderada con **pendientes distintas a cada lado**. Equivale a regresar $Y_i$ sobre $D_i$, $(X_i - c)$ y $D_i(X_i - c)$, con pesos $K((X_i - c)/h)$, usando solo las observaciones con $|X_i - c|\le h$: el coeficiente de $D_i$ es $\hat\tau$. El bias y la varianza son los de la regresión local lineal en la frontera.
+
+::: {#prp-rd-asint}
+## Sesgo y varianza de $\hat\tau$
+Sea $\tilde\kappa_j = \int_0^\infty u^jK(u)\,du$ y $\tilde\rho_j = \int_0^\infty u^jK(u)^2\,du$. Bajo continuidad y suavidad de $m_\pm$, con $h\to0$ y $nh\to\infty$,
+$$
+\mathbb{E}\hat\tau - \tau\approx\tfrac12h^2C_K\big(m_+''(c) - m_-''(c)\big),\qquad C_K = \frac{\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3}{\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2},\qquad\operatorname{Var}(\hat\tau)\approx\frac{V_K}{nhf(c)}\big(\sigma_+^2(c) + \sigma_-^2(c)\big),
+$$
+con $V_K = \dfrac{\tilde\kappa_2^2\tilde\rho_0 - 2\tilde\kappa_1\tilde\kappa_2\tilde\rho_1 + \tilde\kappa_1^2\tilde\rho_2}{(\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2)^2}$ y $m_\pm'' = $ la segunda derivada de $\mathbb{E}[Y\mid X = x]$ a cada lado del umbral.
+:::
+
+La demostración del sesgo está en la sección ★; la de la varianza es el cálculo estándar de un estimador ponderado (como en el teorema de Nadaraya–Watson de la Clase 5, ahora con los momentos de kernel de **un lado**, $\tilde\kappa_j$). Para el kernel uniforme, $C_K = -1/6$; para Epanechnikov, $C_K\approx-0{,}116$ (Ejercicio 6.7). Observa que el sesgo depende de la **diferencia de curvaturas** a ambos lados: si la función es lineal en cada lado, no hay sesgo aun con un ancho grande. Como en la Clase 5, el compromiso sesgo–varianza da $h^*\propto n^{-1/5}$ y una tasa $n^{-2/5}$ para $\hat\tau$ (más lenta que $\sqrt n$): el RD es un diseño **con alta variabilidad**, porque solo usa las observaciones cercanas al umbral.
+
+## Elección del ancho de banda y de la forma funcional
+
+Dos prácticas que conviene evitar: (i) ajustar un **polinomio global de orden alto** (cuártico, por ejemplo) a toda la muestra. Con una función de varios grados, los polinomios globales dan pesos extraños a observaciones **lejanas al umbral** y producen estimaciones ruidosas y sensibles al grado del polinomio (Gelman e Imbens, 2019); y (ii) elegir el ancho "a ojo" o por ensayo y error para obtener significancia. La práctica recomendada es **regresión local lineal (o cuadrática) con un ancho de banda basado en datos**, el que minimiza el error cuadrático medio (**MSE-óptimo**): el de Imbens y Kalyanaraman (2012) o el de Calonico, Cattaneo y Titiunik (2014), que usan estimadores piloto de $m_\pm''$ para evaluar $h^*\propto[\,V_K\sigma^2/(f\cdot C_K^2(\Delta m'')^2)]^{1/5}n^{-1/5}$. Además se presenta **sensibilidad**: estimaciones con el doble y la mitad del ancho y con distintos kernels y órdenes.
+
+## Inferencia robusta con corrección de sesgo
+
+Surge un problema que ya conocemos de la Clase 5: al **ancho óptimo en MSE**, el sesgo es del **mismo orden** que el error estándar, de modo que un intervalo $\hat\tau\pm1{,}96\,\widehat{\text{ee}}$ **no tiene la cobertura nominal** (el estadístico no está centrado en cero). La solución de Calonico, Cattaneo y Titiunik (2014) es la **inferencia robusta con corrección de sesgo**:
+
+1. **Estimar el sesgo** $\hat B$ con un ajuste local **cuadrático** (que reduce el sesgo de segundo orden) y un ancho $b$ propio.
+2. **Restar** el sesgo estimado: $\hat\tau_{bc} = \hat\tau - \hat B$.
+3. **Ajustar el error estándar** para reconocer que $\hat B$ es estimado con error (el estimador corregido tiene una varianza **mayor** que la de $\hat\tau$): $\hat\tau_{bc}$ es equivalente a un estimador **local cuadrático** con un ancho "ancho", con varianza $V_{bc}>V$.
+4. Usar el estadístico $(\hat\tau - \hat B)/\sqrt{\hat V_{bc}}\to_dN(0,1)$ aún con $h = h^*_{MSE}$.
+
+El resultado es un intervalo con **cobertura correcta** a costa de ser algo más ancho. Es el estándar actual y está implementado en software (`rdrobust`).
+
+# Validez: qué se puede (y se debe) revisar
+
+El supuesto de continuidad no se prueba, pero **tiene implicaciones testeables**. Un análisis RD serio incluye siempre:
+
+1. **Gráfico de promedios por intervalos** del resultado contra $X$ (*binned scatter*), con el umbral marcado: la herramienta más persuasiva, que permite **ver** el salto (o su ausencia) y la forma funcional.
+2. **Test de manipulación** (McCrary, 2008; Cattaneo, Jansson y Ma, 2020): si las personas pueden **manipular** $X$ para quedar sobre el umbral (un profesor que sube la nota a quien le falta un punto), los que quedan justo arriba difieren de los de justo abajo y la continuidad falla. Se testea la **continuidad de la densidad** de $X$ en $c$: una **acumulación** de observaciones justo sobre el umbral es señal de manipulación (Ejercicio 6.4).
+3. **Continuidad de covariables previas** al tratamiento: las características predeterminadas (edad, sexo, nivel previo) **no** deben saltar en $c$. Se repite el RD con cada covariable como "resultado": el salto debe ser cero.
+4. **Umbrales placebo**: en puntos donde no hay tratamiento ($c' \ne c$), el "efecto" debe ser nulo.
+5. **Sensibilidad** a $h$, al kernel, al orden del polinomio y a **excluir** observaciones muy cercanas al umbral (*donut RD*, que descarta una vecindad en caso de redondeo o manipulación fina).
+
+Si el running variable es **discreto** (por ejemplo, una edad en años), hay pocos valores distintos cerca de $c$ y la teoría de regresión local (que supone una variable continua) no se aplica directamente; hay que usar métodos específicos o interpretar el RD como comparación de celdas.
+
+# RD difusa
+
+En muchos diseños el umbral **no determina exactamente** el tratamiento, solo **cambia su probabilidad**: la beca se **ofrece** a quienes superan el puntaje, pero algunos de ellos no la aceptan, y algunos de los que no la reciben consiguen otra. Entonces $D_i\ne\mathbf{1}\{X_i\ge c\}$, y $P(D = 1\mid X = x)$ **salta** en $c$, pero no de $0$ a $1$. Es la **RD difusa** (*fuzzy*), y tiene la misma estructura que **VI** de la Clase 3: el umbral actúa como **instrumento** local, $Z_i = \mathbf{1}\{X_i\ge c\}$.
+
+::: {#thm-frd}
+## Identificación de RD difusa
+Si $\mathbb{E}[Y(d)\mid X]$ y la distribución de los tratamientos potenciales $D(z)$ son continuas en $c$, y se cumplen **exclusión** (el umbral afecta a $Y$ solo vía $D$) y **monotonía** en el umbral, entonces
+$$
+\tau_{FRD} = \frac{\lim_{x\downarrow c}\mathbb{E}[Y\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[Y\mid X = x]}{\lim_{x\downarrow c}\mathbb{E}[D\mid X = x] - \lim_{x\uparrow c}\mathbb{E}[D\mid X = x]} = \mathbb{E}\big[Y(1) - Y(0)\mid X = c,\text{ complier}\big],
+$$
+el **LATE en el umbral**: el efecto para los compliers (quienes reciben el tratamiento si $X\ge c$ y no lo reciben si $X<c$) **cuya $X$ está en $c$**.
+:::
+
+::: {.proof}
+(Esquema.) Es el teorema de Imbens–Angrist de la Clase 3 aplicado **condicionando en $X = c$** (en un entorno que se achica). Por continuidad, cerca del umbral los grupos "arriba" y "abajo" de $c$ son comparables en todo salvo en el valor de $Z = \mathbf{1}\{X\ge c\}$, y juegan el papel de la **independencia** del instrumento. Aplicando la demostración de Imbens–Angrist: el salto en $\mathbb{E}[Y\mid X]$ es el efecto de $Z$ sobre $Y$, que por exclusión es $\mathbb{E}[(D(1) - D(0))(Y(1) - Y(0))\mid X = c]$, y por monotonía es el efecto sobre los compliers multiplicado por su proporción $P(\text{complier}\mid X = c)$, que es el salto en $\mathbb{E}[D\mid X]$. Dividiendo se obtiene el cociente.
+:::
+
+La estimación es el **cociente de dos saltos**, cada uno estimado con regresión local lineal (equivalente a **MC2E local**: $Y$ sobre $D$ instrumentando con $Z$, ambas con la misma ventana y los mismos pesos). Se aplica toda la advertencia de la Clase 3: el estimador es **local en dos sentidos** (en el umbral y para los compliers), y si el salto en $D$ es chico, es un instrumento **débil** (Clase 10). Ejemplo: si $\mathbb{E}[Y\mid X]$ salta $1{,}2$ en $c$ y $\mathbb{E}[D\mid X]$ salta $0{,}6$, $\tau_{FRD} = 1{,}2/0{,}6 = 2$ (Ejercicio 6.2).
+
+Extensión: el **diseño de *kink* de regresión** (RK) se usa cuando lo que cambia en el umbral es la **pendiente** del tratamiento (la intensidad), por ejemplo la tasa de reemplazo de un seguro de desempleo que cambia de regla en un nivel de ingreso previo: el efecto es el cociente del **cambio de pendiente** del resultado y del tratamiento.
+
+# ★ Postgrado: el sesgo de frontera de la regresión local lineal
+
+::: {.callout-important title="★ Postgrado"}
+Deducimos la constante $C_K$ del sesgo de la @prp-rd-asint, y confirmamos que el sesgo de local lineal en la frontera es $O(h^2)$ (frente al $O(h)$ de Nadaraya–Watson).
+:::
+
+Consideramos el lado derecho ($X_i\ge c$) y escribimos $S_j = \sum_iK\big(\tfrac{X_i - c}h\big)(X_i - c)^j$ y, para $m$ dos veces diferenciable, $m(X_i) = m(c) + m'(c)(X_i - c) + \tfrac12m''(c)(X_i - c)^2 + o\big((X_i - c)^2\big)$. El estimador del intercepto es la primera componente de $S^{-1}T$ con $S = \begin{pmatrix}S_0&S_1\\S_1&S_2\end{pmatrix}$ y $T = (\sum K_iY_i,\ \sum K_i(X_i - c)Y_i)'$. Sustituyendo el desarrollo de $m$ en $Y_i$ (con $\mathbb{E}[Y_i\mid X_i] = m(X_i)$), $T$ es igual a $S\cdot(m(c),m'(c))'$ **más** el término $\tfrac12m''(c)(S_2,S_3)'$. Entonces
+
+$$
+\mathbb{E}\hat a - m(c) = \tfrac12m''(c)\,e_1'S^{-1}\begin{pmatrix}S_2\\S_3\end{pmatrix} = \tfrac12m''(c)\frac{S_2^2 - S_1S_3}{S_0S_2 - S_1^2}.
+$$ {#eq-sesgo-frontera}
+
+(Los términos con $m(c)$ y $m'(c)$ se recuperan **exactamente**: el estimador es insesgado para funciones lineales, la propiedad de la regresión local lineal de la Clase 5.) Ahora, $S_j\approx nh^{j + 1}f(c)\tilde\kappa_j$ (suma que aproxima una integral sobre $u\in[0,\infty)$: $\sum_iK(\cdot)(X_i - c)^j\approx nf(c)\int_0^\infty K(u/h)\,t^j\,dt = nf(c)h^{j + 1}\tilde\kappa_j$). Reemplazando, $S_2^2 - S_1S_3\approx(nhf(c))^2h^4(\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3)$ y $S_0S_2 - S_1^2\approx(nhf(c))^2h^2(\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2)$; los factores $(nhf(c))^2$ se cancelan y queda un factor $h^2$:
+$$
+\mathbb{E}\hat a - m(c)\approx\tfrac12m''(c)h^2\,\frac{\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3}{\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2} = \tfrac12m''(c)h^2C_K.
+$$
+Es de orden $h^2$: el estimador local lineal **no pierde un orden** en la frontera, a diferencia de Nadaraya–Watson. En el lado izquierdo, por simetría, el cálculo es el mismo con $m_-''$. El signo de $C_K$ es **negativo**: ajustar una recta a una función convexa ($m''>0$) en un intervalo de **un solo lado**, y evaluar el ajuste en el **extremo**, lo subestima (Ejercicio 6.7). Con kernel uniforme sobre $[0,1]$ (en unidades de $h$): $\tilde\kappa_j = 1/(j + 1)$ y $C_K = \dfrac{1/9 - 1/8}{1/3 - 1/4} = -\dfrac16$: para $m(x) = x^2$ en $[0,h]$, el intercepto de la recta de mínimos cuadrados es $-h^2/6$, coincidente con $\tfrac12m''h^2C_K = \tfrac12\cdot2\cdot h^2\cdot(-\tfrac16)$ ✓.
+
+# Resumen
+
+- **RD nítida:** $D = \mathbf{1}\{X\ge c\}$; el efecto en el umbral es el **salto** de $\mathbb{E}[Y\mid X = x]$ en $c$, identificado por **continuidad** de los resultados potenciales (@thm-srd). Es un efecto **local**.
+- **Estimación:** regresión **local lineal** a cada lado con kernel; $\hat\tau = \hat a_+ - \hat a_-$ (@def-rd-est). Sesgo $\tfrac12h^2C_K(m_+'' - m_-'')$ y varianza $V_K(\sigma_+^2 + \sigma_-^2)/(nhf)$ (@prp-rd-asint); tasa $n^{-2/5}$.
+- **Evitar** polinomios globales de orden alto. Usar ancho MSE-óptimo y mostrar **sensibilidad**.
+- **Inferencia robusta con corrección de sesgo** (CCT): cobertura correcta aun con el ancho óptimo.
+- **Validez:** gráfico por intervalos, test de **manipulación** (densidad), continuidad de **covariables**, **placebos**, sensibilidad.
+- **RD difusa** (@thm-frd): cociente de saltos = **LATE en el umbral** (Wald local).
+
+# Ejercicios
+
+**Ejercicio 6.1.** Una beca se otorga con un puntaje $X\ge60$. Con regresión local, el límite del promedio de matrícula universitaria es $0{,}38$ por la izquierda y $0{,}52$ por la derecha. Calcula $\hat\tau$ e interpreta. ¿Qué diría un salto de $0{,}02$ en la edad promedio en $c$?
+
+::: {.callout-tip collapse="true" title="Solución 6.1"}
+$\hat\tau = 0{,}52 - 0{,}38 = 0{,}14$: la beca **aumenta 14 puntos porcentuales** la probabilidad de matrícula para los estudiantes con puntaje cercano a $60$. Es un efecto **local**: no dice cuánto aumentaría la matrícula para alguien con puntaje $30$ o $90$. Un salto de $0{,}02$ años en la edad promedio es, en la práctica, **nulo** (si el error estándar es del orden de $0{,}05$): las covariables previas no saltan, lo que respalda la continuidad. Si saltara mucho (por ejemplo, $2$ años), sería señal de que la variable de asignación se **manipula** o de que algo más cambia en $c$.
+:::
+
+**Ejercicio 6.2.** En una RD difusa, $\mathbb{E}[Y\mid X]$ salta $1{,}2$ en $c$ y $\mathbb{E}[D\mid X]$ salta de $0{,}2$ a $0{,}8$. Calcula $\tau_{FRD}$ y la proporción de compliers en el umbral.
+
+::: {.callout-tip collapse="true" title="Solución 6.2"}
+El salto en $D$ es $0{,}8 - 0{,}2 = 0{,}6$, que es la proporción de compliers en $c$ (como en la proposición de las proporciones de los estratos, Clase 3: $\pi_c$ es la primera etapa). $\tau_{FRD} = 1{,}2/0{,}6 = 2{,}0$. Entre quienes cumplen (el $60$ % que recibe el tratamiento solo si $X\ge c$, y no recibe si $X<c$), el efecto del tratamiento en el umbral es $2$. Los always-takers ($20$ %) y los never-takers ($20$ %) no entran en el LATE. El efecto de **superar el umbral** (el ITT) es $1{,}2$, el $60$ % del efecto sobre los compliers.
+:::
+
+**Ejercicio 6.3.** Con kernel uniforme ($C_K = -1/6$), $m_+''(c) = 4$ y $m_-''(c) = 0$, calcula el sesgo de $\hat\tau$ para $h = 0{,}5$ y para $h = 0{,}25$.
+
+::: {.callout-tip collapse="true" title="Solución 6.3"}
+Sesgo $=\tfrac12h^2C_K(m_+'' - m_-'') = \tfrac12h^2\cdot(-\tfrac16)\cdot4 = -h^2/3$. $h = 0{,}5$: $-0{,}25/3 = -0{,}0833$. $h = 0{,}25$: $-0{,}0625/3 = -0{,}0208$. Reducir el ancho a la mitad divide el sesgo por $4$ (es $\propto h^2$), pero multiplica la desviación estándar por $\sqrt2\approx1{,}41$ (la varianza es $\propto1/(nh)$): el compromiso sesgo–varianza. El sesgo es negativo: como la curvatura positiva está solo del lado derecho, el ajuste lineal subestima el intercepto derecho y, por lo tanto, **subestima el efecto**.
+:::
+
+**Ejercicio 6.4.** Un test de manipulación cuenta, en una ventana angosta alrededor del umbral, $120$ observaciones sobre $c$ y $80$ bajo $c$. Bajo continuidad de la densidad se esperaría la mitad en cada lado. Calcula el estadístico $z$ y concluye al 5 %.
+
+::: {.callout-tip collapse="true" title="Solución 6.4"}
+Con $N = 200$ y $p_0 = 0{,}5$: media $100$ y varianza $200\cdot0{,}25 = 50$. $z = (120 - 100)/\sqrt{50} = 2{,}83>1{,}96$: **se rechaza** la continuidad de la densidad: hay **acumulación** justo sobre el umbral, señal de que algunas personas manipulan su $X$ para superar $c$ (por ejemplo, profesores que suben notas, o empresas que declaran ingresos justo bajo un límite). Si la manipulación es **selectiva** (quienes pasan son los más hábiles), los grupos a ambos lados dejan de ser comparables, y el RD pierde validez. Una salida parcial es el *donut RD* (excluir los más cercanos al umbral), si la manipulación se concentra ahí.
+:::
+
+**Ejercicio 6.5.** Un investigador ajusta un polinomio de **grado 4** a toda la muestra y encuentra un efecto significativo; con grado 2 desaparece; con regresión local lineal con ancho óptimo, es pequeño y no significativo. ¿Qué concluyes?
+
+::: {.callout-tip collapse="true" title="Solución 6.5"}
+El resultado **depende de la forma funcional global**, una señal de que el "salto" puede ser un artefacto de la curvatura: un polinomio de grado alto ajustado a toda la muestra **da un peso desproporcionado a observaciones lejanas** y puede crear un salto espurio en $c$ (Gelman–Imbens, 2019). La regresión **local** lineal, que usa solo observaciones cercanas al umbral y tiene mejores propiedades en la frontera, es más confiable. Conclusión: no hay evidencia sólida de un efecto; hay que reportar los resultados del RD local con inferencia robusta (CCT) y los gráficos, y **no** quedarse con la especificación que da significancia.
+:::
+
+**Ejercicio 6.6.** Las estimaciones puntuales de $\tau$ (error estándar) con anchos $h = 0{,}5,\,1{,}0,\,2{,}0$ son $2{,}4\ (0{,}9)$, $2{,}1\ (0{,}6)$ y $1{,}2\ (0{,}4)$. ¿Qué sugiere el patrón?
+
+::: {.callout-tip collapse="true" title="Solución 6.6"}
+Las estimaciones **caen** al aumentar $h$ ($2{,}4\to2{,}1\to1{,}2$) mientras los errores estándar caen (más datos): con anchos grandes entra más observaciones **lejanas**, y si la función tiene curvatura el **sesgo** aumenta. Los dos anchos pequeños dan resultados similares ($2{,}4$ y $2{,}1$) pero el tercero se aparta bastante: el sesgo domina a $h = 2$. Se elegiría el ancho **MSE-óptimo** (cercano a $h = 0{,}5$ a $1$) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para $h = 1$ sería algo mayor que $2{,}1\pm1{,}96(0{,}6)$.
+:::
+
+**Ejercicio 6.7 ★.** Calcula $\tilde\kappa_0,\dots,\tilde\kappa_3$ y $C_K$ para el kernel de Epanechnikov $K(u) = \tfrac34(1 - u^2)$ en $[0,1]$ (lado derecho). Verifica el caso uniforme.
+
+::: {.callout-tip collapse="true" title="Solución 6.7 ★"}
+$\tilde\kappa_j = \tfrac34\int_0^1u^j(1 - u^2)\,du = \tfrac34\Big[\tfrac1{j + 1} - \tfrac1{j + 3}\Big]$: $\tilde\kappa_0 = \tfrac34\cdot\tfrac23 = \tfrac12$; $\tilde\kappa_1 = \tfrac34(\tfrac12 - \tfrac14) = \tfrac3{16}$; $\tilde\kappa_2 = \tfrac34(\tfrac13 - \tfrac15) = \tfrac1{10}$; $\tilde\kappa_3 = \tfrac34(\tfrac14 - \tfrac16) = \tfrac1{16}$. Numerador: $\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3 = 0{,}01 - \tfrac3{256} = 0{,}01 - 0{,}01172 = -0{,}00172$. Denominador: $\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2 = 0{,}05 - \tfrac9{256} = 0{,}05 - 0{,}03516 = 0{,}01484$. $C_K = -0{,}1158\approx-0{,}116$. Caso uniforme: $\tilde\kappa_j = 1/(j + 1)$, $C_K = (1/9 - 1/8)/(1/3 - 1/4) = (-1/72)/(1/12) = -1/6 = -0{,}167$ ✓. Para el kernel interior (dos lados) el sesgo es $\tfrac12\kappa_2m''h^2$ con $\kappa_2 = 0{,}2$ (Epanechnikov): $0{,}1\,m''h^2$ en **valor absoluto**; en la frontera $|C_K|/2 = 0{,}058\,m''h^2$ con signo negativo: de la misma magnitud (más chico, incluso) pero con otro signo y con una **varianza mayor** (menos datos efectivos), que es el costo real del diseño en la frontera.
+:::

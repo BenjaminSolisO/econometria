@@ -2134,5 +2134,60 @@
       "Inicio",
       "Clase 4 · Diferencias en diferencias"
     ]
+  },
+  {
+    "objectID": "econometria-4/clase-05.html",
+    "href": "econometria-4/clase-05.html",
+    "title": "Clase 5 · Econometría no paramétrica",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Econometría no paramétrica"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-05.html#la-maldición-de-la-dimensionalidad",
+    "href": "econometria-4/clase-05.html#la-maldición-de-la-dimensionalidad",
+    "title": "Clase 5 · Econometría no paramétrica",
+    "section": "3.1 La maldición de la dimensionalidad",
+    "text": "3.1 La maldición de la dimensionalidad\nCon \\(d\\) regresores continuos, la vecindad de \\(x\\) es un cubo de lado \\(h\\) y volumen \\(h^d\\), que contiene en promedio solo \\(nh^d\\) observaciones. La varianza pasa a ser \\(\\propto1/(nh^d)\\), mientras que el sesgo sigue siendo \\(\\propto h^2\\). Balanceando \\(h^4\\sim1/(nh^d)\\): \\[\nh^*\\propto n^{-1/(4 + d)},\\qquad\\text{MSE}^*\\propto n^{-4/(4 + d)},\\qquad\\text{tasa de convergencia: }n^{-2/(4 + d)}.\n\\] La tasa se deteriora con la dimensión: \\(n^{-2/5} = n^{-0{,}40}\\) para \\(d = 1\\), \\(n^{-0{,}33}\\) para \\(d = 2\\), \\(n^{-0{,}22}\\) para \\(d = 5\\) y \\(n^{-0{,}14}\\) para \\(d = 10\\). Es la maldición de la dimensionalidad (Bellman; la nota de la Clase 2 de Econometría 1). En términos de datos necesarios: para igualar el error que se obtiene con \\(n_1 = 100\\) observaciones en \\(d = 1\\), se necesitan \\(n_d = n_1^{(4 + d)/5}\\) observaciones en \\(d\\) dimensiones: \\(3\\,981\\) para \\(d = 5\\) y \\(398\\,107\\) para \\(d = 10\\) (Ejercicio 5.3). Es la razón de que la regresión no paramétrica pura no sea una herramienta general: con más de dos o tres regresores continuos, hay que imponer estructura (aditividad, índices, semiparamétricos, abajo; o aprendizaje automático regularizado, Clases 7 y 8).",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Econometría no paramétrica"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-06.html",
+    "href": "econometria-4/clase-06.html",
+    "title": "Clase 6 · Regresión discontinua",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Regresión discontinua"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-06.html#elección-del-ancho-de-banda-y-de-la-forma-funcional",
+    "href": "econometria-4/clase-06.html#elección-del-ancho-de-banda-y-de-la-forma-funcional",
+    "title": "Clase 6 · Regresión discontinua",
+    "section": "3.1 Elección del ancho de banda y de la forma funcional",
+    "text": "3.1 Elección del ancho de banda y de la forma funcional\nDos prácticas que conviene evitar: (i) ajustar un polinomio global de orden alto (cuártico, por ejemplo) a toda la muestra. Con una función de varios grados, los polinomios globales dan pesos extraños a observaciones lejanas al umbral y producen estimaciones ruidosas y sensibles al grado del polinomio (Gelman e Imbens, 2019); y (ii) elegir el ancho “a ojo” o por ensayo y error para obtener significancia. La práctica recomendada es regresión local lineal (o cuadrática) con un ancho de banda basado en datos, el que minimiza el error cuadrático medio (MSE-óptimo): el de Imbens y Kalyanaraman (2012) o el de Calonico, Cattaneo y Titiunik (2014), que usan estimadores piloto de \\(m_\\pm''\\) para evaluar \\(h^*\\propto[\\,V_K\\sigma^2/(f\\cdot C_K^2(\\Delta m'')^2)]^{1/5}n^{-1/5}\\). Además se presenta sensibilidad: estimaciones con el doble y la mitad del ancho y con distintos kernels y órdenes.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Regresión discontinua"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-06.html#inferencia-robusta-con-corrección-de-sesgo",
+    "href": "econometria-4/clase-06.html#inferencia-robusta-con-corrección-de-sesgo",
+    "title": "Clase 6 · Regresión discontinua",
+    "section": "3.2 Inferencia robusta con corrección de sesgo",
+    "text": "3.2 Inferencia robusta con corrección de sesgo\nSurge un problema que ya conocemos de la Clase 5: al ancho óptimo en MSE, el sesgo es del mismo orden que el error estándar, de modo que un intervalo \\(\\hat\\tau\\pm1{,}96\\,\\widehat{\\text{ee}}\\) no tiene la cobertura nominal (el estadístico no está centrado en cero). La solución de Calonico, Cattaneo y Titiunik (2014) es la inferencia robusta con corrección de sesgo:\n\nEstimar el sesgo \\(\\hat B\\) con un ajuste local cuadrático (que reduce el sesgo de segundo orden) y un ancho \\(b\\) propio.\nRestar el sesgo estimado: \\(\\hat\\tau_{bc} = \\hat\\tau - \\hat B\\).\nAjustar el error estándar para reconocer que \\(\\hat B\\) es estimado con error (el estimador corregido tiene una varianza mayor que la de \\(\\hat\\tau\\)): \\(\\hat\\tau_{bc}\\) es equivalente a un estimador local cuadrático con un ancho “ancho”, con varianza \\(V_{bc}&gt;V\\).\nUsar el estadístico \\((\\hat\\tau - \\hat B)/\\sqrt{\\hat V_{bc}}\\to_dN(0,1)\\) aún con \\(h = h^*_{MSE}\\).\n\nEl resultado es un intervalo con cobertura correcta a costa de ser algo más ancho. Es el estándar actual y está implementado en software (rdrobust).",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Regresión discontinua"
+    ]
   }
 ]
