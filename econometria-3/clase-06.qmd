@@ -1,0 +1,211 @@
+---
+title: "Clase 6 · Raíces unitarias I"
+subtitle: "Caminatas aleatorias, la distribución de Dickey–Fuller y la regresión espuria"
+description: "Series integradas: tendencia determinística frente a estocástica, la caminata aleatoria, el TCL funcional y el movimiento browniano, derivación de la distribución límite de Dickey–Fuller, y la regresión espuria de Granger–Newbold y Phillips."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando el pasado nunca se olvida
+
+Hasta aquí trabajamos con series **estacionarias**: los shocks se disipan, la serie revierte a su media y la teoría asintótica es la de la Clase 5 ($\sqrt T$, normalidad). Pero muchas series macroeconómicas y financieras (el PIB, los precios, los tipos de cambio, el nivel de un índice bursátil) no parecen revertir a ninguna media. La pregunta que decide **todo lo demás** es si esa persistencia es *casi* total ($\phi = 0{,}98$) o *total* ($\phi = 1$): si una serie tiene una **raíz unitaria**. Con raíz unitaria cambian la interpretación (los shocks son permanentes), el pronóstico (la varianza del error crece sin cota), y, sobre todo, **la teoría estadística** (las tasas de convergencia y las distribuciones límite no son las usuales).[^nelson]
+
+[^nelson]: Charles Nelson y Charles Plosser (1982) argumentaron que la mayoría de las series macroeconómicas de Estados Unidos tienen raíces unitarias, lo que cambió la manera de pensar los ciclos económicos: si los shocks son permanentes, las fluctuaciones del PIB no son "desviaciones transitorias de una tendencia", sino cambios persistentes del nivel. Fue una de esas discusiones donde un test estadístico (de bajo poder, como veremos en la Clase 7) decidió interpretaciones enteras de la teoría macroeconómica.
+
+# Tendencia determinística frente a estocástica
+
+Hay dos formas de que una serie tenga una tendencia.
+
+::: {#def-ts-ds}
+## Estacionaria en tendencia frente a estacionaria en diferencias
+- **Estacionaria en tendencia (TS):** $y_t = a + bt + u_t$ con $u_t$ estacionario. Los shocks son **transitorios**: $y_t$ revierte a la recta $a + bt$.
+- **Estacionaria en diferencias (DS):** $y_t = y_{t-1} + b + \varepsilon_t$ (una **caminata aleatoria con deriva**), con $\varepsilon_t$ ruido blanco. Los shocks son **permanentes**: $y_t = y_0 + bt + \sum_{s = 1}^t\varepsilon_s$.
+:::
+
+Las dos tienen una tendencia ascendente (si $b>0$), pero con consecuencias opuestas:
+
+| | **TS** ($a + bt + u_t$) | **DS** (caminata aleatoria) |
+|---|---|---|
+| Efecto de un shock | desaparece | **permanente** |
+| $\operatorname{Var}(y_t)$ | constante | **crece como $t\sigma^2$** |
+| Error de pronóstico a $h$ pasos | acotado ($\le\gamma_u(0)$) | **crece como $h\sigma^2$** |
+| Tratamiento | quitar la tendencia | **diferenciar** |
+| ACF de $y_t$ | decae | casi $1$ en rezagos chicos |
+
+Tratar una serie DS como TS (quitar una tendencia lineal) no la vuelve estacionaria; tratar una TS como DS (diferenciar) la **sobrediferencia** (introduce una raíz unitaria en el MA, Ejercicio 6.6). Por eso importa distinguir.
+
+## La caminata aleatoria
+
+::: {#def-integrado}
+## Proceso integrado
+Un proceso es **integrado de orden 1**, $I(1)$, si no es estacionario pero su primera diferencia $\Delta y_t = y_t - y_{t-1}$ lo es. (En general, $I(d)$ si hay que diferenciar $d$ veces.) Un proceso estacionario es $I(0)$.
+:::
+
+El ejemplo canónico es la caminata aleatoria $y_t = y_{t-1} + \varepsilon_t$, $y_0 = 0$, $\varepsilon_t$ i.i.d. $(0,\sigma^2)$, es decir $y_t = \sum_{s = 1}^t\varepsilon_s$. Sus momentos:
+$$
+\mathbb{E}[y_t] = 0,\qquad\operatorname{Var}(y_t) = t\sigma^2,\qquad\operatorname{Cov}(y_t,y_s) = \min(t,s)\,\sigma^2,\qquad\operatorname{Corr}(y_t,y_s) = \sqrt{s/t}\quad(s<t).
+$$
+La covarianza depende de $t$ y $s$, no solo de $t - s$: **no es estacionaria**. Con $s = 99$ y $t = 100$ la correlación es $\sqrt{0{,}99} = 0{,}995$: las observaciones consecutivas son casi indistinguibles. El pronóstico óptimo es $\hat y_{T + h|T} = y_T$ (la mejor predicción es "el último valor") con error cuadrático medio $h\sigma^2$, que crece sin cota (Clase 3).
+
+# El estimador de MCO cuando $\phi = 1$
+
+Sea $y_t = \phi y_{t-1} + \varepsilon_t$ con $\phi = 1$ y estimamos $\phi$ por MCO: $\hat\phi = \sum y_{t-1}y_t/\sum y_{t-1}^2$. En la Clase 4 vimos $\sqrt T(\hat\phi - \phi)\to N(0,1 - \phi^2)$: con $\phi = 1$ la varianza es **cero**, lo que sugiere que $\hat\phi$ converge **más rápido** que $\sqrt T$. En efecto, converge a tasa $T$, pero con una distribución **no normal**. Para derivarla necesitamos una herramienta nueva.
+
+## Herramientas: TCL funcional y movimiento browniano
+
+Un **movimiento browniano estándar** $W(r)$, $r\in[0,1]$, es un proceso continuo con $W(0) = 0$, incrementos independientes y $W(r) - W(s)\sim N(0,r - s)$ para $s<r$. En particular $W(1)\sim N(0,1)$. Es el límite continuo de la caminata aleatoria.
+
+::: {#thm-donsker}
+## TCL funcional (Donsker) — se toma prestado
+Sea $\varepsilon_t$ i.i.d. $(0,\sigma^2)$, $y_t = \sum_{s\le t}\varepsilon_s$, y definamos la función escalonada $Y_T(r) = T^{-1/2}y_{\lfloor Tr\rfloor}$, $r\in[0,1]$. Entonces $Y_T(\cdot)\Rightarrow\sigma W(\cdot)$ (convergencia débil en el espacio de funciones). Por el **teorema de la función continua** (CMT), para toda función continua $g$ de trayectorias, $g(Y_T)\to_dg(\sigma W)$.
+:::
+
+La intuición: para un $r$ fijo, $Y_T(r) = \sqrt{\lfloor Tr\rfloor/T}\cdot\big[\lfloor Tr\rfloor^{-1/2}\sum_{s\le Tr}\varepsilon_s\big]\to_dN(0,\sigma^2r)$ por el TCL ordinario; Donsker dice que esto vale **conjuntamente para todos los $r$**, como un proceso. Con esto, los funcionales de la caminata aleatoria tienen límites en términos de $W$:
+$$
+\frac1{T^2}\sum_{t = 1}^Ty_{t-1}^2 = \int_0^1Y_T(r)^2\,dr + o_p(1)\ \Rightarrow\ \sigma^2\int_0^1W(r)^2\,dr,\qquad\frac1{T^{3/2}}\sum_{t = 1}^Ty_{t-1}\Rightarrow\sigma\int_0^1W(r)\,dr.
+$$ {#eq-funcionales}
+(Porque $\sum_{t}y_{t-1}^2/T^2 = \sum_t\frac1T\big(T^{-1/2}y_{t-1}\big)^2$ es una suma de Riemann de $\int Y_T^2$.)
+
+## La distribución de Dickey–Fuller
+
+::: {#thm-df}
+## Distribución límite de $\hat\phi$ bajo raíz unitaria
+Sea $y_t = y_{t-1} + \varepsilon_t$ con $y_0 = 0$, $\varepsilon_t$ i.i.d. $(0,\sigma^2)$, y $\hat\phi$ el MCO de $y_t$ sobre $y_{t-1}$ (sin constante). Entonces
+$$
+T(\hat\phi - 1)\ \xrightarrow{d}\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int_0^1W(r)^2\,dr},\qquad
+t_{\hat\phi} = \frac{\hat\phi - 1}{\operatorname{ee}(\hat\phi)}\ \xrightarrow{d}\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\Big(\int_0^1W(r)^2\,dr\Big)^{1/2}}.
+$$
+Ambas son las **distribuciones de Dickey–Fuller**. No son normales, y no dependen de $\sigma^2$.
+:::
+
+::: {.callout-note title="Borrador"}
+$\hat\phi - 1 = \sum y_{t-1}\varepsilon_t/\sum y_{t-1}^2$. Para el denominador tengo @eq-funcionales: es de orden $T^2$. Para el numerador, hay un truco algebraico que funciona porque $y_t$ es una suma acumulada: $y_t^2 = (y_{t-1} + \varepsilon_t)^2 = y_{t-1}^2 + 2y_{t-1}\varepsilon_t + \varepsilon_t^2$, así que $y_{t-1}\varepsilon_t = \tfrac12(y_t^2 - y_{t-1}^2 - \varepsilon_t^2)$. Sumando sobre $t$, los cuadrados **telescopan**: $\sum y_{t-1}\varepsilon_t = \tfrac12(y_T^2 - \sum\varepsilon_t^2)$. Dividiendo por $T$ queda $\tfrac12\big[(y_T/\sqrt T)^2 - T^{-1}\sum\varepsilon_t^2\big]$, y los dos términos tienen límites conocidos: $\sigma^2W(1)^2$ y $\sigma^2$.
+:::
+
+::: {.proof}
+Escribimos $T(\hat\phi - 1) = \dfrac{T^{-1}\sum y_{t-1}\varepsilon_t}{T^{-2}\sum y_{t-1}^2}$.
+
+*Numerador.* Por la identidad $y_{t-1}\varepsilon_t = \frac12(y_t^2 - y_{t-1}^2 - \varepsilon_t^2)$ y $y_0 = 0$,
+$$
+\frac1T\sum_{t = 1}^Ty_{t-1}\varepsilon_t = \frac12\Big[\Big(\frac{y_T}{\sqrt T}\Big)^2 - \frac1T\sum_{t = 1}^T\varepsilon_t^2\Big]\ \xrightarrow{d}\ \frac12\big[\sigma^2W(1)^2 - \sigma^2\big].
+$$
+Aquí $y_T/\sqrt T = Y_T(1)\to_d\sigma W(1)$ por Donsker y $T^{-1}\sum\varepsilon_t^2\to_p\sigma^2$ por la LGN.
+
+*Denominador.* Por @eq-funcionales, $T^{-2}\sum y_{t-1}^2\Rightarrow\sigma^2\int_0^1W^2$.
+
+Numerador y denominador convergen **conjuntamente** (ambos son funcionales continuos de $Y_T$), de modo que el cociente converge al cociente de los límites por el CMT; $\sigma^2$ se cancela. Para el estadístico $t$: $\operatorname{ee}(\hat\phi)^2 = \hat\sigma^2/\sum y_{t-1}^2$ con $\hat\sigma^2\to_p\sigma^2$, luego $t_{\hat\phi} = T(\hat\phi - 1)\cdot\big(T^{-2}\sum y_{t-1}^2\big)^{1/2}/\hat\sigma\Rightarrow\dfrac{\frac12[W(1)^2 - 1]}{(\int W^2)^{1/2}}$.
+:::
+
+Cinco observaciones sobre este resultado.
+
+1. **Superconsistencia:** $\hat\phi - 1 = O_p(1/T)$, no $O_p(1/\sqrt T)$. Con $T = 100$, el error típico es del orden de $0{,}01$, no de $0{,}1$.
+2. **Distribución no estándar y asimétrica:** $W(1)^2\sim\chi^2_1$, de modo que el numerador $\tfrac12(\chi^2_1 - 1)$ tiene media cero pero es **asimétrico a la derecha**, con $P(\chi^2_1<1) = 0{,}683$: con probabilidad $68$ % el numerador es negativo, y por lo tanto $P(\hat\phi<1)\to0{,}683$ (Ejercicio 6.7). El estimador **tiende a subestimar** $\phi$ bajo la nula; la distribución del estadístico $t$ está **sesgada a la izquierda** y tiene media negativa ($\approx-0{,}42$ sin constante).
+3. **Valores críticos más extremos que los normales.** Para $t_{\hat\phi}$ (sin constante), los cuantiles de la distribución límite al 5 % y 1 % son $-1{,}94$ y $-2{,}57$ (frente a $-1{,}645$ y $-2{,}33$ de la normal, una cola). Usar el crítico normal **rechaza la raíz unitaria demasiado seguido** (Ejercicio 6.3).
+4. **Con componentes determinísticos** (que se incluyen casi siempre), la distribución cambia: con constante, $W$ se reemplaza por el browniano **demedido** $W^\mu(r) = W(r) - \int_0^1W$, y con constante y tendencia, por el **detrendido** $W^\tau$. Los críticos al 5 % del estadístico $t$ son $-1{,}94$ (sin constante), $-2{,}86$ (constante) y $-3{,}41$ (constante y tendencia), con 1 %: $-2{,}57$, $-3{,}43$ y $-3{,}96$ (Fuller, MacKinnon). *Cuantos más términos determinísticos, más negativo el crítico.*
+5. **El resultado es la hipótesis nula.** La distribución del estadístico bajo $H_0:\phi = 1$ es la que da los valores críticos. Bajo la alternativa estacionaria ($|\phi|<1$) el test es consistente: $\hat\phi\to\phi<1$ y $t\to-\infty$.
+
+El **test de Dickey–Fuller** es entonces: estimar $\Delta y_t = \gamma y_{t-1} + \varepsilon_t$ (con $\gamma = \phi - 1$; equivalente), calcular el $t$ de $\gamma$ y **rechazar la raíz unitaria** ($\gamma = 0$) si el $t$ es *menor* que el valor crítico de Dickey–Fuller (prueba de una cola, a la izquierda).
+
+## Errores serialmente correlacionados: el origen del test aumentado
+
+Si $\Delta y_t = u_t$ es un proceso estacionario general (no ruido blanco) con $\gamma_u(0) = \mathbb{E}[u_t^2]$ y varianza de largo plazo $\lambda^2 = \sigma_u^2\psi(1)^2 = \sum_h\gamma_u(h)$ (Clase 5), el **principio de invarianza** vale con $\lambda$ en lugar de $\sigma$: $T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)$ (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: $\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)$, pero ahora
+$$
+\frac1T\sum_{t = 1}^Ty_{t-1}u_t\ \xrightarrow{d}\ \frac12\big[\lambda^2W(1)^2 - \gamma_u(0)\big],\qquad
+T(\hat\phi - 1)\ \Rightarrow\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int W^2} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2}.
+$$
+Aparece un **parámetro de perturbación**, $\lambda^2 - \gamma_u(0) = 2\sum_{h\ge1}\gamma_u(h)$ (la autocorrelación de largo plazo): la distribución ya **no es** la de Dickey–Fuller. Hay dos formas de corregirlo: **paramétrica** (agregar rezagos de $\Delta y_t$ para blanquear los errores: **Dickey–Fuller aumentado**) o **no paramétrica** (estimar $\lambda^2$ y $\gamma_u(0)$ con HAC y restar el término: **Phillips–Perron**). Ambas son el tema de la Clase 7.
+
+# La regresión espuria
+
+La razón histórica de todo este aparato es un resultado de simulación que sorprendió a la profesión.
+
+Sean $y_t$ y $x_t$ dos **caminatas aleatorias independientes**: $y_t = y_{t-1} + \varepsilon_t$ y $x_t = x_{t-1} + \eta_t$ con $\varepsilon_t,\eta_t$ independientes. No hay ninguna relación entre ellas. Se regresa $y_t = \alpha + \beta x_t + u_t$ por MCO. Granger y Newbold (1974) mostraron por simulación, y Phillips (1986) demostró, que:
+
+::: {#thm-espuria}
+## Regresión espuria
+En la regresión de una caminata aleatoria sobre otra independiente: (i) $\hat\beta$ **no converge a cero**: converge en distribución a una variable aleatoria no degenerada, $\hat\beta\Rightarrow\dfrac{\sigma_y}{\sigma_x}\dfrac{\int\tilde W_x\tilde W_y}{\int\tilde W_x^2}$ (con $\tilde W$ los brownianos demedidos); (ii) el estadístico $t$ de $\hat\beta$ **diverge**: $t_{\hat\beta}/\sqrt T$ converge a una variable no degenerada, de modo que $|t_{\hat\beta}|\to\infty$ en probabilidad; (iii) $R^2$ **no tiende a cero** sino a una variable aleatoria no degenerada, y el estadístico de Durbin–Watson tiende a cero.
+:::
+
+::: {.proof}
+(Esquema.) (i) $\hat\beta = \sum\tilde x_t\tilde y_t/\sum\tilde x_t^2$ (con variables demedidas). Numerador y denominador son de orden $T^2$; por Donsker y el CMT, $T^{-2}\sum\tilde x_t\tilde y_t\Rightarrow\sigma_x\sigma_y\int\tilde W_x\tilde W_y$ y $T^{-2}\sum\tilde x_t^2\Rightarrow\sigma_x^2\int\tilde W_x^2$: el cociente es $O_p(1)$ y **aleatorio**. (ii) Los residuos $\hat u_t = y_t - \hat\alpha - \hat\beta x_t$ son $O_p(\sqrt T)$ (combinación de dos procesos $I(1)$ no cancelada), así que $\hat\sigma^2_u = T^{-1}\sum\hat u_t^2 = O_p(T)$. El error estándar es $\operatorname{ee}(\hat\beta)^2 = \hat\sigma_u^2/\sum\tilde x_t^2 = O_p(T/T^2) = O_p(1/T)$. Entonces $t_{\hat\beta} = \hat\beta/\operatorname{ee}(\hat\beta) = O_p(1)\cdot O_p(\sqrt T) = O_p(\sqrt T)$: crece con $T$. (iii) $\hat u_t$ es $I(1)$ (un residuo "casi caminata aleatoria"), de modo que su autocorrelación de primer orden tiende a $1$ y $DW\approx2(1 - \hat\rho_1)\to0$.
+:::
+
+La consecuencia práctica es brutal: **con regresores $I(1)$ independientes, la hipótesis $\beta = 0$ se rechaza casi siempre** (en las simulaciones originales, alrededor de tres cuartas partes de las veces al nominal del 5 %, y la proporción tiende a uno con $T$). El $R^2$ es alto, el $t$ es enorme y **no hay ninguna relación**. Dos señales de alarma útiles: **$R^2$ alto y Durbin–Watson muy bajo** (regla de Granger y Newbold: $R^2>DW$ sugiere regresión espuria, Ejercicio 6.5) y residuos con autocorrelación cercana a uno.
+
+Esto no significa que **toda** regresión entre series $I(1)$ sea espuria. Hay un caso en que sí hay relación genuina: cuando una combinación lineal de las series **es estacionaria** (cointegración, Clase 8). La estrategia general es: (1) testear si las series son $I(1)$ (Dickey–Fuller, Clase 7); (2) si lo son, **diferenciarlas** antes de regresar, o (3) testear cointegración (Clase 8), en cuyo caso la regresión en niveles es válida y **superconsistente**.
+
+# ★ Postgrado: la integral de Itô y la identidad de telescopaje
+
+::: {.callout-important title="★ Postgrado"}
+El numerador de la distribución de Dickey–Fuller es un funcional del movimiento browniano: la **integral estocástica de Itô** $\int_0^1W\,dW = \tfrac12[W(1)^2 - 1]$. Mostramos que la identidad de telescopaje del discreto es exactamente la regla de Itô.
+:::
+
+En cálculo ordinario, $\int_0^1w\,dw = \tfrac12w(1)^2$ para una función diferenciable con $w(0) = 0$. Para el movimiento browniano **no** vale, y la integral que aparece en el límite es
+$$
+\int_0^1W\,dW = \tfrac12\big[W(1)^2 - 1\big],
+$$
+con el término extra $-\tfrac12$ (la **corrección de Itô**). El origen del término extra es una diferencia entre dos sumas de Riemann. Con la partición $r_t = t/T$ y la suma que evalúa $W$ en el **extremo izquierdo** (la de Itô), $\sum_tW(r_{t-1})\big[W(r_t) - W(r_{t-1})\big]$, la identidad algebraica $a(b - a) = \tfrac12(b^2 - a^2 - (b - a)^2)$ con $a = W(r_{t-1})$, $b = W(r_t)$ da
+$$
+\sum_{t = 1}^TW(r_{t-1})\big[W(r_t) - W(r_{t-1})\big] = \tfrac12W(1)^2 - \tfrac12\sum_{t = 1}^T\big[W(r_t) - W(r_{t-1})\big]^2.
+$$
+La última suma es la **variación cuadrática** del browniano: $T$ incrementos independientes de varianza $1/T$ cuyas sumas de cuadrados convergen a $1$ (LGN) en vez de a $0$ como ocurriría con una función suave. De ahí el $-\tfrac12$. En nuestro problema discreto es **la misma identidad**: $\sum y_{t-1}\varepsilon_t = \tfrac12(y_T^2 - \sum\varepsilon_t^2)$, y $T^{-1}\sum\varepsilon_t^2\to\sigma^2$ es la variación cuadrática. La distribución de Dickey–Fuller es entonces la de $\dfrac{\int W\,dW}{\int W^2}$: un cociente de funcionales brownianos, hoy tabulado por simulación (White, 1958, obtuvo su función característica; no hay una densidad simple).
+
+La asimetría se lee directamente: el numerador $\int W\,dW = \tfrac12(\chi^2_1 - 1)$ tiene media cero, está acotado inferiormente por $-\tfrac12$ y tiene cola derecha larga, de modo que es negativo con probabilidad $0{,}683$; el denominador $\int W^2$ es siempre positivo. El cociente tiene entonces su masa mayoritariamente en valores negativos, con una cola izquierda gruesa que aparece cuando un numerador negativo se divide por un denominador pequeño.
+
+# Resumen
+
+- **TS** (tendencia determinística: shocks transitorios) frente a **DS** (raíz unitaria: shocks permanentes, varianza $t\sigma^2$, ECM de pronóstico $h\sigma^2$). Una serie es $I(1)$ si su diferencia es estacionaria.
+- Bajo raíz unitaria, $\hat\phi$ converge a tasa $T$ (**superconsistencia**) con distribución **no normal** (@thm-df): $T(\hat\phi - 1)\Rightarrow\dfrac{\frac12[W(1)^2 - 1]}{\int W^2}$. Se deriva con la identidad $\sum y_{t-1}\varepsilon_t = \frac12(y_T^2 - \sum\varepsilon_t^2)$ y el TCL funcional (@thm-donsker).
+- El **test de Dickey–Fuller** compara el $t$ de $\gamma = \phi - 1$ con críticos más negativos que los normales ($-1{,}94$, $-2{,}86$, $-3{,}41$ al 5 % según los términos determinísticos).
+- Con errores correlacionados aparece un parámetro de perturbación $\lambda^2 - \gamma_u(0)$: motiva **ADF** y **Phillips–Perron** (Clase 7).
+- **Regresión espuria** (@thm-espuria): dos caminatas aleatorias independientes dan $t\to\infty$, $R^2$ aleatorio y $DW\to0$. Remedio: diferenciar o testear cointegración (Clase 8).
+
+# Ejercicios
+
+**Ejercicio 6.1.** Para una caminata aleatoria con $\sigma^2 = 4$, calcula $\operatorname{Var}(y_{100})$, $\operatorname{Cov}(y_{100},y_{50})$ y $\operatorname{Corr}(y_{100},y_{50})$. ¿Y la correlación entre $y_{100}$ e $y_{99}$?
+
+::: {.callout-tip collapse="true" title="Solución 6.1"}
+$\operatorname{Var}(y_{100}) = 100\cdot4 = 400$. $\operatorname{Cov}(y_{100},y_{50}) = \min(100,50)\cdot4 = 200$. $\operatorname{Corr} = 200/\sqrt{400\cdot200} = \sqrt{1/2} = 0{,}707$ (que es $\sqrt{s/t} = \sqrt{50/100}$). Con $y_{99}$: $\sqrt{99/100} = 0{,}995$. La correlación entre observaciones separadas por la mitad de la muestra sigue siendo $0{,}71$: la memoria es esencialmente infinita.
+:::
+
+**Ejercicio 6.2.** Compara el error cuadrático medio de pronóstico a $h = 20$ pasos de un AR(1) estacionario con $\phi = 0{,}9$ y de una caminata aleatoria, ambos con $\sigma^2 = 1$.
+
+::: {.callout-tip collapse="true" title="Solución 6.2"}
+AR(1): $\sigma^2(1 - \phi^{2h})/(1 - \phi^2) = (1 - 0{,}9^{40})/0{,}19 = (1 - 0{,}0148)/0{,}19 = 5{,}19$ (cerca de $\gamma(0) = 5{,}26$). Caminata aleatoria: $h\sigma^2 = 20$. La caminata tiene un error casi **4 veces** mayor, y sigue creciendo; el del AR(1) está acotado. Un intervalo de pronóstico a 20 pasos es $\pm1{,}96\sqrt{5{,}19} = \pm4{,}5$ frente a $\pm1{,}96\sqrt{20} = \pm8{,}8$. Equivocarse entre una y otra especificación tiene consecuencias enormes en los pronósticos de largo plazo.
+:::
+
+**Ejercicio 6.3.** Con una constante, se estima $\Delta y_t = \mu + \gamma y_{t-1} + \varepsilon_t$ y se obtiene $\hat\gamma = -0{,}04$ con error estándar $0{,}02$. Calcula el $t$ y decide con el crítico normal ($-1{,}645$) y con el de Dickey–Fuller ($-2{,}86$).
+
+::: {.callout-tip collapse="true" title="Solución 6.3"}
+$t = -0{,}04/0{,}02 = -2{,}0$. Con el crítico normal ($-1{,}645$) se **rechazaría** la raíz unitaria al 5 %, pero el crítico correcto es $-2{,}86$ y $-2{,}0>-2{,}86$: **no se rechaza**. Usar la normal sobrerrechaza la raíz unitaria (concluye "estacionaria") cuando la serie bien podría ser una caminata aleatoria: el tamaño real del test con el crítico normal es mucho mayor que el 5 % nominal (más de 40 % en el caso con constante). Notar que $\hat\phi = 0{,}96$ está cerca de uno: sin el test no distinguiríamos.
+:::
+
+**Ejercicio 6.4.** Verifica $\sum_{t = 1}^3y_{t-1}\varepsilon_t = \tfrac12\big(y_3^2 - \sum\varepsilon_t^2\big)$ para $\varepsilon = (1,-1,2)$ y $y_0 = 0$.
+
+::: {.callout-tip collapse="true" title="Solución 6.4"}
+$y_1 = 1$, $y_2 = 0$, $y_3 = 2$. Lado izquierdo: $y_0\varepsilon_1 + y_1\varepsilon_2 + y_2\varepsilon_3 = 0 + 1\cdot(-1) + 0\cdot2 = -1$. Lado derecho: $\tfrac12\big(4 - (1 + 1 + 4)\big) = \tfrac12(-2) = -1$ ✓. La identidad es algebraica (vale para cualquier realización), y es el corazón del cálculo del numerador de Dickey–Fuller.
+:::
+
+**Ejercicio 6.5.** Una regresión entre dos series macroeconómicas tiene $R^2 = 0{,}85$, $t = 14$ y Durbin–Watson $= 0{,}15$. ¿Qué sospechas? ¿Qué harías?
+
+::: {.callout-tip collapse="true" title="Solución 6.5"}
+$R^2>DW$ ($0{,}85>0{,}15$) y un $DW$ cercano a cero indican residuos con autocorrelación casi unitaria: señal de **regresión espuria** (si las series son $I(1)$ y no están cointegradas). Con $DW\approx2(1 - \hat\rho)$, $\hat\rho\approx0{,}93$. Lo primero es testear si las series y los residuos tienen raíz unitaria (Dickey–Fuller); si las series son $I(1)$ y los residuos también lo son, el $t = 14$ no tiene valor inferencial: hay que **regresar en diferencias** o tomar el camino de cointegración (Clase 8).
+:::
+
+**Ejercicio 6.6.** Si $y_t$ es un ruido blanco i.i.d. con varianza $\sigma^2$ y se calcula $\Delta y_t$, muestra que $\Delta y_t$ es un MA(1) con $\theta = -1$, con $\rho(1) = -0{,}5$ y varianza de largo plazo cero.
+
+::: {.callout-tip collapse="true" title="Solución 6.6"}
+$\Delta y_t = y_t - y_{t-1} = \varepsilon_t - \varepsilon_{t-1}$ (con $\varepsilon_t = y_t$): un MA(1) con $\theta = -1$ y $\sigma^2$. $\gamma(0) = 2\sigma^2$, $\gamma(1) = -\sigma^2$, $\rho(1) = -0{,}5$. La varianza de largo plazo $\sigma^2_{LR} = \sigma^2(1 + \theta)^2 = 0$ (Clase 1): el proceso es **no invertible** (raíz del polinomio MA en exactamente $1$) y su espectro en la frecuencia cero se anula. Es la huella de la **sobrediferenciación**: la autocorrelación de primer orden de $\Delta y_t$ cerca de $-0{,}5$ sugiere que la serie original ya era estacionaria.
+:::
+
+**Ejercicio 6.7 ★.** Con la distribución límite del @thm-df, muestra que $P(\hat\phi<1)\to P(\chi^2_1<1) = 0{,}683$ y que el numerador tiene esperanza cero. ¿Qué implica sobre el sesgo de $\hat\phi$?
+
+::: {.callout-tip collapse="true" title="Solución 6.7 ★"}
+El denominador $\int W^2$ es positivo con probabilidad uno, de modo que el signo de $T(\hat\phi - 1)$ es el de $\tfrac12[W(1)^2 - 1]$, es decir, negativo si y solo si $W(1)^2<1$. Como $W(1)^2\sim\chi^2_1$ y $P(\chi^2_1<1) = P(|Z|<1) = 0{,}6827$, el límite de $P(\hat\phi<1)$ es $0{,}683$. El numerador tiene media cero: $\mathbb{E}[W(1)^2] = 1$. Pero $\mathbb{E}[T(\hat\phi - 1)]\ne0$: es el esperado de un cociente, y como el numerador y el denominador son dependientes, el cociente tiene **media negativa** (el sesgo de Dickey–Fuller: $\mathbb{E}[T(\hat\phi - 1)]\approx-1{,}78$ sin constante, o $\approx-1{,}78/T$ en $\hat\phi$). Con $T = 100$, el sesgo de MCO es $\approx-0{,}018$ sin constante, y es **bastante mayor en valor absoluto** al incluir constante o tendencia (que se "gastan" en estimar el nivel).
+:::

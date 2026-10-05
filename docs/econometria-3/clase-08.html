@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Series integradas que comparten una tendencia estocástica: definición de cointegración, superconsistencia de MCO y distribución límite, el test de Engle–Granger, la representación de corrección de error y los estimadores FM-OLS y DOLS.">
+
+<title>Clase 8 · Cointegración – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-07.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-08.html">Clase 8 · Cointegración</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#una-relación-de-equilibrio-entre-series-que-vagan" id="toc-una-relación-de-equilibrio-entre-series-que-vagan" class="nav-link active" data-scroll-target="#una-relación-de-equilibrio-entre-series-que-vagan"><span class="header-section-number">1</span> Una relación de equilibrio entre series que vagan</a></li>
+  <li><a href="#definición-y-propiedades" id="toc-definición-y-propiedades" class="nav-link" data-scroll-target="#definición-y-propiedades"><span class="header-section-number">2</span> Definición y propiedades</a></li>
+  <li><a href="#superconsistencia-de-mco" id="toc-superconsistencia-de-mco" class="nav-link" data-scroll-target="#superconsistencia-de-mco"><span class="header-section-number">3</span> Superconsistencia de MCO</a></li>
+  <li><a href="#el-test-de-englegranger" id="toc-el-test-de-englegranger" class="nav-link" data-scroll-target="#el-test-de-englegranger"><span class="header-section-number">4</span> El test de Engle–Granger</a></li>
+  <li><a href="#el-modelo-de-corrección-de-error" id="toc-el-modelo-de-corrección-de-error" class="nav-link" data-scroll-target="#el-modelo-de-corrección-de-error"><span class="header-section-number">5</span> El modelo de corrección de error</a></li>
+  <li><a href="#estimación-eficiente-del-vector-de-cointegración" id="toc-estimación-eficiente-del-vector-de-cointegración" class="nav-link" data-scroll-target="#estimación-eficiente-del-vector-de-cointegración"><span class="header-section-number">6</span> Estimación eficiente del vector de cointegración</a></li>
+  <li><a href="#postgrado-el-sesgo-de-segundo-orden-de-mco" id="toc-postgrado-el-sesgo-de-segundo-orden-de-mco" class="nav-link" data-scroll-target="#postgrado-el-sesgo-de-segundo-orden-de-mco"><span class="header-section-number">7</span> ★ Postgrado: el sesgo de segundo orden de MCO</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-08.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 8 · Cointegración</h1>
+<p class="subtitle lead">Tendencias comunes, superconsistencia y modelos de corrección de error</p>
+</div>
+
+<div>
+  <div class="description">
+    Series integradas que comparten una tendencia estocástica: definición de cointegración, superconsistencia de MCO y distribución límite, el test de Engle–Granger, la representación de corrección de error y los estimadores FM-OLS y DOLS.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-08.pdf">Descargar esta clase en PDF</a></p>
+<section id="una-relación-de-equilibrio-entre-series-que-vagan" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Una relación de equilibrio entre series que vagan</h1>
+<p>La Clase 6 terminó con una mala noticia y una pregunta. La mala noticia: regresar una serie <span class="math inline">\(I(1)\)</span> sobre otra independiente produce <strong>regresiones espurias</strong>. La pregunta: ¿existe algún caso en que regresar series <span class="math inline">\(I(1)\)</span> en <strong>niveles</strong> sea legítimo, y hasta mejor que en diferencias? La respuesta es sí, cuando las series <strong>comparten una tendencia estocástica</strong>: cada una vaga como una caminata aleatoria, pero <strong>no se separan</strong> una de la otra. Es lo que la economía describe como una relación de <strong>equilibrio de largo plazo</strong>:</p>
+<ul>
+<li>El consumo y el ingreso: ambos crecen sin cota, pero su cociente es acotado.</li>
+<li>El precio de un bien en dos países y el tipo de cambio (paridad de poder de compra).</li>
+<li>Las tasas de interés de corto y largo plazo.</li>
+<li>El precio de un activo y su valor presente de dividendos.</li>
+</ul>
+<p>Si el desequilibrio <span class="math inline">\(y_t - \beta x_t\)</span> fuera <span class="math inline">\(I(1)\)</span>, las series podrían alejarse indefinidamente. Si es <strong>estacionario</strong>, vuelve a cero: es la tendencia común. Engle y Granger (1987) formalizaron la idea y recibieron el Nobel (2003, Granger).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Clive Granger recibió el Nobel de Economía de 2003, que compartió con Robert Engle, premiado por su trabajo sobre la heterocedasticidad condicional (Clase 12). Ese año el premio reconoció, así, los dos grandes temas de la econometría moderna de series de tiempo: <strong>tendencias comunes</strong> (cointegración) y <strong>volatilidad cambiante</strong> (ARCH).</p></div></div></section>
+<section id="definición-y-propiedades" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Definición y propiedades</h1>
+<div id="def-cointegracion" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Cointegración)</strong></span> Dos series <span class="math inline">\(y_t,x_t\)</span> son <span class="math inline">\(I(1)\)</span> y están <strong>cointegradas</strong> si existe <span class="math inline">\(\beta\)</span> tal que la combinación lineal <span class="math inline">\(u_t = y_t - \beta x_t\)</span> es <span class="math inline">\(I(0)\)</span>. El vector <span class="math inline">\((1,-\beta)'\)</span> es el <strong>vector de cointegración</strong> y <span class="math inline">\(u_t\)</span> el <strong>error de equilibrio</strong> (o desequilibrio).</p>
+</div>
+<div id="prp-unico" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Unicidad del vector de cointegración (<span class="math inline">\(n = 2\)</span>))</strong></span> Si <span class="math inline">\(y_t\)</span> y <span class="math inline">\(x_t\)</span> son <span class="math inline">\(I(1)\)</span> y cointegradas, el vector de cointegración es <strong>único</strong> salvo un factor de escala.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(y_t - \beta_1x_t\)</span> y <span class="math inline">\(y_t - \beta_2x_t\)</span> fueran ambas <span class="math inline">\(I(0)\)</span> con <span class="math inline">\(\beta_1\ne\beta_2\)</span>, su diferencia <span class="math inline">\((\beta_2 - \beta_1)x_t\)</span> sería <span class="math inline">\(I(0)\)</span> (combinación lineal de estacionarias), y por lo tanto <span class="math inline">\(x_t\)</span> sería <span class="math inline">\(I(0)\)</span>, contradicción con que es <span class="math inline">\(I(1)\)</span>.</p>
+</div>
+<p>Con <span class="math inline">\(n&gt;2\)</span> series puede haber <strong>varios</strong> vectores de cointegración linealmente independientes: hasta <span class="math inline">\(n - 1\)</span>. Su número, <span class="math inline">\(r\)</span>, es el <strong>rango de cointegración</strong> (Clase 11).</p>
+<p>Dos ideas conectan la cointegración con lo que ya sabemos.</p>
+<p><strong>Tendencia común.</strong> Si <span class="math inline">\(x_t = \sum_{s\le t}v_s + x_0\)</span> es una caminata aleatoria y <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(u_t\in I(0)\)</span>, entonces <span class="math display">\[
+y_t = \beta\sum_{s\le t}v_s + \beta x_0 + u_t,\qquad x_t = \sum_{s\le t}v_s + x_0:
+\]</span> <strong>ambas contienen la misma tendencia estocástica</strong> <span class="math inline">\(\sum v_s\)</span> (con pesos <span class="math inline">\(\beta\)</span> y <span class="math inline">\(1\)</span>), más una componente transitoria. Es la representación de <strong>tendencias comunes</strong> de Stock y Watson (1988): un sistema de <span class="math inline">\(n\)</span> series con <span class="math inline">\(r\)</span> relaciones de cointegración tiene <span class="math inline">\(n - r\)</span> tendencias estocásticas comunes.</p>
+<p><strong>Persistencia y espurias.</strong> Dos caminatas aleatorias <strong>independientes</strong> no están cointegradas (la combinación <span class="math inline">\(y - \beta x\)</span> es siempre <span class="math inline">\(I(1)\)</span>). La cointegración es una propiedad <strong>especial</strong>, no genérica: es lo que da contenido económico a una regresión en niveles.</p>
+</section>
+<section id="superconsistencia-de-mco" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Superconsistencia de MCO</h1>
+<p>Sea <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(x_t = x_{t-1} + v_t\)</span> (<span class="math inline">\(I(1)\)</span>) y <span class="math inline">\(u_t\in I(0)\)</span>. Regresamos <span class="math inline">\(y_t\)</span> sobre <span class="math inline">\(x_t\)</span> por MCO. ¿Cómo se comporta <span class="math inline">\(\hat\beta\)</span>? A diferencia de la regresión espuria, ahora <span class="math inline">\(\hat\beta\)</span> <strong>converge a <span class="math inline">\(\beta\)</span></strong>, y más rápido de lo habitual.</p>
+<div id="thm-super" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Superconsistencia (Stock, 1987))</strong></span> Si <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(x_t\)</span> una caminata aleatoria y <span class="math inline">\(u_t\)</span> estacionario, entonces <span class="math inline">\(\hat\beta\to_p\beta\)</span> <strong>a tasa <span class="math inline">\(T\)</span></strong>: <span class="math inline">\(T(\hat\beta - \beta) = O_p(1)\)</span>. Si además <span class="math inline">\(u_t\)</span> i.i.d. <span class="math inline">\((0,\sigma_u^2)\)</span> es <strong>independiente</strong> de <span class="math inline">\(\{v_s\}\)</span> (regresor estrictamente exógeno), con <span class="math inline">\(v_t\)</span> i.i.d. <span class="math inline">\((0,\sigma_v^2)\)</span>, entonces <span class="math display">\[
+T(\hat\beta - \beta)\ \xrightarrow{d}\ \frac{\sigma_u}{\sigma_v}\,\frac{\int_0^1W_x\,dW_u}{\int_0^1W_x^2},
+\]</span> con <span class="math inline">\(W_x,W_u\)</span> brownianos estándar <strong>independientes</strong>. Esta distribución es <strong>normal mixta</strong>: condicional en <span class="math inline">\(W_x\)</span> es <span class="math inline">\(N\big(0,\ \tfrac{\sigma_u^2}{\sigma_v^2}\big/\!\int W_x^2\big)\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\beta - \beta = \sum x_tu_t/\sum x_t^2\)</span>. El denominador es de orden <span class="math inline">\(T^2\)</span> (Clase 6). El numerador es una suma de <span class="math inline">\(T\)</span> términos <span class="math inline">\(x_tu_t\)</span> donde <span class="math inline">\(x_t = O_p(\sqrt T)\)</span> y <span class="math inline">\(u_t\)</span> es estacionario de media cero: si los <span class="math inline">\(u_t\)</span> fueran independientes de <span class="math inline">\(x\)</span>, la suma tendría media cero y desviación estándar <span class="math inline">\(\sqrt{\sum x_t^2\sigma_u^2} = O_p(T)\)</span>. Entonces el cociente es <span class="math inline">\(O_p(T/T^2) = O_p(1/T)\)</span>: superconsistencia. Y como condicional en la trayectoria de <span class="math inline">\(x\)</span> la suma es una combinación lineal de <span class="math inline">\(u_t\)</span> <strong>independientes</strong>, es normal: la mezcla da una <strong>normal mixta</strong>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(T(\hat\beta - \beta) = \dfrac{T^{-1}\sum x_tu_t}{T^{-2}\sum x_t^2}\)</span>. <em>Denominador:</em> <span class="math inline">\(T^{-2}\sum x_t^2\Rightarrow\sigma_v^2\int W_x^2\)</span> (Clase 6). <em>Numerador:</em> condicional en la trayectoria <span class="math inline">\(\{x_t\}\)</span>, <span class="math inline">\(\sum x_tu_t\)</span> es una combinación lineal de los <span class="math inline">\(u_t\)</span> i.i.d. e independientes de <span class="math inline">\(x\)</span>, con media cero y varianza <span class="math inline">\(\sigma_u^2\sum x_t^2\)</span>. Por el TCL (condicional, de Lindeberg) y Donsker, <span class="math inline">\(T^{-1}\sum x_tu_t\Rightarrow\sigma_v\sigma_u\int W_x\,dW_u\)</span>, que condicional en <span class="math inline">\(W_x\)</span> es <span class="math inline">\(N\big(0,\sigma_u^2\sigma_v^2\int W_x^2\big)\)</span>. Dividiendo, el cociente es <span class="math inline">\(\dfrac{\sigma_u}{\sigma_v}\dfrac{\int W_x\,dW_u}{\int W_x^2}\)</span>, que condicional en <span class="math inline">\(W_x\)</span> es <span class="math inline">\(N\big(0,\sigma_u^2/(\sigma_v^2\int W_x^2)\big)\)</span>. Para el caso general con <span class="math inline">\(u_t\)</span> estacionario (no necesariamente i.i.d.) se necesita el TCL funcional multivariado (Clase 5 y 6), y la limitación es la dependencia contemporánea y serial entre <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> (§★).</p>
+</div>
+<p>Dos hechos prácticos: (i) <span class="math inline">\(\hat\beta\)</span> es <strong>tan preciso</strong> que su error estándar es de orden <span class="math inline">\(1/T\)</span>. Con <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(\sigma_u = \sigma_v = 1\)</span>: <span class="math inline">\(\operatorname{ee}(\hat\beta)\approx\sigma_u\sqrt{2}/(T\sigma_v) = 0{,}014\)</span> (usando <span class="math inline">\(\mathbb{E}[\int W^2] = \tfrac12\)</span>), contra <span class="math inline">\(\sigma_u/(\sqrt T\sigma_x) = 0{,}1\)</span> si el regresor fuera estacionario con varianza <span class="math inline">\(1\)</span>: siete veces menor. (ii) Cuando el regresor es <strong>estrictamente exógeno</strong> y los errores son i.i.d., la distribución normal mixta hace que el estadístico <span class="math inline">\(t\)</span> habitual sea <strong>asintóticamente <span class="math inline">\(N(0,1)\)</span></strong>: la inferencia estándar funciona. En el caso general (regresor <strong>endógeno</strong> o error <strong>serialmente correlacionado</strong>) no: aparece un sesgo de segundo orden y la inferencia estándar falla (§★ y FM-OLS/DOLS).</p>
+</section>
+<section id="el-test-de-englegranger" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> El test de Engle–Granger</h1>
+<p>Para decidir si dos series <span class="math inline">\(I(1)\)</span> están cointegradas hay que testear si el error de equilibrio <span class="math inline">\(u_t = y_t - \beta x_t\)</span> es <span class="math inline">\(I(0)\)</span>. Como <span class="math inline">\(\beta\)</span> no se conoce, Engle y Granger (1987) proponen dos pasos:</p>
+<ol type="1">
+<li><strong>Verificar</strong> que <span class="math inline">\(y_t\)</span> y <span class="math inline">\(x_t\)</span> son <span class="math inline">\(I(1)\)</span> (ADF, KPSS; Clase 7).</li>
+<li><strong>Estimar</strong> la <strong>regresión de cointegración</strong> <span class="math inline">\(y_t = \alpha + \beta x_t + u_t\)</span> por MCO y obtener los residuos <span class="math inline">\(\hat u_t\)</span>.</li>
+<li><strong>Testear</strong> raíz unitaria en <span class="math inline">\(\hat u_t\)</span> con ADF <strong>sin términos determinísticos</strong> (los residuos tienen media cero): <span class="math inline">\(\Delta\hat u_t = \gamma\hat u_{t-1} + \sum\delta_j\Delta\hat u_{t-j} + e_t\)</span>. La nula es <strong><span class="math inline">\(H_0:\gamma = 0\)</span>: no hay cointegración</strong> (el error es <span class="math inline">\(I(1)\)</span>) y la alternativa es <span class="math inline">\(\gamma&lt;0\)</span> (cointegración).</li>
+</ol>
+<p>La trampa es que <strong>los valores críticos no son los de Dickey–Fuller</strong>. Los <span class="math inline">\(\hat u_t\)</span> no son los errores verdaderos: provienen de una regresión que <strong>elige <span class="math inline">\(\hat\beta\)</span> para minimizar la suma de cuadrados residual</strong>, es decir, para que <span class="math inline">\(\hat u_t\)</span> se parezca lo más posible a una serie estacionaria (aun si no hay cointegración). Eso sesga el test hacia el rechazo, y exige críticos <strong>más negativos</strong>. Phillips y Ouliaris (1990) y MacKinnon (1991) los tabularon: para <span class="math inline">\(n = 2\)</span> series con constante, los críticos asintóticos del estadístico <span class="math inline">\(t\)</span> son <span class="math inline">\(-3{,}90\)</span> (1 %), <span class="math inline">\(-3{,}34\)</span> (5 %) y <span class="math inline">\(-3{,}04\)</span> (10 %), en vez de <span class="math inline">\(-3{,}43\)</span>, <span class="math inline">\(-2{,}86\)</span> y <span class="math inline">\(-2{,}57\)</span> del Dickey–Fuller con constante. Con más series, los críticos se hacen aún más negativos.</p>
+<div id="exm-eg" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un ejemplo numérico)</strong></span> Con consumo e ingreso en logaritmos, ambos <span class="math inline">\(I(1)\)</span>, se estima la regresión de cointegración y se encuentra <span class="math inline">\(t = -3{,}10\)</span> para <span class="math inline">\(\hat\gamma\)</span> en los residuos. Comparado con el crítico de Dickey–Fuller con constante (<span class="math inline">\(-2{,}86\)</span>) se <strong>rechazaría</strong> la ausencia de cointegración; pero el crítico correcto de Engle–Granger al 5 % es <span class="math inline">\(-3{,}34\)</span> y <span class="math inline">\(-3{,}10&gt;-3{,}34\)</span>: <strong>no se rechaza</strong>. Usar el crítico equivocado habría llevado a afirmar cointegración sin evidencia suficiente.</p>
+</div>
+<p>Limitaciones del enfoque de dos pasos: (a) depende de <strong>cuál variable se pone a la izquierda</strong> (en muestras finitas, regresar <span class="math inline">\(y\)</span> sobre <span class="math inline">\(x\)</span> y <span class="math inline">\(x\)</span> sobre <span class="math inline">\(y\)</span> pueden dar conclusiones distintas); (b) solo detecta <strong>una</strong> relación de cointegración; (c) el test tiene poco poder, igual que los de raíz unitaria. Para más de dos variables se usa Johansen (Clase 11).</p>
+</section>
+<section id="el-modelo-de-corrección-de-error" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El modelo de corrección de error</h1>
+<p>La cointegración tiene una consecuencia dinámica: si el error de equilibrio es estacionario, las series deben <strong>reaccionar</strong> al desequilibrio: al menos una de ellas debe moverse para corregirlo. Es el <strong>mecanismo de corrección de error</strong> (ECM).</p>
+<div id="prp-ecm" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Representación de corrección de error (caso triangular))</strong></span> Sea <span class="math inline">\(x_t = x_{t-1} + v_t\)</span> y <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(u_t = \rho u_{t-1} + e_t\)</span>, <span class="math inline">\(|\rho|&lt;1\)</span>, <span class="math inline">\(e_t,v_t\)</span> ruido blanco. Entonces <span class="math inline">\(y_t,x_t\)</span> son <span class="math inline">\(I(1)\)</span> cointegradas con vector <span class="math inline">\((1,-\beta)\)</span>, y <span class="math inline">\(\Delta y_t\)</span> satisface <span class="math display">\[
+\Delta y_t = \underbrace{(\rho - 1)}_{\alpha}\,\big(y_{t-1} - \beta x_{t-1}\big) + \beta\,v_t + e_t.
+\]</span> El coeficiente <span class="math inline">\(\alpha = \rho - 1\in(-1,0)\)</span> es la <strong>velocidad de ajuste</strong>: cada período, <span class="math inline">\(y\)</span> corrige una fracción <span class="math inline">\(-\alpha = 1 - \rho\)</span> del desequilibrio rezagado.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\Delta y_t = \beta\Delta x_t + \Delta u_t = \beta v_t + u_t - u_{t-1}\)</span>. Como <span class="math inline">\(u_t = \rho u_{t-1} + e_t\)</span>, <span class="math inline">\(\Delta u_t = (\rho - 1)u_{t-1} + e_t\)</span>, y <span class="math inline">\(u_{t-1} = y_{t-1} - \beta x_{t-1}\)</span>. Sustituyendo, <span class="math inline">\(\Delta y_t = \beta v_t + (\rho - 1)(y_{t-1} - \beta x_{t-1}) + e_t\)</span>.</p>
+</div>
+<p>Interpretación: <span class="math inline">\(y_{t-1} - \beta x_{t-1}&gt;0\)</span> (el <span class="math inline">\(y\)</span> está <strong>por encima</strong> de su nivel de equilibrio) implica <span class="math inline">\(\Delta y_t\)</span> tiende a ser <strong>negativo</strong> (porque <span class="math inline">\(\alpha&lt;0\)</span>). Con <span class="math inline">\(\rho = 0{,}8\)</span>, <span class="math inline">\(\alpha = -0{,}2\)</span>: <span class="math inline">\(y\)</span> cierra el 20 % de la brecha cada período, y la <strong>vida media</strong> del desequilibrio es <span class="math inline">\(\log(0{,}5)/\log(0{,}8) = 3{,}1\)</span> períodos.</p>
+<p>El resultado general es el <strong>teorema de representación de Granger</strong>: si un vector de series <span class="math inline">\(I(1)\)</span> está cointegrado, su dinámica admite una representación ECM, y recíprocamente. En el caso bivariado: <span class="math display">\[
+\Delta y_t = \alpha_y(y_{t-1} - \beta x_{t-1}) + \sum_{j = 1}^k\big(\gamma_{y,j}\Delta y_{t-j} + \delta_{y,j}\Delta x_{t-j}\big) + \varepsilon_{yt},\quad\Delta x_t = \alpha_x(y_{t-1} - \beta x_{t-1}) + \dots + \varepsilon_{xt},
+\]</span> con la restricción de que <strong>al menos uno</strong> de <span class="math inline">\(\alpha_y,\alpha_x\)</span> sea distinto de cero (si ambos son cero, no hay mecanismo que corrija el desequilibrio y no hay cointegración). Un modelo en <strong>diferencias</strong> puro (<span class="math inline">\(\alpha = 0\)</span>) está <strong>mal especificado</strong> si hay cointegración: omite el término de corrección de error. Y uno en <strong>niveles</strong> puro tiene problemas de inferencia. El ECM combina lo mejor de ambos: relaciones de largo plazo (<span class="math inline">\(\beta\)</span>) y dinámica de corto plazo (<span class="math inline">\(\gamma,\delta\)</span>), todo con variables <span class="math inline">\(I(0)\)</span> (las diferencias y el error de equilibrio) y, por lo tanto, con inferencia estándar sobre los coeficientes de corto plazo.</p>
+<p>El <span class="math inline">\(\alpha\)</span> tiene además una lectura de <strong>exogeneidad débil</strong>: si <span class="math inline">\(\alpha_x = 0\)</span>, <span class="math inline">\(x\)</span> no reacciona al desequilibrio (es “débilmente exógena”) y toda la corrección la hace <span class="math inline">\(y\)</span>; entonces se puede estimar el vector de cointegración eficientemente con la ecuación condicional de <span class="math inline">\(\Delta y\)</span>.</p>
+</section>
+<section id="estimación-eficiente-del-vector-de-cointegración" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Estimación eficiente del vector de cointegración</h1>
+<p>MCO es superconsistente, pero su <strong>distribución</strong> puede estar contaminada. Si <span class="math inline">\(\{u_t\}\)</span> y <span class="math inline">\(\{v_t\}\)</span> están correlacionados (el regresor es <strong>endógeno</strong>: <span class="math inline">\(\operatorname{Cov}(u_t,v_s)\ne0\)</span>) o <span class="math inline">\(u_t\)</span> tiene correlación serial, <span class="math inline">\(T(\hat\beta - \beta)\)</span> tiene un <strong>sesgo de segundo orden</strong> en su distribución límite y el <span class="math inline">\(t\)</span> <strong>no</strong> es asintóticamente normal (§★). Hay dos correcciones estándar.</p>
+<p><strong>FM-OLS</strong> (<em>fully modified</em>, Phillips y Hansen, 1990): corrige <span class="math inline">\(y_t\)</span> por la endogeneidad (restando la proyección de <span class="math inline">\(u\)</span> sobre <span class="math inline">\(\Delta x\)</span> estimada con la varianza de largo plazo) y corrige el término de sesgo del numerador con una estimación <strong>no paramétrica</strong> (kernel) de la covarianza de largo plazo de un lado, <span class="math inline">\(\Delta_{vu}\)</span>. El resultado es un estimador con distribución <strong>normal mixta</strong> y un estadístico <span class="math inline">\(t\)</span> asintóticamente <span class="math inline">\(N(0,1)\)</span>, con la varianza de largo plazo de <span class="math inline">\(u\)</span>.</p>
+<p><strong>DOLS</strong> (<em>dynamic OLS</em>, Stock y Watson, 1993): se agregan a la regresión <strong>rezagos y adelantos de <span class="math inline">\(\Delta x_t\)</span></strong>: <span class="math display">\[
+y_t = \alpha + \beta x_t + \sum_{j = -k}^k\pi_j\Delta x_{t-j} + u_t^*.
+\]</span> La idea: si <span class="math inline">\(u_t\)</span> está correlacionado con las <strong>diferencias de <span class="math inline">\(x\)</span> en períodos cercanos</strong> (porque <span class="math inline">\(x\)</span> reacciona a <span class="math inline">\(y\)</span> o por retroalimentación), proyectamos <span class="math inline">\(u_t\)</span> sobre <span class="math inline">\(\{\Delta x_{t-j}\}_{j = -k}^k\)</span>; el residuo <span class="math inline">\(u_t^*\)</span> queda <strong>ortogonal a todos los <span class="math inline">\(v_s\)</span></strong>, así que el regresor es <em>exógeno</em> respecto de <span class="math inline">\(u_t^*\)</span> y vale la distribución normal mixta del <a href="#thm-super" class="quarto-xref">Teorema&nbsp;1</a>. Los adelantos (<span class="math inline">\(j&lt;0\)</span>) son necesarios porque la correlación puede ir hacia el futuro. La inferencia usa errores estándar con la varianza de largo plazo de <span class="math inline">\(u^*_t\)</span> (HAC, Clase 5). DOLS es popular por su simpleza (es una regresión de MCO con regresores adicionales).</p>
+</section>
+<section id="postgrado-el-sesgo-de-segundo-orden-de-mco" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: el sesgo de segundo orden de MCO</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Por qué la endogeneidad contamina la distribución límite de <span class="math inline">\(\hat\beta\)</span> aun siendo superconsistente? Lo mostramos en el caso contemporáneo.</p>
+</div>
+</div>
+<p>Sea <span class="math inline">\((v_t,u_t)'\)</span> i.i.d. con varianzas <span class="math inline">\(\sigma_v^2,\sigma_u^2\)</span> y <strong>covarianza</strong> <span class="math inline">\(\sigma_{vu}\ne0\)</span>. Con <span class="math inline">\(x_t = x_{t-1} + v_t\)</span>, el numerador de <span class="math inline">\(T(\hat\beta - \beta)\)</span> se descompone usando <span class="math inline">\(x_t = x_{t-1} + v_t\)</span>: <span class="math display">\[
+\frac1T\sum_{t = 1}^Tx_tu_t = \frac1T\sum_tx_{t-1}u_t + \frac1T\sum_tv_tu_t.
+\]</span> El primer término es una <strong>diferencia de martingala</strong> (<span class="math inline">\(x_{t-1}\)</span> es predecible), y por Donsker converge a <span class="math inline">\(\sigma_v\int W_x\,dB_u\)</span>, donde <span class="math inline">\(B_u\)</span> es el movimiento browniano de <span class="math inline">\(u\)</span>, que ahora <strong>está correlacionado</strong> con <span class="math inline">\(W_x\)</span>: <span class="math inline">\(B_u = \rho_{vu}W_x + \sqrt{1 - \rho_{vu}^2}\,W_\perp\)</span> con <span class="math inline">\(\rho_{vu} = \sigma_{vu}/(\sigma_v\sigma_u)\)</span>. Entonces <span class="math inline">\(\int W_x\,dB_u = \rho_{vu}\int W_x\,dW_x + \sqrt{1 - \rho_{vu}^2}\int W_x\,dW_\perp\)</span>, donde el primer término es la integral de Itô <span class="math inline">\(\tfrac12[W_x(1)^2 - 1]\)</span> (<strong>el mismo objeto</strong> de Dickey–Fuller, Clase 6) y el segundo es normal mixto. El segundo término de la descomposición es <span class="math inline">\(\frac1T\sum v_tu_t\to_p\sigma_{vu}\)</span> (LGN). Así, <span class="math display">\[
+T(\hat\beta - \beta)\ \Rightarrow\ \frac{\sigma_u}{\sigma_v}\cdot\frac{\rho_{vu}\Big[\tfrac12\big(W_x(1)^2 - 1\big) + 1\Big] + \sqrt{1 - \rho_{vu}^2}\displaystyle\int W_x\,dW_\perp}{\int W_x^2}
+= \frac{\sigma_u}{\sigma_v}\cdot\frac{\tfrac12\rho_{vu}\big[W_x(1)^2 + 1\big] + \sqrt{1 - \rho_{vu}^2}\displaystyle\int W_x\,dW_\perp}{\int W_x^2}.
+\]</span> (el <span class="math inline">\(+1\)</span> dentro del corchete es el término <span class="math inline">\(\frac1T\sum v_tu_t\to\sigma_{vu}\)</span> normalizado por <span class="math inline">\(\sigma_u\sigma_v\)</span>). La <strong>fuente de no normalidad</strong> es la presencia de <span class="math inline">\(W_x(1)^2\)</span> (la integral de Itô <span class="math inline">\(\int W_x\,dW_x\)</span> de Dickey–Fuller) y de la constante: la distribución es <strong>asimétrica</strong>, y no es normal mixta salvo cuando <span class="math inline">\(\rho_{vu} = 0\)</span> (exogeneidad). Es el mismo fenómeno que la distribución de Dickey–Fuller: <strong><span class="math inline">\(\hat\beta\)</span> hereda la estructura de una raíz unitaria</strong> a través de la parte endógena. Cuando también hay correlación serial, <span class="math inline">\(\sigma_{vu}\)</span> se reemplaza por la <strong>covarianza de largo plazo de un lado</strong> <span class="math inline">\(\Delta_{vu} = \sum_{h\ge0}\mathbb{E}[v_{t-h}u_t]\)</span>, que es exactamente el término que FM-OLS estima con un kernel y resta. DOLS elimina <span class="math inline">\(\rho_{vu}\)</span> y <span class="math inline">\(\Delta_{vu}\)</span> <strong>por construcción</strong>, al hacer <span class="math inline">\(u^*_t\)</span> ortogonal a los <span class="math inline">\(v_s\)</span>.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li><strong>Cointegración:</strong> series <span class="math inline">\(I(1)\)</span> cuya combinación lineal <span class="math inline">\(y_t - \beta x_t\)</span> es <span class="math inline">\(I(0)\)</span> (<a href="#def-cointegracion" class="quarto-xref">Definición&nbsp;1</a>). Es una <strong>tendencia estocástica común</strong>; el vector es único si <span class="math inline">\(n = 2\)</span> (<a href="#prp-unico" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li><strong>Superconsistencia</strong> (<a href="#thm-super" class="quarto-xref">Teorema&nbsp;1</a>): <span class="math inline">\(\hat\beta\)</span> en niveles converge a tasa <span class="math inline">\(T\)</span>; con regresor exógeno, la distribución es normal mixta y el <span class="math inline">\(t\)</span> es <span class="math inline">\(N(0,1)\)</span>. Con endogeneidad o correlación serial hay un <strong>sesgo de segundo orden</strong> (§★).</li>
+<li><strong>Engle–Granger:</strong> (1) <span class="math inline">\(I(1)\)</span>; (2) regresión de cointegración; (3) ADF sin determinísticos en <span class="math inline">\(\hat u_t\)</span> con <strong>críticos más negativos</strong> que los de DF (<span class="math inline">\(-3{,}34\)</span> al 5 %, <span class="math inline">\(n = 2\)</span>).</li>
+<li><strong>ECM</strong> (<a href="#prp-ecm" class="quarto-xref">Proposición&nbsp;2</a>): <span class="math inline">\(\Delta y_t = \alpha(y_{t-1} - \beta x_{t-1}) + \dots\)</span> con <span class="math inline">\(\alpha\in(-1,0)\)</span> la velocidad de ajuste. Una diferencia pura omite el término de corrección de error.</li>
+<li><strong>FM-OLS y DOLS</strong> corrigen la endogeneidad y la correlación serial y devuelven inferencia normal.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 8.1.</strong> En el modelo triangular con <span class="math inline">\(\beta = 0{,}5\)</span> y <span class="math inline">\(\rho = 0{,}7\)</span>, escribe la ecuación ECM de <span class="math inline">\(\Delta y_t\)</span>, calcula la velocidad de ajuste y la vida media. Si <span class="math inline">\(y_{t-1} - 0{,}5x_{t-1} = 2\)</span>, ¿cuánto se espera que <span class="math inline">\(y\)</span> cierre de la brecha en <span class="math inline">\(t\)</span> (en ausencia de shocks)?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Delta y_t = (0{,}7 - 1)(y_{t-1} - 0{,}5x_{t-1}) + 0{,}5v_t + e_t = -0{,}3(y_{t-1} - 0{,}5x_{t-1}) + 0{,}5v_t + e_t\)</span>. Velocidad de ajuste <span class="math inline">\(\alpha = -0{,}3\)</span>. Vida media: <span class="math inline">\(\log0{,}5/\log0{,}7 = -0{,}693/-0{,}357 = 1{,}94\)</span> períodos. Con un desequilibrio de <span class="math inline">\(2\)</span> y sin shocks, <span class="math inline">\(\mathbb{E}[\Delta y_t] = -0{,}3\cdot2 = -0{,}6\)</span>: se cierra el 30 % de la brecha en un período (y <span class="math inline">\(\Delta y\)</span> esperado es <span class="math inline">\(-0{,}6\)</span>). Tras tres períodos queda <span class="math inline">\(2\cdot0{,}7^3 = 0{,}69\)</span> de desequilibrio.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.2.</strong> Muestra que si <span class="math inline">\(y_t\)</span> y <span class="math inline">\(x_t\)</span> son caminatas aleatorias <strong>independientes</strong>, ninguna combinación lineal <span class="math inline">\(y_t - \beta x_t\)</span> (con <span class="math inline">\(\beta\)</span> constante) es estacionaria, y que por lo tanto no están cointegradas.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(y_t - \beta x_t = \sum_{s\le t}(\varepsilon_s - \beta\eta_s)\)</span>, la suma acumulada de <span class="math inline">\(\varepsilon_s - \beta\eta_s\)</span>, que es un ruido blanco con varianza <span class="math inline">\(\sigma_\varepsilon^2 + \beta^2\sigma_\eta^2&gt;0\)</span> (por independencia). Es una caminata aleatoria con <span class="math inline">\(\operatorname{Var} = t(\sigma_\varepsilon^2 + \beta^2\sigma_\eta^2)\to\infty\)</span>: <strong>no estacionaria</strong> para todo <span class="math inline">\(\beta\)</span>. Entonces no hay vector de cointegración. (Para <span class="math inline">\(\beta = 0\)</span>, es <span class="math inline">\(y_t\)</span> misma.) La cointegración exige que las innovaciones de <span class="math inline">\(y\)</span> y <span class="math inline">\(x\)</span> estén <strong>correlacionadas</strong> de manera que la tendencia pueda cancelarse: $_s = _s + $ (parte estacionaria).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.3.</strong> En un test de Engle–Granger con <span class="math inline">\(n = 2\)</span> y constante, el estadístico ADF sobre los residuos es <span class="math inline">\(-3{,}1\)</span>. Decide con los críticos de Dickey–Fuller (<span class="math inline">\(-2{,}86\)</span>) y con los de Engle–Granger (<span class="math inline">\(-3{,}34\)</span>). ¿Qué pasa con <span class="math inline">\(-3{,}6\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(t = -3{,}1\)</span>: con DF (<span class="math inline">\(-2{,}86\)</span>), <span class="math inline">\(-3{,}1&lt;-2{,}86\)</span>: se <strong>rechazaría</strong> la nula de no cointegración (incorrecto). Con EG (<span class="math inline">\(-3{,}34\)</span>): <span class="math inline">\(-3{,}1&gt;-3{,}34\)</span>: <strong>no se rechaza</strong>. Con <span class="math inline">\(t = -3{,}6\)</span>: <span class="math inline">\(-3{,}6&lt;-3{,}34\)</span>, se rechaza con el crítico correcto: hay evidencia de cointegración al 5 % (pero no al 1 % si el crítico es <span class="math inline">\(-3{,}90\)</span>). La corrección importa justo en la zona <span class="math inline">\([-3{,}34,-2{,}86]\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.4.</strong> Con <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(\sigma_u = \sigma_v = 1\)</span> y regresor exógeno, compara el error estándar de <span class="math inline">\(\hat\beta\)</span> cuando <span class="math inline">\(x_t\)</span> es <span class="math inline">\(I(1)\)</span> (usa <span class="math inline">\(\mathbb{E}[\int W^2] = \tfrac12\)</span>) con el caso en que <span class="math inline">\(x_t\)</span> es estacionario con varianza <span class="math inline">\(1\)</span>. ¿Cuánto vale la razón?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(I(1)\)</span>: <span class="math inline">\(\sum x_t^2\approx T^2\sigma_v^2\int W^2\approx T^2/2\)</span>, entonces <span class="math inline">\(\operatorname{ee}(\hat\beta)\approx\sigma_u/\sqrt{T^2/2} = \sqrt2/T = 0{,}0141\)</span>. Estacionario: <span class="math inline">\(\sum x_t^2\approx T\cdot1\)</span> y <span class="math inline">\(\operatorname{ee} = 1/\sqrt{100} = 0{,}1\)</span>. Razón: <span class="math inline">\(0{,}1/0{,}0141 = 7{,}07\)</span>. El estimador en el caso cointegrado es <strong>siete veces más preciso</strong>: es la ganancia de la superconsistencia. Con <span class="math inline">\(T = 400\)</span> la razón sube a <span class="math inline">\(14\)</span>: la ventaja crece con <span class="math inline">\(\sqrt T\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.5.</strong> Verifica la <a href="#prp-ecm" class="quarto-xref">Proposición&nbsp;2</a> con <span class="math inline">\(\beta = 0{,}5\)</span>, <span class="math inline">\(\rho = 0{,}8\)</span> y los datos <span class="math inline">\(x_{t-1} = 10\)</span>, <span class="math inline">\(y_{t-1} = 6\)</span>, <span class="math inline">\(v_t = 1\)</span>, <span class="math inline">\(e_t = 0\)</span>. Calcula <span class="math inline">\(y_t\)</span> de dos maneras: por la ecuación en niveles y por el ECM.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El desequilibrio previo es <span class="math inline">\(u_{t-1} = y_{t-1} - 0{,}5x_{t-1} = 6 - 5 = 1\)</span>. Por niveles: <span class="math inline">\(x_t = 11\)</span>, <span class="math inline">\(u_t = 0{,}8\cdot1 + 0 = 0{,}8\)</span>, <span class="math inline">\(y_t = 0{,}5\cdot11 + 0{,}8 = 6{,}3\)</span>. Por ECM: <span class="math inline">\(\Delta y_t = (0{,}8 - 1)(1) + 0{,}5(1) + 0 = -0{,}2 + 0{,}5 = 0{,}3\)</span>, luego <span class="math inline">\(y_t = 6 + 0{,}3 = 6{,}3\)</span> ✓. El shock a <span class="math inline">\(x\)</span> (<span class="math inline">\(+1\)</span>) sube <span class="math inline">\(y\)</span> en <span class="math inline">\(0{,}5\)</span> (el efecto de largo plazo <span class="math inline">\(\beta\)</span> a través de <span class="math inline">\(\Delta x\)</span>), pero parte se contrarresta por el término de corrección: la brecha previa de <span class="math inline">\(1\)</span> se achica en <span class="math inline">\(0{,}2\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.6.</strong> En la regresión DOLS, ¿por qué hay que incluir <strong>adelantos</strong> además de rezagos de <span class="math inline">\(\Delta x_t\)</span>? Da un ejemplo económico.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(u_t\)</span> puede estar correlacionado con <span class="math inline">\(\Delta x_{t+j}\)</span> (<span class="math inline">\(j&gt;0\)</span>) si <span class="math inline">\(x\)</span> <strong>reacciona</strong> al desequilibrio en <span class="math inline">\(y\)</span>: por ejemplo, si el ingreso <span class="math inline">\(y\)</span> se desvía de su valor de equilibrio con el consumo <span class="math inline">\(x\)</span>, y un shock a <span class="math inline">\(u_t\)</span> (una sorpresa de ingreso) afecta al consumo <strong>del período siguiente</strong> (<span class="math inline">\(\Delta x_{t+1}\)</span>). Si no se incluye <span class="math inline">\(\Delta x_{t+1}\)</span>, queda correlación entre el residuo y la parte futura de las diferencias de <span class="math inline">\(x\)</span>, que son parte del regresor <span class="math inline">\(x_t\)</span> en niveles (porque <span class="math inline">\(x_t = x_0 + \sum_{s\le t}\Delta x_s\)</span>). Entonces la endogeneidad persiste. Con adelantos y rezagos suficientes, <span class="math inline">\(u^*_t\)</span> es ortogonal a <strong>todos</strong> los <span class="math inline">\(\Delta x_s\)</span> (por construcción de la proyección), y <span class="math inline">\(x_t\)</span> queda efectivamente exógeno.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.7 ★.</strong> En el modelo de <span class="math inline">\(n = 3\)</span> series <span class="math inline">\(I(1)\)</span> con <strong>dos</strong> vectores de cointegración linealmente independientes, ¿cuántas tendencias estocásticas comunes hay? ¿Pueden existir tres vectores independientes?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(n - r = 3 - 2 = 1\)</span> tendencia estocástica común. Si hubiera tres vectores de cointegración linealmente independientes en <span class="math inline">\(\mathbb{R}^3\)</span>, formarían una base: toda combinación lineal sería <span class="math inline">\(I(0)\)</span>, y en particular cada serie individual (<span class="math inline">\(y_t = e_1'y_t\)</span>, con <span class="math inline">\(e_1\)</span> combinación lineal de la base) sería <span class="math inline">\(I(0)\)</span>, contradiciendo que son <span class="math inline">\(I(1)\)</span>. Por lo tanto <span class="math inline">\(r\le n - 1\)</span>: <strong>como máximo <span class="math inline">\(n - 1\)</span></strong>. El caso <span class="math inline">\(r = 0\)</span> corresponde a series sin relación de largo plazo (se modelan en diferencias, VAR en diferencias) y <span class="math inline">\(r = n\)</span> a series todas estacionarias (VAR en niveles). Los casos interesantes, <span class="math inline">\(0&lt;r&lt;n\)</span>, son los del VECM de la Clase 11.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-07.html" class="pagination-link" aria-label="Clase 7 · Raíces unitarias II">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 7 · Raíces unitarias II</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

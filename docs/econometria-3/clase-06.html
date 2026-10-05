@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Series integradas: tendencia determinística frente a estocástica, la caminata aleatoria, el TCL funcional y el movimiento browniano, derivación de la distribución límite de Dickey–Fuller, y la regresión espuria de Granger–Newbold y Phillips.">
+
+<title>Clase 6 · Raíces unitarias I – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-05.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-06.html">Clase 6 · Raíces unitarias I</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-el-pasado-nunca-se-olvida" id="toc-cuando-el-pasado-nunca-se-olvida" class="nav-link active" data-scroll-target="#cuando-el-pasado-nunca-se-olvida"><span class="header-section-number">1</span> Cuando el pasado nunca se olvida</a></li>
+  <li><a href="#tendencia-determinística-frente-a-estocástica" id="toc-tendencia-determinística-frente-a-estocástica" class="nav-link" data-scroll-target="#tendencia-determinística-frente-a-estocástica"><span class="header-section-number">2</span> Tendencia determinística frente a estocástica</a>
+  <ul class="collapse">
+  <li><a href="#la-caminata-aleatoria" id="toc-la-caminata-aleatoria" class="nav-link" data-scroll-target="#la-caminata-aleatoria"><span class="header-section-number">2.1</span> La caminata aleatoria</a></li>
+  </ul></li>
+  <li><a href="#el-estimador-de-mco-cuando-phi-1" id="toc-el-estimador-de-mco-cuando-phi-1" class="nav-link" data-scroll-target="#el-estimador-de-mco-cuando-phi-1"><span class="header-section-number">3</span> El estimador de MCO cuando <span class="math inline">\(\phi = 1\)</span></a>
+  <ul class="collapse">
+  <li><a href="#herramientas-tcl-funcional-y-movimiento-browniano" id="toc-herramientas-tcl-funcional-y-movimiento-browniano" class="nav-link" data-scroll-target="#herramientas-tcl-funcional-y-movimiento-browniano"><span class="header-section-number">3.1</span> Herramientas: TCL funcional y movimiento browniano</a></li>
+  <li><a href="#la-distribución-de-dickeyfuller" id="toc-la-distribución-de-dickeyfuller" class="nav-link" data-scroll-target="#la-distribución-de-dickeyfuller"><span class="header-section-number">3.2</span> La distribución de Dickey–Fuller</a></li>
+  <li><a href="#errores-serialmente-correlacionados-el-origen-del-test-aumentado" id="toc-errores-serialmente-correlacionados-el-origen-del-test-aumentado" class="nav-link" data-scroll-target="#errores-serialmente-correlacionados-el-origen-del-test-aumentado"><span class="header-section-number">3.3</span> Errores serialmente correlacionados: el origen del test aumentado</a></li>
+  </ul></li>
+  <li><a href="#la-regresión-espuria" id="toc-la-regresión-espuria" class="nav-link" data-scroll-target="#la-regresión-espuria"><span class="header-section-number">4</span> La regresión espuria</a></li>
+  <li><a href="#postgrado-la-integral-de-itô-y-la-identidad-de-telescopaje" id="toc-postgrado-la-integral-de-itô-y-la-identidad-de-telescopaje" class="nav-link" data-scroll-target="#postgrado-la-integral-de-itô-y-la-identidad-de-telescopaje"><span class="header-section-number">5</span> ★ Postgrado: la integral de Itô y la identidad de telescopaje</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">6</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">7</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-06.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 6 · Raíces unitarias I</h1>
+<p class="subtitle lead">Caminatas aleatorias, la distribución de Dickey–Fuller y la regresión espuria</p>
+</div>
+
+<div>
+  <div class="description">
+    Series integradas: tendencia determinística frente a estocástica, la caminata aleatoria, el TCL funcional y el movimiento browniano, derivación de la distribución límite de Dickey–Fuller, y la regresión espuria de Granger–Newbold y Phillips.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-el-pasado-nunca-se-olvida" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando el pasado nunca se olvida</h1>
+<p>Hasta aquí trabajamos con series <strong>estacionarias</strong>: los shocks se disipan, la serie revierte a su media y la teoría asintótica es la de la Clase 5 (<span class="math inline">\(\sqrt T\)</span>, normalidad). Pero muchas series macroeconómicas y financieras (el PIB, los precios, los tipos de cambio, el nivel de un índice bursátil) no parecen revertir a ninguna media. La pregunta que decide <strong>todo lo demás</strong> es si esa persistencia es <em>casi</em> total (<span class="math inline">\(\phi = 0{,}98\)</span>) o <em>total</em> (<span class="math inline">\(\phi = 1\)</span>): si una serie tiene una <strong>raíz unitaria</strong>. Con raíz unitaria cambian la interpretación (los shocks son permanentes), el pronóstico (la varianza del error crece sin cota), y, sobre todo, <strong>la teoría estadística</strong> (las tasas de convergencia y las distribuciones límite no son las usuales).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Charles Nelson y Charles Plosser (1982) argumentaron que la mayoría de las series macroeconómicas de Estados Unidos tienen raíces unitarias, lo que cambió la manera de pensar los ciclos económicos: si los shocks son permanentes, las fluctuaciones del PIB no son “desviaciones transitorias de una tendencia”, sino cambios persistentes del nivel. Fue una de esas discusiones donde un test estadístico (de bajo poder, como veremos en la Clase 7) decidió interpretaciones enteras de la teoría macroeconómica.</p></div></div></section>
+<section id="tendencia-determinística-frente-a-estocástica" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Tendencia determinística frente a estocástica</h1>
+<p>Hay dos formas de que una serie tenga una tendencia.</p>
+<div id="def-ts-ds" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Estacionaria en tendencia frente a estacionaria en diferencias)</strong></span> &nbsp;</p>
+<ul>
+<li><strong>Estacionaria en tendencia (TS):</strong> <span class="math inline">\(y_t = a + bt + u_t\)</span> con <span class="math inline">\(u_t\)</span> estacionario. Los shocks son <strong>transitorios</strong>: <span class="math inline">\(y_t\)</span> revierte a la recta <span class="math inline">\(a + bt\)</span>.</li>
+<li><strong>Estacionaria en diferencias (DS):</strong> <span class="math inline">\(y_t = y_{t-1} + b + \varepsilon_t\)</span> (una <strong>caminata aleatoria con deriva</strong>), con <span class="math inline">\(\varepsilon_t\)</span> ruido blanco. Los shocks son <strong>permanentes</strong>: <span class="math inline">\(y_t = y_0 + bt + \sum_{s = 1}^t\varepsilon_s\)</span>.</li>
+</ul>
+</div>
+<p>Las dos tienen una tendencia ascendente (si <span class="math inline">\(b&gt;0\)</span>), pero con consecuencias opuestas:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>TS</strong> (<span class="math inline">\(a + bt + u_t\)</span>)</th>
+<th><strong>DS</strong> (caminata aleatoria)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Efecto de un shock</td>
+<td>desaparece</td>
+<td><strong>permanente</strong></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\operatorname{Var}(y_t)\)</span></td>
+<td>constante</td>
+<td><strong>crece como <span class="math inline">\(t\sigma^2\)</span></strong></td>
+</tr>
+<tr class="odd">
+<td>Error de pronóstico a <span class="math inline">\(h\)</span> pasos</td>
+<td>acotado (<span class="math inline">\(\le\gamma_u(0)\)</span>)</td>
+<td><strong>crece como <span class="math inline">\(h\sigma^2\)</span></strong></td>
+</tr>
+<tr class="even">
+<td>Tratamiento</td>
+<td>quitar la tendencia</td>
+<td><strong>diferenciar</strong></td>
+</tr>
+<tr class="odd">
+<td>ACF de <span class="math inline">\(y_t\)</span></td>
+<td>decae</td>
+<td>casi <span class="math inline">\(1\)</span> en rezagos chicos</td>
+</tr>
+</tbody>
+</table>
+<p>Tratar una serie DS como TS (quitar una tendencia lineal) no la vuelve estacionaria; tratar una TS como DS (diferenciar) la <strong>sobrediferencia</strong> (introduce una raíz unitaria en el MA, Ejercicio 6.6). Por eso importa distinguir.</p>
+<section id="la-caminata-aleatoria" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="la-caminata-aleatoria"><span class="header-section-number">2.1</span> La caminata aleatoria</h2>
+<div id="def-integrado" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Proceso integrado)</strong></span> Un proceso es <strong>integrado de orden 1</strong>, <span class="math inline">\(I(1)\)</span>, si no es estacionario pero su primera diferencia <span class="math inline">\(\Delta y_t = y_t - y_{t-1}\)</span> lo es. (En general, <span class="math inline">\(I(d)\)</span> si hay que diferenciar <span class="math inline">\(d\)</span> veces.) Un proceso estacionario es <span class="math inline">\(I(0)\)</span>.</p>
+</div>
+<p>El ejemplo canónico es la caminata aleatoria <span class="math inline">\(y_t = y_{t-1} + \varepsilon_t\)</span>, <span class="math inline">\(y_0 = 0\)</span>, <span class="math inline">\(\varepsilon_t\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span>, es decir <span class="math inline">\(y_t = \sum_{s = 1}^t\varepsilon_s\)</span>. Sus momentos: <span class="math display">\[
+\mathbb{E}[y_t] = 0,\qquad\operatorname{Var}(y_t) = t\sigma^2,\qquad\operatorname{Cov}(y_t,y_s) = \min(t,s)\,\sigma^2,\qquad\operatorname{Corr}(y_t,y_s) = \sqrt{s/t}\quad(s&lt;t).
+\]</span> La covarianza depende de <span class="math inline">\(t\)</span> y <span class="math inline">\(s\)</span>, no solo de <span class="math inline">\(t - s\)</span>: <strong>no es estacionaria</strong>. Con <span class="math inline">\(s = 99\)</span> y <span class="math inline">\(t = 100\)</span> la correlación es <span class="math inline">\(\sqrt{0{,}99} = 0{,}995\)</span>: las observaciones consecutivas son casi indistinguibles. El pronóstico óptimo es <span class="math inline">\(\hat y_{T + h|T} = y_T\)</span> (la mejor predicción es “el último valor”) con error cuadrático medio <span class="math inline">\(h\sigma^2\)</span>, que crece sin cota (Clase 3).</p>
+</section>
+</section>
+<section id="el-estimador-de-mco-cuando-phi-1" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El estimador de MCO cuando <span class="math inline">\(\phi = 1\)</span></h1>
+<p>Sea <span class="math inline">\(y_t = \phi y_{t-1} + \varepsilon_t\)</span> con <span class="math inline">\(\phi = 1\)</span> y estimamos <span class="math inline">\(\phi\)</span> por MCO: <span class="math inline">\(\hat\phi = \sum y_{t-1}y_t/\sum y_{t-1}^2\)</span>. En la Clase 4 vimos <span class="math inline">\(\sqrt T(\hat\phi - \phi)\to N(0,1 - \phi^2)\)</span>: con <span class="math inline">\(\phi = 1\)</span> la varianza es <strong>cero</strong>, lo que sugiere que <span class="math inline">\(\hat\phi\)</span> converge <strong>más rápido</strong> que <span class="math inline">\(\sqrt T\)</span>. En efecto, converge a tasa <span class="math inline">\(T\)</span>, pero con una distribución <strong>no normal</strong>. Para derivarla necesitamos una herramienta nueva.</p>
+<section id="herramientas-tcl-funcional-y-movimiento-browniano" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="herramientas-tcl-funcional-y-movimiento-browniano"><span class="header-section-number">3.1</span> Herramientas: TCL funcional y movimiento browniano</h2>
+<p>Un <strong>movimiento browniano estándar</strong> <span class="math inline">\(W(r)\)</span>, <span class="math inline">\(r\in[0,1]\)</span>, es un proceso continuo con <span class="math inline">\(W(0) = 0\)</span>, incrementos independientes y <span class="math inline">\(W(r) - W(s)\sim N(0,r - s)\)</span> para <span class="math inline">\(s&lt;r\)</span>. En particular <span class="math inline">\(W(1)\sim N(0,1)\)</span>. Es el límite continuo de la caminata aleatoria.</p>
+<div id="thm-donsker" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (TCL funcional (Donsker) — se toma prestado)</strong></span> Sea <span class="math inline">\(\varepsilon_t\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span>, <span class="math inline">\(y_t = \sum_{s\le t}\varepsilon_s\)</span>, y definamos la función escalonada <span class="math inline">\(Y_T(r) = T^{-1/2}y_{\lfloor Tr\rfloor}\)</span>, <span class="math inline">\(r\in[0,1]\)</span>. Entonces <span class="math inline">\(Y_T(\cdot)\Rightarrow\sigma W(\cdot)\)</span> (convergencia débil en el espacio de funciones). Por el <strong>teorema de la función continua</strong> (CMT), para toda función continua <span class="math inline">\(g\)</span> de trayectorias, <span class="math inline">\(g(Y_T)\to_dg(\sigma W)\)</span>.</p>
+</div>
+<p>La intuición: para un <span class="math inline">\(r\)</span> fijo, <span class="math inline">\(Y_T(r) = \sqrt{\lfloor Tr\rfloor/T}\cdot\big[\lfloor Tr\rfloor^{-1/2}\sum_{s\le Tr}\varepsilon_s\big]\to_dN(0,\sigma^2r)\)</span> por el TCL ordinario; Donsker dice que esto vale <strong>conjuntamente para todos los <span class="math inline">\(r\)</span></strong>, como un proceso. Con esto, los funcionales de la caminata aleatoria tienen límites en términos de <span class="math inline">\(W\)</span>: <span id="eq-funcionales"><span class="math display">\[
+\frac1{T^2}\sum_{t = 1}^Ty_{t-1}^2 = \int_0^1Y_T(r)^2\,dr + o_p(1)\ \Rightarrow\ \sigma^2\int_0^1W(r)^2\,dr,\qquad\frac1{T^{3/2}}\sum_{t = 1}^Ty_{t-1}\Rightarrow\sigma\int_0^1W(r)\,dr.
+\tag{1}\]</span></span> (Porque <span class="math inline">\(\sum_{t}y_{t-1}^2/T^2 = \sum_t\frac1T\big(T^{-1/2}y_{t-1}\big)^2\)</span> es una suma de Riemann de <span class="math inline">\(\int Y_T^2\)</span>.)</p>
+</section>
+<section id="la-distribución-de-dickeyfuller" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="la-distribución-de-dickeyfuller"><span class="header-section-number">3.2</span> La distribución de Dickey–Fuller</h2>
+<div id="thm-df" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Distribución límite de <span class="math inline">\(\hat\phi\)</span> bajo raíz unitaria)</strong></span> Sea <span class="math inline">\(y_t = y_{t-1} + \varepsilon_t\)</span> con <span class="math inline">\(y_0 = 0\)</span>, <span class="math inline">\(\varepsilon_t\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span>, y <span class="math inline">\(\hat\phi\)</span> el MCO de <span class="math inline">\(y_t\)</span> sobre <span class="math inline">\(y_{t-1}\)</span> (sin constante). Entonces <span class="math display">\[
+T(\hat\phi - 1)\ \xrightarrow{d}\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int_0^1W(r)^2\,dr},\qquad
+t_{\hat\phi} = \frac{\hat\phi - 1}{\operatorname{ee}(\hat\phi)}\ \xrightarrow{d}\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\Big(\int_0^1W(r)^2\,dr\Big)^{1/2}}.
+\]</span> Ambas son las <strong>distribuciones de Dickey–Fuller</strong>. No son normales, y no dependen de <span class="math inline">\(\sigma^2\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\phi - 1 = \sum y_{t-1}\varepsilon_t/\sum y_{t-1}^2\)</span>. Para el denominador tengo <a href="#eq-funcionales" class="quarto-xref">Ecuación&nbsp;1</a>: es de orden <span class="math inline">\(T^2\)</span>. Para el numerador, hay un truco algebraico que funciona porque <span class="math inline">\(y_t\)</span> es una suma acumulada: <span class="math inline">\(y_t^2 = (y_{t-1} + \varepsilon_t)^2 = y_{t-1}^2 + 2y_{t-1}\varepsilon_t + \varepsilon_t^2\)</span>, así que <span class="math inline">\(y_{t-1}\varepsilon_t = \tfrac12(y_t^2 - y_{t-1}^2 - \varepsilon_t^2)\)</span>. Sumando sobre <span class="math inline">\(t\)</span>, los cuadrados <strong>telescopan</strong>: <span class="math inline">\(\sum y_{t-1}\varepsilon_t = \tfrac12(y_T^2 - \sum\varepsilon_t^2)\)</span>. Dividiendo por <span class="math inline">\(T\)</span> queda <span class="math inline">\(\tfrac12\big[(y_T/\sqrt T)^2 - T^{-1}\sum\varepsilon_t^2\big]\)</span>, y los dos términos tienen límites conocidos: <span class="math inline">\(\sigma^2W(1)^2\)</span> y <span class="math inline">\(\sigma^2\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Escribimos <span class="math inline">\(T(\hat\phi - 1) = \dfrac{T^{-1}\sum y_{t-1}\varepsilon_t}{T^{-2}\sum y_{t-1}^2}\)</span>.</p>
+<p><em>Numerador.</em> Por la identidad <span class="math inline">\(y_{t-1}\varepsilon_t = \frac12(y_t^2 - y_{t-1}^2 - \varepsilon_t^2)\)</span> y <span class="math inline">\(y_0 = 0\)</span>, <span class="math display">\[
+\frac1T\sum_{t = 1}^Ty_{t-1}\varepsilon_t = \frac12\Big[\Big(\frac{y_T}{\sqrt T}\Big)^2 - \frac1T\sum_{t = 1}^T\varepsilon_t^2\Big]\ \xrightarrow{d}\ \frac12\big[\sigma^2W(1)^2 - \sigma^2\big].
+\]</span> Aquí <span class="math inline">\(y_T/\sqrt T = Y_T(1)\to_d\sigma W(1)\)</span> por Donsker y <span class="math inline">\(T^{-1}\sum\varepsilon_t^2\to_p\sigma^2\)</span> por la LGN.</p>
+<p><em>Denominador.</em> Por <a href="#eq-funcionales" class="quarto-xref">Ecuación&nbsp;1</a>, <span class="math inline">\(T^{-2}\sum y_{t-1}^2\Rightarrow\sigma^2\int_0^1W^2\)</span>.</p>
+<p>Numerador y denominador convergen <strong>conjuntamente</strong> (ambos son funcionales continuos de <span class="math inline">\(Y_T\)</span>), de modo que el cociente converge al cociente de los límites por el CMT; <span class="math inline">\(\sigma^2\)</span> se cancela. Para el estadístico <span class="math inline">\(t\)</span>: <span class="math inline">\(\operatorname{ee}(\hat\phi)^2 = \hat\sigma^2/\sum y_{t-1}^2\)</span> con <span class="math inline">\(\hat\sigma^2\to_p\sigma^2\)</span>, luego <span class="math inline">\(t_{\hat\phi} = T(\hat\phi - 1)\cdot\big(T^{-2}\sum y_{t-1}^2\big)^{1/2}/\hat\sigma\Rightarrow\dfrac{\frac12[W(1)^2 - 1]}{(\int W^2)^{1/2}}\)</span>.</p>
+</div>
+<p>Cinco observaciones sobre este resultado.</p>
+<ol type="1">
+<li><strong>Superconsistencia:</strong> <span class="math inline">\(\hat\phi - 1 = O_p(1/T)\)</span>, no <span class="math inline">\(O_p(1/\sqrt T)\)</span>. Con <span class="math inline">\(T = 100\)</span>, el error típico es del orden de <span class="math inline">\(0{,}01\)</span>, no de <span class="math inline">\(0{,}1\)</span>.</li>
+<li><strong>Distribución no estándar y asimétrica:</strong> <span class="math inline">\(W(1)^2\sim\chi^2_1\)</span>, de modo que el numerador <span class="math inline">\(\tfrac12(\chi^2_1 - 1)\)</span> tiene media cero pero es <strong>asimétrico a la derecha</strong>, con <span class="math inline">\(P(\chi^2_1&lt;1) = 0{,}683\)</span>: con probabilidad <span class="math inline">\(68\)</span> % el numerador es negativo, y por lo tanto <span class="math inline">\(P(\hat\phi&lt;1)\to0{,}683\)</span> (Ejercicio 6.7). El estimador <strong>tiende a subestimar</strong> <span class="math inline">\(\phi\)</span> bajo la nula; la distribución del estadístico <span class="math inline">\(t\)</span> está <strong>sesgada a la izquierda</strong> y tiene media negativa (<span class="math inline">\(\approx-0{,}42\)</span> sin constante).</li>
+<li><strong>Valores críticos más extremos que los normales.</strong> Para <span class="math inline">\(t_{\hat\phi}\)</span> (sin constante), los cuantiles de la distribución límite al 5 % y 1 % son <span class="math inline">\(-1{,}94\)</span> y <span class="math inline">\(-2{,}57\)</span> (frente a <span class="math inline">\(-1{,}645\)</span> y <span class="math inline">\(-2{,}33\)</span> de la normal, una cola). Usar el crítico normal <strong>rechaza la raíz unitaria demasiado seguido</strong> (Ejercicio 6.3).</li>
+<li><strong>Con componentes determinísticos</strong> (que se incluyen casi siempre), la distribución cambia: con constante, <span class="math inline">\(W\)</span> se reemplaza por el browniano <strong>demedido</strong> <span class="math inline">\(W^\mu(r) = W(r) - \int_0^1W\)</span>, y con constante y tendencia, por el <strong>detrendido</strong> <span class="math inline">\(W^\tau\)</span>. Los críticos al 5 % del estadístico <span class="math inline">\(t\)</span> son <span class="math inline">\(-1{,}94\)</span> (sin constante), <span class="math inline">\(-2{,}86\)</span> (constante) y <span class="math inline">\(-3{,}41\)</span> (constante y tendencia), con 1 %: <span class="math inline">\(-2{,}57\)</span>, <span class="math inline">\(-3{,}43\)</span> y <span class="math inline">\(-3{,}96\)</span> (Fuller, MacKinnon). <em>Cuantos más términos determinísticos, más negativo el crítico.</em></li>
+<li><strong>El resultado es la hipótesis nula.</strong> La distribución del estadístico bajo <span class="math inline">\(H_0:\phi = 1\)</span> es la que da los valores críticos. Bajo la alternativa estacionaria (<span class="math inline">\(|\phi|&lt;1\)</span>) el test es consistente: <span class="math inline">\(\hat\phi\to\phi&lt;1\)</span> y <span class="math inline">\(t\to-\infty\)</span>.</li>
+</ol>
+<p>El <strong>test de Dickey–Fuller</strong> es entonces: estimar <span class="math inline">\(\Delta y_t = \gamma y_{t-1} + \varepsilon_t\)</span> (con <span class="math inline">\(\gamma = \phi - 1\)</span>; equivalente), calcular el <span class="math inline">\(t\)</span> de <span class="math inline">\(\gamma\)</span> y <strong>rechazar la raíz unitaria</strong> (<span class="math inline">\(\gamma = 0\)</span>) si el <span class="math inline">\(t\)</span> es <em>menor</em> que el valor crítico de Dickey–Fuller (prueba de una cola, a la izquierda).</p>
+</section>
+<section id="errores-serialmente-correlacionados-el-origen-del-test-aumentado" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="errores-serialmente-correlacionados-el-origen-del-test-aumentado"><span class="header-section-number">3.3</span> Errores serialmente correlacionados: el origen del test aumentado</h2>
+<p>Si <span class="math inline">\(\Delta y_t = u_t\)</span> es un proceso estacionario general (no ruido blanco) con <span class="math inline">\(\gamma_u(0) = \mathbb{E}[u_t^2]\)</span> y varianza de largo plazo <span class="math inline">\(\lambda^2 = \sigma_u^2\psi(1)^2 = \sum_h\gamma_u(h)\)</span> (Clase 5), el <strong>principio de invarianza</strong> vale con <span class="math inline">\(\lambda\)</span> en lugar de <span class="math inline">\(\sigma\)</span>: <span class="math inline">\(T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)\)</span> (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: <span class="math inline">\(\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)\)</span>, pero ahora <span class="math display">\[
+\frac1T\sum_{t = 1}^Ty_{t-1}u_t\ \xrightarrow{d}\ \frac12\big[\lambda^2W(1)^2 - \gamma_u(0)\big],\qquad
+T(\hat\phi - 1)\ \Rightarrow\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int W^2} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2}.
+\]</span> Aparece un <strong>parámetro de perturbación</strong>, <span class="math inline">\(\lambda^2 - \gamma_u(0) = 2\sum_{h\ge1}\gamma_u(h)\)</span> (la autocorrelación de largo plazo): la distribución ya <strong>no es</strong> la de Dickey–Fuller. Hay dos formas de corregirlo: <strong>paramétrica</strong> (agregar rezagos de <span class="math inline">\(\Delta y_t\)</span> para blanquear los errores: <strong>Dickey–Fuller aumentado</strong>) o <strong>no paramétrica</strong> (estimar <span class="math inline">\(\lambda^2\)</span> y <span class="math inline">\(\gamma_u(0)\)</span> con HAC y restar el término: <strong>Phillips–Perron</strong>). Ambas son el tema de la Clase 7.</p>
+</section>
+</section>
+<section id="la-regresión-espuria" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La regresión espuria</h1>
+<p>La razón histórica de todo este aparato es un resultado de simulación que sorprendió a la profesión.</p>
+<p>Sean <span class="math inline">\(y_t\)</span> y <span class="math inline">\(x_t\)</span> dos <strong>caminatas aleatorias independientes</strong>: <span class="math inline">\(y_t = y_{t-1} + \varepsilon_t\)</span> y <span class="math inline">\(x_t = x_{t-1} + \eta_t\)</span> con <span class="math inline">\(\varepsilon_t,\eta_t\)</span> independientes. No hay ninguna relación entre ellas. Se regresa <span class="math inline">\(y_t = \alpha + \beta x_t + u_t\)</span> por MCO. Granger y Newbold (1974) mostraron por simulación, y Phillips (1986) demostró, que:</p>
+<div id="thm-espuria" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Regresión espuria)</strong></span> En la regresión de una caminata aleatoria sobre otra independiente: (i) <span class="math inline">\(\hat\beta\)</span> <strong>no converge a cero</strong>: converge en distribución a una variable aleatoria no degenerada, <span class="math inline">\(\hat\beta\Rightarrow\dfrac{\sigma_y}{\sigma_x}\dfrac{\int\tilde W_x\tilde W_y}{\int\tilde W_x^2}\)</span> (con <span class="math inline">\(\tilde W\)</span> los brownianos demedidos); (ii) el estadístico <span class="math inline">\(t\)</span> de <span class="math inline">\(\hat\beta\)</span> <strong>diverge</strong>: <span class="math inline">\(t_{\hat\beta}/\sqrt T\)</span> converge a una variable no degenerada, de modo que <span class="math inline">\(|t_{\hat\beta}|\to\infty\)</span> en probabilidad; (iii) <span class="math inline">\(R^2\)</span> <strong>no tiende a cero</strong> sino a una variable aleatoria no degenerada, y el estadístico de Durbin–Watson tiende a cero.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Esquema.) (i) <span class="math inline">\(\hat\beta = \sum\tilde x_t\tilde y_t/\sum\tilde x_t^2\)</span> (con variables demedidas). Numerador y denominador son de orden <span class="math inline">\(T^2\)</span>; por Donsker y el CMT, <span class="math inline">\(T^{-2}\sum\tilde x_t\tilde y_t\Rightarrow\sigma_x\sigma_y\int\tilde W_x\tilde W_y\)</span> y <span class="math inline">\(T^{-2}\sum\tilde x_t^2\Rightarrow\sigma_x^2\int\tilde W_x^2\)</span>: el cociente es <span class="math inline">\(O_p(1)\)</span> y <strong>aleatorio</strong>. (ii) Los residuos <span class="math inline">\(\hat u_t = y_t - \hat\alpha - \hat\beta x_t\)</span> son <span class="math inline">\(O_p(\sqrt T)\)</span> (combinación de dos procesos <span class="math inline">\(I(1)\)</span> no cancelada), así que <span class="math inline">\(\hat\sigma^2_u = T^{-1}\sum\hat u_t^2 = O_p(T)\)</span>. El error estándar es <span class="math inline">\(\operatorname{ee}(\hat\beta)^2 = \hat\sigma_u^2/\sum\tilde x_t^2 = O_p(T/T^2) = O_p(1/T)\)</span>. Entonces <span class="math inline">\(t_{\hat\beta} = \hat\beta/\operatorname{ee}(\hat\beta) = O_p(1)\cdot O_p(\sqrt T) = O_p(\sqrt T)\)</span>: crece con <span class="math inline">\(T\)</span>. (iii) <span class="math inline">\(\hat u_t\)</span> es <span class="math inline">\(I(1)\)</span> (un residuo “casi caminata aleatoria”), de modo que su autocorrelación de primer orden tiende a <span class="math inline">\(1\)</span> y <span class="math inline">\(DW\approx2(1 - \hat\rho_1)\to0\)</span>.</p>
+</div>
+<p>La consecuencia práctica es brutal: <strong>con regresores <span class="math inline">\(I(1)\)</span> independientes, la hipótesis <span class="math inline">\(\beta = 0\)</span> se rechaza casi siempre</strong> (en las simulaciones originales, alrededor de tres cuartas partes de las veces al nominal del 5 %, y la proporción tiende a uno con <span class="math inline">\(T\)</span>). El <span class="math inline">\(R^2\)</span> es alto, el <span class="math inline">\(t\)</span> es enorme y <strong>no hay ninguna relación</strong>. Dos señales de alarma útiles: <strong><span class="math inline">\(R^2\)</span> alto y Durbin–Watson muy bajo</strong> (regla de Granger y Newbold: <span class="math inline">\(R^2&gt;DW\)</span> sugiere regresión espuria, Ejercicio 6.5) y residuos con autocorrelación cercana a uno.</p>
+<p>Esto no significa que <strong>toda</strong> regresión entre series <span class="math inline">\(I(1)\)</span> sea espuria. Hay un caso en que sí hay relación genuina: cuando una combinación lineal de las series <strong>es estacionaria</strong> (cointegración, Clase 8). La estrategia general es: (1) testear si las series son <span class="math inline">\(I(1)\)</span> (Dickey–Fuller, Clase 7); (2) si lo son, <strong>diferenciarlas</strong> antes de regresar, o (3) testear cointegración (Clase 8), en cuyo caso la regresión en niveles es válida y <strong>superconsistente</strong>.</p>
+</section>
+<section id="postgrado-la-integral-de-itô-y-la-identidad-de-telescopaje" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> ★ Postgrado: la integral de Itô y la identidad de telescopaje</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El numerador de la distribución de Dickey–Fuller es un funcional del movimiento browniano: la <strong>integral estocástica de Itô</strong> <span class="math inline">\(\int_0^1W\,dW = \tfrac12[W(1)^2 - 1]\)</span>. Mostramos que la identidad de telescopaje del discreto es exactamente la regla de Itô.</p>
+</div>
+</div>
+<p>En cálculo ordinario, <span class="math inline">\(\int_0^1w\,dw = \tfrac12w(1)^2\)</span> para una función diferenciable con <span class="math inline">\(w(0) = 0\)</span>. Para el movimiento browniano <strong>no</strong> vale, y la integral que aparece en el límite es <span class="math display">\[
+\int_0^1W\,dW = \tfrac12\big[W(1)^2 - 1\big],
+\]</span> con el término extra <span class="math inline">\(-\tfrac12\)</span> (la <strong>corrección de Itô</strong>). El origen del término extra es una diferencia entre dos sumas de Riemann. Con la partición <span class="math inline">\(r_t = t/T\)</span> y la suma que evalúa <span class="math inline">\(W\)</span> en el <strong>extremo izquierdo</strong> (la de Itô), <span class="math inline">\(\sum_tW(r_{t-1})\big[W(r_t) - W(r_{t-1})\big]\)</span>, la identidad algebraica <span class="math inline">\(a(b - a) = \tfrac12(b^2 - a^2 - (b - a)^2)\)</span> con <span class="math inline">\(a = W(r_{t-1})\)</span>, <span class="math inline">\(b = W(r_t)\)</span> da <span class="math display">\[
+\sum_{t = 1}^TW(r_{t-1})\big[W(r_t) - W(r_{t-1})\big] = \tfrac12W(1)^2 - \tfrac12\sum_{t = 1}^T\big[W(r_t) - W(r_{t-1})\big]^2.
+\]</span> La última suma es la <strong>variación cuadrática</strong> del browniano: <span class="math inline">\(T\)</span> incrementos independientes de varianza <span class="math inline">\(1/T\)</span> cuyas sumas de cuadrados convergen a <span class="math inline">\(1\)</span> (LGN) en vez de a <span class="math inline">\(0\)</span> como ocurriría con una función suave. De ahí el <span class="math inline">\(-\tfrac12\)</span>. En nuestro problema discreto es <strong>la misma identidad</strong>: <span class="math inline">\(\sum y_{t-1}\varepsilon_t = \tfrac12(y_T^2 - \sum\varepsilon_t^2)\)</span>, y <span class="math inline">\(T^{-1}\sum\varepsilon_t^2\to\sigma^2\)</span> es la variación cuadrática. La distribución de Dickey–Fuller es entonces la de <span class="math inline">\(\dfrac{\int W\,dW}{\int W^2}\)</span>: un cociente de funcionales brownianos, hoy tabulado por simulación (White, 1958, obtuvo su función característica; no hay una densidad simple).</p>
+<p>La asimetría se lee directamente: el numerador <span class="math inline">\(\int W\,dW = \tfrac12(\chi^2_1 - 1)\)</span> tiene media cero, está acotado inferiormente por <span class="math inline">\(-\tfrac12\)</span> y tiene cola derecha larga, de modo que es negativo con probabilidad <span class="math inline">\(0{,}683\)</span>; el denominador <span class="math inline">\(\int W^2\)</span> es siempre positivo. El cociente tiene entonces su masa mayoritariamente en valores negativos, con una cola izquierda gruesa que aparece cuando un numerador negativo se divide por un denominador pequeño.</p>
+</section>
+<section id="resumen" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Resumen</h1>
+<ul>
+<li><strong>TS</strong> (tendencia determinística: shocks transitorios) frente a <strong>DS</strong> (raíz unitaria: shocks permanentes, varianza <span class="math inline">\(t\sigma^2\)</span>, ECM de pronóstico <span class="math inline">\(h\sigma^2\)</span>). Una serie es <span class="math inline">\(I(1)\)</span> si su diferencia es estacionaria.</li>
+<li>Bajo raíz unitaria, <span class="math inline">\(\hat\phi\)</span> converge a tasa <span class="math inline">\(T\)</span> (<strong>superconsistencia</strong>) con distribución <strong>no normal</strong> (<a href="#thm-df" class="quarto-xref">Teorema&nbsp;2</a>): <span class="math inline">\(T(\hat\phi - 1)\Rightarrow\dfrac{\frac12[W(1)^2 - 1]}{\int W^2}\)</span>. Se deriva con la identidad <span class="math inline">\(\sum y_{t-1}\varepsilon_t = \frac12(y_T^2 - \sum\varepsilon_t^2)\)</span> y el TCL funcional (<a href="#thm-donsker" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>El <strong>test de Dickey–Fuller</strong> compara el <span class="math inline">\(t\)</span> de <span class="math inline">\(\gamma = \phi - 1\)</span> con críticos más negativos que los normales (<span class="math inline">\(-1{,}94\)</span>, <span class="math inline">\(-2{,}86\)</span>, <span class="math inline">\(-3{,}41\)</span> al 5 % según los términos determinísticos).</li>
+<li>Con errores correlacionados aparece un parámetro de perturbación <span class="math inline">\(\lambda^2 - \gamma_u(0)\)</span>: motiva <strong>ADF</strong> y <strong>Phillips–Perron</strong> (Clase 7).</li>
+<li><strong>Regresión espuria</strong> (<a href="#thm-espuria" class="quarto-xref">Teorema&nbsp;3</a>): dos caminatas aleatorias independientes dan <span class="math inline">\(t\to\infty\)</span>, <span class="math inline">\(R^2\)</span> aleatorio y <span class="math inline">\(DW\to0\)</span>. Remedio: diferenciar o testear cointegración (Clase 8).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ejercicios</h1>
+<p><strong>Ejercicio 6.1.</strong> Para una caminata aleatoria con <span class="math inline">\(\sigma^2 = 4\)</span>, calcula <span class="math inline">\(\operatorname{Var}(y_{100})\)</span>, <span class="math inline">\(\operatorname{Cov}(y_{100},y_{50})\)</span> y <span class="math inline">\(\operatorname{Corr}(y_{100},y_{50})\)</span>. ¿Y la correlación entre <span class="math inline">\(y_{100}\)</span> e <span class="math inline">\(y_{99}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(y_{100}) = 100\cdot4 = 400\)</span>. <span class="math inline">\(\operatorname{Cov}(y_{100},y_{50}) = \min(100,50)\cdot4 = 200\)</span>. <span class="math inline">\(\operatorname{Corr} = 200/\sqrt{400\cdot200} = \sqrt{1/2} = 0{,}707\)</span> (que es <span class="math inline">\(\sqrt{s/t} = \sqrt{50/100}\)</span>). Con <span class="math inline">\(y_{99}\)</span>: <span class="math inline">\(\sqrt{99/100} = 0{,}995\)</span>. La correlación entre observaciones separadas por la mitad de la muestra sigue siendo <span class="math inline">\(0{,}71\)</span>: la memoria es esencialmente infinita.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.2.</strong> Compara el error cuadrático medio de pronóstico a <span class="math inline">\(h = 20\)</span> pasos de un AR(1) estacionario con <span class="math inline">\(\phi = 0{,}9\)</span> y de una caminata aleatoria, ambos con <span class="math inline">\(\sigma^2 = 1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>AR(1): <span class="math inline">\(\sigma^2(1 - \phi^{2h})/(1 - \phi^2) = (1 - 0{,}9^{40})/0{,}19 = (1 - 0{,}0148)/0{,}19 = 5{,}19\)</span> (cerca de <span class="math inline">\(\gamma(0) = 5{,}26\)</span>). Caminata aleatoria: <span class="math inline">\(h\sigma^2 = 20\)</span>. La caminata tiene un error casi <strong>4 veces</strong> mayor, y sigue creciendo; el del AR(1) está acotado. Un intervalo de pronóstico a 20 pasos es <span class="math inline">\(\pm1{,}96\sqrt{5{,}19} = \pm4{,}5\)</span> frente a <span class="math inline">\(\pm1{,}96\sqrt{20} = \pm8{,}8\)</span>. Equivocarse entre una y otra especificación tiene consecuencias enormes en los pronósticos de largo plazo.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.3.</strong> Con una constante, se estima <span class="math inline">\(\Delta y_t = \mu + \gamma y_{t-1} + \varepsilon_t\)</span> y se obtiene <span class="math inline">\(\hat\gamma = -0{,}04\)</span> con error estándar <span class="math inline">\(0{,}02\)</span>. Calcula el <span class="math inline">\(t\)</span> y decide con el crítico normal (<span class="math inline">\(-1{,}645\)</span>) y con el de Dickey–Fuller (<span class="math inline">\(-2{,}86\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(t = -0{,}04/0{,}02 = -2{,}0\)</span>. Con el crítico normal (<span class="math inline">\(-1{,}645\)</span>) se <strong>rechazaría</strong> la raíz unitaria al 5 %, pero el crítico correcto es <span class="math inline">\(-2{,}86\)</span> y <span class="math inline">\(-2{,}0&gt;-2{,}86\)</span>: <strong>no se rechaza</strong>. Usar la normal sobrerrechaza la raíz unitaria (concluye “estacionaria”) cuando la serie bien podría ser una caminata aleatoria: el tamaño real del test con el crítico normal es mucho mayor que el 5 % nominal (más de 40 % en el caso con constante). Notar que <span class="math inline">\(\hat\phi = 0{,}96\)</span> está cerca de uno: sin el test no distinguiríamos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.4.</strong> Verifica <span class="math inline">\(\sum_{t = 1}^3y_{t-1}\varepsilon_t = \tfrac12\big(y_3^2 - \sum\varepsilon_t^2\big)\)</span> para <span class="math inline">\(\varepsilon = (1,-1,2)\)</span> y <span class="math inline">\(y_0 = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(y_1 = 1\)</span>, <span class="math inline">\(y_2 = 0\)</span>, <span class="math inline">\(y_3 = 2\)</span>. Lado izquierdo: <span class="math inline">\(y_0\varepsilon_1 + y_1\varepsilon_2 + y_2\varepsilon_3 = 0 + 1\cdot(-1) + 0\cdot2 = -1\)</span>. Lado derecho: <span class="math inline">\(\tfrac12\big(4 - (1 + 1 + 4)\big) = \tfrac12(-2) = -1\)</span> ✓. La identidad es algebraica (vale para cualquier realización), y es el corazón del cálculo del numerador de Dickey–Fuller.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.5.</strong> Una regresión entre dos series macroeconómicas tiene <span class="math inline">\(R^2 = 0{,}85\)</span>, <span class="math inline">\(t = 14\)</span> y Durbin–Watson <span class="math inline">\(= 0{,}15\)</span>. ¿Qué sospechas? ¿Qué harías?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(R^2&gt;DW\)</span> (<span class="math inline">\(0{,}85&gt;0{,}15\)</span>) y un <span class="math inline">\(DW\)</span> cercano a cero indican residuos con autocorrelación casi unitaria: señal de <strong>regresión espuria</strong> (si las series son <span class="math inline">\(I(1)\)</span> y no están cointegradas). Con <span class="math inline">\(DW\approx2(1 - \hat\rho)\)</span>, <span class="math inline">\(\hat\rho\approx0{,}93\)</span>. Lo primero es testear si las series y los residuos tienen raíz unitaria (Dickey–Fuller); si las series son <span class="math inline">\(I(1)\)</span> y los residuos también lo son, el <span class="math inline">\(t = 14\)</span> no tiene valor inferencial: hay que <strong>regresar en diferencias</strong> o tomar el camino de cointegración (Clase 8).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.6.</strong> Si <span class="math inline">\(y_t\)</span> es un ruido blanco i.i.d. con varianza <span class="math inline">\(\sigma^2\)</span> y se calcula <span class="math inline">\(\Delta y_t\)</span>, muestra que <span class="math inline">\(\Delta y_t\)</span> es un MA(1) con <span class="math inline">\(\theta = -1\)</span>, con <span class="math inline">\(\rho(1) = -0{,}5\)</span> y varianza de largo plazo cero.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Delta y_t = y_t - y_{t-1} = \varepsilon_t - \varepsilon_{t-1}\)</span> (con <span class="math inline">\(\varepsilon_t = y_t\)</span>): un MA(1) con <span class="math inline">\(\theta = -1\)</span> y <span class="math inline">\(\sigma^2\)</span>. <span class="math inline">\(\gamma(0) = 2\sigma^2\)</span>, <span class="math inline">\(\gamma(1) = -\sigma^2\)</span>, <span class="math inline">\(\rho(1) = -0{,}5\)</span>. La varianza de largo plazo <span class="math inline">\(\sigma^2_{LR} = \sigma^2(1 + \theta)^2 = 0\)</span> (Clase 1): el proceso es <strong>no invertible</strong> (raíz del polinomio MA en exactamente <span class="math inline">\(1\)</span>) y su espectro en la frecuencia cero se anula. Es la huella de la <strong>sobrediferenciación</strong>: la autocorrelación de primer orden de <span class="math inline">\(\Delta y_t\)</span> cerca de <span class="math inline">\(-0{,}5\)</span> sugiere que la serie original ya era estacionaria.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.7 ★.</strong> Con la distribución límite del <a href="#thm-df" class="quarto-xref">Teorema&nbsp;2</a>, muestra que <span class="math inline">\(P(\hat\phi&lt;1)\to P(\chi^2_1&lt;1) = 0{,}683\)</span> y que el numerador tiene esperanza cero. ¿Qué implica sobre el sesgo de <span class="math inline">\(\hat\phi\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El denominador <span class="math inline">\(\int W^2\)</span> es positivo con probabilidad uno, de modo que el signo de <span class="math inline">\(T(\hat\phi - 1)\)</span> es el de <span class="math inline">\(\tfrac12[W(1)^2 - 1]\)</span>, es decir, negativo si y solo si <span class="math inline">\(W(1)^2&lt;1\)</span>. Como <span class="math inline">\(W(1)^2\sim\chi^2_1\)</span> y <span class="math inline">\(P(\chi^2_1&lt;1) = P(|Z|&lt;1) = 0{,}6827\)</span>, el límite de <span class="math inline">\(P(\hat\phi&lt;1)\)</span> es <span class="math inline">\(0{,}683\)</span>. El numerador tiene media cero: <span class="math inline">\(\mathbb{E}[W(1)^2] = 1\)</span>. Pero <span class="math inline">\(\mathbb{E}[T(\hat\phi - 1)]\ne0\)</span>: es el esperado de un cociente, y como el numerador y el denominador son dependientes, el cociente tiene <strong>media negativa</strong> (el sesgo de Dickey–Fuller: <span class="math inline">\(\mathbb{E}[T(\hat\phi - 1)]\approx-1{,}78\)</span> sin constante, o <span class="math inline">\(\approx-1{,}78/T\)</span> en <span class="math inline">\(\hat\phi\)</span>). Con <span class="math inline">\(T = 100\)</span>, el sesgo de MCO es <span class="math inline">\(\approx-0{,}018\)</span> sin constante, y es <strong>bastante mayor en valor absoluto</strong> al incluir constante o tendencia (que se “gastan” en estimar el nivel).</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-05.html" class="pagination-link" aria-label="Clase 5 · Asintótica con dependencia y errores HAC">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 5 · Asintótica con dependencia y errores HAC</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,248 @@
+---
+title: "Clase 7 · Raíces unitarias II"
+subtitle: "Tests ADF, Phillips–Perron, KPSS y DF-GLS; poder, términos determinísticos y quiebres"
+description: "Tests de raíz unitaria en la práctica: Dickey–Fuller aumentado (reparametrización y distribución), Phillips–Perron como corrección no paramétrica, KPSS con hipótesis nula invertida, DF-GLS, el problema del bajo poder, los términos determinísticos y los quiebres estructurales de Perron."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De la teoría al test usable
+
+La Clase 6 derivó la distribución de Dickey–Fuller bajo un modelo muy simple: $y_t = y_{t-1} + \varepsilon_t$ con $\varepsilon_t$ ruido blanco. En la práctica, las series tienen **dinámica** en torno a la raíz unitaria ($\Delta y_t$ está serialmente correlacionado), **componentes determinísticos** (una constante, una tendencia) y a veces **quiebres**. Esta clase resuelve esos tres problemas y reúne las herramientas que se usan de verdad:
+
+- **ADF** (Dickey–Fuller aumentado): corrige la dependencia agregando rezagos.
+- **Phillips–Perron:** la corrige de manera no paramétrica con HAC.
+- **KPSS:** invierte la hipótesis nula (estacionariedad).
+- **DF-GLS:** gana poder con una limpieza de tendencia más eficiente.
+
+Un mensaje recorre toda la clase: **los tests de raíz unitaria tienen poco poder** contra alternativas cercanas, de modo que "no rechazo" casi nunca significa "hay raíz unitaria".
+
+# Dickey–Fuller aumentado
+
+Supongamos que $y_t$ sigue un AR($p$): $y_t = \phi_1y_{t-1} + \dots + \phi_py_{t-p} + \varepsilon_t$. Hay una raíz unitaria cuando $\phi(1) = 1 - \sum_j\phi_j = 0$ (el polinomio $\phi(z)$ se anula en $z = 1$, Clase 2). Para poner esa condición en términos de **un solo coeficiente**, reparametrizamos.
+
+::: {#prp-adf-rep}
+## Reparametrización del AR($p$)
+$$
+\Delta y_t = \rho^*y_{t-1} + \sum_{j = 1}^{p-1}c_j\Delta y_{t-j} + \varepsilon_t,\qquad\rho^* = \sum_{j = 1}^p\phi_j - 1 = -\phi(1),\qquad c_j = -\sum_{i = j + 1}^p\phi_i.
+$$
+Hay una raíz unitaria si y solo si $\rho^* = 0$.
+:::
+
+::: {.proof}
+Escribimos cada rezago como $y_{t-j} = y_{t-1} - \sum_{i = 1}^{j-1}\Delta y_{t-i}$ para $j\ge2$. Entonces
+$$
+\sum_{j = 1}^p\phi_jy_{t-j} = \Big(\sum_j\phi_j\Big)y_{t-1} - \sum_{j = 2}^p\phi_j\sum_{i = 1}^{j-1}\Delta y_{t-i} = \Big(\sum_j\phi_j\Big)y_{t-1} - \sum_{i = 1}^{p-1}\Big(\sum_{j = i + 1}^p\phi_j\Big)\Delta y_{t-i},
+$$
+intercambiando el orden de la doble suma. Restando $y_{t-1}$ a ambos lados de la ecuación original se obtiene la forma enunciada.
+:::
+
+Esta es la regresión **ADF**: $\Delta y_t$ sobre $y_{t-1}$ y $p - 1$ rezagos de $\Delta y_t$ (más constante y/o tendencia). La hipótesis nula es $H_0:\rho^* = 0$ (raíz unitaria), contra $H_1:\rho^*<0$ (estacionaria). Los rezagos $\Delta y_{t-j}$ **absorben la dependencia** y dejan un error $\varepsilon_t$ ruido blanco, restituyendo la condición de la Clase 6.
+
+::: {#thm-adf}
+## Distribución del test ADF — esquema
+Sea $y_t$ un AR($p$) con una raíz unitaria ($\rho^* = 0$) y $\Delta y_t$ un AR($p-1$) estacionario, causal e invertible, con innovaciones i.i.d. Entonces el estadístico $t$ de $\rho^*$ en la regresión ADF (con $p - 1$ rezagos, el verdadero) converge a la **misma distribución de Dickey–Fuller** de la Clase 6 (con la elección de términos determinísticos correspondiente), y $T\hat\rho^*/(1 - \sum_j\hat c_j)$ converge a la distribución del coeficiente de la Clase 6.
+:::
+
+::: {.proof}
+(Esquema.) Sea $u_t = \Delta y_t$, que satisface $C(L)u_t = \varepsilon_t$ con $C(z) = 1 - \sum_jc_jz^j$. Entonces $u_t$ es lineal, $y_t = \sum_{s\le t}u_s$ y por la Clase 5 (Beveridge–Nelson), $T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)$ con $\lambda = \sigma/C(1)$. La regresión tiene dos tipos de regresores: $y_{t-1}$ (integrado, de orden $\sqrt T$) y $z_t = (\Delta y_{t-1},\dots,\Delta y_{t-p + 1})$ (estacionarios, de orden $1$). Con las normalizaciones $T$ para el coeficiente de $y_{t-1}$ y $\sqrt T$ para los de $z_t$, la matriz $\sum x_tx_t'$ es **asintóticamente diagonal por bloques**: el término cruzado $\sum y_{t-1}z_t$ es $O_p(T)$, que es de menor orden que $T\cdot\sqrt T = T^{3/2}$ (Sims, Stock y Watson, 1990). Por lo tanto el coeficiente de $y_{t-1}$ se comporta como en la regresión sin $z_t$, con el numerador $T^{-1}\sum y_{t-1}\varepsilon_t\Rightarrow\lambda\sigma\int W\,dW$ y el denominador $T^{-2}\sum y_{t-1}^2\Rightarrow\lambda^2\int W^2$, de modo que $T\hat\rho^*\Rightarrow(\sigma/\lambda)\int W\,dW/\int W^2 = C(1)\cdot\text{DF}$. El estadístico $t$ estandariza con un error estándar que contiene a $\sigma/\lambda$, y esa constante se cancela: el límite es la distribución de Dickey–Fuller **exacta**, libre de parámetros de perturbación. Los coeficientes de los rezagos $\Delta y_{t-j}$ tienen las propiedades usuales (normalidad asintótica, tasa $\sqrt T$).
+:::
+
+La consecuencia práctica es muy cómoda: **el estadístico $t$ de la regresión ADF se compara con los mismos valores críticos** de Dickey–Fuller (sin constante, con constante, con constante y tendencia: $-1{,}94$, $-2{,}86$, $-3{,}41$ al 5 %), independientemente de los parámetros del proceso de perturbación. Es la ventaja del enfoque paramétrico.
+
+## Elegir el número de rezagos
+
+Hace falta un $p$ lo bastante grande para blanquear los errores, pero lo menor posible. **Muy pocos** rezagos dejan correlación serial residual y el test queda **sobredimensionado** (rechaza demasiado, porque la distribución ya no es la de Dickey–Fuller). **Demasiados** reducen la potencia (más parámetros que estimar). Dos reglas comunes:
+
+- **Secuencial** (de lo general a lo específico): empezar con un máximo $k_{\max}$ (regla de Schwert: $\lfloor12(T/100)^{1/4}\rfloor$, es decir, $12$ para $T = 100$, $17$ para $T = 500$, $21$ para $T = 1000$) y eliminar el último rezago mientras su $t$ sea no significativo.
+- **Criterios de información** modificados (**MAIC**, Ng y Perron, 2001), que corrigen el comportamiento de AIC/BIC cuando hay una raíz cercana a la unidad.
+
+## Los términos determinísticos
+
+La distribución depende de qué se incluye en la regresión, y esa elección **debe reflejar la hipótesis alternativa** y los datos:
+
+| Caso | Se incluye | Cuándo |
+|---|---|---|
+| 1 | nada | serie con media cero (raro; residuos de otra regresión) |
+| 2 | constante | serie sin tendencia clara (tasas de interés, ratios) |
+| 3 | constante y tendencia | serie con tendencia (PIB, precios en logs) |
+
+Los dos errores tienen costos distintos. **Incluir términos de más** reduce la potencia (el crítico es más negativo). **Omitir** una tendencia que existe es mucho peor: el test pierde **consistencia**, como muestra el siguiente resultado.
+
+::: {#prp-tendencia-omitida}
+## Omitir la tendencia destruye el test
+Sea $y_t = bt + u_t$ con $u_t$ i.i.d. $(0,\sigma^2)$ (estacionaria en tendencia, $b\ne0$). Si se aplica DF **con constante pero sin tendencia**, $\hat\phi\to_p1$ y $T(\hat\phi - 1)\to0$: el test **no rechaza** la raíz unitaria, con probabilidad que tiende a uno.
+:::
+
+::: {.proof}
+Con variables demedidas, $x_t = y_t - \bar y = b(t - \bar t) + (u_t - \bar u)$. La parte determinística domina: $\sum_t(t - \bar t)^2\approx T^3/12$, y $\sum(t - \bar t)(t - 1 - \bar t) = \sum(t - \bar t)^2 - \sum(t - \bar t) = \sum(t - \bar t)^2$. Entonces $\sum x_{t-1}x_t\approx b^2T^3/12 + O_p(T^{3/2})$ y $\sum x_{t-1}^2\approx b^2T^3/12 + \sigma^2T + O_p(T^{3/2})$, de modo que $\hat\phi\approx1 - 12\sigma^2/(b^2T^2)\to1$, y $T(\hat\phi - 1)\to0$. La tendencia lineal genera una serie "casi perfectamente autocorrelacionada" que el test confunde con una raíz unitaria.
+:::
+
+Por eso, **ante la duda en series con tendencia, se incluye tendencia**. Para elegir se usa una secuencia (Dolado, Jenkinson y Sosvilla-Rivero, 1990): se parte del caso más general y se testean las restricciones (que, bajo la nula de raíz unitaria, tienen distribuciones no estándar). Una regla práctica es mirar el gráfico: ¿tiene la serie una pendiente persistente?
+
+# Phillips–Perron: corregir en vez de aumentar
+
+La Clase 6 mostró que, si $\Delta y_t = u_t$ es estacionario con varianza de largo plazo $\lambda^2$ y varianza $\gamma_u(0)$, entonces
+$$
+T(\hat\phi - 1)\ \Rightarrow\ \text{DF} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2},\qquad T^{-2}\sum y_{t-1}^2\Rightarrow\lambda^2\int W^2.
+$$
+Phillips y Perron (1988) propusieron **restar** ese término de perturbación, **estimándolo**:
+
+$$
+Z_\alpha = T(\hat\phi - 1) - \frac{\hat\lambda^2 - \hat\gamma_u(0)}{2\,T^{-2}\sum y_{t-1}^2},
+$$
+con $\hat\lambda^2$ un estimador HAC de la varianza de largo plazo (Clase 5, Newey–West) de los residuos de la regresión de Dickey–Fuller (sin rezagos aumentados) y $\hat\gamma_u(0)$ su varianza. Por la expresión de arriba, **$Z_\alpha$ tiene la distribución de Dickey–Fuller del coeficiente** (límite $\tfrac12[W(1)^2 - 1]/\int W^2$): el término restado cancela exactamente el parámetro de perturbación, porque $T^{-2}\sum y_{t-1}^2\to\lambda^2\int W^2$. Existe una versión análoga, $Z_t$, para el estadístico $t$ (con $\sqrt{\hat\gamma_u(0)/\hat\lambda^2}$ como factor de escala).
+
+Compare los dos enfoques:
+
+| | **ADF** | **Phillips–Perron** |
+|---|---|---|
+| Corrige la dependencia con | rezagos (paramétrico) | HAC (no paramétrico) |
+| Requiere elegir | número de rezagos | ancho de banda $m$ |
+| Heterocedasticidad | sensible | **robusto** |
+| Problemas conocidos | pérdida de potencia con rezagos de más | sobredimensionado con raíz MA cercana a $-1$ |
+
+En muestras finitas, ambos fallan cuando $\Delta y_t$ tiene una **raíz MA cercana a $-1$** ($\theta\approx-1$): entonces $\Delta y_t$ casi no tiene varianza de largo plazo ($\lambda^2 = \sigma^2(1 + \theta)^2\approx0$, Clase 1) y la serie *se parece* a una estacionaria aunque tenga una raíz unitaria. Los tests **rechazan la raíz unitaria con mucha más frecuencia que el nivel nominal** (Schwert, 1989). Es el mismo parámetro de perturbación $\lambda^2 - \gamma_u(0)$ de la Clase 6, ahora muy negativo y mal estimado.
+
+# KPSS: invertir la hipótesis nula
+
+En ADF y Phillips–Perron, la hipótesis nula es **raíz unitaria**: es la que se "acepta" por defecto y, con poca potencia, casi siempre se acepta. Kwiatkowski, Phillips, Schmidt y Shin (1992) invirtieron los papeles. El modelo es
+$$
+y_t = \xi t + r_t + e_t,\qquad r_t = r_{t-1} + u_t,\quad u_t\sim\text{i.i.d.}(0,\sigma_u^2),\quad e_t\ \text{estacionario},
+$$
+y la hipótesis nula es $H_0:\sigma_u^2 = 0$ (el componente de caminata aleatoria $r_t$ es constante: $y_t$ es **estacionaria** en torno a nivel o tendencia) contra $H_1:\sigma_u^2>0$ (raíz unitaria). El estadístico usa las sumas parciales de los residuos $\hat e_t$ de la regresión de $y_t$ sobre una constante (o constante y tendencia): $S_t = \sum_{s\le t}\hat e_s$,
+$$
+\eta = \frac{T^{-2}\sum_{t = 1}^TS_t^2}{\hat\lambda^2},
+$$
+con $\hat\lambda^2$ el estimador HAC de la varianza de largo plazo de $\hat e_t$.
+
+::: {#prp-kpss}
+## Distribución de KPSS bajo la nula
+Bajo $H_0$ y con regresión sobre una constante, $\eta\Rightarrow\int_0^1B(r)^2\,dr$, donde $B(r) = W(r) - rW(1)$ es un **puente browniano**.
+:::
+
+::: {.proof}
+Con $\hat e_t = e_t - \bar e$, $S_t = \sum_{s\le t}e_s - (t/T)\sum_{s\le T}e_s$. Por el principio de invarianza (Clase 5, $e_t$ con varianza de largo plazo $\lambda^2$), $T^{-1/2}\sum_{s\le\lfloor Tr\rfloor}e_s\Rightarrow\lambda W(r)$, de modo que $T^{-1/2}S_{\lfloor Tr\rfloor}\Rightarrow\lambda\big[W(r) - rW(1)\big] = \lambda B(r)$. Entonces $T^{-2}\sum S_t^2 = \int T^{-1}S_{\lfloor Tr\rfloor}^2\,dr\Rightarrow\lambda^2\int B^2$, y como $\hat\lambda^2\to_p\lambda^2$, $\eta\Rightarrow\int B^2$. (Con constante y tendencia, $B$ se reemplaza por el puente browniano de segundo nivel.)
+:::
+
+El test es de **cola derecha**: se rechaza $H_0$ (estacionariedad) si $\eta$ es grande. Los valores críticos de $\int B^2$ son $0{,}347$ (10 %), $0{,}463$ (5 %) y $0{,}739$ (1 %) para el caso de nivel; $0{,}119$, $0{,}146$ y $0{,}216$ para constante y tendencia.
+
+## Análisis confirmatorio
+
+Como ADF/PP y KPSS tienen **hipótesis nulas opuestas**, se usan juntos:
+
+| ADF / PP | KPSS | Conclusión |
+|---|---|---|
+| rechaza raíz unitaria | no rechaza estacionariedad | **$I(0)$** (evidencia coherente) |
+| no rechaza raíz unitaria | rechaza estacionariedad | **$I(1)$** (evidencia coherente) |
+| no rechaza | no rechaza | **no concluyente** (poco poder, o quiebres) |
+| rechaza | rechaza | **no concluyente** (tamaño, quiebres, o proceso fraccionario) |
+
+Los dos "no concluyentes" son frecuentes, y no son un fracaso: son la forma honesta de decir que **los datos no distinguen entre $\phi = 1$ y $\phi = 0{,}95$**.
+
+# DF-GLS
+
+Elliott, Rothenberg y Stock (1996) mejoraron la potencia con un cambio simple: **quitar los componentes determinísticos por mínimos cuadrados generalizados** y no por MCO. Con $\bar\alpha = 1 - 7/T$ (constante) o $1 - 13{,}5/T$ (constante y tendencia): (1) se calculan las **cuasi-diferencias** $y_t^{\bar\alpha} = y_t - \bar\alpha y_{t-1}$ y $d_t^{\bar\alpha}$ (análoga para los términos determinísticos); (2) se estima $\hat\delta$ de $y^{\bar\alpha}$ sobre $d^{\bar\alpha}$ y se calcula la serie **destendenciada** $y_t^d = y_t - \hat\delta'd_t$; (3) se aplica **ADF sin términos determinísticos** a $y^d_t$. Los críticos son los de la distribución sin constante modificada ($-1{,}95$ con constante, $-2{,}89$ con tendencia, al 5 %). La idea: destendenciar bajo una alternativa **cercana** a la nula (el $\bar\alpha$ elegido) acerca el test a la cota de potencia asintótica máxima. En muestras típicas, DF-GLS tiene **bastante más poder** que ADF.
+
+# El problema del poder
+
+Considera una serie estacionaria con $\phi = 0{,}95$ y $T = 100$ observaciones. Para el test ADF, esa serie es casi indistinguible de una con $\phi = 1$: la diferencia entre $\hat\phi$ y $1$ es del orden del error de estimación (que es $O(1/T) = 0{,}01$ pero con una distribución que no ayuda). El marco teórico adecuado es el de las alternativas **locales a la unidad**.
+
+::: {#prp-local}
+## Alternativas locales a la unidad — se toma prestado
+Sea $y_t = (1 + c/T)y_{t-1} + \varepsilon_t$ con $c<0$ fijo (de modo que $\phi = 1 + c/T\to1$). Entonces $T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\sigma J_c(r)$, donde $J_c$ es el **proceso de Ornstein–Uhlenbeck** $dJ_c = cJ_c\,dr + dW$, y
+$$
+t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\Big(\int J_c^2\Big)^{1/2}.
+$$
+:::
+
+El primer sumando es de tipo Dickey–Fuller y el segundo es un **desplazamiento negativo** que crece con $|c|$ y es el que genera potencia. Con $T = 100$, $\phi = 0{,}95$ corresponde a $c = -5$, un desplazamiento moderado: el test rechaza la nula en bastante menos de la mitad de las muestras. Con $\phi = 0{,}9$ ($c = -10$) mejora, pero aun así queda lejos de una potencia alta. Dos consecuencias importantes:
+
+1. **"No rechazar" no es evidencia a favor de la raíz unitaria.** Es compatible con alternativas estacionarias persistentes, y la teoría económica (de la cual depende qué se debe suponer) suele tener más que decir que el test.
+2. **No hay forma de distinguir estadísticamente entre persistencia total y casi total** en muestras típicas (Cochrane, 1991): importa para la interpretación de si los shocks son "permanentes", una pregunta que los datos pueden **no** responder.
+
+# Quiebres estructurales
+
+Perron (1989) mostró que los tests de raíz unitaria son vulnerables a **cambios de régimen** en la media o en la tendencia.
+
+::: {#prp-perron}
+## Quiebres y falsas raíces unitarias
+Si $y_t$ es estacionaria en torno a una tendencia con un **quiebre** (un cambio en el nivel o en la pendiente en una fecha $T_B = \lambda T$ fija), los tests de ADF que **ignoran** el quiebre tienen poder que tiende a cero: $\hat\phi\to1$ en el caso de quiebre en pendiente, y en el caso de un salto de nivel de tamaño $\delta$, $\hat\phi$ converge a $\dfrac{\delta^2/4}{\delta^2/4 + \sigma^2}$ (con $\lambda = \tfrac12$).
+:::
+
+Este último límite se ve fácilmente (Ejercicio 7.5): la serie tiene dos regímenes, con $\operatorname{Var}(y_t)\approx\delta^2/4 + \sigma^2$ y covarianza de primer orden $\approx\delta^2/4$ (el salto es compartido por casi todos los pares consecutivos). Con $\delta = 4\sigma$, $\hat\phi\to0{,}8$, y con $\delta = 8\sigma$, $\hat\phi\to0{,}94$. Para saltos grandes la serie *parece* tener memoria casi infinita, y en muestras finitas el test no rechaza. La respuesta es **incluir el quiebre** en la regresión (Perron, 1989, con fecha conocida) o estimar su fecha (Zivot y Andrews, 1992; Lee y Strazicich para quiebres bajo la nula; Bai y Perron, 1998, para varios quiebres). Un análisis serio de una serie larga (30–50 años de datos macro) siempre debe preguntarse por quiebres: cambios de régimen monetario, crisis, reformas.
+
+# Protocolo práctico
+
+1. **Graficar** la serie: ¿tendencia? ¿quiebres? ¿estacionalidad?
+2. Elegir los términos determinísticos en función del gráfico (**con tendencia si hay duda**).
+3. Aplicar **ADF** (con rezagos por MAIC) y **DF-GLS**; complementar con **PP** y **KPSS**.
+4. Si las series son $I(1)$, **diferenciar** (o ir a cointegración, Clase 8); si hay quiebres, usar versiones con quiebre.
+5. **Interpretar con humildad**: los tests tienen poco poder, y la conclusión debe ser coherente con la teoría y con la estabilidad de la estrategia empírica a los dos casos ($I(0)$ cercano a la unidad frente a $I(1)$).
+
+# ★ Postgrado: la potencia como función de $\phi$
+
+::: {.callout-important title="★ Postgrado"}
+La función de potencia del test DF a lo largo de la secuencia local se obtiene de la @prp-local. Mostramos por qué el desplazamiento $c\sqrt{\int J_c^2}$ crece con $|c|$ **pero** el término estocástico crece también, lo que explica la potencia baja y la forma de la curva.
+:::
+
+Para $c$ grande en valor absoluto, $J_c$ es un proceso estacionario en el límite: $J_c(r)\approx$ normal con varianza $1/(2|c|)$ (la varianza estacionaria del Ornstein–Uhlenbeck $dJ = cJ\,dr + dW$ es $1/(2|c|)$). Entonces $\int J_c^2\approx1/(2|c|)$ y el desplazamiento es $c\sqrt{1/(2|c|)} = -\sqrt{|c|/2}$. El primer sumando, $\int J_c\,dW/(\int J_c^2)^{1/2}$, tiende a una $N(0,1)$ para $|c|$ grande (es una martingala normalizada). Por lo tanto, para $|c|$ grande, $t_{\hat\phi}\approx N(-\sqrt{|c|/2},1)$, y la potencia al nivel $5$ % es aproximadamente $P(N(-\sqrt{|c|/2},1)<-2{,}86)$ (con constante). Con $c = -5$: desplazamiento $-1{,}58$, probabilidad $\Phi(-2{,}86 + 1{,}58) = \Phi(-1{,}28) = 0{,}10$, es decir, poder del 10 % (la aproximación para $|c|$ chico no es buena, pero sugiere el orden de magnitud). Con $c = -20$ ($\phi = 0{,}8$ y $T = 100$): desplazamiento $-3{,}16$ y $\Phi(0{,}30) = 0{,}62$ (la aproximación es burda y tiende a subestimar la potencia en valores intermedios de $|c|$, donde las simulaciones dan potencias bastante mayores). La conclusión cualitativa es robusta: la potencia **crece muy lento** con $|c|$ y es baja mientras $\phi$ esté cerca de uno (con $T = 100$, por encima de aproximadamente $0{,}9$). Los tests de raíz unitaria no pueden decidir en la región donde más importa.
+
+# Resumen
+
+- **ADF** (@prp-adf-rep, @thm-adf): $\Delta y_t$ sobre $y_{t-1}$ y rezagos de $\Delta y_t$; el $t$ de $\rho^*$ tiene la **distribución de Dickey–Fuller**, libre de parámetros de perturbación. Se elige el número de rezagos con MAIC o secuencialmente.
+- Los **términos determinísticos** cambian la distribución (críticos $-1{,}94$, $-2{,}86$, $-3{,}41$); **omitir una tendencia** que existe destruye la consistencia del test (@prp-tendencia-omitida).
+- **Phillips–Perron:** $Z_\alpha = T(\hat\phi - 1) - (\hat\lambda^2 - \hat\gamma_u(0))/(2T^{-2}\sum y_{t-1}^2)$; corrige con HAC.
+- **KPSS:** nula de **estacionariedad**; $\eta\Rightarrow\int B^2$ (puente browniano). Se usa **junto con ADF/PP** (análisis confirmatorio).
+- **DF-GLS** destendencia por GLS y tiene más poder.
+- **Bajo poder:** frente a $\phi = 1 + c/T$, el desplazamiento es $\approx-\sqrt{|c|/2}$ (@prp-local); los datos no distinguen $\phi = 0{,}95$ de $\phi = 1$. **Quiebres** (@prp-perron) generan falsas raíces unitarias.
+
+# Ejercicios
+
+**Ejercicio 7.1.** Un AR(3) tiene $\phi = (1{,}2,\,-0{,}3,\,0{,}1)$. Escribe su forma ADF, calcula $\rho^*$ y los $c_j$, y decide si hay raíz unitaria.
+
+::: {.callout-tip collapse="true" title="Solución 7.1"}
+$\sum\phi_j = 1{,}2 - 0{,}3 + 0{,}1 = 1$, así que $\rho^* = 0$: **hay una raíz unitaria** ($\phi(1) = 0$). $c_1 = -(\phi_2 + \phi_3) = -(-0{,}3 + 0{,}1) = 0{,}2$ y $c_2 = -\phi_3 = -0{,}1$. La forma ADF es $\Delta y_t = 0{,}2\Delta y_{t-1} - 0{,}1\Delta y_{t-2} + \varepsilon_t$: la diferencia $\Delta y_t$ es un AR(2) estacionario (raíces de $1 - 0{,}2z + 0{,}1z^2$ de módulo $\sqrt{10}\approx3{,}16>1$). Con $\phi = (1{,}1,-0{,}3,0{,}1)$ en cambio, $\sum\phi_j = 0{,}9$ y $\rho^* = -0{,}1\ne0$: sin raíz unitaria.
+:::
+
+**Ejercicio 7.2.** Calcula el número máximo de rezagos de Schwert para $T = 100,\,500,\,1000$. ¿Qué ocurre con la potencia si se parte de un máximo muy grande?
+
+::: {.callout-tip collapse="true" title="Solución 7.2"}
+$12(T/100)^{1/4}$: $T = 100$: $12$; $T = 500$: $12(5)^{0{,}25} = 12(1{,}495) = 17{,}9\to17$; $T = 1000$: $12(10)^{0{,}25} = 12(1{,}778) = 21{,}3\to21$. Un máximo grande, con eliminación secuencial, está bien si el procedimiento termina en un número chico; pero si el criterio selecciona demasiados rezagos, cada parámetro extra resta grados de libertad y el test pierde poder (el estadístico $t$ de $\rho^*$ se vuelve más ruidoso). Los criterios MAIC penalizan específicamente ese problema.
+:::
+
+**Ejercicio 7.3.** En un test de Phillips–Perron sin constante, $T(\hat\phi - 1) = -8$, $\hat\lambda^2 = 2$, $\hat\gamma_u(0) = 1$ y $T^{-2}\sum y_{t-1}^2 = 4$. Calcula $Z_\alpha$. (Crítico al 5 % de $T(\hat\phi - 1)$ sin constante: $-7{,}9$.)
+
+::: {.callout-tip collapse="true" title="Solución 7.3"}
+$Z_\alpha = -8 - \dfrac{2 - 1}{2\cdot4} = -8 - 0{,}125 = -8{,}125$. Como $-8{,}125<-7{,}9$, **se rechaza** la raíz unitaria al 5 %. Observa el signo de la corrección: $\hat\lambda^2>\hat\gamma_u(0)$ significa que $\Delta y_t$ tiene autocorrelación **positiva** de largo plazo, y el MCO de $\hat\phi$ sobreestima la persistencia (queda sesgado hacia arriba, hacia $1$); la corrección lo **empuja a la izquierda** para quitar ese exceso.
+:::
+
+**Ejercicio 7.4.** En un test KPSS de nivel con $T = 5$, los residuos de la regresión sobre una constante son $\hat e = (1,-1,2,-2,0)$ y se estima $\hat\lambda^2 = 1$. Calcula $\eta$ y concluye al 5 % (crítico $0{,}463$).
+
+::: {.callout-tip collapse="true" title="Solución 7.4"}
+Sumas parciales: $S = (1,0,2,0,0)$, $\sum S_t^2 = 1 + 0 + 4 + 0 + 0 = 5$. $\eta = T^{-2}\sum S_t^2/\hat\lambda^2 = 5/25 = 0{,}20<0{,}463$: **no se rechaza** la estacionariedad. (Con solo 5 datos el ejemplo es ilustrativo: $S_T = 0$ siempre, por construcción, porque los residuos suman cero.)
+:::
+
+**Ejercicio 7.5.** Una serie tiene un salto de nivel: $y_t = \mu_1 + \varepsilon_t$ en la primera mitad y $\mu_2 + \varepsilon_t$ en la segunda, con $\delta = \mu_2 - \mu_1$ y $\varepsilon_t$ i.i.d. $(0,\sigma^2)$. Calcula el límite de $\hat\phi$ de un AR(1) con constante cuando $\delta = 4\sigma$ y $\delta = 8\sigma$. ¿Qué implica para el test ADF?
+
+::: {.callout-tip collapse="true" title="Solución 7.5"}
+Demedida, $x_t = \pm\delta/2 + \varepsilon_t$ (según el régimen). $\operatorname{Var}(x_t) = \delta^2/4 + \sigma^2$ y $\operatorname{Cov}(x_t,x_{t-1})\approx\delta^2/4$ (salvo en el punto del salto). Entonces $\hat\phi\to\dfrac{\delta^2/4}{\delta^2/4 + \sigma^2}$. $\delta = 4\sigma$: $\dfrac{4\sigma^2}{4\sigma^2 + \sigma^2} = 0{,}8$. $\delta = 8\sigma$: $\dfrac{16}{17} = 0{,}941$. Para $T$ finito, $\hat\phi$ tan cerca de $1$ (y con la distribución desplazada hacia valores altos) deja al test sin potencia: la serie, que es **estacionaria por tramos**, se declara con raíz unitaria. Asintóticamente, con $\hat\phi\to0{,}8<1$ fijo, el test sí acabaría rechazando, pero la "muestra grande" necesaria es enorme. Con quiebre en **pendiente**, $\hat\phi\to1$ y el test nunca rechaza (Perron, 1989).
+:::
+
+**Ejercicio 7.6.** Para cada resultado, interpreta: (a) ADF: $t = -3{,}8$ (crítico $-3{,}41$ con tendencia); KPSS: $\eta = 0{,}08$ (crítico $0{,}146$). (b) ADF: $t = -1{,}9$; KPSS: $\eta = 0{,}9$ (nivel). (c) ADF: $t = -1{,}8$; KPSS: $\eta = 0{,}2$ (nivel, crítico $0{,}463$).
+
+::: {.callout-tip collapse="true" title="Solución 7.6"}
+(a) ADF rechaza la raíz unitaria ($-3{,}8<-3{,}41$) y KPSS no rechaza la estacionariedad: **$I(0)$ (estacionaria en tendencia)**, evidencia coherente. (b) ADF no rechaza ($-1{,}9>-2{,}86$ con constante) y KPSS rechaza ($0{,}9>0{,}463$): **$I(1)$**, coherente. (c) ADF no rechaza y KPSS tampoco ($0{,}2<0{,}463$): **no concluyente**. Los datos no tienen suficiente información para decidir: se puede razonar con ambas hipótesis (por ejemplo, ver si las conclusiones del análisis posterior cambian). Es el caso más frecuente en series macro cortas.
+:::
+
+**Ejercicio 7.7 ★.** Con $\phi = 0{,}8$ y $T = 100$ ($c = -20$), usa la aproximación del §★ para calcular la potencia del test DF con constante al 5 %. Compara con $\phi = 0{,}95$ ($c = -5$).
+
+::: {.callout-tip collapse="true" title="Solución 7.7 ★"}
+Aproximación: $t\approx N(-\sqrt{|c|/2},1)$ y crítico $-2{,}86$. $c = -20$: desplazamiento $-\sqrt{10} = -3{,}16$; potencia $= P(N(-3{,}16,1)<-2{,}86) = \Phi(0{,}30) = 0{,}62$. $c = -5$: desplazamiento $-\sqrt{2{,}5} = -1{,}58$; potencia $= \Phi(-1{,}28) = 0{,}10$. Es solo una aproximación burda (válida para $|c|$ grande, y subestima la potencia en valores intermedios), pero cualitativamente correcta: **con $\phi = 0{,}95$ el test casi no distingue** la serie de una raíz unitaria (potencia muy baja, de unos pocos puntos sobre el tamaño nominal de 5 %). Con $T = 400$, $\phi = 0{,}95$ corresponde a $c = -20$, el mismo valor que $\phi = 0{,}8$ con $T = 100$: lo que cuenta es el **tiempo calendario** observado ($T(1 - \phi)$), no solo el número de observaciones.
+:::

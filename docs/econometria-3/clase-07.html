@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Tests de raíz unitaria en la práctica: Dickey–Fuller aumentado (reparametrización y distribución), Phillips–Perron como corrección no paramétrica, KPSS con hipótesis nula invertida, DF-GLS, el problema del bajo poder, los términos determinísticos y los quiebres estructurales de Perron.">
+
+<title>Clase 7 · Raíces unitarias II – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-06.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-3/clase-07.html">Clase 7 · Raíces unitarias II</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#de-la-teoría-al-test-usable" id="toc-de-la-teoría-al-test-usable" class="nav-link active" data-scroll-target="#de-la-teoría-al-test-usable"><span class="header-section-number">1</span> De la teoría al test usable</a></li>
+  <li><a href="#dickeyfuller-aumentado" id="toc-dickeyfuller-aumentado" class="nav-link" data-scroll-target="#dickeyfuller-aumentado"><span class="header-section-number">2</span> Dickey–Fuller aumentado</a>
+  <ul class="collapse">
+  <li><a href="#elegir-el-número-de-rezagos" id="toc-elegir-el-número-de-rezagos" class="nav-link" data-scroll-target="#elegir-el-número-de-rezagos"><span class="header-section-number">2.1</span> Elegir el número de rezagos</a></li>
+  <li><a href="#los-términos-determinísticos" id="toc-los-términos-determinísticos" class="nav-link" data-scroll-target="#los-términos-determinísticos"><span class="header-section-number">2.2</span> Los términos determinísticos</a></li>
+  </ul></li>
+  <li><a href="#phillipsperron-corregir-en-vez-de-aumentar" id="toc-phillipsperron-corregir-en-vez-de-aumentar" class="nav-link" data-scroll-target="#phillipsperron-corregir-en-vez-de-aumentar"><span class="header-section-number">3</span> Phillips–Perron: corregir en vez de aumentar</a></li>
+  <li><a href="#kpss-invertir-la-hipótesis-nula" id="toc-kpss-invertir-la-hipótesis-nula" class="nav-link" data-scroll-target="#kpss-invertir-la-hipótesis-nula"><span class="header-section-number">4</span> KPSS: invertir la hipótesis nula</a>
+  <ul class="collapse">
+  <li><a href="#análisis-confirmatorio" id="toc-análisis-confirmatorio" class="nav-link" data-scroll-target="#análisis-confirmatorio"><span class="header-section-number">4.1</span> Análisis confirmatorio</a></li>
+  </ul></li>
+  <li><a href="#df-gls" id="toc-df-gls" class="nav-link" data-scroll-target="#df-gls"><span class="header-section-number">5</span> DF-GLS</a></li>
+  <li><a href="#el-problema-del-poder" id="toc-el-problema-del-poder" class="nav-link" data-scroll-target="#el-problema-del-poder"><span class="header-section-number">6</span> El problema del poder</a></li>
+  <li><a href="#quiebres-estructurales" id="toc-quiebres-estructurales" class="nav-link" data-scroll-target="#quiebres-estructurales"><span class="header-section-number">7</span> Quiebres estructurales</a></li>
+  <li><a href="#protocolo-práctico" id="toc-protocolo-práctico" class="nav-link" data-scroll-target="#protocolo-práctico"><span class="header-section-number">8</span> Protocolo práctico</a></li>
+  <li><a href="#postgrado-la-potencia-como-función-de-phi" id="toc-postgrado-la-potencia-como-función-de-phi" class="nav-link" data-scroll-target="#postgrado-la-potencia-como-función-de-phi"><span class="header-section-number">9</span> ★ Postgrado: la potencia como función de <span class="math inline">\(\phi\)</span></a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">10</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">11</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-07.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 7 · Raíces unitarias II</h1>
+<p class="subtitle lead">Tests ADF, Phillips–Perron, KPSS y DF-GLS; poder, términos determinísticos y quiebres</p>
+</div>
+
+<div>
+  <div class="description">
+    Tests de raíz unitaria en la práctica: Dickey–Fuller aumentado (reparametrización y distribución), Phillips–Perron como corrección no paramétrica, KPSS con hipótesis nula invertida, DF-GLS, el problema del bajo poder, los términos determinísticos y los quiebres estructurales de Perron.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a></p>
+<section id="de-la-teoría-al-test-usable" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> De la teoría al test usable</h1>
+<p>La Clase 6 derivó la distribución de Dickey–Fuller bajo un modelo muy simple: <span class="math inline">\(y_t = y_{t-1} + \varepsilon_t\)</span> con <span class="math inline">\(\varepsilon_t\)</span> ruido blanco. En la práctica, las series tienen <strong>dinámica</strong> en torno a la raíz unitaria (<span class="math inline">\(\Delta y_t\)</span> está serialmente correlacionado), <strong>componentes determinísticos</strong> (una constante, una tendencia) y a veces <strong>quiebres</strong>. Esta clase resuelve esos tres problemas y reúne las herramientas que se usan de verdad:</p>
+<ul>
+<li><strong>ADF</strong> (Dickey–Fuller aumentado): corrige la dependencia agregando rezagos.</li>
+<li><strong>Phillips–Perron:</strong> la corrige de manera no paramétrica con HAC.</li>
+<li><strong>KPSS:</strong> invierte la hipótesis nula (estacionariedad).</li>
+<li><strong>DF-GLS:</strong> gana poder con una limpieza de tendencia más eficiente.</li>
+</ul>
+<p>Un mensaje recorre toda la clase: <strong>los tests de raíz unitaria tienen poco poder</strong> contra alternativas cercanas, de modo que “no rechazo” casi nunca significa “hay raíz unitaria”.</p>
+</section>
+<section id="dickeyfuller-aumentado" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Dickey–Fuller aumentado</h1>
+<p>Supongamos que <span class="math inline">\(y_t\)</span> sigue un AR(<span class="math inline">\(p\)</span>): <span class="math inline">\(y_t = \phi_1y_{t-1} + \dots + \phi_py_{t-p} + \varepsilon_t\)</span>. Hay una raíz unitaria cuando <span class="math inline">\(\phi(1) = 1 - \sum_j\phi_j = 0\)</span> (el polinomio <span class="math inline">\(\phi(z)\)</span> se anula en <span class="math inline">\(z = 1\)</span>, Clase 2). Para poner esa condición en términos de <strong>un solo coeficiente</strong>, reparametrizamos.</p>
+<div id="prp-adf-rep" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Reparametrización del AR(<span class="math inline">\(p\)</span>))</strong></span> <span class="math display">\[
+\Delta y_t = \rho^*y_{t-1} + \sum_{j = 1}^{p-1}c_j\Delta y_{t-j} + \varepsilon_t,\qquad\rho^* = \sum_{j = 1}^p\phi_j - 1 = -\phi(1),\qquad c_j = -\sum_{i = j + 1}^p\phi_i.
+\]</span> Hay una raíz unitaria si y solo si <span class="math inline">\(\rho^* = 0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Escribimos cada rezago como <span class="math inline">\(y_{t-j} = y_{t-1} - \sum_{i = 1}^{j-1}\Delta y_{t-i}\)</span> para <span class="math inline">\(j\ge2\)</span>. Entonces <span class="math display">\[
+\sum_{j = 1}^p\phi_jy_{t-j} = \Big(\sum_j\phi_j\Big)y_{t-1} - \sum_{j = 2}^p\phi_j\sum_{i = 1}^{j-1}\Delta y_{t-i} = \Big(\sum_j\phi_j\Big)y_{t-1} - \sum_{i = 1}^{p-1}\Big(\sum_{j = i + 1}^p\phi_j\Big)\Delta y_{t-i},
+\]</span> intercambiando el orden de la doble suma. Restando <span class="math inline">\(y_{t-1}\)</span> a ambos lados de la ecuación original se obtiene la forma enunciada.</p>
+</div>
+<p>Esta es la regresión <strong>ADF</strong>: <span class="math inline">\(\Delta y_t\)</span> sobre <span class="math inline">\(y_{t-1}\)</span> y <span class="math inline">\(p - 1\)</span> rezagos de <span class="math inline">\(\Delta y_t\)</span> (más constante y/o tendencia). La hipótesis nula es <span class="math inline">\(H_0:\rho^* = 0\)</span> (raíz unitaria), contra <span class="math inline">\(H_1:\rho^*&lt;0\)</span> (estacionaria). Los rezagos <span class="math inline">\(\Delta y_{t-j}\)</span> <strong>absorben la dependencia</strong> y dejan un error <span class="math inline">\(\varepsilon_t\)</span> ruido blanco, restituyendo la condición de la Clase 6.</p>
+<div id="thm-adf" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Distribución del test ADF — esquema)</strong></span> Sea <span class="math inline">\(y_t\)</span> un AR(<span class="math inline">\(p\)</span>) con una raíz unitaria (<span class="math inline">\(\rho^* = 0\)</span>) y <span class="math inline">\(\Delta y_t\)</span> un AR(<span class="math inline">\(p-1\)</span>) estacionario, causal e invertible, con innovaciones i.i.d. Entonces el estadístico <span class="math inline">\(t\)</span> de <span class="math inline">\(\rho^*\)</span> en la regresión ADF (con <span class="math inline">\(p - 1\)</span> rezagos, el verdadero) converge a la <strong>misma distribución de Dickey–Fuller</strong> de la Clase 6 (con la elección de términos determinísticos correspondiente), y <span class="math inline">\(T\hat\rho^*/(1 - \sum_j\hat c_j)\)</span> converge a la distribución del coeficiente de la Clase 6.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>(Esquema.) Sea <span class="math inline">\(u_t = \Delta y_t\)</span>, que satisface <span class="math inline">\(C(L)u_t = \varepsilon_t\)</span> con <span class="math inline">\(C(z) = 1 - \sum_jc_jz^j\)</span>. Entonces <span class="math inline">\(u_t\)</span> es lineal, <span class="math inline">\(y_t = \sum_{s\le t}u_s\)</span> y por la Clase 5 (Beveridge–Nelson), <span class="math inline">\(T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)\)</span> con <span class="math inline">\(\lambda = \sigma/C(1)\)</span>. La regresión tiene dos tipos de regresores: <span class="math inline">\(y_{t-1}\)</span> (integrado, de orden <span class="math inline">\(\sqrt T\)</span>) y <span class="math inline">\(z_t = (\Delta y_{t-1},\dots,\Delta y_{t-p + 1})\)</span> (estacionarios, de orden <span class="math inline">\(1\)</span>). Con las normalizaciones <span class="math inline">\(T\)</span> para el coeficiente de <span class="math inline">\(y_{t-1}\)</span> y <span class="math inline">\(\sqrt T\)</span> para los de <span class="math inline">\(z_t\)</span>, la matriz <span class="math inline">\(\sum x_tx_t'\)</span> es <strong>asintóticamente diagonal por bloques</strong>: el término cruzado <span class="math inline">\(\sum y_{t-1}z_t\)</span> es <span class="math inline">\(O_p(T)\)</span>, que es de menor orden que <span class="math inline">\(T\cdot\sqrt T = T^{3/2}\)</span> (Sims, Stock y Watson, 1990). Por lo tanto el coeficiente de <span class="math inline">\(y_{t-1}\)</span> se comporta como en la regresión sin <span class="math inline">\(z_t\)</span>, con el numerador <span class="math inline">\(T^{-1}\sum y_{t-1}\varepsilon_t\Rightarrow\lambda\sigma\int W\,dW\)</span> y el denominador <span class="math inline">\(T^{-2}\sum y_{t-1}^2\Rightarrow\lambda^2\int W^2\)</span>, de modo que <span class="math inline">\(T\hat\rho^*\Rightarrow(\sigma/\lambda)\int W\,dW/\int W^2 = C(1)\cdot\text{DF}\)</span>. El estadístico <span class="math inline">\(t\)</span> estandariza con un error estándar que contiene a <span class="math inline">\(\sigma/\lambda\)</span>, y esa constante se cancela: el límite es la distribución de Dickey–Fuller <strong>exacta</strong>, libre de parámetros de perturbación. Los coeficientes de los rezagos <span class="math inline">\(\Delta y_{t-j}\)</span> tienen las propiedades usuales (normalidad asintótica, tasa <span class="math inline">\(\sqrt T\)</span>).</p>
+</div>
+<p>La consecuencia práctica es muy cómoda: <strong>el estadístico <span class="math inline">\(t\)</span> de la regresión ADF se compara con los mismos valores críticos</strong> de Dickey–Fuller (sin constante, con constante, con constante y tendencia: <span class="math inline">\(-1{,}94\)</span>, <span class="math inline">\(-2{,}86\)</span>, <span class="math inline">\(-3{,}41\)</span> al 5 %), independientemente de los parámetros del proceso de perturbación. Es la ventaja del enfoque paramétrico.</p>
+<section id="elegir-el-número-de-rezagos" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="elegir-el-número-de-rezagos"><span class="header-section-number">2.1</span> Elegir el número de rezagos</h2>
+<p>Hace falta un <span class="math inline">\(p\)</span> lo bastante grande para blanquear los errores, pero lo menor posible. <strong>Muy pocos</strong> rezagos dejan correlación serial residual y el test queda <strong>sobredimensionado</strong> (rechaza demasiado, porque la distribución ya no es la de Dickey–Fuller). <strong>Demasiados</strong> reducen la potencia (más parámetros que estimar). Dos reglas comunes:</p>
+<ul>
+<li><strong>Secuencial</strong> (de lo general a lo específico): empezar con un máximo <span class="math inline">\(k_{\max}\)</span> (regla de Schwert: <span class="math inline">\(\lfloor12(T/100)^{1/4}\rfloor\)</span>, es decir, <span class="math inline">\(12\)</span> para <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(17\)</span> para <span class="math inline">\(T = 500\)</span>, <span class="math inline">\(21\)</span> para <span class="math inline">\(T = 1000\)</span>) y eliminar el último rezago mientras su <span class="math inline">\(t\)</span> sea no significativo.</li>
+<li><strong>Criterios de información</strong> modificados (<strong>MAIC</strong>, Ng y Perron, 2001), que corrigen el comportamiento de AIC/BIC cuando hay una raíz cercana a la unidad.</li>
+</ul>
+</section>
+<section id="los-términos-determinísticos" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="los-términos-determinísticos"><span class="header-section-number">2.2</span> Los términos determinísticos</h2>
+<p>La distribución depende de qué se incluye en la regresión, y esa elección <strong>debe reflejar la hipótesis alternativa</strong> y los datos:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Caso</th>
+<th>Se incluye</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>nada</td>
+<td>serie con media cero (raro; residuos de otra regresión)</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>constante</td>
+<td>serie sin tendencia clara (tasas de interés, ratios)</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>constante y tendencia</td>
+<td>serie con tendencia (PIB, precios en logs)</td>
+</tr>
+</tbody>
+</table>
+<p>Los dos errores tienen costos distintos. <strong>Incluir términos de más</strong> reduce la potencia (el crítico es más negativo). <strong>Omitir</strong> una tendencia que existe es mucho peor: el test pierde <strong>consistencia</strong>, como muestra el siguiente resultado.</p>
+<div id="prp-tendencia-omitida" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Omitir la tendencia destruye el test)</strong></span> Sea <span class="math inline">\(y_t = bt + u_t\)</span> con <span class="math inline">\(u_t\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span> (estacionaria en tendencia, <span class="math inline">\(b\ne0\)</span>). Si se aplica DF <strong>con constante pero sin tendencia</strong>, <span class="math inline">\(\hat\phi\to_p1\)</span> y <span class="math inline">\(T(\hat\phi - 1)\to0\)</span>: el test <strong>no rechaza</strong> la raíz unitaria, con probabilidad que tiende a uno.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con variables demedidas, <span class="math inline">\(x_t = y_t - \bar y = b(t - \bar t) + (u_t - \bar u)\)</span>. La parte determinística domina: <span class="math inline">\(\sum_t(t - \bar t)^2\approx T^3/12\)</span>, y <span class="math inline">\(\sum(t - \bar t)(t - 1 - \bar t) = \sum(t - \bar t)^2 - \sum(t - \bar t) = \sum(t - \bar t)^2\)</span>. Entonces <span class="math inline">\(\sum x_{t-1}x_t\approx b^2T^3/12 + O_p(T^{3/2})\)</span> y <span class="math inline">\(\sum x_{t-1}^2\approx b^2T^3/12 + \sigma^2T + O_p(T^{3/2})\)</span>, de modo que <span class="math inline">\(\hat\phi\approx1 - 12\sigma^2/(b^2T^2)\to1\)</span>, y <span class="math inline">\(T(\hat\phi - 1)\to0\)</span>. La tendencia lineal genera una serie “casi perfectamente autocorrelacionada” que el test confunde con una raíz unitaria.</p>
+</div>
+<p>Por eso, <strong>ante la duda en series con tendencia, se incluye tendencia</strong>. Para elegir se usa una secuencia (Dolado, Jenkinson y Sosvilla-Rivero, 1990): se parte del caso más general y se testean las restricciones (que, bajo la nula de raíz unitaria, tienen distribuciones no estándar). Una regla práctica es mirar el gráfico: ¿tiene la serie una pendiente persistente?</p>
+</section>
+</section>
+<section id="phillipsperron-corregir-en-vez-de-aumentar" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Phillips–Perron: corregir en vez de aumentar</h1>
+<p>La Clase 6 mostró que, si <span class="math inline">\(\Delta y_t = u_t\)</span> es estacionario con varianza de largo plazo <span class="math inline">\(\lambda^2\)</span> y varianza <span class="math inline">\(\gamma_u(0)\)</span>, entonces <span class="math display">\[
+T(\hat\phi - 1)\ \Rightarrow\ \text{DF} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2},\qquad T^{-2}\sum y_{t-1}^2\Rightarrow\lambda^2\int W^2.
+\]</span> Phillips y Perron (1988) propusieron <strong>restar</strong> ese término de perturbación, <strong>estimándolo</strong>:</p>
+<p><span class="math display">\[
+Z_\alpha = T(\hat\phi - 1) - \frac{\hat\lambda^2 - \hat\gamma_u(0)}{2\,T^{-2}\sum y_{t-1}^2},
+\]</span> con <span class="math inline">\(\hat\lambda^2\)</span> un estimador HAC de la varianza de largo plazo (Clase 5, Newey–West) de los residuos de la regresión de Dickey–Fuller (sin rezagos aumentados) y <span class="math inline">\(\hat\gamma_u(0)\)</span> su varianza. Por la expresión de arriba, <strong><span class="math inline">\(Z_\alpha\)</span> tiene la distribución de Dickey–Fuller del coeficiente</strong> (límite <span class="math inline">\(\tfrac12[W(1)^2 - 1]/\int W^2\)</span>): el término restado cancela exactamente el parámetro de perturbación, porque <span class="math inline">\(T^{-2}\sum y_{t-1}^2\to\lambda^2\int W^2\)</span>. Existe una versión análoga, <span class="math inline">\(Z_t\)</span>, para el estadístico <span class="math inline">\(t\)</span> (con <span class="math inline">\(\sqrt{\hat\gamma_u(0)/\hat\lambda^2}\)</span> como factor de escala).</p>
+<p>Compare los dos enfoques:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>ADF</strong></th>
+<th><strong>Phillips–Perron</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Corrige la dependencia con</td>
+<td>rezagos (paramétrico)</td>
+<td>HAC (no paramétrico)</td>
+</tr>
+<tr class="even">
+<td>Requiere elegir</td>
+<td>número de rezagos</td>
+<td>ancho de banda <span class="math inline">\(m\)</span></td>
+</tr>
+<tr class="odd">
+<td>Heterocedasticidad</td>
+<td>sensible</td>
+<td><strong>robusto</strong></td>
+</tr>
+<tr class="even">
+<td>Problemas conocidos</td>
+<td>pérdida de potencia con rezagos de más</td>
+<td>sobredimensionado con raíz MA cercana a <span class="math inline">\(-1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>En muestras finitas, ambos fallan cuando <span class="math inline">\(\Delta y_t\)</span> tiene una <strong>raíz MA cercana a <span class="math inline">\(-1\)</span></strong> (<span class="math inline">\(\theta\approx-1\)</span>): entonces <span class="math inline">\(\Delta y_t\)</span> casi no tiene varianza de largo plazo (<span class="math inline">\(\lambda^2 = \sigma^2(1 + \theta)^2\approx0\)</span>, Clase 1) y la serie <em>se parece</em> a una estacionaria aunque tenga una raíz unitaria. Los tests <strong>rechazan la raíz unitaria con mucha más frecuencia que el nivel nominal</strong> (Schwert, 1989). Es el mismo parámetro de perturbación <span class="math inline">\(\lambda^2 - \gamma_u(0)\)</span> de la Clase 6, ahora muy negativo y mal estimado.</p>
+</section>
+<section id="kpss-invertir-la-hipótesis-nula" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> KPSS: invertir la hipótesis nula</h1>
+<p>En ADF y Phillips–Perron, la hipótesis nula es <strong>raíz unitaria</strong>: es la que se “acepta” por defecto y, con poca potencia, casi siempre se acepta. Kwiatkowski, Phillips, Schmidt y Shin (1992) invirtieron los papeles. El modelo es <span class="math display">\[
+y_t = \xi t + r_t + e_t,\qquad r_t = r_{t-1} + u_t,\quad u_t\sim\text{i.i.d.}(0,\sigma_u^2),\quad e_t\ \text{estacionario},
+\]</span> y la hipótesis nula es <span class="math inline">\(H_0:\sigma_u^2 = 0\)</span> (el componente de caminata aleatoria <span class="math inline">\(r_t\)</span> es constante: <span class="math inline">\(y_t\)</span> es <strong>estacionaria</strong> en torno a nivel o tendencia) contra <span class="math inline">\(H_1:\sigma_u^2&gt;0\)</span> (raíz unitaria). El estadístico usa las sumas parciales de los residuos <span class="math inline">\(\hat e_t\)</span> de la regresión de <span class="math inline">\(y_t\)</span> sobre una constante (o constante y tendencia): <span class="math inline">\(S_t = \sum_{s\le t}\hat e_s\)</span>, <span class="math display">\[
+\eta = \frac{T^{-2}\sum_{t = 1}^TS_t^2}{\hat\lambda^2},
+\]</span> con <span class="math inline">\(\hat\lambda^2\)</span> el estimador HAC de la varianza de largo plazo de <span class="math inline">\(\hat e_t\)</span>.</p>
+<div id="prp-kpss" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Distribución de KPSS bajo la nula)</strong></span> Bajo <span class="math inline">\(H_0\)</span> y con regresión sobre una constante, <span class="math inline">\(\eta\Rightarrow\int_0^1B(r)^2\,dr\)</span>, donde <span class="math inline">\(B(r) = W(r) - rW(1)\)</span> es un <strong>puente browniano</strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(\hat e_t = e_t - \bar e\)</span>, <span class="math inline">\(S_t = \sum_{s\le t}e_s - (t/T)\sum_{s\le T}e_s\)</span>. Por el principio de invarianza (Clase 5, <span class="math inline">\(e_t\)</span> con varianza de largo plazo <span class="math inline">\(\lambda^2\)</span>), <span class="math inline">\(T^{-1/2}\sum_{s\le\lfloor Tr\rfloor}e_s\Rightarrow\lambda W(r)\)</span>, de modo que <span class="math inline">\(T^{-1/2}S_{\lfloor Tr\rfloor}\Rightarrow\lambda\big[W(r) - rW(1)\big] = \lambda B(r)\)</span>. Entonces <span class="math inline">\(T^{-2}\sum S_t^2 = \int T^{-1}S_{\lfloor Tr\rfloor}^2\,dr\Rightarrow\lambda^2\int B^2\)</span>, y como <span class="math inline">\(\hat\lambda^2\to_p\lambda^2\)</span>, <span class="math inline">\(\eta\Rightarrow\int B^2\)</span>. (Con constante y tendencia, <span class="math inline">\(B\)</span> se reemplaza por el puente browniano de segundo nivel.)</p>
+</div>
+<p>El test es de <strong>cola derecha</strong>: se rechaza <span class="math inline">\(H_0\)</span> (estacionariedad) si <span class="math inline">\(\eta\)</span> es grande. Los valores críticos de <span class="math inline">\(\int B^2\)</span> son <span class="math inline">\(0{,}347\)</span> (10 %), <span class="math inline">\(0{,}463\)</span> (5 %) y <span class="math inline">\(0{,}739\)</span> (1 %) para el caso de nivel; <span class="math inline">\(0{,}119\)</span>, <span class="math inline">\(0{,}146\)</span> y <span class="math inline">\(0{,}216\)</span> para constante y tendencia.</p>
+<section id="análisis-confirmatorio" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="análisis-confirmatorio"><span class="header-section-number">4.1</span> Análisis confirmatorio</h2>
+<p>Como ADF/PP y KPSS tienen <strong>hipótesis nulas opuestas</strong>, se usan juntos:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>ADF / PP</th>
+<th>KPSS</th>
+<th>Conclusión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>rechaza raíz unitaria</td>
+<td>no rechaza estacionariedad</td>
+<td><strong><span class="math inline">\(I(0)\)</span></strong> (evidencia coherente)</td>
+</tr>
+<tr class="even">
+<td>no rechaza raíz unitaria</td>
+<td>rechaza estacionariedad</td>
+<td><strong><span class="math inline">\(I(1)\)</span></strong> (evidencia coherente)</td>
+</tr>
+<tr class="odd">
+<td>no rechaza</td>
+<td>no rechaza</td>
+<td><strong>no concluyente</strong> (poco poder, o quiebres)</td>
+</tr>
+<tr class="even">
+<td>rechaza</td>
+<td>rechaza</td>
+<td><strong>no concluyente</strong> (tamaño, quiebres, o proceso fraccionario)</td>
+</tr>
+</tbody>
+</table>
+<p>Los dos “no concluyentes” son frecuentes, y no son un fracaso: son la forma honesta de decir que <strong>los datos no distinguen entre <span class="math inline">\(\phi = 1\)</span> y <span class="math inline">\(\phi = 0{,}95\)</span></strong>.</p>
+</section>
+</section>
+<section id="df-gls" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> DF-GLS</h1>
+<p>Elliott, Rothenberg y Stock (1996) mejoraron la potencia con un cambio simple: <strong>quitar los componentes determinísticos por mínimos cuadrados generalizados</strong> y no por MCO. Con <span class="math inline">\(\bar\alpha = 1 - 7/T\)</span> (constante) o <span class="math inline">\(1 - 13{,}5/T\)</span> (constante y tendencia): (1) se calculan las <strong>cuasi-diferencias</strong> <span class="math inline">\(y_t^{\bar\alpha} = y_t - \bar\alpha y_{t-1}\)</span> y <span class="math inline">\(d_t^{\bar\alpha}\)</span> (análoga para los términos determinísticos); (2) se estima <span class="math inline">\(\hat\delta\)</span> de <span class="math inline">\(y^{\bar\alpha}\)</span> sobre <span class="math inline">\(d^{\bar\alpha}\)</span> y se calcula la serie <strong>destendenciada</strong> <span class="math inline">\(y_t^d = y_t - \hat\delta'd_t\)</span>; (3) se aplica <strong>ADF sin términos determinísticos</strong> a <span class="math inline">\(y^d_t\)</span>. Los críticos son los de la distribución sin constante modificada (<span class="math inline">\(-1{,}95\)</span> con constante, <span class="math inline">\(-2{,}89\)</span> con tendencia, al 5 %). La idea: destendenciar bajo una alternativa <strong>cercana</strong> a la nula (el <span class="math inline">\(\bar\alpha\)</span> elegido) acerca el test a la cota de potencia asintótica máxima. En muestras típicas, DF-GLS tiene <strong>bastante más poder</strong> que ADF.</p>
+</section>
+<section id="el-problema-del-poder" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> El problema del poder</h1>
+<p>Considera una serie estacionaria con <span class="math inline">\(\phi = 0{,}95\)</span> y <span class="math inline">\(T = 100\)</span> observaciones. Para el test ADF, esa serie es casi indistinguible de una con <span class="math inline">\(\phi = 1\)</span>: la diferencia entre <span class="math inline">\(\hat\phi\)</span> y <span class="math inline">\(1\)</span> es del orden del error de estimación (que es <span class="math inline">\(O(1/T) = 0{,}01\)</span> pero con una distribución que no ayuda). El marco teórico adecuado es el de las alternativas <strong>locales a la unidad</strong>.</p>
+<div id="prp-local" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 4 (Alternativas locales a la unidad — se toma prestado)</strong></span> Sea <span class="math inline">\(y_t = (1 + c/T)y_{t-1} + \varepsilon_t\)</span> con <span class="math inline">\(c&lt;0\)</span> fijo (de modo que <span class="math inline">\(\phi = 1 + c/T\to1\)</span>). Entonces <span class="math inline">\(T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\sigma J_c(r)\)</span>, donde <span class="math inline">\(J_c\)</span> es el <strong>proceso de Ornstein–Uhlenbeck</strong> <span class="math inline">\(dJ_c = cJ_c\,dr + dW\)</span>, y <span class="math display">\[
+t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\Big(\int J_c^2\Big)^{1/2}.
+\]</span></p>
+</div>
+<p>El primer sumando es de tipo Dickey–Fuller y el segundo es un <strong>desplazamiento negativo</strong> que crece con <span class="math inline">\(|c|\)</span> y es el que genera potencia. Con <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -5\)</span>, un desplazamiento moderado: el test rechaza la nula en bastante menos de la mitad de las muestras. Con <span class="math inline">\(\phi = 0{,}9\)</span> (<span class="math inline">\(c = -10\)</span>) mejora, pero aun así queda lejos de una potencia alta. Dos consecuencias importantes:</p>
+<ol type="1">
+<li><strong>“No rechazar” no es evidencia a favor de la raíz unitaria.</strong> Es compatible con alternativas estacionarias persistentes, y la teoría económica (de la cual depende qué se debe suponer) suele tener más que decir que el test.</li>
+<li><strong>No hay forma de distinguir estadísticamente entre persistencia total y casi total</strong> en muestras típicas (Cochrane, 1991): importa para la interpretación de si los shocks son “permanentes”, una pregunta que los datos pueden <strong>no</strong> responder.</li>
+</ol>
+</section>
+<section id="quiebres-estructurales" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Quiebres estructurales</h1>
+<p>Perron (1989) mostró que los tests de raíz unitaria son vulnerables a <strong>cambios de régimen</strong> en la media o en la tendencia.</p>
+<div id="prp-perron" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 5 (Quiebres y falsas raíces unitarias)</strong></span> Si <span class="math inline">\(y_t\)</span> es estacionaria en torno a una tendencia con un <strong>quiebre</strong> (un cambio en el nivel o en la pendiente en una fecha <span class="math inline">\(T_B = \lambda T\)</span> fija), los tests de ADF que <strong>ignoran</strong> el quiebre tienen poder que tiende a cero: <span class="math inline">\(\hat\phi\to1\)</span> en el caso de quiebre en pendiente, y en el caso de un salto de nivel de tamaño <span class="math inline">\(\delta\)</span>, <span class="math inline">\(\hat\phi\)</span> converge a <span class="math inline">\(\dfrac{\delta^2/4}{\delta^2/4 + \sigma^2}\)</span> (con <span class="math inline">\(\lambda = \tfrac12\)</span>).</p>
+</div>
+<p>Este último límite se ve fácilmente (Ejercicio 7.5): la serie tiene dos regímenes, con <span class="math inline">\(\operatorname{Var}(y_t)\approx\delta^2/4 + \sigma^2\)</span> y covarianza de primer orden <span class="math inline">\(\approx\delta^2/4\)</span> (el salto es compartido por casi todos los pares consecutivos). Con <span class="math inline">\(\delta = 4\sigma\)</span>, <span class="math inline">\(\hat\phi\to0{,}8\)</span>, y con <span class="math inline">\(\delta = 8\sigma\)</span>, <span class="math inline">\(\hat\phi\to0{,}94\)</span>. Para saltos grandes la serie <em>parece</em> tener memoria casi infinita, y en muestras finitas el test no rechaza. La respuesta es <strong>incluir el quiebre</strong> en la regresión (Perron, 1989, con fecha conocida) o estimar su fecha (Zivot y Andrews, 1992; Lee y Strazicich para quiebres bajo la nula; Bai y Perron, 1998, para varios quiebres). Un análisis serio de una serie larga (30–50 años de datos macro) siempre debe preguntarse por quiebres: cambios de régimen monetario, crisis, reformas.</p>
+</section>
+<section id="protocolo-práctico" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Protocolo práctico</h1>
+<ol type="1">
+<li><strong>Graficar</strong> la serie: ¿tendencia? ¿quiebres? ¿estacionalidad?</li>
+<li>Elegir los términos determinísticos en función del gráfico (<strong>con tendencia si hay duda</strong>).</li>
+<li>Aplicar <strong>ADF</strong> (con rezagos por MAIC) y <strong>DF-GLS</strong>; complementar con <strong>PP</strong> y <strong>KPSS</strong>.</li>
+<li>Si las series son <span class="math inline">\(I(1)\)</span>, <strong>diferenciar</strong> (o ir a cointegración, Clase 8); si hay quiebres, usar versiones con quiebre.</li>
+<li><strong>Interpretar con humildad</strong>: los tests tienen poco poder, y la conclusión debe ser coherente con la teoría y con la estabilidad de la estrategia empírica a los dos casos (<span class="math inline">\(I(0)\)</span> cercano a la unidad frente a <span class="math inline">\(I(1)\)</span>).</li>
+</ol>
+</section>
+<section id="postgrado-la-potencia-como-función-de-phi" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> ★ Postgrado: la potencia como función de <span class="math inline">\(\phi\)</span></h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La función de potencia del test DF a lo largo de la secuencia local se obtiene de la <a href="#prp-local" class="quarto-xref">Proposición&nbsp;4</a>. Mostramos por qué el desplazamiento <span class="math inline">\(c\sqrt{\int J_c^2}\)</span> crece con <span class="math inline">\(|c|\)</span> <strong>pero</strong> el término estocástico crece también, lo que explica la potencia baja y la forma de la curva.</p>
+</div>
+</div>
+<p>Para <span class="math inline">\(c\)</span> grande en valor absoluto, <span class="math inline">\(J_c\)</span> es un proceso estacionario en el límite: <span class="math inline">\(J_c(r)\approx\)</span> normal con varianza <span class="math inline">\(1/(2|c|)\)</span> (la varianza estacionaria del Ornstein–Uhlenbeck <span class="math inline">\(dJ = cJ\,dr + dW\)</span> es <span class="math inline">\(1/(2|c|)\)</span>). Entonces <span class="math inline">\(\int J_c^2\approx1/(2|c|)\)</span> y el desplazamiento es <span class="math inline">\(c\sqrt{1/(2|c|)} = -\sqrt{|c|/2}\)</span>. El primer sumando, <span class="math inline">\(\int J_c\,dW/(\int J_c^2)^{1/2}\)</span>, tiende a una <span class="math inline">\(N(0,1)\)</span> para <span class="math inline">\(|c|\)</span> grande (es una martingala normalizada). Por lo tanto, para <span class="math inline">\(|c|\)</span> grande, <span class="math inline">\(t_{\hat\phi}\approx N(-\sqrt{|c|/2},1)\)</span>, y la potencia al nivel <span class="math inline">\(5\)</span> % es aproximadamente <span class="math inline">\(P(N(-\sqrt{|c|/2},1)&lt;-2{,}86)\)</span> (con constante). Con <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-1{,}58\)</span>, probabilidad <span class="math inline">\(\Phi(-2{,}86 + 1{,}58) = \Phi(-1{,}28) = 0{,}10\)</span>, es decir, poder del 10 % (la aproximación para <span class="math inline">\(|c|\)</span> chico no es buena, pero sugiere el orden de magnitud). Con <span class="math inline">\(c = -20\)</span> (<span class="math inline">\(\phi = 0{,}8\)</span> y <span class="math inline">\(T = 100\)</span>): desplazamiento <span class="math inline">\(-3{,}16\)</span> y <span class="math inline">\(\Phi(0{,}30) = 0{,}62\)</span> (la aproximación es burda y tiende a subestimar la potencia en valores intermedios de <span class="math inline">\(|c|\)</span>, donde las simulaciones dan potencias bastante mayores). La conclusión cualitativa es robusta: la potencia <strong>crece muy lento</strong> con <span class="math inline">\(|c|\)</span> y es baja mientras <span class="math inline">\(\phi\)</span> esté cerca de uno (con <span class="math inline">\(T = 100\)</span>, por encima de aproximadamente <span class="math inline">\(0{,}9\)</span>). Los tests de raíz unitaria no pueden decidir en la región donde más importa.</p>
+</section>
+<section id="resumen" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Resumen</h1>
+<ul>
+<li><strong>ADF</strong> (<a href="#prp-adf-rep" class="quarto-xref">Proposición&nbsp;1</a>, <a href="#thm-adf" class="quarto-xref">Teorema&nbsp;1</a>): <span class="math inline">\(\Delta y_t\)</span> sobre <span class="math inline">\(y_{t-1}\)</span> y rezagos de <span class="math inline">\(\Delta y_t\)</span>; el <span class="math inline">\(t\)</span> de <span class="math inline">\(\rho^*\)</span> tiene la <strong>distribución de Dickey–Fuller</strong>, libre de parámetros de perturbación. Se elige el número de rezagos con MAIC o secuencialmente.</li>
+<li>Los <strong>términos determinísticos</strong> cambian la distribución (críticos <span class="math inline">\(-1{,}94\)</span>, <span class="math inline">\(-2{,}86\)</span>, <span class="math inline">\(-3{,}41\)</span>); <strong>omitir una tendencia</strong> que existe destruye la consistencia del test (<a href="#prp-tendencia-omitida" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+<li><strong>Phillips–Perron:</strong> <span class="math inline">\(Z_\alpha = T(\hat\phi - 1) - (\hat\lambda^2 - \hat\gamma_u(0))/(2T^{-2}\sum y_{t-1}^2)\)</span>; corrige con HAC.</li>
+<li><strong>KPSS:</strong> nula de <strong>estacionariedad</strong>; <span class="math inline">\(\eta\Rightarrow\int B^2\)</span> (puente browniano). Se usa <strong>junto con ADF/PP</strong> (análisis confirmatorio).</li>
+<li><strong>DF-GLS</strong> destendencia por GLS y tiene más poder.</li>
+<li><strong>Bajo poder:</strong> frente a <span class="math inline">\(\phi = 1 + c/T\)</span>, el desplazamiento es <span class="math inline">\(\approx-\sqrt{|c|/2}\)</span> (<a href="#prp-local" class="quarto-xref">Proposición&nbsp;4</a>); los datos no distinguen <span class="math inline">\(\phi = 0{,}95\)</span> de <span class="math inline">\(\phi = 1\)</span>. <strong>Quiebres</strong> (<a href="#prp-perron" class="quarto-xref">Proposición&nbsp;5</a>) generan falsas raíces unitarias.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Ejercicios</h1>
+<p><strong>Ejercicio 7.1.</strong> Un AR(3) tiene <span class="math inline">\(\phi = (1{,}2,\,-0{,}3,\,0{,}1)\)</span>. Escribe su forma ADF, calcula <span class="math inline">\(\rho^*\)</span> y los <span class="math inline">\(c_j\)</span>, y decide si hay raíz unitaria.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\sum\phi_j = 1{,}2 - 0{,}3 + 0{,}1 = 1\)</span>, así que <span class="math inline">\(\rho^* = 0\)</span>: <strong>hay una raíz unitaria</strong> (<span class="math inline">\(\phi(1) = 0\)</span>). <span class="math inline">\(c_1 = -(\phi_2 + \phi_3) = -(-0{,}3 + 0{,}1) = 0{,}2\)</span> y <span class="math inline">\(c_2 = -\phi_3 = -0{,}1\)</span>. La forma ADF es <span class="math inline">\(\Delta y_t = 0{,}2\Delta y_{t-1} - 0{,}1\Delta y_{t-2} + \varepsilon_t\)</span>: la diferencia <span class="math inline">\(\Delta y_t\)</span> es un AR(2) estacionario (raíces de <span class="math inline">\(1 - 0{,}2z + 0{,}1z^2\)</span> de módulo <span class="math inline">\(\sqrt{10}\approx3{,}16&gt;1\)</span>). Con <span class="math inline">\(\phi = (1{,}1,-0{,}3,0{,}1)\)</span> en cambio, <span class="math inline">\(\sum\phi_j = 0{,}9\)</span> y <span class="math inline">\(\rho^* = -0{,}1\ne0\)</span>: sin raíz unitaria.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.2.</strong> Calcula el número máximo de rezagos de Schwert para <span class="math inline">\(T = 100,\,500,\,1000\)</span>. ¿Qué ocurre con la potencia si se parte de un máximo muy grande?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(12(T/100)^{1/4}\)</span>: <span class="math inline">\(T = 100\)</span>: <span class="math inline">\(12\)</span>; <span class="math inline">\(T = 500\)</span>: <span class="math inline">\(12(5)^{0{,}25} = 12(1{,}495) = 17{,}9\to17\)</span>; <span class="math inline">\(T = 1000\)</span>: <span class="math inline">\(12(10)^{0{,}25} = 12(1{,}778) = 21{,}3\to21\)</span>. Un máximo grande, con eliminación secuencial, está bien si el procedimiento termina en un número chico; pero si el criterio selecciona demasiados rezagos, cada parámetro extra resta grados de libertad y el test pierde poder (el estadístico <span class="math inline">\(t\)</span> de <span class="math inline">\(\rho^*\)</span> se vuelve más ruidoso). Los criterios MAIC penalizan específicamente ese problema.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.3.</strong> En un test de Phillips–Perron sin constante, <span class="math inline">\(T(\hat\phi - 1) = -8\)</span>, <span class="math inline">\(\hat\lambda^2 = 2\)</span>, <span class="math inline">\(\hat\gamma_u(0) = 1\)</span> y <span class="math inline">\(T^{-2}\sum y_{t-1}^2 = 4\)</span>. Calcula <span class="math inline">\(Z_\alpha\)</span>. (Crítico al 5 % de <span class="math inline">\(T(\hat\phi - 1)\)</span> sin constante: <span class="math inline">\(-7{,}9\)</span>.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(Z_\alpha = -8 - \dfrac{2 - 1}{2\cdot4} = -8 - 0{,}125 = -8{,}125\)</span>. Como <span class="math inline">\(-8{,}125&lt;-7{,}9\)</span>, <strong>se rechaza</strong> la raíz unitaria al 5 %. Observa el signo de la corrección: <span class="math inline">\(\hat\lambda^2&gt;\hat\gamma_u(0)\)</span> significa que <span class="math inline">\(\Delta y_t\)</span> tiene autocorrelación <strong>positiva</strong> de largo plazo, y el MCO de <span class="math inline">\(\hat\phi\)</span> sobreestima la persistencia (queda sesgado hacia arriba, hacia <span class="math inline">\(1\)</span>); la corrección lo <strong>empuja a la izquierda</strong> para quitar ese exceso.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.4.</strong> En un test KPSS de nivel con <span class="math inline">\(T = 5\)</span>, los residuos de la regresión sobre una constante son <span class="math inline">\(\hat e = (1,-1,2,-2,0)\)</span> y se estima <span class="math inline">\(\hat\lambda^2 = 1\)</span>. Calcula <span class="math inline">\(\eta\)</span> y concluye al 5 % (crítico <span class="math inline">\(0{,}463\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sumas parciales: <span class="math inline">\(S = (1,0,2,0,0)\)</span>, <span class="math inline">\(\sum S_t^2 = 1 + 0 + 4 + 0 + 0 = 5\)</span>. <span class="math inline">\(\eta = T^{-2}\sum S_t^2/\hat\lambda^2 = 5/25 = 0{,}20&lt;0{,}463\)</span>: <strong>no se rechaza</strong> la estacionariedad. (Con solo 5 datos el ejemplo es ilustrativo: <span class="math inline">\(S_T = 0\)</span> siempre, por construcción, porque los residuos suman cero.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.5.</strong> Una serie tiene un salto de nivel: <span class="math inline">\(y_t = \mu_1 + \varepsilon_t\)</span> en la primera mitad y <span class="math inline">\(\mu_2 + \varepsilon_t\)</span> en la segunda, con <span class="math inline">\(\delta = \mu_2 - \mu_1\)</span> y <span class="math inline">\(\varepsilon_t\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span>. Calcula el límite de <span class="math inline">\(\hat\phi\)</span> de un AR(1) con constante cuando <span class="math inline">\(\delta = 4\sigma\)</span> y <span class="math inline">\(\delta = 8\sigma\)</span>. ¿Qué implica para el test ADF?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Demedida, <span class="math inline">\(x_t = \pm\delta/2 + \varepsilon_t\)</span> (según el régimen). <span class="math inline">\(\operatorname{Var}(x_t) = \delta^2/4 + \sigma^2\)</span> y <span class="math inline">\(\operatorname{Cov}(x_t,x_{t-1})\approx\delta^2/4\)</span> (salvo en el punto del salto). Entonces <span class="math inline">\(\hat\phi\to\dfrac{\delta^2/4}{\delta^2/4 + \sigma^2}\)</span>. <span class="math inline">\(\delta = 4\sigma\)</span>: <span class="math inline">\(\dfrac{4\sigma^2}{4\sigma^2 + \sigma^2} = 0{,}8\)</span>. <span class="math inline">\(\delta = 8\sigma\)</span>: <span class="math inline">\(\dfrac{16}{17} = 0{,}941\)</span>. Para <span class="math inline">\(T\)</span> finito, <span class="math inline">\(\hat\phi\)</span> tan cerca de <span class="math inline">\(1\)</span> (y con la distribución desplazada hacia valores altos) deja al test sin potencia: la serie, que es <strong>estacionaria por tramos</strong>, se declara con raíz unitaria. Asintóticamente, con <span class="math inline">\(\hat\phi\to0{,}8&lt;1\)</span> fijo, el test sí acabaría rechazando, pero la “muestra grande” necesaria es enorme. Con quiebre en <strong>pendiente</strong>, <span class="math inline">\(\hat\phi\to1\)</span> y el test nunca rechaza (Perron, 1989).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.6.</strong> Para cada resultado, interpreta: (a) ADF: <span class="math inline">\(t = -3{,}8\)</span> (crítico <span class="math inline">\(-3{,}41\)</span> con tendencia); KPSS: <span class="math inline">\(\eta = 0{,}08\)</span> (crítico <span class="math inline">\(0{,}146\)</span>). (b) ADF: <span class="math inline">\(t = -1{,}9\)</span>; KPSS: <span class="math inline">\(\eta = 0{,}9\)</span> (nivel). (c) ADF: <span class="math inline">\(t = -1{,}8\)</span>; KPSS: <span class="math inline">\(\eta = 0{,}2\)</span> (nivel, crítico <span class="math inline">\(0{,}463\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li>ADF rechaza la raíz unitaria (<span class="math inline">\(-3{,}8&lt;-3{,}41\)</span>) y KPSS no rechaza la estacionariedad: <strong><span class="math inline">\(I(0)\)</span> (estacionaria en tendencia)</strong>, evidencia coherente. (b) ADF no rechaza (<span class="math inline">\(-1{,}9&gt;-2{,}86\)</span> con constante) y KPSS rechaza (<span class="math inline">\(0{,}9&gt;0{,}463\)</span>): <strong><span class="math inline">\(I(1)\)</span></strong>, coherente. (c) ADF no rechaza y KPSS tampoco (<span class="math inline">\(0{,}2&lt;0{,}463\)</span>): <strong>no concluyente</strong>. Los datos no tienen suficiente información para decidir: se puede razonar con ambas hipótesis (por ejemplo, ver si las conclusiones del análisis posterior cambian). Es el caso más frecuente en series macro cortas.</li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.7 ★.</strong> Con <span class="math inline">\(\phi = 0{,}8\)</span> y <span class="math inline">\(T = 100\)</span> (<span class="math inline">\(c = -20\)</span>), usa la aproximación del §★ para calcular la potencia del test DF con constante al 5 %. Compara con <span class="math inline">\(\phi = 0{,}95\)</span> (<span class="math inline">\(c = -5\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Aproximación: <span class="math inline">\(t\approx N(-\sqrt{|c|/2},1)\)</span> y crítico <span class="math inline">\(-2{,}86\)</span>. <span class="math inline">\(c = -20\)</span>: desplazamiento <span class="math inline">\(-\sqrt{10} = -3{,}16\)</span>; potencia <span class="math inline">\(= P(N(-3{,}16,1)&lt;-2{,}86) = \Phi(0{,}30) = 0{,}62\)</span>. <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-\sqrt{2{,}5} = -1{,}58\)</span>; potencia <span class="math inline">\(= \Phi(-1{,}28) = 0{,}10\)</span>. Es solo una aproximación burda (válida para <span class="math inline">\(|c|\)</span> grande, y subestima la potencia en valores intermedios), pero cualitativamente correcta: <strong>con <span class="math inline">\(\phi = 0{,}95\)</span> el test casi no distingue</strong> la serie de una raíz unitaria (potencia muy baja, de unos pocos puntos sobre el tamaño nominal de 5 %). Con <span class="math inline">\(T = 400\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -20\)</span>, el mismo valor que <span class="math inline">\(\phi = 0{,}8\)</span> con <span class="math inline">\(T = 100\)</span>: lo que cuenta es el <strong>tiempo calendario</strong> observado (<span class="math inline">\(T(1 - \phi)\)</span>), no solo el número de observaciones.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-3/clase-06.html" class="pagination-link" aria-label="Clase 6 · Raíces unitarias I">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 6 · Raíces unitarias I</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
