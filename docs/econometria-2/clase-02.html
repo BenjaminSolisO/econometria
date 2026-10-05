@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El estimador de máxima verosimilitud como M-estimador: desigualdad de Gibbs, igualdad de la información, normalidad asintótica, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud.">
+
+<title>Clase 2 · Máxima verosimilitud – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-03.html" rel="next">
+<link href="../econometria-2/clase-01.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-02.html">Clase 2 · Máxima verosimilitud</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#de-un-criterio-al-criterio" id="toc-de-un-criterio-al-criterio" class="nav-link active" data-scroll-target="#de-un-criterio-al-criterio"><span class="header-section-number">1</span> De “un criterio” al criterio</a></li>
+  <li><a href="#identificación-la-desigualdad-de-gibbs" id="toc-identificación-la-desigualdad-de-gibbs" class="nav-link" data-scroll-target="#identificación-la-desigualdad-de-gibbs"><span class="header-section-number">2</span> Identificación: la desigualdad de Gibbs</a></li>
+  <li><a href="#la-igualdad-de-la-información" id="toc-la-igualdad-de-la-información" class="nav-link" data-scroll-target="#la-igualdad-de-la-información"><span class="header-section-number">3</span> La igualdad de la información</a></li>
+  <li><a href="#normalidad-asintótica-y-eficiencia" id="toc-normalidad-asintótica-y-eficiencia" class="nav-link" data-scroll-target="#normalidad-asintótica-y-eficiencia"><span class="header-section-number">4</span> Normalidad asintótica y eficiencia</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-esa-varianza-es-la-mejor" id="toc-por-qué-esa-varianza-es-la-mejor" class="nav-link" data-scroll-target="#por-qué-esa-varianza-es-la-mejor"><span class="header-section-number">4.1</span> ¿Por qué esa varianza es la mejor?</a></li>
+  </ul></li>
+  <li><a href="#cuando-el-modelo-está-mal-cuasi-verosimilitud" id="toc-cuando-el-modelo-está-mal-cuasi-verosimilitud" class="nav-link" data-scroll-target="#cuando-el-modelo-está-mal-cuasi-verosimilitud"><span class="header-section-number">5</span> Cuando el modelo está mal: cuasi-verosimilitud</a></li>
+  <li><a href="#postgrado-la-superioridad-de-hodges-y-la-eficiencia-regular" id="toc-postgrado-la-superioridad-de-hodges-y-la-eficiencia-regular" class="nav-link" data-scroll-target="#postgrado-la-superioridad-de-hodges-y-la-eficiencia-regular"><span class="header-section-number">6</span> ★ Postgrado: la superioridad de Hodges y la eficiencia regular</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-02.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 2 · Máxima verosimilitud</h1>
+<p class="subtitle lead">Identificación, información de Fisher, cota de Cramér–Rao y eficiencia</p>
+</div>
+
+<div>
+  <div class="description">
+    El estimador de máxima verosimilitud como M-estimador: desigualdad de Gibbs, igualdad de la información, normalidad asintótica, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a></p>
+<section id="de-un-criterio-al-criterio" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> De “un criterio” al criterio</h1>
+<p>La Clase 1 nos dio un teorema para cualquier criterio <span class="math inline">\(m\)</span>. La pregunta natural: ¿cuál <span class="math inline">\(m\)</span> es <strong>el mejor</strong>? Si estamos dispuestos a decir cómo se generan los datos, o sea a suponer una familia de densidades <span class="math inline">\(f(w;\theta)\)</span>, hay una respuesta clásica: <span class="math inline">\(m(w,\theta) = \log f(w;\theta)\)</span>. Es la <strong>máxima verosimilitud</strong> (MV), y hoy veremos tres razones para quererla.</p>
+<ol type="1">
+<li>Identifica correctamente el parámetro (la desigualdad de Gibbs).</li>
+<li>Tiene la varianza asintótica más simple posible (la igualdad de la información).</li>
+<li>Esa varianza es la más chica que se puede lograr (la cota de Cramér–Rao).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+</ol>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Ronald Fisher propuso la MV en 1912 y 1922, pero no la inventó: Gauss, Laplace y Daniel Bernoulli ya habían maximizado verosimilitudes sin ponerles nombre. Fisher le dio el nombre, la teoría de la información y una pelea pública con Karl Pearson que duró décadas. De las peleas académicas se aprende poco; de la teoría, mucho.</p></div></div><div class="callout callout-style-default callout-caution callout-titled" title="Marco">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Marco
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los datos <span class="math inline">\(w_1,\dots,w_n\)</span> son i.i.d. con densidad (o función de probabilidad) <span class="math inline">\(f(w;\theta_0)\)</span>, para algún <span class="math inline">\(\theta_0\in\Theta\subset\mathbb{R}^p\)</span>. Es decir, el <strong>modelo está bien especificado</strong>; al final de la clase soltamos este supuesto. La <em>log-verosimilitud</em> es <span class="math inline">\(\ell_n(\theta) = \sum_i\log f(w_i;\theta)\)</span>, el <strong>score</strong> es <span class="math inline">\(s(w;\theta) = \nabla_\theta\log f(w;\theta)\)</span> y la <strong>matriz de información</strong> es <span class="math inline">\(\mathcal{I}(\theta) = \mathbb{E}_\theta[s(w;\theta)s(w;\theta)']\)</span>. El estimador MV es <span class="math inline">\(\hat\theta = \arg\max\ell_n(\theta)\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="identificación-la-desigualdad-de-gibbs" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Identificación: la desigualdad de Gibbs</h1>
+<p>En la Clase 1 vimos que la consistencia necesita que <span class="math inline">\(\theta_0\)</span> sea el <strong>único</strong> maximizador de <span class="math inline">\(Q_0(\theta) = \mathbb{E}_{\theta_0}[\log f(w;\theta)]\)</span>. Para MV esto es casi gratis.</p>
+<div id="def-id-param" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Identificación del parámetro)</strong></span> El modelo <span class="math inline">\(\{f(\cdot;\theta)\}\)</span> está <strong>identificado</strong> si para todo <span class="math inline">\(\theta\ne\theta_0\)</span> en <span class="math inline">\(\Theta\)</span>, las densidades <span class="math inline">\(f(\cdot;\theta)\)</span> y <span class="math inline">\(f(\cdot;\theta_0)\)</span> difieren en un conjunto de probabilidad positiva bajo <span class="math inline">\(f(\cdot;\theta_0)\)</span>.</p>
+</div>
+<div id="thm-gibbs" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Desigualdad de Gibbs (o de la información))</strong></span> Si el modelo está identificado, para todo <span class="math inline">\(\theta\ne\theta_0\)</span>, <span class="math display">\[
+\mathbb{E}_{\theta_0}\big[\log f(w;\theta)\big] &lt; \mathbb{E}_{\theta_0}\big[\log f(w;\theta_0)\big].
+\]</span> Es decir, <span class="math inline">\(\theta_0\)</span> es el único maximizador de <span class="math inline">\(Q_0\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quiero comparar dos esperanzas de logaritmos, o sea una esperanza de <span class="math inline">\(\log\frac{f(w;\theta)}{f(w;\theta_0)}\)</span>. Una esperanza de un logaritmo está acotada por el logaritmo de la esperanza: Jensen, con <span class="math inline">\(\log\)</span> cóncava. Y la esperanza (bajo <span class="math inline">\(\theta_0\)</span>) de la razón de densidades es <span class="math inline">\(\int\frac{f(\theta)}{f(\theta_0)}f(\theta_0) = \int f(\theta)\le1\)</span>. El logaritmo de algo <span class="math inline">\(\le1\)</span> es <span class="math inline">\(\le0\)</span>. La estrictez viene de que la razón no es constante cuando las densidades difieren, y Jensen es estricto para funciones estrictamente cóncavas con variables no degeneradas.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\rho(w) = f(w;\theta)/f(w;\theta_0)\)</span>, definida donde <span class="math inline">\(f(w;\theta_0)&gt;0\)</span> (casi seguramente bajo <span class="math inline">\(\theta_0\)</span>). Si <span class="math inline">\(\rho\)</span> fuera constante casi seguramente, esa constante sería <span class="math inline">\(1\)</span> (porque ambas densidades integran 1), y las densidades coincidirían en un conjunto de probabilidad uno bajo <span class="math inline">\(\theta_0\)</span>, contradiciendo la identificación. Luego <span class="math inline">\(\rho\)</span> no es degenerada y, como <span class="math inline">\(\log\)</span> es estrictamente cóncava, la desigualdad de Jensen estricta da <span class="math display">\[
+\mathbb{E}_{\theta_0}[\log\rho(w)] &lt; \log\mathbb{E}_{\theta_0}[\rho(w)] = \log\int_{\{f(\cdot;\theta_0)&gt;0\}}f(w;\theta)\,dw\le\log1 = 0.
+\]</span> Pero <span class="math inline">\(\mathbb{E}_{\theta_0}[\log\rho] = Q_0(\theta) - Q_0(\theta_0)\)</span>.</p>
+</div>
+<p>La cantidad <span class="math inline">\(\mathrm{KL}(\theta_0\Vert\theta) = Q_0(\theta_0) - Q_0(\theta)\ge0\)</span> es la <strong>divergencia de Kullback–Leibler</strong>: “qué tan lejos” está <span class="math inline">\(f(\cdot;\theta)\)</span> de la verdad. Maximizar la log-verosimilitud muestral equivale a <strong>minimizar la divergencia KL estimada</strong>. Con la <a href="#def-id-param" class="quarto-xref">Definición&nbsp;1</a>, la Clase 1 se aplica: bajo compacidad y dominancia, <span class="math inline">\(\hat\theta\xrightarrow{p}\theta_0\)</span>.</p>
+</section>
+<section id="la-igualdad-de-la-información" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> La igualdad de la información</h1>
+<p>Ahora las propiedades del score. Necesitamos que se pueda <strong>derivar dentro de la integral</strong>: que el soporte de <span class="math inline">\(f(\cdot;\theta)\)</span> no dependa de <span class="math inline">\(\theta\)</span> y que haya dominancia suficiente. (Falla, por ejemplo, para <span class="math inline">\(w\sim U[0,\theta]\)</span>.) Llamamos a esto condiciones de regularidad (R).</p>
+<div id="thm-info-igualdad" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Media cero del score e igualdad de la información)</strong></span> Bajo (R), con <span class="math inline">\(\theta_0\)</span> el valor verdadero:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}_{\theta_0}[s(w;\theta_0)] = 0\)</span>.</li>
+<li><span class="math inline">\(\mathcal{I}(\theta_0) = \mathbb{E}[s\,s'] = -\mathbb{E}\big[\nabla_\theta s(w;\theta_0)\big] = -\mathbb{E}\big[\nabla^2\log f(w;\theta_0)\big]\)</span>.</li>
+</ol>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Como <span class="math inline">\(f\)</span> integra a uno para todo <span class="math inline">\(\theta\)</span>, la derivada de <span class="math inline">\(\int f(w;\theta)dw\)</span> es cero. Derivando dentro de la integral aparece <span class="math inline">\(\int\nabla f = \int s\,f = \mathbb{E}[s] = 0\)</span> (usando <span class="math inline">\(\nabla f = s\,f\)</span>). Para la segunda parte, derivo <em>otra vez</em> la identidad <span class="math inline">\(\int s(w;\theta)f(w;\theta)\,dw = 0\)</span>: sale <span class="math inline">\(\int(\nabla s)f + \int s\,\nabla'f = 0\)</span>, y <span class="math inline">\(\nabla'f = s'f\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li><p>Como <span class="math inline">\(\int f(w;\theta)\,dw = 1\)</span> para todo <span class="math inline">\(\theta\)</span>, derivando en <span class="math inline">\(\theta\)</span> y pasando la derivada dentro de la integral, <span class="math inline">\(0 = \int\nabla f(w;\theta)\,dw = \int s(w;\theta)f(w;\theta)\,dw\)</span>, usando <span class="math inline">\(\nabla f = f\nabla\log f = fs\)</span>. Evaluando en <span class="math inline">\(\theta_0\)</span>, <span class="math inline">\(\mathbb{E}_{\theta_0}[s(w;\theta_0)] = 0\)</span>. En realidad la identidad vale para todo <span class="math inline">\(\theta\)</span> con la esperanza tomada bajo ese mismo <span class="math inline">\(\theta\)</span>.</p></li>
+<li><p>Derivando la identidad <span class="math inline">\(\int s(w;\theta)f(w;\theta)\,dw = 0\)</span> otra vez en <span class="math inline">\(\theta'\)</span> (pasando la derivada dentro de la integral): <span class="math display">\[
+0 = \int\nabla_{\theta'}s(w;\theta)\,f(w;\theta)\,dw + \int s(w;\theta)\,\nabla_{\theta'}f(w;\theta)\,dw = \mathbb{E}[\nabla s] + \int s\,s'\,f\,dw = \mathbb{E}[\nabla s] + \mathbb{E}[ss'].
+\]</span> Luego <span class="math inline">\(\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]\)</span>.</p></li>
+</ol>
+</div>
+<p>Dos lecturas útiles. La parte (1) es el lema de la Clase 1 sin esfuerzo: el score tiene media cero porque <span class="math inline">\(\theta_0\)</span> maximiza <span class="math inline">\(Q_0\)</span>. La parte (2) dice que la <strong>curvatura</strong> de la log-verosimilitud (<span class="math inline">\(-A\)</span>) y su <strong>ruido</strong> (<span class="math inline">\(B\)</span>) son la misma matriz: <span class="math inline">\(B = -A = \mathcal{I}(\theta_0)\)</span>. Se cumple <em>solo</em> si el modelo está bien especificado.</p>
+</section>
+<section id="normalidad-asintótica-y-eficiencia" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Normalidad asintótica y eficiencia</h1>
+<div id="thm-mv-normal" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Normalidad asintótica del estimador MV)</strong></span> Bajo las condiciones de consistencia de la Clase 1, (R) y <span class="math inline">\(\mathcal{I}(\theta_0)\)</span> invertible, <span class="math display">\[
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ \mathcal{I}(\theta_0)^{-1}\big).
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Es el teorema de normalidad asintótica de la Clase 1 con <span class="math inline">\(m = \log f\)</span>. Por el <a href="#thm-info-igualdad" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(A = -\mathcal{I}(\theta_0)\)</span> y <span class="math inline">\(B = \mathcal{I}(\theta_0)\)</span>. Entonces <span class="math inline">\(A^{-1}BA^{-1} = \mathcal{I}^{-1}\mathcal{I}\mathcal{I}^{-1} = \mathcal{I}^{-1}\)</span>.</p>
+</div>
+<p>Esa es la varianza asintótica del MV. Hay tres formas consistentes de estimarla, y todas son equivalentes si el modelo está bien especificado:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimador</th>
+<th>Fórmula</th>
+<th>Nombre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hessiano</td>
+<td><span class="math inline">\(\big[-\frac1n\sum\nabla s(w_i;\hat\theta)\big]^{-1}\)</span></td>
+<td>de la información observada</td>
+</tr>
+<tr class="even">
+<td>Producto externo</td>
+<td><span class="math inline">\(\big[\frac1n\sum s(w_i;\hat\theta)s(w_i;\hat\theta)'\big]^{-1}\)</span></td>
+<td>OPG o BHHH</td>
+</tr>
+<tr class="odd">
+<td>Sándwich</td>
+<td><span class="math inline">\(\hat A^{-1}\hat B\hat A^{-1}\)</span></td>
+<td>robusto (White)</td>
+</tr>
+</tbody>
+</table>
+<p>Si el modelo está <strong>mal</strong> especificado, solo el sándwich es consistente para la varianza correcta (más abajo).</p>
+<section id="por-qué-esa-varianza-es-la-mejor" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="por-qué-esa-varianza-es-la-mejor"><span class="header-section-number">4.1</span> ¿Por qué esa varianza es la mejor?</h2>
+<p>Ahora demostramos que <span class="math inline">\(\mathcal{I}^{-1}\)</span> no se puede superar: la <strong>cota de Cramér–Rao</strong>. La versión de muestras finitas es la más fácil de probar; la asintótica sigue la misma idea.</p>
+<div id="thm-cr" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Cota de Cramér–Rao)</strong></span> Sea <span class="math inline">\(T = T(w_1,\dots,w_n)\)</span> un estimador insesgado de <span class="math inline">\(\theta\)</span>: <span class="math inline">\(\mathbb{E}_\theta[T] = \theta\)</span> para todo <span class="math inline">\(\theta\)</span> en una vecindad de <span class="math inline">\(\theta_0\)</span>. Bajo (R), <span class="math display">\[
+\operatorname{Var}_{\theta_0}(T)\ \succeq\ \big[n\,\mathcal{I}(\theta_0)\big]^{-1}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La varianza de <span class="math inline">\(T\)</span> no puede ser menor que algo, y ese “algo” debería involucrar a la información. La conexión entre <span class="math inline">\(T\)</span> y el score total <span class="math inline">\(S_n = \sum_is(w_i;\theta_0)\)</span> la da el insesgamiento: derivando <span class="math inline">\(\mathbb{E}_\theta[T] = \theta\)</span> en <span class="math inline">\(\theta\)</span> aparece <span class="math inline">\(\mathbb{E}[T\,S_n'] = I_p\)</span>. Ahora tengo un vector aleatorio <span class="math inline">\((T, S_n)\)</span> con matriz de covarianza conocida a bloques (conozco <span class="math inline">\(\operatorname{Var}(S_n) = n\mathcal{I}\)</span> y la covarianza cruzada). Una matriz de covarianza siempre es semidefinida positiva, y exigir que la matriz de bloques lo sea me da la desigualdad (complemento de Schur).</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(f_n(w_{1:n};\theta) = \prod_if(w_i;\theta)\)</span> la densidad conjunta, cuyo score es <span class="math inline">\(S_n = \nabla\log f_n = \sum_is(w_i;\theta)\)</span>. Como los datos son i.i.d., <span class="math inline">\(\mathbb{E}[S_n] = 0\)</span> y <span class="math inline">\(\operatorname{Var}(S_n) = n\mathcal{I}(\theta_0)\)</span> (varianza de una suma de i.i.d. con media cero).</p>
+<p>Derivando el insesgamiento <span class="math inline">\(\theta = \int T f_n\,dw_{1:n}\)</span> en <span class="math inline">\(\theta\)</span> y pasando la derivada dentro de la integral: <span class="math display">\[
+I_p = \int T\,\nabla'f_n\,dw_{1:n} = \int T\,S_n'\,f_n\,dw_{1:n} = \mathbb{E}[T\,S_n'] = \operatorname{Cov}(T,S_n),
+\]</span> la última igualdad porque <span class="math inline">\(\mathbb{E}[S_n] = 0\)</span>.</p>
+<p>La matriz de covarianza del vector <span class="math inline">\((T', S_n')'\)</span> es semidefinida positiva: <span class="math display">\[
+\begin{pmatrix}\operatorname{Var}(T) &amp; I_p\\ I_p &amp; n\mathcal{I}\end{pmatrix}\succeq0.
+\]</span> Para todo <span class="math inline">\(a\in\mathbb{R}^p\)</span>, tomando el vector <span class="math inline">\((a',\,-a'(n\mathcal{I})^{-1})\)</span> y multiplicando por la izquierda y por la derecha: <span class="math display">\[
+0\le a'\operatorname{Var}(T)a - 2a'(n\mathcal{I})^{-1}a + a'(n\mathcal{I})^{-1}(n\mathcal{I})(n\mathcal{I})^{-1}a = a'\Big[\operatorname{Var}(T) - (n\mathcal{I})^{-1}\Big]a.
+\]</span> Como <span class="math inline">\(a\)</span> es arbitrario, <span class="math inline">\(\operatorname{Var}(T)\succeq(n\mathcal{I})^{-1}\)</span>.</p>
+</div>
+<p>El <span class="math inline">\(\hat\theta\)</span> de MV <strong>no</strong> es insesgado en general, así que la cota no se le aplica en muestras finitas. Pero asintóticamente sí: <span class="math inline">\(\operatorname{Avar}(\hat\theta) = \mathcal{I}^{-1}\)</span> coincide con la cota <span class="math inline">\((n\mathcal{I})^{-1}\)</span> escalada por <span class="math inline">\(n\)</span>. Decimos que el MV es <strong>asintóticamente eficiente</strong>: ningún estimador “regular” (que no se comporte raro localmente) tiene varianza asintótica menor. La sección ★ muestra por qué hay que decir “regular”.</p>
+<div id="exm-normal-lineal" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El modelo lineal normal)</strong></span> <span class="math inline">\(y\mid x\sim N(x'\beta,\sigma^2)\)</span>, con <span class="math inline">\(\theta = (\beta',\sigma^2)'\)</span>. La log-verosimilitud de una observación es <span class="math inline">\(-\tfrac12\log(2\pi\sigma^2) - (y - x'\beta)^2/(2\sigma^2)\)</span>, con score <span class="math display">\[
+s_\beta = \frac{xu}{\sigma^2},\qquad s_{\sigma^2} = -\frac1{2\sigma^2} + \frac{u^2}{2\sigma^4},\qquad u = y - x'\beta.
+\]</span> Maximizar en <span class="math inline">\(\beta\)</span> equivale a minimizar <span class="math inline">\(\sum(y_i - x_i'\beta)^2\)</span>, así que <strong><span class="math inline">\(\hat\beta_{MV} = \hat\beta_{MCO}\)</span></strong>. En <span class="math inline">\(\sigma^2\)</span>: <span class="math inline">\(\hat\sigma^2 = \frac1n\sum\hat u_i^2\)</span>, que es el MCO sin corregir por grados de libertad: sesgado, pero consistente (y asintóticamente equivalente a <span class="math inline">\(s^2\)</span>).</p>
+<p>La información es <strong>diagonal por bloques</strong>: <span class="math inline">\(\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2\)</span>, <span class="math inline">\(\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)\)</span> y <span class="math inline">\(\mathcal{I}_{\beta\sigma^2} = 0\)</span> (usando <span class="math inline">\(\mathbb{E}[u\mid x] = 0\)</span>, <span class="math inline">\(\mathbb{E}[u^2\mid x] = \sigma^2\)</span> y <span class="math inline">\(\mathbb{E}[u^4\mid x] = 3\sigma^4\)</span>). Así, <span class="math inline">\(\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}\)</span>: la fórmula de MCO.</p>
+<p>Consecuencia notable: <strong>bajo normalidad, MCO alcanza la cota de Cramér–Rao</strong> (asintóticamente). En Econometría 1 (Clase 4) vimos Gauss–Markov, que lo hacía mejor que cualquier estimador <em>lineal insesgado</em>. Con normalidad es mejor que <em>cualquier</em> estimador regular, lineal o no.</p>
+</div>
+</section>
+</section>
+<section id="cuando-el-modelo-está-mal-cuasi-verosimilitud" class="level1 page-columns page-full" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Cuando el modelo está mal: cuasi-verosimilitud</h1>
+<p>Suponer que conocemos la familia <span class="math inline">\(f(w;\theta)\)</span> es exigente. ¿Qué ocurre si maximizamos una verosimilitud que es <strong>incorrecta</strong>? Sea <span class="math inline">\(g\)</span> la densidad verdadera, que no pertenece a <span class="math inline">\(\{f(\cdot;\theta)\}\)</span>. El M-estimador <span class="math inline">\(\hat\theta\)</span> es el <strong>estimador de cuasi-máxima verosimilitud</strong> (QMV). La Clase 1 sigue valiendo con <span class="math inline">\(m = \log f\)</span>, pero el límite cambia:</p>
+<p><span class="math display">\[
+\hat\theta\xrightarrow{p}\theta^* = \arg\max_\theta\mathbb{E}_g[\log f(w;\theta)] = \arg\min_\theta\mathrm{KL}\big(g\Vert f(\cdot;\theta)\big).
+\]</span></p>
+<p>El <strong>valor pseudo-verdadero</strong> <span class="math inline">\(\theta^*\)</span> es la mejor aproximación de <span class="math inline">\(g\)</span> dentro de la familia, en el sentido de KL.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Lo notable es que la varianza ya <strong>no</strong> es <span class="math inline">\(\mathcal{I}^{-1}\)</span>: <span class="math inline">\(B\ne-A\)</span>, y la distribución es la del sándwich de la Clase 1, <span class="math display">\[
+\sqrt n(\hat\theta - \theta^*)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}_g[\nabla^2\log f(w;\theta^*)],\quad B = \mathbb{E}_g[ss'].
+\]</span></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Halbert White (1982) demostró esto en “Maximum likelihood estimation of misspecified models”, el artículo que popularizó el sándwich y el término <em>pseudo-verdadero</em>. White es más conocido por sus errores estándar robustos (1980), y por el test de especificación que lleva su nombre: dos de los artículos más citados de la econometría.</p></div></div><p>Hay dos situaciones prácticas. Si <span class="math inline">\(\theta^*\)</span> <strong>tiene el significado que te interesa</strong> (por ejemplo, es la media condicional correcta aunque la distribución esté mal), entonces la QMV da inferencia válida usando el sándwich: esto ocurre, por ejemplo, para el <strong>Poisson</strong> con la media condicional bien especificada (Clase 7) o para MCO bajo no normalidad. Si <span class="math inline">\(\theta^*\)</span> <strong>no</strong> tiene ese significado (por ejemplo, un probit con heterocedasticidad en el error latente, Clase 5), <span class="math inline">\(\hat\theta\)</span> converge a algo que no te interesa y ni el sándwich lo salva.</p>
+<p>La <strong>prueba de la igualdad de la información</strong> de White se basa en esto: bajo especificación correcta, <span class="math inline">\(A = -B\)</span>; la prueba chequea si <span class="math inline">\(\hat A + \hat B\)</span> es cero. Que no se cumpla es síntoma de mala especificación.</p>
+</section>
+<section id="postgrado-la-superioridad-de-hodges-y-la-eficiencia-regular" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: la superioridad de Hodges y la eficiencia regular</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Es cierto que ningún estimador tiene varianza asintótica menor a <span class="math inline">\(\mathcal{I}^{-1}\)</span>? No sin una condición adicional. El <strong>estimador de Hodges</strong> (1951) la rompe, y por eso se define eficiencia entre estimadores <em>regulares</em>.</p>
+</div>
+</div>
+<p>Sea <span class="math inline">\(w_i\sim N(\theta,1)\)</span> i.i.d., con <span class="math inline">\(\mathcal{I}(\theta) = 1\)</span>, y <span class="math inline">\(\bar w\)</span> el MV. Definimos <span class="math display">\[
+\hat\theta_H = \begin{cases}\bar w &amp;\text{si }|\bar w|&gt;n^{-1/4},\\ 0&amp;\text{si }|\bar w|\le n^{-1/4}.\end{cases}
+\]</span></p>
+<div id="prp-hodges" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (El estimador de Hodges)</strong></span> &nbsp;</p>
+<ol type="1">
+<li>Si <span class="math inline">\(\theta\ne0\)</span>, <span class="math inline">\(\sqrt n(\hat\theta_H - \theta)\xrightarrow{d}N(0,1)\)</span>.</li>
+<li>Si <span class="math inline">\(\theta = 0\)</span>, <span class="math inline">\(\sqrt n\hat\theta_H\xrightarrow{p}0\)</span>: varianza asintótica <strong>cero</strong>, menor que <span class="math inline">\(1/\mathcal{I}\)</span>.</li>
+<li>Pero para <span class="math inline">\(\theta_n = h/\sqrt n\)</span> con <span class="math inline">\(h\ne0\)</span>: <span class="math inline">\(\sqrt n(\hat\theta_H - \theta_n)\xrightarrow{p}-h\)</span>, que <strong>no</strong> está acotado cuando <span class="math inline">\(h\)</span> crece.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\bar w\sim N(\theta,1/n)\)</span>, es decir, <span class="math inline">\(\bar w = \theta + z/\sqrt n\)</span> con <span class="math inline">\(z\sim N(0,1)\)</span>.</p>
+<ol type="1">
+<li><p>Si <span class="math inline">\(\theta\ne0\)</span>, <span class="math inline">\(P(|\bar w|\le n^{-1/4})\to0\)</span> (porque <span class="math inline">\(\bar w\to_p\theta\)</span> y <span class="math inline">\(n^{-1/4}\to0\)</span>). Entonces con probabilidad que tiende a uno <span class="math inline">\(\hat\theta_H = \bar w\)</span> y la distribución límite es la del MV.</p></li>
+<li><p>Si <span class="math inline">\(\theta = 0\)</span>, <span class="math inline">\(|\bar w| = |z|/\sqrt n\le n^{-1/4}\)</span> equivale a <span class="math inline">\(|z|\le n^{1/4}\)</span>, que ocurre con probabilidad que tiende a uno. Luego <span class="math inline">\(\hat\theta_H = 0\)</span> con probabilidad que tiende a uno y <span class="math inline">\(\sqrt n\hat\theta_H = 0\)</span> en ese evento.</p></li>
+<li><p>Con <span class="math inline">\(\theta_n = h/\sqrt n\)</span>: <span class="math inline">\(\bar w = (h+z)/\sqrt n\)</span> y <span class="math inline">\(|\bar w|\le n^{-1/4}\)</span> equivale a <span class="math inline">\(|h + z|\le n^{1/4}\)</span>, de nuevo con probabilidad que tiende a uno. Luego <span class="math inline">\(\hat\theta_H = 0\)</span> y <span class="math inline">\(\sqrt n(\hat\theta_H - \theta_n) = -h\)</span>.</p></li>
+</ol>
+</div>
+<p>En <span class="math inline">\(\theta=0\)</span> Hodges “gana” al MV, pero es un espejismo: en una vecindad de tamaño <span class="math inline">\(n^{-1/2}\)</span> alrededor de <span class="math inline">\(0\)</span> (que no podemos distinguir de <span class="math inline">\(0\)</span> con <span class="math inline">\(n\)</span> observaciones) su error es arbitrariamente grande. El <strong>teorema de convolución</strong> de Hájek–Le Cam formaliza la salida: entre estimadores <em>regulares</em> (cuya distribución límite no cambia bajo perturbaciones locales <span class="math inline">\(\theta_n = \theta + h/\sqrt n\)</span>), cualquier límite es <span class="math inline">\(N(0,\mathcal{I}^{-1})\)</span> convolucionado con otra distribución, y por lo tanto con varianza <span class="math inline">\(\succeq\mathcal{I}^{-1}\)</span>. El MV es regular y alcanza el piso.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Para MV, <span class="math inline">\(m = \log f\)</span>. <strong>Identificación</strong> (<a href="#thm-gibbs" class="quarto-xref">Teorema&nbsp;1</a>): por Jensen, <span class="math inline">\(\theta_0\)</span> maximiza <span class="math inline">\(\mathbb{E}\log f(w;\theta)\)</span> de manera única. La diferencia es la divergencia KL.</li>
+<li><strong>Igualdad de la información</strong> (<a href="#thm-info-igualdad" class="quarto-xref">Teorema&nbsp;2</a>): bajo especificación correcta, <span class="math inline">\(\mathbb{E}[s] = 0\)</span> y <span class="math inline">\(\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]\)</span>. Por eso <span class="math inline">\(A = -B\)</span>.</li>
+<li><strong>Normalidad</strong> (<a href="#thm-mv-normal" class="quarto-xref">Teorema&nbsp;3</a>): <span class="math inline">\(\sqrt n(\hat\theta - \theta_0)\to N(0,\mathcal{I}^{-1})\)</span>.</li>
+<li><strong>Cramér–Rao</strong> (<a href="#thm-cr" class="quarto-xref">Teorema&nbsp;4</a>): ningún estimador insesgado tiene varianza menor que <span class="math inline">\((n\mathcal{I})^{-1}\)</span>; el MV la alcanza asintóticamente.</li>
+<li>Con el modelo <strong>mal</strong> especificado, el QMV converge al pseudo-verdadero y la varianza es el sándwich.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 2.1.</strong> Para <span class="math inline">\(w\sim\text{Bernoulli}(\theta)\)</span> calcula el MV, el score, la información <span class="math inline">\(\mathcal{I}(\theta)\)</span> y la varianza asintótica. Verifica que <span class="math inline">\(\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\log f = w\log\theta + (1-w)\log(1-\theta)\)</span>; <span class="math inline">\(\hat\theta = \bar w\)</span>. Score: <span class="math inline">\(s = w/\theta - (1-w)/(1-\theta) = \dfrac{w - \theta}{\theta(1-\theta)}\)</span>. <span class="math inline">\(\mathbb{E}[s^2] = \dfrac{\operatorname{Var}(w)}{\theta^2(1-\theta)^2} = \dfrac1{\theta(1-\theta)}\)</span>. Derivada del score: <span class="math inline">\(\nabla s = -w/\theta^2 - (1-w)/(1-\theta)^2\)</span>, con esperanza <span class="math inline">\(-1/\theta - 1/(1-\theta) = -\dfrac1{\theta(1-\theta)}\)</span>. Coinciden con signo opuesto. Varianza asintótica: <span class="math inline">\(\mathcal{I}^{-1} = \theta(1-\theta)\)</span>, el resultado clásico del TCL.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.2.</strong> Sea <span class="math inline">\(w\sim\text{Poisson}(\lambda)\)</span>. Calcula el MV y su varianza asintótica. Muestra que alcanza la cota de Cramér–Rao <em>exactamente</em> (en muestras finitas).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\log f = w\log\lambda - \lambda - \log w!\)</span>. <span class="math inline">\(s = w/\lambda - 1\)</span>, <span class="math inline">\(\hat\lambda = \bar w\)</span>. <span class="math inline">\(\mathcal{I}(\lambda) = \operatorname{Var}(w)/\lambda^2 = 1/\lambda\)</span>. Cota: <span class="math inline">\(\operatorname{Var}(T)\ge\lambda/n\)</span>. Pero <span class="math inline">\(\operatorname{Var}(\bar w) = \lambda/n\)</span> y <span class="math inline">\(\bar w\)</span> es insesgado: alcanza la cota exacta. (Es un caso de familia exponencial: el estimador insesgado de varianza mínima coincide con el MV.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.3.</strong> Verifica la información del <a href="#exm-normal-lineal" class="quarto-xref">Ejemplo&nbsp;1</a> para <span class="math inline">\(\sigma^2\)</span>: calcula <span class="math inline">\(\mathbb{E}[s_{\sigma^2}^2]\)</span> y <span class="math inline">\(-\mathbb{E}[\partial s_{\sigma^2}/\partial\sigma^2]\)</span> y comprueba que son iguales a <span class="math inline">\(1/(2\sigma^4)\)</span>. ¿Qué momento de <span class="math inline">\(u\)</span> necesitaste para la primera?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(s_{\sigma^2} = \dfrac{u^2 - \sigma^2}{2\sigma^4}\)</span>, así que <span class="math inline">\(\mathbb{E}[s^2] = \dfrac{\operatorname{Var}(u^2)}{4\sigma^8} = \dfrac{\mathbb{E}u^4 - \sigma^4}{4\sigma^8} = \dfrac{3\sigma^4 - \sigma^4}{4\sigma^8} = \dfrac1{2\sigma^4}\)</span>; aquí se usó <span class="math inline">\(\mathbb{E}[u^4] = 3\sigma^4\)</span> (cuarto momento de la normal). Por otro lado, <span class="math inline">\(\partial s/\partial\sigma^2 = \dfrac1{2\sigma^4} - \dfrac{u^2}{\sigma^6}\)</span>, con esperanza <span class="math inline">\(\dfrac1{2\sigma^4} - \dfrac1{\sigma^4} = -\dfrac1{2\sigma^4}\)</span>. Coinciden. Si <span class="math inline">\(u\)</span> no es normal, <span class="math inline">\(\mathbb{E}[u^4]\ne3\sigma^4\)</span>, la igualdad de la información <strong>falla</strong> para <span class="math inline">\(\sigma^2\)</span> y el MV de <span class="math inline">\(\sigma^2\)</span> tendría varianza sándwich distinta (aunque <span class="math inline">\(\hat\beta\)</span> siga bien).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.4.</strong> Un investigador ajusta por QMV un modelo <span class="math inline">\(N(\mu, 1)\)</span> a datos con media <span class="math inline">\(\mu_0\)</span> y varianza <span class="math inline">\(\sigma^2\)</span> desconocida. Calcula <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> y el sándwich. ¿Cuándo el sándwich coincide con <span class="math inline">\(-A^{-1}\)</span>? (Es el Ejercicio 1.3 desde el punto de vista de esta clase.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(m = -\tfrac12(w - \mu)^2\)</span>: <span class="math inline">\(A = -1\)</span>, <span class="math inline">\(B = \sigma^2\)</span>, sándwich <span class="math inline">\(= \sigma^2\)</span>. Coincide con <span class="math inline">\(-A^{-1} = 1\)</span> solo si <span class="math inline">\(\sigma^2 = 1\)</span>, es decir, cuando la varianza supuesta es la verdadera. En general <span class="math inline">\(A+B = \sigma^2 - 1\ne0\)</span> y el test de igualdad de la información rechaza: está detectando que la especificación de la varianza es incorrecta.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.5.</strong> (Invarianza del MV.) Si <span class="math inline">\(\hat\theta\)</span> es el MV de <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\gamma = g(\theta)\)</span> con <span class="math inline">\(g\)</span> biyectiva, muestra que <span class="math inline">\(g(\hat\theta)\)</span> es el MV de <span class="math inline">\(\gamma\)</span> y que su varianza asintótica es <span class="math inline">\(G\,\mathcal{I}^{-1}G'\)</span>, con <span class="math inline">\(G = \partial g/\partial\theta'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La log-verosimilitud en <span class="math inline">\(\gamma\)</span> es <span class="math inline">\(\tilde\ell(\gamma) = \ell(g^{-1}(\gamma))\)</span>, cuyo máximo se alcanza en <span class="math inline">\(\hat\gamma = g(\hat\theta)\)</span> porque <span class="math inline">\(g^{-1}\)</span> es biyección. La normalidad asintótica sigue del método delta (Clase 6 de Econometría 1): <span class="math inline">\(\sqrt n(g(\hat\theta) - g(\theta_0))\to N(0, G\mathcal{I}^{-1}G')\)</span>. Alternativamente se llega igual con la información de <span class="math inline">\(\gamma\)</span>: <span class="math inline">\(\tilde{\mathcal{I}}(\gamma) = G^{-1\prime}\mathcal{I}G^{-1}\)</span> y su inversa es <span class="math inline">\(G\mathcal{I}^{-1}G'\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.6.</strong> Sea <span class="math inline">\(w\sim U[0,\theta]\)</span>. Calcula el MV y muestra que <span class="math inline">\(n(\theta - \hat\theta)\)</span> converge a una exponencial (no a una normal). ¿Qué condición de (R) falla?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(f(w;\theta) = 1/\theta\)</span> si <span class="math inline">\(0\le w\le\theta\)</span>. La verosimilitud <span class="math inline">\(\theta^{-n}\)</span> es decreciente en <span class="math inline">\(\theta\)</span> y solo es positiva si <span class="math inline">\(\theta\ge\max_iw_i\)</span>: <span class="math inline">\(\hat\theta = \max_iw_i\)</span>. <span class="math inline">\(P(n(\theta - \hat\theta)&gt;t) = P(\hat\theta&lt;\theta - t/n) = (1 - t/(n\theta))^n\to e^{-t/\theta}\)</span>. La tasa es <span class="math inline">\(n\)</span>, no <span class="math inline">\(\sqrt n\)</span>, y la distribución es exponencial. Falla la condición de que el soporte no dependa de <span class="math inline">\(\theta\)</span> (no se puede derivar dentro de la integral): la verosimilitud no es derivable en el máximo.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 2.7 ★.</strong> Demuestra la cota de Cramér–Rao para estimar una función <span class="math inline">\(g(\theta)\)</span> escalar con un estimador insesgado <span class="math inline">\(T\)</span> de <span class="math inline">\(g(\theta)\)</span>: <span class="math inline">\(\operatorname{Var}(T)\ge\nabla g'(n\mathcal{I})^{-1}\nabla g\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 2.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 2.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Derivando <span class="math inline">\(\mathbb{E}_\theta[T] = g(\theta)\)</span>: <span class="math inline">\(\operatorname{Cov}(T,S_n) = \nabla g(\theta)'\)</span> (fila). La matriz de covarianza de <span class="math inline">\((T,S_n')'\)</span> es <span class="math inline">\(\begin{pmatrix}\operatorname{Var}(T) &amp; \nabla g'\\ \nabla g &amp; n\mathcal{I}\end{pmatrix}\succeq0\)</span>. Multiplicando por el vector <span class="math inline">\((1,\,-\nabla g'(n\mathcal{I})^{-1})\)</span> por la izquierda y su transpuesta por la derecha: <span class="math inline">\(0\le\operatorname{Var}(T) - 2\nabla g'(n\mathcal{I})^{-1}\nabla g + \nabla g'(n\mathcal{I})^{-1}\nabla g = \operatorname{Var}(T) - \nabla g'(n\mathcal{I})^{-1}\nabla g\)</span>. Con <span class="math inline">\(g(\theta) = a'\theta\)</span> se recupera la prueba del teorema.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-01.html" class="pagination-link" aria-label="Clase 1 · Estimación por extremos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 1 · Estimación por extremos</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-03.html" class="pagination-link" aria-label="Clase 3 · Los tres tests de la trinidad">
+        <span class="nav-page-text">Clase 3 · Los tres tests de la trinidad</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

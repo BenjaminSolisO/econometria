@@ -1,0 +1,247 @@
+---
+title: "Clase 4 · Método generalizado de momentos"
+subtitle: "Matriz de pesos óptima y el test J de Hansen"
+description: "GMM: condiciones de momentos, identificación, consistencia, normalidad asintótica, la matriz de pesos óptima, GMM en dos pasos, el test J de sobreidentificación y la relación con MC2E."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando no quieres (o no puedes) escribir la verosimilitud
+
+La máxima verosimilitud exige conocer toda la distribución de los datos. Pero muchos modelos económicos solo dicen **algo** sobre ella. Un modelo de consumo con expectativas racionales dice que, en promedio, cierta combinación de variables tiene esperanza cero, y nada más.[^hansen] Esa afirmación parcial se llama **condición de momentos**:
+
+$$
+\mathbb{E}\big[g(w_i,\theta_0)\big] = 0,\qquad g:\ \mathbb{R}^{d}\times\Theta\to\mathbb{R}^r.
+$$ {#eq-momentos}
+
+Si $r = p$ (tantas condiciones como parámetros) basta resolver el sistema muestral $\bar g_n(\theta) = 0$. Si $r>p$ el sistema no tiene solución exacta y hay que elegir **qué tan cerca** de cero queremos llegar en cada dirección. El método generalizado de momentos (GMM) ordena este problema, y lo hace tan bien que unifica casi todo lo que hemos visto.
+
+[^hansen]: Lars Peter Hansen introdujo el GMM en 1982 para estimar modelos de equilibrio con expectativas racionales (donde, además, la teoría solo da condiciones de ortogonalidad). Por ese trabajo recibió el Nobel de Economía en 2013, junto con Fama y Shiller, que habían llegado a conclusiones opuestas sobre la misma pregunta: otra muestra de que la econometría no zanja desacuerdos, pero sí los hace precisos.
+
+::: {#exm-momentos}
+## Condiciones de momentos que ya conoces
+1. **MCO:** $g(w,\theta) = x(y - x'\theta)$, es decir $\mathbb{E}[xu] = 0$. Aquí $r = p$.
+2. **Variables instrumentales:** $g(w,\theta) = z(y - x'\theta)$ con $\mathbb{E}[zu] = 0$. Si hay más instrumentos que regresores endógenos, $r>p$.
+3. **MV:** $g(w,\theta) = s(w;\theta)$, el score de la Clase 2. Es el caso $r = p$.
+4. **Ecuación de Euler del consumo (Hansen–Singleton):** $\mathbb{E}\big[\big(\beta(C_{t+1}/C_t)^{-\gamma}R_{t+1} - 1\big)z_t\big] = 0$, con $z_t$ cualquier variable conocida en $t$. Aquí $\theta = (\beta,\gamma)$ y cada instrumento agrega un momento.
+:::
+
+# El estimador
+
+El estimador GMM elige $\theta$ para que el **vector de promedios muestrales** $\bar g_n(\theta) = \frac1n\sum_ig(w_i,\theta)$ quede lo más cerca posible de cero, midiendo la distancia con una **matriz de pesos** $\hat W_n$ (simétrica definida positiva):
+
+$$
+\hat\theta = \arg\min_{\theta\in\Theta}\ \bar g_n(\theta)'\,\hat W_n\,\bar g_n(\theta).
+$$ {#eq-gmm}
+
+Con $r = p$ y una solución de $\bar g_n(\theta) = 0$, el criterio vale cero y $\hat W_n$ no importa. Con $r>p$, importa mucho: la matriz $\hat W_n$ decide cuánto pesa cada momento.
+
+::: {.callout-caution title="Supuestos"}
+- **G1:** $\{w_i\}$ i.i.d., $\Theta$ compacto, $g(w,\cdot)$ continua con $\mathbb{E}\sup_\Theta\|g\|<\infty$.
+- **G2 (identificación):** $\mathbb{E}[g(w,\theta)] = 0$ **solo** para $\theta = \theta_0$.
+- **G3:** $\hat W_n\xrightarrow{p}W$, con $W$ simétrica definida positiva.
+- **G4:** $\theta_0$ es interior; $g(w,\cdot)$ es continuamente diferenciable cerca de $\theta_0$; $\mathbb{E}\sup\|\nabla g\|<\infty$ allí; $\Omega = \mathbb{E}[g(w,\theta_0)g(w,\theta_0)']$ es definida positiva (finita); y $G = \mathbb{E}[\nabla_{\theta'}g(w,\theta_0)]$ ($r\times p$) tiene **rango columna completo $p$**.
+:::
+
+El rango de $G$ es la **condición de rango** para identificación local: pide que cada parámetro mueva los momentos de manera distinta (en MCO, $G = -\mathbb{E}[xx']$ invertible; en VI, $G = -\mathbb{E}[zx']$ de rango $p$, que es la condición de relevancia de la Clase 10 de Econometría 1).
+
+# Consistencia y normalidad
+
+::: {#thm-gmm-consistencia}
+## Consistencia de GMM
+Bajo G1–G3, $\hat\theta\xrightarrow{p}\theta_0$.
+:::
+
+::: {.proof}
+El criterio es $\hat Q_n(\theta) = -\bar g_n(\theta)'\hat W_n\bar g_n(\theta)$ (se maximiza). Por la LGN uniforme (el lema de la Clase 1, aplicado a cada componente de $g$), $\sup_\Theta\|\bar g_n(\theta) - \mathbb{E}g(w,\theta)\|\xrightarrow{p}0$; como $\hat W_n\to_pW$ y $\mathbb{E}g(w,\cdot)$ es acotada, $\sup_\Theta|\hat Q_n(\theta) - Q_0(\theta)|\xrightarrow{p}0$ con $Q_0(\theta) = -\mathbb{E}[g]'W\,\mathbb{E}[g]$, continua. Como $W\succ0$, $Q_0(\theta)\le0$ con igualdad si y solo si $\mathbb{E}g(w,\theta) = 0$, que por G2 ocurre solo en $\theta_0$. La demostración del teorema de consistencia de la Clase 1 solo usó (i) convergencia uniforme del criterio a un límite continuo y (ii) que el límite tenga un único máximo; ambas valen aquí.
+:::
+
+::: {#thm-gmm-normal}
+## Normalidad asintótica de GMM
+Bajo G1–G4,
+$$
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}\big).
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Mismo guion de siempre: condición de primer orden, Taylor, TCL. La CPO de minimizar $\bar g'\hat W\bar g$ es $\hat G'\hat W\bar g(\hat\theta) = 0$, donde $\hat G = \nabla\bar g_n(\hat\theta)$ es el jacobiano muestral. Expando $\bar g(\hat\theta)$ alrededor de $\theta_0$: $\bar g(\hat\theta) = \bar g(\theta_0) + \bar G(\hat\theta - \theta_0)$. Meto eso en la CPO y despejo. El factor $\hat G'\hat W$ del frente va a $G'W$ por consistencia, el $\sqrt n\bar g(\theta_0)\to N(0,\Omega)$ por el TCL, y todo se pega con Slutsky. La forma que sale, "pan-relleno-pan", es el sándwich de la Clase 1: aquí el relleno es $\Omega$ y los panes son $(G'WG)^{-1}G'W$.
+:::
+
+::: {.proof}
+Con probabilidad que tiende a uno $\hat\theta$ es interior y satisface la CPO
+$$
+\hat G'\hat W\,\bar g_n(\hat\theta) = 0,\qquad\hat G = \nabla_{\theta'}\bar g_n(\hat\theta).
+$$
+Por el teorema del valor medio aplicado fila a fila, $\bar g_n(\hat\theta) = \bar g_n(\theta_0) + \bar G_n(\hat\theta - \theta_0)$, con $\bar G_n$ el jacobiano evaluado en puntos intermedios. Como $\hat\theta\to_p\theta_0$, la LGN uniforme y la continuidad dan $\hat G\to_pG$ y $\bar G_n\to_pG$. Sustituyendo en la CPO,
+$$
+0 = \hat G'\hat W\bar g_n(\theta_0) + \hat G'\hat W\bar G_n(\hat\theta - \theta_0)
+\ \Longrightarrow\
+\sqrt n(\hat\theta - \theta_0) = -\big(\hat G'\hat W\bar G_n\big)^{-1}\hat G'\hat W\,\sqrt n\,\bar g_n(\theta_0).
+$$
+La matriz $G'WG$ es invertible porque $G$ tiene rango columna $p$ y $W\succ0$, así que $\hat G'\hat W\bar G_n$ lo es con probabilidad que tiende a uno y $(\hat G'\hat W\bar G_n)^{-1}\hat G'\hat W\to_p(G'WG)^{-1}G'W =: \mathcal{C}$. Por el TCL, $\sqrt n\bar g_n(\theta_0)\to_dN(0,\Omega)$ ($\mathbb{E}g(w,\theta_0) = 0$ y varianza $\Omega$). Por Slutsky, el límite es $-\mathcal{C}\cdot N(0,\Omega) = N(0,\mathcal{C}\Omega\mathcal{C}')$, que es la fórmula del enunciado.
+:::
+
+Cuando $r = p$, $G$ es cuadrada e invertible, $(G'WG)^{-1}G'W = G^{-1}$, y la varianza se reduce a $G^{-1}\Omega G^{-1\prime}$ **independiente de $W$** (como ya sabíamos: con $r = p$ el criterio vale cero y los pesos no importan). En MCO eso es $\mathbb{E}[xx']^{-1}\mathbb{E}[u^2xx']\mathbb{E}[xx']^{-1}$, el sándwich de White.
+
+# La matriz de pesos óptima
+
+Con $r>p$ el resultado depende de $W$. ¿Cuál es la **mejor** elección? Es una pregunta de eficiencia: queremos la menor varianza asintótica, en el sentido de que $V_W - V_{W^*}$ sea semidefinida positiva para toda otra $W$.
+
+::: {#thm-w-optima}
+## Matriz de pesos óptima
+Sea $V(W) = (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}$. Entonces para toda $W\succ0$,
+$$
+V(W)\ \succeq\ (G'\Omega^{-1}G)^{-1} = V(\Omega^{-1}).
+$$
+Es decir, $W^* = \Omega^{-1}$ (o cualquier múltiplo) minimiza la varianza asintótica, y la varianza óptima es $(G'\Omega^{-1}G)^{-1}$.
+:::
+
+::: {.callout-note title="Borrador"}
+Intuición: $\Omega$ es la varianza de los momentos. Un momento muy ruidoso (varianza grande) debería pesar poco; dos momentos muy correlacionados dicen casi lo mismo y no conviene contar lo mismo dos veces. Eso es exactamente lo que hace $\Omega^{-1}$ (como en MCG de la Clase 9 de Econometría 1: ponderar por la inversa de la varianza). Para demostrarlo uso el truco de siempre: la diferencia entre dos estimadores lineales se escribe como una forma cuadrática $(A-B)\Omega(A-B)'\succeq0$, y todo calza si $B\Omega A' = B\Omega B'$.
+:::
+
+::: {.proof}
+Sean $\mathcal{A} = (G'WG)^{-1}G'W$ y $\mathcal{B} = (G'\Omega^{-1}G)^{-1}G'\Omega^{-1}$, matrices $p\times r$. Entonces $V(W) = \mathcal{A}\Omega\mathcal{A}'$ y $V(\Omega^{-1}) = \mathcal{B}\Omega\mathcal{B}' = (G'\Omega^{-1}G)^{-1}$ (reemplazando y simplificando). Calculamos el término cruzado:
+$$
+\mathcal{A}\Omega\mathcal{B}' = (G'WG)^{-1}G'W\,\Omega\,\Omega^{-1}G(G'\Omega^{-1}G)^{-1} = (G'WG)^{-1}(G'WG)(G'\Omega^{-1}G)^{-1} = (G'\Omega^{-1}G)^{-1}.
+$$
+Entonces
+$$
+(\mathcal{A} - \mathcal{B})\Omega(\mathcal{A} - \mathcal{B})' = \mathcal{A}\Omega\mathcal{A}' - \mathcal{A}\Omega\mathcal{B}' - \mathcal{B}\Omega\mathcal{A}' + \mathcal{B}\Omega\mathcal{B}' = V(W) - (G'\Omega^{-1}G)^{-1} - (G'\Omega^{-1}G)^{-1} + (G'\Omega^{-1}G)^{-1}.
+$$
+Es decir, $V(W) - (G'\Omega^{-1}G)^{-1} = (\mathcal{A} - \mathcal{B})\Omega(\mathcal{A} - \mathcal{B})'\succeq0$, por ser de la forma $C\Omega C'$ con $\Omega\succ0$.
+:::
+
+Esta es la misma demostración que Gauss–Markov y Aitken (Clases 4 y 9 de Econometría 1): una "diferencia de estimadores lineales" que resulta ser una forma cuadrática. Con $W^* = \Omega^{-1}$ el sándwich **colapsa** a $(G'\Omega^{-1}G)^{-1}$: es el análogo exacto de la igualdad de la información de la Clase 2.
+
+## GMM eficiente en dos pasos
+
+$\Omega$ no se conoce, pero se puede estimar. El procedimiento estándar:
+
+1. **Primer paso:** estima $\hat\theta_1$ con una $W$ cualquiera (por ejemplo $W = I$, o $(\frac1n\sum z_iz_i')^{-1}$ en VI). Es consistente, aunque no eficiente.
+2. **Segundo paso:** calcula $\hat\Omega = \frac1n\sum_ig(w_i,\hat\theta_1)g(w_i,\hat\theta_1)'$ y reestima con $\hat W = \hat\Omega^{-1}$.
+
+Como $\hat\Omega\to_p\Omega$ (por consistencia de $\hat\theta_1$ y LGN), $\hat W\to_p\Omega^{-1}$ y por el @thm-gmm-normal solo importa el **límite** $W$: el estimador de dos pasos tiene la misma distribución asintótica que el que usara $\Omega^{-1}$ conocida, o sea la varianza óptima $(G'\Omega^{-1}G)^{-1}$. El error de estimar $\hat\Omega$ no afecta al primer orden.
+
+::: {.callout-warning title="Eficiente asintóticamente, sesgado en muestras finitas"}
+Con muchos momentos ($r$ grande) y $n$ moderado, $\hat\Omega$ es ruidoso y está correlacionado con $\bar g$, y GMM de dos pasos tiene **sesgo considerable** en muestras finitas (Altonji–Segal, 1996, mostraron que a veces es peor que la matriz identidad). Alternativas: iterar hasta convergencia, el estimador de actualización continua (CUE), o simplemente **usar pocos momentos**. Tener más instrumentos no es gratis.
+:::
+
+# El test J: ¿son compatibles los momentos?
+
+Con $r>p$ hay $r - p$ momentos "de sobra". Si el modelo es correcto, **todos** los momentos son ciertos, y los $p$ parámetros se estiman usando $p$ combinaciones lineales; las $r - p$ restantes deberían quedar cerca de cero. Si el modelo es incorrecto (algún instrumento no es válido), los momentos se contradicen entre sí y no hay $\theta$ que los ponga a todos en cero.
+
+::: {#thm-j}
+## Test J de Hansen
+Bajo G1–G4, con $r>p$ y $\hat W\to_p\Omega^{-1}$ (GMM eficiente),
+$$
+J = n\,\bar g_n(\hat\theta)'\,\hat\Omega^{-1}\,\bar g_n(\hat\theta)\xrightarrow{d}\chi^2_{r-p}.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+El valor mínimo del criterio, multiplicado por $n$, es el estadístico. Para ver su distribución necesito expresar $\sqrt n\bar g(\hat\theta)$ en términos de $\sqrt n\bar g(\theta_0)$, que es normal. Eso ya está hecho en la demostración anterior: $\bar g(\hat\theta) = \bar g(\theta_0) + G(\hat\theta - \theta_0)$ con $\sqrt n(\hat\theta - \theta_0)$ dado por la fórmula. Sale un operador "$I - $ proyección" aplicado a un vector normal: una matriz idempotente de rango $r - p$. Es el lema de las formas cuadráticas idempotentes de la Clase 5 de Econometría 1.
+:::
+
+::: {.proof}
+Con $W = \Omega^{-1}$, de la demostración del @thm-gmm-normal,
+$$
+\sqrt n(\hat\theta - \theta_0) = -(G'\Omega^{-1}G)^{-1}G'\Omega^{-1}\sqrt n\,\bar g_n(\theta_0) + o_p(1),
+$$
+y por el teorema del valor medio $\sqrt n\bar g_n(\hat\theta) = \sqrt n\bar g_n(\theta_0) + G\sqrt n(\hat\theta - \theta_0) + o_p(1)$. Juntando,
+$$
+\sqrt n\bar g_n(\hat\theta) = \big[I_r - G(G'\Omega^{-1}G)^{-1}G'\Omega^{-1}\big]\sqrt n\bar g_n(\theta_0) + o_p(1).
+$$
+Sea $z_n = \Omega^{-1/2}\sqrt n\bar g_n(\theta_0)\xrightarrow{d}N(0,I_r)$ y $D = \Omega^{-1/2}G$ (de $r\times p$, rango $p$). Multiplicando por $\Omega^{-1/2}$ a la izquierda,
+$$
+\Omega^{-1/2}\sqrt n\bar g_n(\hat\theta) = \big[I_r - D(D'D)^{-1}D'\big]z_n + o_p(1) = (I_r - P_D)z_n + o_p(1),
+$$
+donde $P_D$ es la proyección ortogonal sobre las columnas de $D$. Como $\hat\Omega\to_p\Omega$, $J = z_n'(I - P_D)'(I - P_D)z_n + o_p(1) = z_n'(I - P_D)z_n + o_p(1)$. La matriz $I - P_D$ es simétrica, idempotente y de rango $r - p$ (Clase 1 de Econometría 1), y $z_n\to_dN(0,I_r)$. Por el lema de formas cuadráticas idempotentes, $z'(I - P_D)z\sim\chi^2_{r-p}$, y $J\to_d\chi^2_{r-p}$.
+:::
+
+Dos advertencias. Primero, **el test J solo existe si $r>p$**: con $r = p$, $J = 0$ idénticamente, y no hay nada que contrastar. Un modelo exactamente identificado es "inrefutable" con sus propios datos. Segundo, **un rechazo no dice cuál momento está mal**: solo que algo en el conjunto es incompatible. Y un *no* rechazo no prueba validez: si todos los instrumentos fallan de la misma manera, el J puede no detectarlo.
+
+# GMM y variables instrumentales
+
+El modelo de VI de la Clase 10 de Econometría 1 es un caso particular, y GMM aclara cuándo MC2E es óptimo y cuándo no.
+
+::: {#prp-mc2e-gmm}
+## MC2E es GMM con $W = (Z'Z/n)^{-1}$
+Para $g = z(y - x'\theta)$ con $r>p$, el GMM con $\hat W = (Z'Z/n)^{-1}$ es MC2E:
+$$
+\hat\theta = (X'P_ZX)^{-1}X'P_Zy,\qquad P_Z = Z(Z'Z)^{-1}Z'.
+$$
+:::
+
+::: {.proof}
+$\bar g_n(\theta) = \frac1nZ'(y - X\theta)$, así que el criterio es $\frac1{n^2}(y - X\theta)'Z(Z'Z/n)^{-1}Z'(y - X\theta) = \frac1n(y - X\theta)'P_Z(y - X\theta)$. Minimizar esto en $\theta$ es una regresión MCO de $P_Zy$ sobre $P_ZX$, cuya solución es $(X'P_ZX)^{-1}X'P_Zy$ (usando $P_Z'P_Z = P_Z$).
+:::
+
+¿Es óptimo? La varianza óptima requiere $W\propto\Omega^{-1}$ con $\Omega = \mathbb{E}[u^2zz']$. Si hay **homocedasticidad condicional** ($\mathbb{E}[u^2\mid z] = \sigma^2$), entonces $\Omega = \sigma^2\mathbb{E}[zz']$ y $\Omega^{-1}\propto\mathbb{E}[zz']^{-1}$: **MC2E es GMM eficiente**. Pero con heterocedasticidad, $W^*\ne(Z'Z/n)^{-1}$ y GMM de dos pasos (con $\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'$) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J **es** el test de Sargan robusto (el Sargan clásico es el J bajo homocedasticidad).
+
+# ★ Postgrado: ¿por qué no importa el primer paso?
+
+::: {.callout-important title="★ Postgrado"}
+El @thm-gmm-normal muestra que la distribución asintótica de $\hat\theta$ depende de $\hat W$ **solo a través de su límite** $W$. Esto implica que el primer paso (que fija $\hat\Omega$) no afecta la distribución asintótica del segundo, pero no dice nada sobre el *tamaño de la muestra* necesaria para que eso sea una buena aproximación.
+:::
+
+La razón es un hecho general: $\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|$, y $\|\hat W - W\| = o_p(1)$. Entonces la diferencia entre los dos estimadores es $o_p(n^{-1/2})$ y desaparece al escalar por $\sqrt n$. Pero a segundo orden, la variabilidad de $\hat\Omega$ aparece. En términos de la expansión de Nagar (el equivalente de la aproximación de segundo orden), el sesgo de GMM de dos pasos crece con el cociente $(r - p)/n$. La teoría de muestras finitas de GMM es el origen del interés por *instrumentos débiles* y por *muchos instrumentos*, que cubrimos parcialmente en la Clase 10 de Econometría 1.
+
+# Resumen
+
+- **GMM** minimiza $\bar g_n(\theta)'\hat W\bar g_n(\theta)$. Cubre MCO, VI, MV y las ecuaciones de Euler como casos particulares.
+- **Consistencia** (@thm-gmm-consistencia): LGN uniforme más identificación. **Normalidad** (@thm-gmm-normal): $V(W) = (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}$.
+- **Pesos óptimos** (@thm-w-optima): $W^* = \Omega^{-1}$, con varianza $(G'\Omega^{-1}G)^{-1}$. Se implementa en **dos pasos**.
+- **Test J** (@thm-j): $n\bar g(\hat\theta)'\hat\Omega^{-1}\bar g(\hat\theta)\to\chi^2_{r-p}$. Solo existe si $r>p$ y mide la compatibilidad entre momentos.
+- **MC2E** es GMM con $W = (Z'Z/n)^{-1}$, eficiente solo bajo homocedasticidad (@prp-mc2e-gmm).
+
+# Ejercicios
+
+**Ejercicio 4.1.** Muestra que con $g = x(y - x'\theta)$ y $r = p = k$, el GMM coincide con MCO para cualquier $W$ y calcula $G$ y $\Omega$. Verifica que se obtiene el sándwich de White.
+
+::: {.callout-tip collapse="true" title="Solución 4.1"}
+$\bar g_n(\theta) = \frac1nX'(y - X\theta) = 0$ tiene solución $\hat\theta = (X'X)^{-1}X'y$ (única si $X'X$ es invertible), y como el criterio vale cero ahí, es el mínimo para cualquier $\hat W\succ0$. $G = \mathbb{E}[\nabla_{\theta'}(x(y - x'\theta))] = -\mathbb{E}[xx']$, $\Omega = \mathbb{E}[u^2xx']$. Como $G$ es cuadrada e invertible, $V = G^{-1}\Omega G^{-1\prime} = \mathbb{E}[xx']^{-1}\mathbb{E}[u^2xx']\mathbb{E}[xx']^{-1}$: White.
+:::
+
+**Ejercicio 4.2.** Para VI exactamente identificado ($r = p$, $g = z(y - x'\theta)$), halla el estimador y su varianza asintótica.
+
+::: {.callout-tip collapse="true" title="Solución 4.2"}
+$\bar g_n = \frac1nZ'(y - X\theta) = 0\Rightarrow\hat\theta = (Z'X)^{-1}Z'y$. $G = -\mathbb{E}[zx']$ (cuadrada, invertible por relevancia), $\Omega = \mathbb{E}[u^2zz']$. Varianza: $G^{-1}\Omega G^{-1\prime} = \mathbb{E}[zx']^{-1}\mathbb{E}[u^2zz']\mathbb{E}[xz']^{-1}$, que bajo homocedasticidad es $\sigma^2\mathbb{E}[zx']^{-1}\mathbb{E}[zz']\mathbb{E}[xz']^{-1}$, la fórmula de VI de la Clase 10 de Econometría 1.
+:::
+
+**Ejercicio 4.3.** (Ponderar por precisión.) Tienes dos estimaciones independientes e insesgadas $x_1,x_2$ del mismo parámetro $\theta$, con varianzas $\sigma_1^2 = 1$ y $\sigma_2^2 = 4$ (por observación). Toma $g = (x_1 - \theta,\ x_2 - \theta)'$. Calcula el GMM con $W = I$, el GMM óptimo y compara sus varianzas asintóticas. Escribe el estadístico $J$.
+
+::: {.callout-tip collapse="true" title="Solución 4.3"}
+$G = (-1,-1)'$, $\Omega = \operatorname{diag}(1,4)$. Con $W = I$: $\hat\theta = (\bar x_1 + \bar x_2)/2$, $V = (G'G)^{-1}G'\Omega G(G'G)^{-1} = (1+4)/4 = 1{,}25$. Óptimo: $\hat\theta = \dfrac{\bar x_1/1 + \bar x_2/4}{1/1 + 1/4} = 0{,}8\bar x_1 + 0{,}2\bar x_2$, con $V = (G'\Omega^{-1}G)^{-1} = (1 + 1/4)^{-1} = 0{,}8$. El promedio ponderado por precisión reduce la varianza de 1,25 a 0,8 (36 % menos). Como $r - p = 1$, $J = n\,\dfrac{(\bar x_1 - \bar x_2)^2}{\sigma_1^2 + \sigma_2^2}\to\chi^2_1$: contrasta que ambas estimaciones apuntan al mismo $\theta$.
+:::
+
+**Ejercicio 4.4.** Un modelo con $p = 2$ parámetros y $r = 5$ momentos tiene $J = 7{,}1$. ¿Se rechaza al 5 %? (El cuantil $0{,}95$ de la $\chi^2_3$ es $7{,}81$.) ¿Qué cambia si $r = 4$ y el mismo $J$? (Cuantil de $\chi^2_2$: $5{,}99$.)
+
+::: {.callout-tip collapse="true" title="Solución 4.4"}
+Con $r = 5$: grados de libertad $r - p = 3$, crítico $7{,}81 > 7{,}1$: **no se rechaza**. Con $r = 4$: $r - p = 2$, crítico $5{,}99 < 7{,}1$: **se rechaza**. Mismo estadístico, distinta conclusión: los grados de libertad son $r - p$, no $r$. Agregar momentos "inofensivos" sube los grados de libertad y puede ocultar un mal ajuste.
+:::
+
+**Ejercicio 4.5.** Demuestra que si $r = p$ el estadístico $J$ es idénticamente cero (con $\hat W$ cualquiera) y explica por qué esto no contradice @thm-j.
+
+::: {.callout-tip collapse="true" title="Solución 4.5"}
+Con $r = p$, $\bar g_n(\hat\theta) = 0$ (el sistema tiene solución), así que $J = 0$. El teorema afirma $J\to\chi^2_{r-p} = \chi^2_0$, que es la distribución degenerada en cero, así que no hay contradicción. Es el mismo punto de la discusión: un modelo exactamente identificado no tiene restricciones sobre los momentos que se puedan testear.
+:::
+
+**Ejercicio 4.6.** Para el modelo $y = x\theta + u$ con un solo regresor y dos instrumentos $z_1,z_2$, escribe $g$, $G$, y la matriz de pesos que da MC2E. ¿Cuándo MC2E y GMM de dos pasos coinciden asintóticamente?
+
+::: {.callout-tip collapse="true" title="Solución 4.6"}
+$g = (z_1u, z_2u)'$ con $u = y - x\theta$, $G = -(\mathbb{E}[z_1x],\mathbb{E}[z_2x])'$ ($2\times1$), $r - p = 1$. MC2E usa $\hat W = (Z'Z/n)^{-1}$. Coinciden asintóticamente cuando $\Omega\propto\mathbb{E}[zz']$, es decir, bajo $\mathbb{E}[u^2\mid z] = \sigma^2$ (homocedasticidad condicional). Si hay heterocedasticidad, el GMM de dos pasos es más eficiente.
+:::
+
+**Ejercicio 4.7 ★.** Demuestra que si $\hat W_n\to_pW$ y $\tilde W_n\to_pW$ (dos estimadores de la misma matriz), los GMM correspondientes satisfacen $\sqrt n(\hat\theta - \tilde\theta) = o_p(1)$. Concluye que usar un primer paso ineficiente para estimar $\Omega$ no altera la distribución asintótica del segundo paso.
+
+::: {.callout-tip collapse="true" title="Solución 4.7 ★"}
+De la demostración del @thm-gmm-normal, $\sqrt n(\hat\theta - \theta_0) = -(\hat G'\hat W\bar G_n)^{-1}\hat G'\hat W\sqrt n\bar g_n(\theta_0)$ y lo mismo con $\tilde W$. La función $W\mapsto(G'WG)^{-1}G'W$ es continua en $W\succ0$ (para $G$ de rango $p$), y $\hat W,\tilde W\to_pW$; luego las dos matrices del frente convergen a la misma matriz $\mathcal{A}$ y su diferencia es $o_p(1)$. Como $\sqrt n\bar g_n(\theta_0) = O_p(1)$ (TCL), la diferencia de los estimadores escalados es $o_p(1)\cdot O_p(1) = o_p(1)$. En el segundo paso, $\hat\Omega(\hat\theta_1)\to_p\Omega$ para **cualquier** $\hat\theta_1$ consistente: el primer paso solo tiene que ser consistente, no eficiente.
+:::

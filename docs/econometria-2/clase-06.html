@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Elección entre varias alternativas: modelo de utilidad aleatoria, derivación del logit multinomial con errores Gumbel, efectos marginales, la propiedad IIA y sus problemas, logit anidado y modelos ordenados.">
+
+<title>Clase 6 · Elección discreta II – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-05.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-06.html">Clase 6 · Elección discreta II</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#de-dos-a-muchas-alternativas" id="toc-de-dos-a-muchas-alternativas" class="nav-link active" data-scroll-target="#de-dos-a-muchas-alternativas"><span class="header-section-number">1</span> De dos a muchas alternativas</a></li>
+  <li><a href="#modelo-de-utilidad-aleatoria" id="toc-modelo-de-utilidad-aleatoria" class="nav-link" data-scroll-target="#modelo-de-utilidad-aleatoria"><span class="header-section-number">2</span> Modelo de utilidad aleatoria</a></li>
+  <li><a href="#el-logit-multinomial" id="toc-el-logit-multinomial" class="nav-link" data-scroll-target="#el-logit-multinomial"><span class="header-section-number">3</span> El logit multinomial</a>
+  <ul class="collapse">
+  <li><a href="#estimación-e-interpretación" id="toc-estimación-e-interpretación" class="nav-link" data-scroll-target="#estimación-e-interpretación"><span class="header-section-number">3.1</span> Estimación e interpretación</a></li>
+  </ul></li>
+  <li><a href="#la-propiedad-iia" id="toc-la-propiedad-iia" class="nav-link" data-scroll-target="#la-propiedad-iia"><span class="header-section-number">4</span> La propiedad IIA</a></li>
+  <li><a href="#logit-anidado" id="toc-logit-anidado" class="nav-link" data-scroll-target="#logit-anidado"><span class="header-section-number">5</span> Logit anidado</a></li>
+  <li><a href="#respuesta-ordenada" id="toc-respuesta-ordenada" class="nav-link" data-scroll-target="#respuesta-ordenada"><span class="header-section-number">6</span> Respuesta ordenada</a></li>
+  <li><a href="#postgrado-la-utilidad-esperada-máxima-y-el-valor-inclusivo" id="toc-postgrado-la-utilidad-esperada-máxima-y-el-valor-inclusivo" class="nav-link" data-scroll-target="#postgrado-la-utilidad-esperada-máxima-y-el-valor-inclusivo"><span class="header-section-number">7</span> ★ Postgrado: la utilidad esperada máxima y el valor inclusivo</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-06.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 6 · Elección discreta II</h1>
+<p class="subtitle lead">Logit multinomial y ordenado, IIA y logit anidado</p>
+</div>
+
+<div>
+  <div class="description">
+    Elección entre varias alternativas: modelo de utilidad aleatoria, derivación del logit multinomial con errores Gumbel, efectos marginales, la propiedad IIA y sus problemas, logit anidado y modelos ordenados.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a></p>
+<section id="de-dos-a-muchas-alternativas" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> De dos a muchas alternativas</h1>
+<p>La Clase 5 trató la elección entre dos opciones. La realidad suele ofrecer más: ¿en qué modo viajo al trabajo (auto, bus, metro, bicicleta)?, ¿qué carrera estudio?, ¿qué marca compro? Sea <span class="math inline">\(y_i\in\{0,1,\dots,J\}\)</span> la alternativa elegida por el individuo <span class="math inline">\(i\)</span>. Hay dos situaciones muy distintas, y cada una pide su propio modelo:</p>
+<ul>
+<li>Las alternativas <strong>no tienen orden</strong> natural (modo de transporte, marca): el <strong>logit multinomial</strong> y sus parientes.</li>
+<li>Las alternativas <strong>están ordenadas</strong> (nivel educacional, calificación crediticia AAA…D, escala de satisfacción 1–5): el modelo <strong>ordenado</strong>.</li>
+</ul>
+</section>
+<section id="modelo-de-utilidad-aleatoria" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Modelo de utilidad aleatoria</h1>
+<p>La base teórica es la de McFadden (1974; Nobel 2000).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> El individuo <span class="math inline">\(i\)</span> obtiene de la alternativa <span class="math inline">\(j\)</span> una utilidad <span class="math display">\[
+U_{ij} = V_{ij} + \varepsilon_{ij},
+\]</span> donde <span class="math inline">\(V_{ij}\)</span> es la parte <strong>sistemática</strong> (observable por el econometrista: función de atributos de la alternativa y características del individuo) y <span class="math inline">\(\varepsilon_{ij}\)</span> es la parte <strong>aleatoria</strong> (preferencias que el econometrista no observa). El individuo elige la alternativa de mayor utilidad: <span class="math display">\[
+y_i = j\iff U_{ij}\ge U_{ik}\ \ \text{para todo }k.
+\]</span> La probabilidad de elegir <span class="math inline">\(j\)</span> queda determinada por la distribución conjunta de los <span class="math inline">\(\varepsilon_{ik}\)</span>. <strong>Cada supuesto sobre esa distribución da un modelo distinto.</strong> Con normales conjuntas se obtiene el probit multinomial (exige integrales de dimensión <span class="math inline">\(J\)</span>); con una distribución muy específica, el logit, que tiene forma cerrada.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Daniel McFadden desarrolló el logit multinomial para predecir la demanda de BART, el tren de la bahía de San Francisco, antes de que se construyera. Sus predicciones se contrastaron después con la demanda real, y acertaron bastante bien: caso raro de un modelo econométrico validado por la realidad. McFadden además mostró que el modelo era consistente con la teoría de utilidad, y por eso recibió el Nobel por una técnica que se usa con más frecuencia en marketing y transporte que en macroeconomía.</p></div></div></section>
+<section id="el-logit-multinomial" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El logit multinomial</h1>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuesto de errores">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuesto de errores
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los <span class="math inline">\(\varepsilon_{ij}\)</span> son i.i.d. con distribución de <strong>valor extremo tipo I</strong> (Gumbel), con función de distribución <span class="math inline">\(F(e) = \exp(-e^{-e})\)</span> y densidad <span class="math inline">\(f(e) = e^{-e}\exp(-e^{-e})\)</span>.</p>
+</div>
+</div>
+<p>Los Gumbel parecen una elección caprichosa. Su atractivo es que la probabilidad de elegir <span class="math inline">\(j\)</span> sale en forma cerrada y de una simpleza notable.</p>
+<div id="thm-mnl" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Probabilidades del logit)</strong></span> Bajo el supuesto Gumbel, la probabilidad de elegir <span class="math inline">\(j\)</span> entre <span class="math inline">\(\{0,\dots,J\}\)</span> es <span class="math display">\[
+P_{ij} = \frac{\exp(V_{ij})}{\sum_{k=0}^J\exp(V_{ik})}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P_{ij} = P(\varepsilon_{ik}\le V_{ij} - V_{ik} + \varepsilon_{ij}\ \forall k\ne j)\)</span>. Si fijo <span class="math inline">\(\varepsilon_{ij} = e\)</span>, las demás desigualdades son independientes entre sí (por i.i.d.), así que la probabilidad condicional es un <strong>producto</strong> de funciones de distribución <span class="math inline">\(F(V_{ij} - V_{ik} + e)\)</span>. Después integro sobre <span class="math inline">\(e\)</span> con su densidad. La gracia de Gumbel es que <span class="math inline">\(F\)</span> es una exponencial doble: al multiplicar varias, los exponentes se suman y todo se junta en una sola exponencial, que se integra con un cambio de variable.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Condicionando en <span class="math inline">\(\varepsilon_{ij} = e\)</span>, y usando independencia entre alternativas, <span class="math display">\[
+P_{ij} = \int_{-\infty}^\infty f(e)\prod_{k\ne j}F(V_{ij} - V_{ik} + e)\,de.
+\]</span> Como <span class="math inline">\(F(V_{ij} - V_{ik} + e) = \exp\big(-e^{-e}\,e^{V_{ik} - V_{ij}}\big)\)</span> y <span class="math inline">\(f(e) = e^{-e}\exp(-e^{-e})\)</span>, el integrando es <span class="math display">\[
+e^{-e}\exp\Big(-e^{-e}\Big[1 + \sum_{k\ne j}e^{V_{ik} - V_{ij}}\Big]\Big) = e^{-e}\exp\big(-S_j\,e^{-e}\big),\qquad S_j = \sum_{k=0}^Je^{V_{ik} - V_{ij}}.
+\]</span> Con el cambio de variable <span class="math inline">\(u = e^{-e}\)</span> (<span class="math inline">\(du = -e^{-e}de\)</span>; <span class="math inline">\(e\to-\infty\)</span> corresponde a <span class="math inline">\(u\to\infty\)</span> y <span class="math inline">\(e\to\infty\)</span> a <span class="math inline">\(u\to0\)</span>), <span class="math display">\[
+P_{ij} = \int_0^\infty\exp(-S_ju)\,du = \frac1{S_j} = \frac{e^{V_{ij}}}{\sum_ke^{V_{ik}}}.
+\]</span></p>
+</div>
+<p>Con dos alternativas esto es el logit binario de la Clase 5 (la diferencia de dos Gumbel independientes es logística). Hay <strong>dos parametrizaciones</strong> de <span class="math inline">\(V_{ij}\)</span> que se usan en la práctica y que se pueden combinar:</p>
+<ul>
+<li><strong>Logit condicional</strong> (McFadden): <span class="math inline">\(V_{ij} = z_{ij}'\gamma\)</span>, con <span class="math inline">\(z_{ij}\)</span> <strong>atributos que varían por alternativa</strong> (precio, tiempo de viaje). Un solo vector <span class="math inline">\(\gamma\)</span> para todas las alternativas.</li>
+<li><strong>Logit multinomial</strong> (propiamente tal): <span class="math inline">\(V_{ij} = x_i'\beta_j\)</span>, con <span class="math inline">\(x_i\)</span> <strong>características del individuo</strong> (ingreso, edad) y coeficientes <span class="math inline">\(\beta_j\)</span> específicos de cada alternativa.</li>
+</ul>
+<div class="callout callout-style-default callout-warning callout-titled" title="Normalización: solo importan las diferencias">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Normalización: solo importan las diferencias
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P_{ij}\)</span> no cambia si sumamos la misma constante (o cualquier función de <span class="math inline">\(i\)</span>) a todos los <span class="math inline">\(V_{ik}\)</span>: solo las <strong>diferencias de utilidad</strong> importan. En el logit multinomial con <span class="math inline">\(x_i'\beta_j\)</span> hay que fijar una alternativa base, típicamente <span class="math inline">\(\beta_0 = 0\)</span>. Los <span class="math inline">\(\beta_j\)</span> miden entonces el efecto respecto de la base. Con otra base, los coeficientes cambian (pero no las probabilidades predichas).</p>
+</div>
+</div>
+<section id="estimación-e-interpretación" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="estimación-e-interpretación"><span class="header-section-number">3.1</span> Estimación e interpretación</h2>
+<p>Sea <span class="math inline">\(d_{ij} = \mathbf{1}\{y_i = j\}\)</span>. La log-verosimilitud es <span class="math inline">\(\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}\)</span>. Para el logit multinomial con <span class="math inline">\(V_{ij} = x_i'\beta_j\)</span>, el score respecto de <span class="math inline">\(\beta_j\)</span> es <span class="math inline">\(\sum_i(d_{ij} - P_{ij})x_i\)</span>, las mismas “ecuaciones normales” del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el <strong>?@thm-concavidad-logit</strong> de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.</p>
+<p>¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:</p>
+<ol type="1">
+<li><strong>Razones de probabilidad relativa.</strong> Como <span class="math inline">\(P_{ij}/P_{i0} = \exp(x_i'\beta_j)\)</span>, el coeficiente <span class="math inline">\(\beta_{jl}\)</span> es el cambio en el log del cociente <span class="math inline">\(P_j/P_0\)</span> por unidad de <span class="math inline">\(x_l\)</span>. Es lo que reportan los programas.</li>
+<li><strong>Efecto marginal sobre las probabilidades.</strong> Derivando <span class="math inline">\(P_j = e^{x'\beta_j}/\sum_ke^{x'\beta_k}\)</span>, <span id="eq-me-mnl"><span class="math display">\[
+\frac{\partial P_j}{\partial x} = P_j\Big(\beta_j - \sum_{k=0}^JP_k\beta_k\Big).
+\tag{1}\]</span></span> (Se obtiene derivando <span class="math inline">\(\log P_j = x'\beta_j - \log\sum_ke^{x'\beta_k}\)</span>, cuyo gradiente es <span class="math inline">\(\beta_j - \sum_kP_k\beta_k\)</span>, y multiplicando por <span class="math inline">\(P_j\)</span>.) <strong>El signo del efecto marginal no tiene por qué coincidir con el de <span class="math inline">\(\beta_j\)</span></strong>: depende de si <span class="math inline">\(\beta_j\)</span> está por encima o por debajo del promedio ponderado <span class="math inline">\(\sum_kP_k\beta_k\)</span>. Una alternativa con <span class="math inline">\(\beta_{j}&gt;0\)</span> puede ver <em>caer</em> su probabilidad si otra alternativa con <span class="math inline">\(\beta\)</span> aún mayor atrae más gente.</li>
+<li><strong>Efectos sobre probabilidades promedio</strong> (AME) con error estándar por el método delta, como en la Clase 5.</li>
+</ol>
+</section>
+</section>
+<section id="la-propiedad-iia" class="level1 page-columns page-full" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La propiedad IIA</h1>
+<p>Del <a href="#thm-mnl" class="quarto-xref">Teorema&nbsp;1</a>, el cociente entre dos probabilidades es <span class="math display">\[
+\frac{P_{ij}}{P_{ik}} = \exp(V_{ij} - V_{ik}),
+\]</span> y <strong>no depende de las demás alternativas</strong>. Es la <strong>independencia de alternativas irrelevantes</strong> (IIA): la razón entre las chances de <span class="math inline">\(j\)</span> y <span class="math inline">\(k\)</span> no cambia si se agrega, se quita o se modifica una tercera alternativa. Se origina en la independencia de los <span class="math inline">\(\varepsilon_{ij}\)</span> entre alternativas.</p>
+<div id="exm-bus" class="theorem example page-columns page-full">
+<p><span class="theorem-title"><strong>Ejemplo 1 (El problema del bus rojo y el bus azul)</strong></span> Un viajero elige entre auto y bus rojo, con utilidades sistemáticas iguales: <span class="math inline">\(P = \tfrac12\)</span> cada uno. Ahora se agrega un bus azul idéntico al rojo en todo salvo el color. Con el logit, las tres utilidades son iguales y cada alternativa tiene <span class="math inline">\(\tfrac13\)</span>: la probabilidad de usar auto <strong>cae de <span class="math inline">\(\tfrac12\)</span> a <span class="math inline">\(\tfrac13\)</span></strong>. Pero cualquiera esperaría que el auto conserve su <span class="math inline">\(\tfrac12\)</span>, y que los dos buses se repartan el otro medio. El modelo no entiende que dos alternativas son casi la misma.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;El ejemplo es de Gerard Debreu (1960) en una reseña de la teoría de elección de Luce, y McFadden lo popularizó en los años setenta. Hay quien dice que el bus rojo/azul es el mejor argumento a favor de los modelos que <em>no</em> son logit, y también el mejor argumento para no confiar en nadie que prediga con logit una demanda tras la entrada de un competidor muy parecido a otro.</p></div></div></div>
+<p>La IIA tiene una consecuencia testeable y una de política económica.</p>
+<div id="prp-elasticidad" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Sustitución proporcional)</strong></span> En el logit condicional con <span class="math inline">\(V_{ik} = z_{ik}'\gamma\)</span> y un atributo <span class="math inline">\(z\)</span> (de coeficiente <span class="math inline">\(\gamma\)</span>), la elasticidad cruzada de <span class="math inline">\(P_{ij}\)</span> respecto del atributo de la alternativa <span class="math inline">\(k\ne j\)</span> es <span class="math display">\[
+\frac{\partial\log P_{ij}}{\partial\log z_{ik}} = -\gamma\,z_{ik}\,P_{ik},
+\]</span> que <strong>no depende de <span class="math inline">\(j\)</span></strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\partial P_j/\partial V_k = -P_jP_k\)</span> para <span class="math inline">\(k\ne j\)</span> (derivando <span class="math inline">\(e^{V_j}/\sum e^{V}\)</span> respecto de <span class="math inline">\(V_k\)</span>: solo el denominador depende de <span class="math inline">\(V_k\)</span>, y su derivada es <span class="math inline">\(e^{V_k}\)</span>). Entonces <span class="math inline">\(\partial\log P_j/\partial V_k = -P_k\)</span>, y con <span class="math inline">\(\partial V_k/\partial\log z_k = \gamma z_k\)</span> queda <span class="math inline">\(-\gamma z_kP_k\)</span>. No aparece <span class="math inline">\(j\)</span>.</p>
+</div>
+<p>Esto dice que si el precio de la alternativa <span class="math inline">\(k\)</span> sube, la gente que se va de <span class="math inline">\(k\)</span> se reparte entre las demás <strong>en proporción a sus participaciones</strong>, sin importar qué tan parecidas sean. Si el precio del metro sube, el modelo dice que el bus y la bicicleta ganan pasajeros en proporción a lo que ya tenían, aunque el bus sea el sustituto cercano evidente. Es una limitación seria para aplicaciones (fusiones, entrada de nuevos productos) donde justamente se quiere conocer los patrones de sustitución.</p>
+<p><strong>Test de Hausman–McFadden.</strong> Bajo IIA, el logit estimado con <strong>todas</strong> las alternativas y con <strong>un subconjunto</strong> deben estimar lo mismo (los coeficientes no deberían cambiar al quitar una alternativa). Se comparan: si difieren mucho, IIA es sospechosa. Se basa en el test de Hausman (Clase 9). En la práctica el test es poco potente y poco confiable (puede dar varianzas diferencia no positivas).</p>
+</section>
+<section id="logit-anidado" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Logit anidado</h1>
+<p>La corrección más simple a IIA: <strong>agrupar</strong> las alternativas parecidas en <em>nidos</em> y permitir que los errores dentro de un nido estén correlacionados. En el logit anidado (un caso de los modelos GEV de McFadden), las alternativas se dividen en nidos <span class="math inline">\(B_1,\dots,B_M\)</span> y se elige primero el nido y luego la alternativa dentro de él. Las probabilidades son <span class="math display">\[
+P_j = P(B)\cdot P(j\mid B),\quad
+P(j\mid B) = \frac{\exp(V_j/\lambda_B)}{\sum_{k\in B}\exp(V_k/\lambda_B)},\quad
+P(B) = \frac{\exp(\lambda_BI_B)}{\sum_{C}\exp(\lambda_CI_C)},
+\]</span> con el <strong>valor inclusivo</strong> <span class="math inline">\(I_B = \log\sum_{k\in B}\exp(V_k/\lambda_B)\)</span> y el <strong>parámetro de disimilitud</strong> <span class="math inline">\(\lambda_B\in(0,1]\)</span>.</p>
+<p>El parámetro <span class="math inline">\(\lambda_B\)</span> mide qué tan <em>independientes</em> son las alternativas dentro del nido: <span class="math inline">\(1 - \lambda_B\)</span> es aproximadamente la correlación de los errores. Si <span class="math inline">\(\lambda_B = 1\)</span> para todo nido, el modelo se reduce al logit multinomial. Para <span class="math inline">\(\lambda_B\in(0,1)\)</span> las alternativas del mismo nido son más sustitutas entre sí que con las de fuera, lo que <strong>rompe la IIA entre nidos</strong> (aunque la mantiene dentro de cada nido). Es consistente con maximización de utilidad aleatoria si y solo si <span class="math inline">\(\lambda_B\in(0,1]\)</span> (McFadden, 1978).</p>
+<div id="exm-bus-anidado" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (El bus azul con logit anidado)</strong></span> Con las tres utilidades <span class="math inline">\(V = 0\)</span> y el nido <span class="math inline">\(B = \{\text{rojo},\text{azul}\}\)</span> (el auto queda solo), el valor inclusivo es <span class="math inline">\(I_B = \log(e^{0} + e^{0}) = \log2\)</span>, y <span class="math inline">\(P(B) = \dfrac{2^{\lambda}}{2^\lambda + 1}\)</span> (el nido solitario del auto aporta <span class="math inline">\(e^0 = 1\)</span>). Si <span class="math inline">\(\lambda = 1\)</span> (logit): <span class="math inline">\(P(B) = \tfrac23\)</span>, el auto tiene <span class="math inline">\(\tfrac13\)</span> (el mal resultado de antes). Si <span class="math inline">\(\lambda\to0\)</span> (los dos buses son sustitutos perfectos): <span class="math inline">\(P(B)\to\tfrac12\)</span> y el auto conserva <span class="math inline">\(\tfrac12\)</span>, <strong>la intuición correcta</strong>. El parámetro <span class="math inline">\(\lambda\)</span>, estimado de los datos, decide dónde cae el modelo entre estos dos extremos.</p>
+</div>
+<p>Se estima por MV completa (FIML, estimando todos los parámetros a la vez; es el procedimiento eficiente) o por <strong>dos etapas</strong>: primero los parámetros de la elección dentro de cada nido (un logit condicional por nido), luego se arma el valor inclusivo y se estiman los parámetros entre nidos. Es más fácil de implementar, pero ineficiente y con errores estándar que necesitan corrección. La dificultad práctica: <strong>hay que decidir los nidos a priori</strong>, y el resultado puede depender de esa elección.</p>
+<p>Si ni siquiera el logit anidado alcanza (patrones de sustitución complejos, heterogeneidad en las preferencias), hay alternativas más flexibles, como el <em>logit de coeficientes aleatorios</em> (mixed logit) y el probit multinomial, que se estiman por simulación (Clase 13).</p>
+</section>
+<section id="respuesta-ordenada" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Respuesta ordenada</h1>
+<p>Si las categorías <span class="math inline">\(y\in\{1,\dots,J\}\)</span> tienen <strong>orden</strong> (pero no distancias cardinales conocidas), el logit multinomial desperdicia información: ignora que “muy satisfecho” está más cerca de “satisfecho” que de “insatisfecho”. El modelo ordenado usa una <strong>variable latente</strong> continua <span class="math inline">\(y^*\)</span> y <strong>umbrales</strong> <span class="math inline">\(\kappa_1&lt;\dots&lt;\kappa_{J-1}\)</span>: <span class="math display">\[
+y^* = x'\beta + \varepsilon,\qquad y = j\iff\kappa_{j-1}&lt;y^*\le\kappa_j,\qquad\kappa_0 = -\infty,\ \kappa_J = +\infty,
+\]</span> con <span class="math inline">\(\varepsilon\sim F\)</span> (normal: probit ordenado; logística: logit ordenado). Entonces <span id="eq-ordenado"><span class="math display">\[
+P(y = j\mid x) = F(\kappa_j - x'\beta) - F(\kappa_{j-1} - x'\beta).
+\tag{2}\]</span></span></p>
+<p>Con <span class="math inline">\(J = 2\)</span> es el modelo binario de la Clase 5 (con <span class="math inline">\(\kappa_1 = -\beta_0\)</span>). Hay que fijar la ubicación y la escala: no puede haber constante en <span class="math inline">\(x\)</span> (la absorben los umbrales) y la varianza de <span class="math inline">\(\varepsilon\)</span> se normaliza.</p>
+<p>El efecto marginal de <span class="math inline">\(x_l\)</span> sobre <span class="math inline">\(P(y = j)\)</span> es, derivando <a href="#eq-ordenado" class="quarto-xref">Ecuación&nbsp;2</a>, <span class="math display">\[
+\frac{\partial P(y = j\mid x)}{\partial x_l} = -\beta_l\big[f(\kappa_j - x'\beta) - f(\kappa_{j-1} - x'\beta)\big].
+\]</span> Esto tiene una consecuencia interesante: <strong>en las categorías extremas</strong> el signo es claro (si <span class="math inline">\(\beta_l&gt;0\)</span>, sube la probabilidad de la categoría más alta, <span class="math inline">\(j = J\)</span>, y baja la de la más baja, <span class="math inline">\(j = 1\)</span>), pero <strong>en las categorías intermedias el signo es ambiguo</strong>, pues depende de la diferencia entre dos densidades. Si <span class="math inline">\(\beta_l&gt;0\)</span>, el efecto sobre una categoría intermedia puede ser positivo o negativo según <span class="math inline">\(x\)</span>.</p>
+<p>En el <strong>logit ordenado</strong>, <span class="math inline">\(\log\dfrac{P(y\le j)}{P(y&gt;j)} = \kappa_j - x'\beta\)</span> para todo <span class="math inline">\(j\)</span>: el mismo <span class="math inline">\(\beta\)</span> en todas las “regresiones acumuladas”. Es el supuesto de <strong>odds proporcionales</strong> (o de regresiones paralelas), que se testea comparando los <span class="math inline">\(J-1\)</span> logits binarios <span class="math inline">\(\mathbf{1}\{y&gt;j\}\)</span> (test de Brant). Si falla, un modelo ordenado es inapropiado y se pasa a modelos generalizados con coeficientes por categoría.</p>
+</section>
+<section id="postgrado-la-utilidad-esperada-máxima-y-el-valor-inclusivo" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: la utilidad esperada máxima y el valor inclusivo</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El máximo de utilidades Gumbel también es Gumbel. Esta propiedad explica el <em>valor inclusivo</em> del logit anidado y da una medida de bienestar de la elección.</p>
+</div>
+</div>
+<div id="prp-logsum" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (El máximo de Gumbels)</strong></span> Sean <span class="math inline">\(U_k = V_k + \varepsilon_k\)</span> con <span class="math inline">\(\varepsilon_k\)</span> i.i.d. Gumbel. Entonces <span class="math inline">\(\max_kU_k\)</span> tiene distribución Gumbel desplazada: <span class="math inline">\(P(\max_kU_k\le t) = \exp\big(-e^{-(t - m)}\big)\)</span> con <span class="math inline">\(m = \log\sum_ke^{V_k}\)</span>. En particular <span class="math display">\[
+\mathbb{E}\Big[\max_kU_k\Big] = \log\sum_ke^{V_k} + \gamma_E,
+\]</span> con <span class="math inline">\(\gamma_E\approx0{,}5772\)</span> la constante de Euler–Mascheroni.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(P(\max_kU_k\le t) = \prod_kP(\varepsilon_k\le t - V_k) = \prod_k\exp(-e^{-t}e^{V_k}) = \exp\big(-e^{-t}\sum_ke^{V_k}\big)\)</span>. Escribiendo <span class="math inline">\(\sum_ke^{V_k} = e^m\)</span>, esto es <span class="math inline">\(\exp(-e^{-(t - m)})\)</span>, la distribución de <span class="math inline">\(m + \varepsilon\)</span> con <span class="math inline">\(\varepsilon\)</span> Gumbel estándar, cuya media es <span class="math inline">\(\gamma_E\)</span>.</p>
+</div>
+<p>Entonces <span class="math inline">\(\log\sum_ke^{V_k}\)</span> (el <em>logsum</em>) es la utilidad esperada <strong>de poder elegir</strong> entre las alternativas, salvo una constante. Su variación ante un cambio de política (agregar una línea de metro, cambiar un precio) es una medida de <strong>bienestar</strong> del consumidor, dividida por la utilidad marginal del ingreso: la manera estándar de evaluar proyectos de transporte con modelos de elección discreta. El valor inclusivo <span class="math inline">\(I_B\)</span> del logit anidado es exactamente el logsum del nido <span class="math inline">\(B\)</span> (escalado por <span class="math inline">\(\lambda_B\)</span>), y por eso el nido entero se comporta como una “alternativa compuesta” cuya utilidad es el máximo de sus miembros.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li><strong>Utilidad aleatoria:</strong> <span class="math inline">\(U_{ij} = V_{ij} + \varepsilon_{ij}\)</span>, elección de la máxima. Con errores Gumbel i.i.d. se obtiene el <strong>logit</strong> <span class="math inline">\(P_{ij} = e^{V_{ij}}/\sum_ke^{V_{ik}}\)</span> (<a href="#thm-mnl" class="quarto-xref">Teorema&nbsp;1</a>).</li>
+<li>Solo importan las <strong>diferencias</strong> de utilidad: hay que normalizar una alternativa base.</li>
+<li>Efecto marginal: <span class="math inline">\(P_j(\beta_j - \sum_kP_k\beta_k)\)</span>, cuyo signo puede diferir del de <span class="math inline">\(\beta_j\)</span>.</li>
+<li><strong>IIA:</strong> <span class="math inline">\(P_j/P_k\)</span> no depende de las demás alternativas; implica sustitución proporcional (<a href="#prp-elasticidad" class="quarto-xref">Proposición&nbsp;1</a>) y el problema del bus azul.</li>
+<li><strong>Logit anidado:</strong> agrupa alternativas parecidas; <span class="math inline">\(\lambda\in(0,1]\)</span>; rompe IIA entre nidos.</li>
+<li><strong>Ordenado:</strong> variable latente con umbrales; efectos marginales ambiguos en categorías intermedias.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 6.1.</strong> Un logit multinomial con 3 alternativas tiene utilidades sistemáticas <span class="math inline">\(V_0 = 0\)</span>, <span class="math inline">\(V_1 = 1\)</span>, <span class="math inline">\(V_2 = 2\)</span>. Calcula las probabilidades. ¿Qué pasa con ellas si se suma <span class="math inline">\(10\)</span> a las tres utilidades?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(e^0 = 1\)</span>, <span class="math inline">\(e^1 = 2{,}718\)</span>, <span class="math inline">\(e^2 = 7{,}389\)</span>; suma <span class="math inline">\(= 11{,}107\)</span>. <span class="math inline">\(P_0 = 0{,}090\)</span>, <span class="math inline">\(P_1 = 0{,}245\)</span>, <span class="math inline">\(P_2 = 0{,}665\)</span> (suman 1). Sumar <span class="math inline">\(10\)</span> multiplica numerador y denominador por <span class="math inline">\(e^{10}\)</span> y las probabilidades <strong>no cambian</strong>: solo importan las diferencias de utilidad. Es la razón de la normalización de una alternativa base.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.2.</strong> Con <span class="math inline">\(V_j = x\beta_j\)</span>, <span class="math inline">\(\beta = (\beta_0,\beta_1,\beta_2) = (0,\,1,\,3)\)</span> y <span class="math inline">\(x = 0\)</span>, calcula <span class="math inline">\(P_j\)</span> y el efecto marginal <span class="math inline">\(\partial P_1/\partial x\)</span>. ¿Tiene el mismo signo que <span class="math inline">\(\beta_1\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>En <span class="math inline">\(x = 0\)</span> todas las utilidades son <span class="math inline">\(0\)</span>, <span class="math inline">\(P_j = \tfrac13\)</span>. <span class="math inline">\(\sum_kP_k\beta_k = (0 + 1 + 3)/3 = \tfrac43\)</span>. <span class="math inline">\(\partial P_1/\partial x = P_1(\beta_1 - \tfrac43) = \tfrac13(1 - \tfrac43) = -\tfrac19&lt;0\)</span>. <strong>Signo contrario a <span class="math inline">\(\beta_1 = 1&gt;0\)</span></strong>: la alternativa 1 tiene un coeficiente positivo, pero la alternativa 2 tiene uno mucho mayor y le roba más gente que la que la propia <span class="math inline">\(x\)</span> le aporta.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.3.</strong> En un logit condicional con tres alternativas, <span class="math inline">\(P = (0{,}5;\,0{,}3;\,0{,}2)\)</span> y un coeficiente de precio <span class="math inline">\(\gamma = -2\)</span> (con precio <span class="math inline">\(z_k = 1\)</span> en todas), calcula las elasticidades cruzadas <span class="math inline">\(\partial\log P_j/\partial\log z_k\)</span> para <span class="math inline">\(k = 1\)</span> y <span class="math inline">\(j = 2,3\)</span>. Comenta.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por la <a href="#prp-elasticidad" class="quarto-xref">Proposición&nbsp;1</a>, <span class="math inline">\(-\gamma z_kP_k = 2\cdot1\cdot0{,}5 = 1\)</span> para ambos <span class="math inline">\(j = 2\)</span> y <span class="math inline">\(j = 3\)</span>. Si el precio de la alternativa 1 sube 1 %, <strong>las probabilidades de 2 y 3 suben ambas 1 %</strong>, aunque la alternativa 2 pudiera ser un sustituto mucho más cercano. Eso es la sustitución proporcional: un resultado mecánico del modelo, no un hallazgo de los datos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.4.</strong> (Bus azul.) En el <a href="#exm-bus-anidado" class="quarto-xref">Ejemplo&nbsp;2</a>, calcula <span class="math inline">\(P(\text{auto})\)</span> y <span class="math inline">\(P(\text{rojo})\)</span> para <span class="math inline">\(\lambda = 0{,}5\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P(B) = 2^{0{,}5}/(2^{0{,}5} + 1) = 1{,}414/2{,}414 = 0{,}586\)</span>, así que <span class="math inline">\(P(\text{auto}) = 0{,}414\)</span>. Dentro del nido, las utilidades de rojo y azul son iguales: <span class="math inline">\(P(\text{rojo}\mid B) = \tfrac12\)</span> y <span class="math inline">\(P(\text{rojo}) = 0{,}293\)</span>. Entre los extremos: <span class="math inline">\(\lambda = 1\)</span> da <span class="math inline">\(\tfrac13\)</span> para el auto y <span class="math inline">\(\lambda\to0\)</span> da <span class="math inline">\(\tfrac12\)</span>. Con <span class="math inline">\(\lambda = 0{,}5\)</span> el auto retiene 41,4 % del mercado.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.5.</strong> En un probit ordenado con <span class="math inline">\(J = 3\)</span> categorías, umbrales <span class="math inline">\(\kappa_1 = 0\)</span>, <span class="math inline">\(\kappa_2 = 1\)</span> y <span class="math inline">\(x'\beta = 0{,}5\)</span>, calcula <span class="math inline">\(P(y = 1),P(y = 2),P(y = 3)\)</span>. (Usa <span class="math inline">\(\Phi(-0{,}5) = 0{,}309\)</span>, <span class="math inline">\(\Phi(0{,}5) = 0{,}691\)</span>.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P(y = 1) = \Phi(\kappa_1 - x'\beta) = \Phi(-0{,}5) = 0{,}309\)</span>. <span class="math inline">\(P(y = 2) = \Phi(\kappa_2 - x'\beta) - \Phi(\kappa_1 - x'\beta) = \Phi(0{,}5) - \Phi(-0{,}5) = 0{,}691 - 0{,}309 = 0{,}382\)</span>. <span class="math inline">\(P(y = 3) = 1 - \Phi(0{,}5) = 0{,}309\)</span>. Suman 1. Si <span class="math inline">\(\beta&gt;0\)</span> y sube <span class="math inline">\(x\)</span>: <span class="math inline">\(P(y = 1)\)</span> baja, <span class="math inline">\(P(y = 3)\)</span> sube, y <span class="math inline">\(P(y = 2)\)</span> sube o baja según <span class="math inline">\(\phi(\kappa_2 - x'\beta)\)</span> vs <span class="math inline">\(\phi(\kappa_1 - x'\beta)\)</span>: aquí <span class="math inline">\(\phi(0{,}5) = \phi(-0{,}5)\)</span> y el efecto marginal sobre la categoría del medio es <strong>cero</strong> en este punto.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.6.</strong> Demuestra la fórmula de efecto marginal del modelo ordenado y muestra que <span class="math inline">\(\sum_j\partial P(y = j)/\partial x_l = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(P_j = F(\kappa_j - x'\beta) - F(\kappa_{j-1} - x'\beta)\)</span>. Derivando respecto de <span class="math inline">\(x_l\)</span>: <span class="math inline">\(\partial P_j/\partial x_l = -\beta_lf(\kappa_j - x'\beta) + \beta_lf(\kappa_{j-1} - x'\beta)\)</span>. Al sumar sobre <span class="math inline">\(j = 1,\dots,J\)</span>, la suma es telescópica: <span class="math inline">\(-\beta_l[f(\kappa_J - x'\beta) - f(\kappa_0 - x'\beta)] = -\beta_l[f(+\infty) - f(-\infty)] = 0\)</span>, porque <span class="math inline">\(f\)</span> se anula en <span class="math inline">\(\pm\infty\)</span>. Las probabilidades suman uno y los efectos marginales también deben sumar cero.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 6.7 ★.</strong> Demuestra que en el logit multinomial, <span class="math inline">\(\mathbb{E}[\max_kU_k]\)</span> cambia por <span class="math inline">\(\log\big(\sum_ke^{V_k'}\big) - \log\big(\sum_ke^{V_k}\big)\)</span> al pasar de <span class="math inline">\(V\)</span> a <span class="math inline">\(V'\)</span>, y úsalo: un proyecto sube la utilidad del metro (<span class="math inline">\(V_1\)</span>) en <span class="math inline">\(\delta\)</span>. Escribe el cambio de bienestar en términos de las probabilidades iniciales y aproxima para <span class="math inline">\(\delta\)</span> chico.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 6.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 6.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por la <a href="#prp-logsum" class="quarto-xref">Proposición&nbsp;2</a>, el cambio es la diferencia de los logsums (la constante de Euler se cancela). Si solo cambia <span class="math inline">\(V_1\to V_1 + \delta\)</span>: <span class="math inline">\(\Delta = \log\big(\sum_ke^{V_k} + e^{V_1}(e^\delta - 1)\big) - \log\sum_ke^{V_k} = \log\big(1 + P_1(e^\delta - 1)\big)\)</span>, con <span class="math inline">\(P_1\)</span> la probabilidad inicial. Para <span class="math inline">\(\delta\)</span> chico, <span class="math inline">\(e^\delta - 1\approx\delta\)</span> y <span class="math inline">\(\log(1 + x)\approx x\)</span>: <span class="math inline">\(\Delta\approx P_1\delta\)</span>. El beneficio por individuo es la <strong>mejora de utilidad de la alternativa ponderada por la probabilidad con que se la usa</strong>: solo quienes eligen el metro se benefician al primer orden.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-05.html" class="pagination-link" aria-label="Clase 5 · Elección discreta I">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 5 · Elección discreta I</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

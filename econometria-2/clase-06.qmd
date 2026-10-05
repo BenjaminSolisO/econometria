@@ -1,0 +1,242 @@
+---
+title: "Clase 6 · Elección discreta II"
+subtitle: "Logit multinomial y ordenado, IIA y logit anidado"
+description: "Elección entre varias alternativas: modelo de utilidad aleatoria, derivación del logit multinomial con errores Gumbel, efectos marginales, la propiedad IIA y sus problemas, logit anidado y modelos ordenados."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-06.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De dos a muchas alternativas
+
+La Clase 5 trató la elección entre dos opciones. La realidad suele ofrecer más: ¿en qué modo viajo al trabajo (auto, bus, metro, bicicleta)?, ¿qué carrera estudio?, ¿qué marca compro? Sea $y_i\in\{0,1,\dots,J\}$ la alternativa elegida por el individuo $i$. Hay dos situaciones muy distintas, y cada una pide su propio modelo:
+
+- Las alternativas **no tienen orden** natural (modo de transporte, marca): el **logit multinomial** y sus parientes.
+- Las alternativas **están ordenadas** (nivel educacional, calificación crediticia AAA…D, escala de satisfacción 1–5): el modelo **ordenado**.
+
+# Modelo de utilidad aleatoria
+
+La base teórica es la de McFadden (1974; Nobel 2000).[^mcfadden] El individuo $i$ obtiene de la alternativa $j$ una utilidad
+$$
+U_{ij} = V_{ij} + \varepsilon_{ij},
+$$
+donde $V_{ij}$ es la parte **sistemática** (observable por el econometrista: función de atributos de la alternativa y características del individuo) y $\varepsilon_{ij}$ es la parte **aleatoria** (preferencias que el econometrista no observa). El individuo elige la alternativa de mayor utilidad:
+$$
+y_i = j\iff U_{ij}\ge U_{ik}\ \ \text{para todo }k.
+$$
+La probabilidad de elegir $j$ queda determinada por la distribución conjunta de los $\varepsilon_{ik}$. **Cada supuesto sobre esa distribución da un modelo distinto.** Con normales conjuntas se obtiene el probit multinomial (exige integrales de dimensión $J$); con una distribución muy específica, el logit, que tiene forma cerrada.
+
+[^mcfadden]: Daniel McFadden desarrolló el logit multinomial para predecir la demanda de BART, el tren de la bahía de San Francisco, antes de que se construyera. Sus predicciones se contrastaron después con la demanda real, y acertaron bastante bien: caso raro de un modelo econométrico validado por la realidad. McFadden además mostró que el modelo era consistente con la teoría de utilidad, y por eso recibió el Nobel por una técnica que se usa con más frecuencia en marketing y transporte que en macroeconomía.
+
+# El logit multinomial
+
+::: {.callout-caution title="Supuesto de errores"}
+Los $\varepsilon_{ij}$ son i.i.d. con distribución de **valor extremo tipo I** (Gumbel), con función de distribución $F(e) = \exp(-e^{-e})$ y densidad $f(e) = e^{-e}\exp(-e^{-e})$.
+:::
+
+Los Gumbel parecen una elección caprichosa. Su atractivo es que la probabilidad de elegir $j$ sale en forma cerrada y de una simpleza notable.
+
+::: {#thm-mnl}
+## Probabilidades del logit
+Bajo el supuesto Gumbel, la probabilidad de elegir $j$ entre $\{0,\dots,J\}$ es
+$$
+P_{ij} = \frac{\exp(V_{ij})}{\sum_{k=0}^J\exp(V_{ik})}.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+$P_{ij} = P(\varepsilon_{ik}\le V_{ij} - V_{ik} + \varepsilon_{ij}\ \forall k\ne j)$. Si fijo $\varepsilon_{ij} = e$, las demás desigualdades son independientes entre sí (por i.i.d.), así que la probabilidad condicional es un **producto** de funciones de distribución $F(V_{ij} - V_{ik} + e)$. Después integro sobre $e$ con su densidad. La gracia de Gumbel es que $F$ es una exponencial doble: al multiplicar varias, los exponentes se suman y todo se junta en una sola exponencial, que se integra con un cambio de variable.
+:::
+
+::: {.proof}
+Condicionando en $\varepsilon_{ij} = e$, y usando independencia entre alternativas,
+$$
+P_{ij} = \int_{-\infty}^\infty f(e)\prod_{k\ne j}F(V_{ij} - V_{ik} + e)\,de.
+$$
+Como $F(V_{ij} - V_{ik} + e) = \exp\big(-e^{-e}\,e^{V_{ik} - V_{ij}}\big)$ y $f(e) = e^{-e}\exp(-e^{-e})$, el integrando es
+$$
+e^{-e}\exp\Big(-e^{-e}\Big[1 + \sum_{k\ne j}e^{V_{ik} - V_{ij}}\Big]\Big) = e^{-e}\exp\big(-S_j\,e^{-e}\big),\qquad S_j = \sum_{k=0}^Je^{V_{ik} - V_{ij}}.
+$$
+Con el cambio de variable $u = e^{-e}$ ($du = -e^{-e}de$; $e\to-\infty$ corresponde a $u\to\infty$ y $e\to\infty$ a $u\to0$),
+$$
+P_{ij} = \int_0^\infty\exp(-S_ju)\,du = \frac1{S_j} = \frac{e^{V_{ij}}}{\sum_ke^{V_{ik}}}.
+$$
+:::
+
+Con dos alternativas esto es el logit binario de la Clase 5 (la diferencia de dos Gumbel independientes es logística). Hay **dos parametrizaciones** de $V_{ij}$ que se usan en la práctica y que se pueden combinar:
+
+- **Logit condicional** (McFadden): $V_{ij} = z_{ij}'\gamma$, con $z_{ij}$ **atributos que varían por alternativa** (precio, tiempo de viaje). Un solo vector $\gamma$ para todas las alternativas.
+- **Logit multinomial** (propiamente tal): $V_{ij} = x_i'\beta_j$, con $x_i$ **características del individuo** (ingreso, edad) y coeficientes $\beta_j$ específicos de cada alternativa.
+
+::: {.callout-warning title="Normalización: solo importan las diferencias"}
+$P_{ij}$ no cambia si sumamos la misma constante (o cualquier función de $i$) a todos los $V_{ik}$: solo las **diferencias de utilidad** importan. En el logit multinomial con $x_i'\beta_j$ hay que fijar una alternativa base, típicamente $\beta_0 = 0$. Los $\beta_j$ miden entonces el efecto respecto de la base. Con otra base, los coeficientes cambian (pero no las probabilidades predichas).
+:::
+
+## Estimación e interpretación
+
+Sea $d_{ij} = \mathbf{1}\{y_i = j\}$. La log-verosimilitud es $\ell_n = \sum_i\sum_jd_{ij}\log P_{ij}$. Para el logit multinomial con $V_{ij} = x_i'\beta_j$, el score respecto de $\beta_j$ es $\sum_i(d_{ij} - P_{ij})x_i$, las mismas "ecuaciones normales" del logit binario. La función es globalmente cóncava en los parámetros (misma demostración que el @thm-concavidad-logit de la Clase 5, extendida), y el MV tiene la distribución asintótica de la Clase 2.
+
+¿Cómo se interpreta? Hay tres lecturas, de menos a más honesta:
+
+1. **Razones de probabilidad relativa.** Como $P_{ij}/P_{i0} = \exp(x_i'\beta_j)$, el coeficiente $\beta_{jl}$ es el cambio en el log del cociente $P_j/P_0$ por unidad de $x_l$. Es lo que reportan los programas.
+2. **Efecto marginal sobre las probabilidades.** Derivando $P_j = e^{x'\beta_j}/\sum_ke^{x'\beta_k}$,
+$$
+\frac{\partial P_j}{\partial x} = P_j\Big(\beta_j - \sum_{k=0}^JP_k\beta_k\Big).
+$$ {#eq-me-mnl}
+(Se obtiene derivando $\log P_j = x'\beta_j - \log\sum_ke^{x'\beta_k}$, cuyo gradiente es $\beta_j - \sum_kP_k\beta_k$, y multiplicando por $P_j$.) **El signo del efecto marginal no tiene por qué coincidir con el de $\beta_j$**: depende de si $\beta_j$ está por encima o por debajo del promedio ponderado $\sum_kP_k\beta_k$. Una alternativa con $\beta_{j}>0$ puede ver *caer* su probabilidad si otra alternativa con $\beta$ aún mayor atrae más gente.
+3. **Efectos sobre probabilidades promedio** (AME) con error estándar por el método delta, como en la Clase 5.
+
+# La propiedad IIA
+
+Del @thm-mnl, el cociente entre dos probabilidades es
+$$
+\frac{P_{ij}}{P_{ik}} = \exp(V_{ij} - V_{ik}),
+$$
+y **no depende de las demás alternativas**. Es la **independencia de alternativas irrelevantes** (IIA): la razón entre las chances de $j$ y $k$ no cambia si se agrega, se quita o se modifica una tercera alternativa. Se origina en la independencia de los $\varepsilon_{ij}$ entre alternativas.
+
+::: {#exm-bus}
+## El problema del bus rojo y el bus azul
+Un viajero elige entre auto y bus rojo, con utilidades sistemáticas iguales: $P = \tfrac12$ cada uno. Ahora se agrega un bus azul idéntico al rojo en todo salvo el color. Con el logit, las tres utilidades son iguales y cada alternativa tiene $\tfrac13$: la probabilidad de usar auto **cae de $\tfrac12$ a $\tfrac13$**. Pero cualquiera esperaría que el auto conserve su $\tfrac12$, y que los dos buses se repartan el otro medio. El modelo no entiende que dos alternativas son casi la misma.[^debreu]
+:::
+
+[^debreu]: El ejemplo es de Gerard Debreu (1960) en una reseña de la teoría de elección de Luce, y McFadden lo popularizó en los años setenta. Hay quien dice que el bus rojo/azul es el mejor argumento a favor de los modelos que *no* son logit, y también el mejor argumento para no confiar en nadie que prediga con logit una demanda tras la entrada de un competidor muy parecido a otro.
+
+La IIA tiene una consecuencia testeable y una de política económica.
+
+::: {#prp-elasticidad}
+## Sustitución proporcional
+En el logit condicional con $V_{ik} = z_{ik}'\gamma$ y un atributo $z$ (de coeficiente $\gamma$), la elasticidad cruzada de $P_{ij}$ respecto del atributo de la alternativa $k\ne j$ es
+$$
+\frac{\partial\log P_{ij}}{\partial\log z_{ik}} = -\gamma\,z_{ik}\,P_{ik},
+$$
+que **no depende de $j$**.
+:::
+
+::: {.proof}
+$\partial P_j/\partial V_k = -P_jP_k$ para $k\ne j$ (derivando $e^{V_j}/\sum e^{V}$ respecto de $V_k$: solo el denominador depende de $V_k$, y su derivada es $e^{V_k}$). Entonces $\partial\log P_j/\partial V_k = -P_k$, y con $\partial V_k/\partial\log z_k = \gamma z_k$ queda $-\gamma z_kP_k$. No aparece $j$.
+:::
+
+Esto dice que si el precio de la alternativa $k$ sube, la gente que se va de $k$ se reparte entre las demás **en proporción a sus participaciones**, sin importar qué tan parecidas sean. Si el precio del metro sube, el modelo dice que el bus y la bicicleta ganan pasajeros en proporción a lo que ya tenían, aunque el bus sea el sustituto cercano evidente. Es una limitación seria para aplicaciones (fusiones, entrada de nuevos productos) donde justamente se quiere conocer los patrones de sustitución.
+
+**Test de Hausman–McFadden.** Bajo IIA, el logit estimado con **todas** las alternativas y con **un subconjunto** deben estimar lo mismo (los coeficientes no deberían cambiar al quitar una alternativa). Se comparan: si difieren mucho, IIA es sospechosa. Se basa en el test de Hausman (Clase 9). En la práctica el test es poco potente y poco confiable (puede dar varianzas diferencia no positivas).
+
+# Logit anidado
+
+La corrección más simple a IIA: **agrupar** las alternativas parecidas en *nidos* y permitir que los errores dentro de un nido estén correlacionados. En el logit anidado (un caso de los modelos GEV de McFadden), las alternativas se dividen en nidos $B_1,\dots,B_M$ y se elige primero el nido y luego la alternativa dentro de él. Las probabilidades son
+$$
+P_j = P(B)\cdot P(j\mid B),\quad
+P(j\mid B) = \frac{\exp(V_j/\lambda_B)}{\sum_{k\in B}\exp(V_k/\lambda_B)},\quad
+P(B) = \frac{\exp(\lambda_BI_B)}{\sum_{C}\exp(\lambda_CI_C)},
+$$
+con el **valor inclusivo** $I_B = \log\sum_{k\in B}\exp(V_k/\lambda_B)$ y el **parámetro de disimilitud** $\lambda_B\in(0,1]$.
+
+El parámetro $\lambda_B$ mide qué tan *independientes* son las alternativas dentro del nido: $1 - \lambda_B$ es aproximadamente la correlación de los errores. Si $\lambda_B = 1$ para todo nido, el modelo se reduce al logit multinomial. Para $\lambda_B\in(0,1)$ las alternativas del mismo nido son más sustitutas entre sí que con las de fuera, lo que **rompe la IIA entre nidos** (aunque la mantiene dentro de cada nido). Es consistente con maximización de utilidad aleatoria si y solo si $\lambda_B\in(0,1]$ (McFadden, 1978).
+
+::: {#exm-bus-anidado}
+## El bus azul con logit anidado
+Con las tres utilidades $V = 0$ y el nido $B = \{\text{rojo},\text{azul}\}$ (el auto queda solo), el valor inclusivo es $I_B = \log(e^{0} + e^{0}) = \log2$, y $P(B) = \dfrac{2^{\lambda}}{2^\lambda + 1}$ (el nido solitario del auto aporta $e^0 = 1$). Si $\lambda = 1$ (logit): $P(B) = \tfrac23$, el auto tiene $\tfrac13$ (el mal resultado de antes). Si $\lambda\to0$ (los dos buses son sustitutos perfectos): $P(B)\to\tfrac12$ y el auto conserva $\tfrac12$, **la intuición correcta**. El parámetro $\lambda$, estimado de los datos, decide dónde cae el modelo entre estos dos extremos.
+:::
+
+Se estima por MV completa (FIML, estimando todos los parámetros a la vez; es el procedimiento eficiente) o por **dos etapas**: primero los parámetros de la elección dentro de cada nido (un logit condicional por nido), luego se arma el valor inclusivo y se estiman los parámetros entre nidos. Es más fácil de implementar, pero ineficiente y con errores estándar que necesitan corrección. La dificultad práctica: **hay que decidir los nidos a priori**, y el resultado puede depender de esa elección.
+
+Si ni siquiera el logit anidado alcanza (patrones de sustitución complejos, heterogeneidad en las preferencias), hay alternativas más flexibles, como el *logit de coeficientes aleatorios* (mixed logit) y el probit multinomial, que se estiman por simulación (Clase 13).
+
+# Respuesta ordenada
+
+Si las categorías $y\in\{1,\dots,J\}$ tienen **orden** (pero no distancias cardinales conocidas), el logit multinomial desperdicia información: ignora que "muy satisfecho" está más cerca de "satisfecho" que de "insatisfecho". El modelo ordenado usa una **variable latente** continua $y^*$ y **umbrales** $\kappa_1<\dots<\kappa_{J-1}$:
+$$
+y^* = x'\beta + \varepsilon,\qquad y = j\iff\kappa_{j-1}<y^*\le\kappa_j,\qquad\kappa_0 = -\infty,\ \kappa_J = +\infty,
+$$
+con $\varepsilon\sim F$ (normal: probit ordenado; logística: logit ordenado). Entonces
+$$
+P(y = j\mid x) = F(\kappa_j - x'\beta) - F(\kappa_{j-1} - x'\beta).
+$$ {#eq-ordenado}
+
+Con $J = 2$ es el modelo binario de la Clase 5 (con $\kappa_1 = -\beta_0$). Hay que fijar la ubicación y la escala: no puede haber constante en $x$ (la absorben los umbrales) y la varianza de $\varepsilon$ se normaliza.
+
+El efecto marginal de $x_l$ sobre $P(y = j)$ es, derivando @eq-ordenado,
+$$
+\frac{\partial P(y = j\mid x)}{\partial x_l} = -\beta_l\big[f(\kappa_j - x'\beta) - f(\kappa_{j-1} - x'\beta)\big].
+$$
+Esto tiene una consecuencia interesante: **en las categorías extremas** el signo es claro (si $\beta_l>0$, sube la probabilidad de la categoría más alta, $j = J$, y baja la de la más baja, $j = 1$), pero **en las categorías intermedias el signo es ambiguo**, pues depende de la diferencia entre dos densidades. Si $\beta_l>0$, el efecto sobre una categoría intermedia puede ser positivo o negativo según $x$.
+
+En el **logit ordenado**, $\log\dfrac{P(y\le j)}{P(y>j)} = \kappa_j - x'\beta$ para todo $j$: el mismo $\beta$ en todas las "regresiones acumuladas". Es el supuesto de **odds proporcionales** (o de regresiones paralelas), que se testea comparando los $J-1$ logits binarios $\mathbf{1}\{y>j\}$ (test de Brant). Si falla, un modelo ordenado es inapropiado y se pasa a modelos generalizados con coeficientes por categoría.
+
+# ★ Postgrado: la utilidad esperada máxima y el valor inclusivo
+
+::: {.callout-important title="★ Postgrado"}
+El máximo de utilidades Gumbel también es Gumbel. Esta propiedad explica el *valor inclusivo* del logit anidado y da una medida de bienestar de la elección.
+:::
+
+::: {#prp-logsum}
+## El máximo de Gumbels
+Sean $U_k = V_k + \varepsilon_k$ con $\varepsilon_k$ i.i.d. Gumbel. Entonces $\max_kU_k$ tiene distribución Gumbel desplazada: $P(\max_kU_k\le t) = \exp\big(-e^{-(t - m)}\big)$ con $m = \log\sum_ke^{V_k}$. En particular
+$$
+\mathbb{E}\Big[\max_kU_k\Big] = \log\sum_ke^{V_k} + \gamma_E,
+$$
+con $\gamma_E\approx0{,}5772$ la constante de Euler–Mascheroni.
+:::
+
+::: {.proof}
+$P(\max_kU_k\le t) = \prod_kP(\varepsilon_k\le t - V_k) = \prod_k\exp(-e^{-t}e^{V_k}) = \exp\big(-e^{-t}\sum_ke^{V_k}\big)$. Escribiendo $\sum_ke^{V_k} = e^m$, esto es $\exp(-e^{-(t - m)})$, la distribución de $m + \varepsilon$ con $\varepsilon$ Gumbel estándar, cuya media es $\gamma_E$.
+:::
+
+Entonces $\log\sum_ke^{V_k}$ (el *logsum*) es la utilidad esperada **de poder elegir** entre las alternativas, salvo una constante. Su variación ante un cambio de política (agregar una línea de metro, cambiar un precio) es una medida de **bienestar** del consumidor, dividida por la utilidad marginal del ingreso: la manera estándar de evaluar proyectos de transporte con modelos de elección discreta. El valor inclusivo $I_B$ del logit anidado es exactamente el logsum del nido $B$ (escalado por $\lambda_B$), y por eso el nido entero se comporta como una "alternativa compuesta" cuya utilidad es el máximo de sus miembros.
+
+# Resumen
+
+- **Utilidad aleatoria:** $U_{ij} = V_{ij} + \varepsilon_{ij}$, elección de la máxima. Con errores Gumbel i.i.d. se obtiene el **logit** $P_{ij} = e^{V_{ij}}/\sum_ke^{V_{ik}}$ (@thm-mnl).
+- Solo importan las **diferencias** de utilidad: hay que normalizar una alternativa base.
+- Efecto marginal: $P_j(\beta_j - \sum_kP_k\beta_k)$, cuyo signo puede diferir del de $\beta_j$.
+- **IIA:** $P_j/P_k$ no depende de las demás alternativas; implica sustitución proporcional (@prp-elasticidad) y el problema del bus azul.
+- **Logit anidado:** agrupa alternativas parecidas; $\lambda\in(0,1]$; rompe IIA entre nidos.
+- **Ordenado:** variable latente con umbrales; efectos marginales ambiguos en categorías intermedias.
+
+# Ejercicios
+
+**Ejercicio 6.1.** Un logit multinomial con 3 alternativas tiene utilidades sistemáticas $V_0 = 0$, $V_1 = 1$, $V_2 = 2$. Calcula las probabilidades. ¿Qué pasa con ellas si se suma $10$ a las tres utilidades?
+
+::: {.callout-tip collapse="true" title="Solución 6.1"}
+$e^0 = 1$, $e^1 = 2{,}718$, $e^2 = 7{,}389$; suma $= 11{,}107$. $P_0 = 0{,}090$, $P_1 = 0{,}245$, $P_2 = 0{,}665$ (suman 1). Sumar $10$ multiplica numerador y denominador por $e^{10}$ y las probabilidades **no cambian**: solo importan las diferencias de utilidad. Es la razón de la normalización de una alternativa base.
+:::
+
+**Ejercicio 6.2.** Con $V_j = x\beta_j$, $\beta = (\beta_0,\beta_1,\beta_2) = (0,\,1,\,3)$ y $x = 0$, calcula $P_j$ y el efecto marginal $\partial P_1/\partial x$. ¿Tiene el mismo signo que $\beta_1$?
+
+::: {.callout-tip collapse="true" title="Solución 6.2"}
+En $x = 0$ todas las utilidades son $0$, $P_j = \tfrac13$. $\sum_kP_k\beta_k = (0 + 1 + 3)/3 = \tfrac43$. $\partial P_1/\partial x = P_1(\beta_1 - \tfrac43) = \tfrac13(1 - \tfrac43) = -\tfrac19<0$. **Signo contrario a $\beta_1 = 1>0$**: la alternativa 1 tiene un coeficiente positivo, pero la alternativa 2 tiene uno mucho mayor y le roba más gente que la que la propia $x$ le aporta.
+:::
+
+**Ejercicio 6.3.** En un logit condicional con tres alternativas, $P = (0{,}5;\,0{,}3;\,0{,}2)$ y un coeficiente de precio $\gamma = -2$ (con precio $z_k = 1$ en todas), calcula las elasticidades cruzadas $\partial\log P_j/\partial\log z_k$ para $k = 1$ y $j = 2,3$. Comenta.
+
+::: {.callout-tip collapse="true" title="Solución 6.3"}
+Por la @prp-elasticidad, $-\gamma z_kP_k = 2\cdot1\cdot0{,}5 = 1$ para ambos $j = 2$ y $j = 3$. Si el precio de la alternativa 1 sube 1 %, **las probabilidades de 2 y 3 suben ambas 1 %**, aunque la alternativa 2 pudiera ser un sustituto mucho más cercano. Eso es la sustitución proporcional: un resultado mecánico del modelo, no un hallazgo de los datos.
+:::
+
+**Ejercicio 6.4.** (Bus azul.) En el @exm-bus-anidado, calcula $P(\text{auto})$ y $P(\text{rojo})$ para $\lambda = 0{,}5$.
+
+::: {.callout-tip collapse="true" title="Solución 6.4"}
+$P(B) = 2^{0{,}5}/(2^{0{,}5} + 1) = 1{,}414/2{,}414 = 0{,}586$, así que $P(\text{auto}) = 0{,}414$. Dentro del nido, las utilidades de rojo y azul son iguales: $P(\text{rojo}\mid B) = \tfrac12$ y $P(\text{rojo}) = 0{,}293$. Entre los extremos: $\lambda = 1$ da $\tfrac13$ para el auto y $\lambda\to0$ da $\tfrac12$. Con $\lambda = 0{,}5$ el auto retiene 41,4 % del mercado.
+:::
+
+**Ejercicio 6.5.** En un probit ordenado con $J = 3$ categorías, umbrales $\kappa_1 = 0$, $\kappa_2 = 1$ y $x'\beta = 0{,}5$, calcula $P(y = 1),P(y = 2),P(y = 3)$. (Usa $\Phi(-0{,}5) = 0{,}309$, $\Phi(0{,}5) = 0{,}691$.)
+
+::: {.callout-tip collapse="true" title="Solución 6.5"}
+$P(y = 1) = \Phi(\kappa_1 - x'\beta) = \Phi(-0{,}5) = 0{,}309$. $P(y = 2) = \Phi(\kappa_2 - x'\beta) - \Phi(\kappa_1 - x'\beta) = \Phi(0{,}5) - \Phi(-0{,}5) = 0{,}691 - 0{,}309 = 0{,}382$. $P(y = 3) = 1 - \Phi(0{,}5) = 0{,}309$. Suman 1. Si $\beta>0$ y sube $x$: $P(y = 1)$ baja, $P(y = 3)$ sube, y $P(y = 2)$ sube o baja según $\phi(\kappa_2 - x'\beta)$ vs $\phi(\kappa_1 - x'\beta)$: aquí $\phi(0{,}5) = \phi(-0{,}5)$ y el efecto marginal sobre la categoría del medio es **cero** en este punto.
+:::
+
+**Ejercicio 6.6.** Demuestra la fórmula de efecto marginal del modelo ordenado y muestra que $\sum_j\partial P(y = j)/\partial x_l = 0$.
+
+::: {.callout-tip collapse="true" title="Solución 6.6"}
+$P_j = F(\kappa_j - x'\beta) - F(\kappa_{j-1} - x'\beta)$. Derivando respecto de $x_l$: $\partial P_j/\partial x_l = -\beta_lf(\kappa_j - x'\beta) + \beta_lf(\kappa_{j-1} - x'\beta)$. Al sumar sobre $j = 1,\dots,J$, la suma es telescópica: $-\beta_l[f(\kappa_J - x'\beta) - f(\kappa_0 - x'\beta)] = -\beta_l[f(+\infty) - f(-\infty)] = 0$, porque $f$ se anula en $\pm\infty$. Las probabilidades suman uno y los efectos marginales también deben sumar cero.
+:::
+
+**Ejercicio 6.7 ★.** Demuestra que en el logit multinomial, $\mathbb{E}[\max_kU_k]$ cambia por $\log\big(\sum_ke^{V_k'}\big) - \log\big(\sum_ke^{V_k}\big)$ al pasar de $V$ a $V'$, y úsalo: un proyecto sube la utilidad del metro ($V_1$) en $\delta$. Escribe el cambio de bienestar en términos de las probabilidades iniciales y aproxima para $\delta$ chico.
+
+::: {.callout-tip collapse="true" title="Solución 6.7 ★"}
+Por la @prp-logsum, el cambio es la diferencia de los logsums (la constante de Euler se cancela). Si solo cambia $V_1\to V_1 + \delta$: $\Delta = \log\big(\sum_ke^{V_k} + e^{V_1}(e^\delta - 1)\big) - \log\sum_ke^{V_k} = \log\big(1 + P_1(e^\delta - 1)\big)$, con $P_1$ la probabilidad inicial. Para $\delta$ chico, $e^\delta - 1\approx\delta$ y $\log(1 + x)\approx x$: $\Delta\approx P_1\delta$. El beneficio por individuo es la **mejora de utilidad de la alternativa ponderada por la probabilidad con que se la usa**: solo quienes eligen el metro se benefician al primer orden.
+:::

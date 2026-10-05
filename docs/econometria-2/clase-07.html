@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Modelos para variables de conteo (Poisson, binomial negativa, sobredispersión, QMLE de Poisson) y para tiempos hasta un evento (función de riesgo, censura, modelo de riesgos proporcionales y verosimilitud parcial de Cox).">
+
+<title>Clase 7 · Conteo y duración – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-06.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-07.html">Clase 7 · Conteo y duración</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#dos-tipos-de-variable-que-mco-no-entiende" id="toc-dos-tipos-de-variable-que-mco-no-entiende" class="nav-link active" data-scroll-target="#dos-tipos-de-variable-que-mco-no-entiende"><span class="header-section-number">1</span> Dos tipos de variable que MCO no entiende</a></li>
+  <li><a href="#parte-a-variables-de-conteo" id="toc-parte-a-variables-de-conteo" class="nav-link" data-scroll-target="#parte-a-variables-de-conteo"><span class="header-section-number">2</span> Parte A: variables de conteo</a>
+  <ul class="collapse">
+  <li><a href="#el-modelo-de-poisson" id="toc-el-modelo-de-poisson" class="nav-link" data-scroll-target="#el-modelo-de-poisson"><span class="header-section-number">2.1</span> El modelo de Poisson</a></li>
+  <li><a href="#el-problema-equidispersión" id="toc-el-problema-equidispersión" class="nav-link" data-scroll-target="#el-problema-equidispersión"><span class="header-section-number">2.2</span> El problema: equidispersión</a></li>
+  <li><a href="#poisson-como-estimador-de-cuasi-máxima-verosimilitud" id="toc-poisson-como-estimador-de-cuasi-máxima-verosimilitud" class="nav-link" data-scroll-target="#poisson-como-estimador-de-cuasi-máxima-verosimilitud"><span class="header-section-number">2.3</span> Poisson como estimador de cuasi-máxima verosimilitud</a></li>
+  <li><a href="#binomial-negativa" id="toc-binomial-negativa" class="nav-link" data-scroll-target="#binomial-negativa"><span class="header-section-number">2.4</span> Binomial negativa</a></li>
+  <li><a href="#otros-modelos-de-conteo" id="toc-otros-modelos-de-conteo" class="nav-link" data-scroll-target="#otros-modelos-de-conteo"><span class="header-section-number">2.5</span> Otros modelos de conteo</a></li>
+  </ul></li>
+  <li><a href="#parte-b-duraciones" id="toc-parte-b-duraciones" class="nav-link" data-scroll-target="#parte-b-duraciones"><span class="header-section-number">3</span> Parte B: duraciones</a>
+  <ul class="collapse">
+  <li><a href="#función-de-supervivencia-y-de-riesgo" id="toc-función-de-supervivencia-y-de-riesgo" class="nav-link" data-scroll-target="#función-de-supervivencia-y-de-riesgo"><span class="header-section-number">3.1</span> Función de supervivencia y de riesgo</a></li>
+  <li><a href="#censura-y-verosimilitud" id="toc-censura-y-verosimilitud" class="nav-link" data-scroll-target="#censura-y-verosimilitud"><span class="header-section-number">3.2</span> Censura y verosimilitud</a></li>
+  <li><a href="#riesgos-proporcionales-y-el-modelo-de-cox" id="toc-riesgos-proporcionales-y-el-modelo-de-cox" class="nav-link" data-scroll-target="#riesgos-proporcionales-y-el-modelo-de-cox"><span class="header-section-number">3.3</span> Riesgos proporcionales y el modelo de Cox</a></li>
+  </ul></li>
+  <li><a href="#postgrado-cox-como-verosimilitud-perfilada" id="toc-postgrado-cox-como-verosimilitud-perfilada" class="nav-link" data-scroll-target="#postgrado-cox-como-verosimilitud-perfilada"><span class="header-section-number">4</span> ★ Postgrado: Cox como verosimilitud perfilada</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">5</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">6</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-07.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 7 · Conteo y duración</h1>
+<p class="subtitle lead">Poisson, binomial negativa, QMLE, función de riesgo y modelo de Cox</p>
+</div>
+
+<div>
+  <div class="description">
+    Modelos para variables de conteo (Poisson, binomial negativa, sobredispersión, QMLE de Poisson) y para tiempos hasta un evento (función de riesgo, censura, modelo de riesgos proporcionales y verosimilitud parcial de Cox).
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a></p>
+<section id="dos-tipos-de-variable-que-mco-no-entiende" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Dos tipos de variable que MCO no entiende</h1>
+<p>Hay dos clases de variables dependientes que son siempre no negativas y que se prestan mal al modelo lineal:</p>
+<ul>
+<li><strong>Conteos:</strong> <span class="math inline">\(y\in\{0,1,2,\dots\}\)</span>. Número de patentes de una empresa, visitas al médico en un año, accidentes en una intersección.</li>
+<li><strong>Duraciones:</strong> <span class="math inline">\(T&gt;0\)</span> continuo. Tiempo que dura un desempleo, tiempo hasta que un crédito cae en mora, tiempo de supervivencia de una empresa.</li>
+</ul>
+<p>Con un conteo, la media condicional debe ser <strong>positiva</strong> (no tiene sentido una predicción de <span class="math inline">\(-0{,}3\)</span> patentes), y la varianza crece con la media. Con una duración, la distribución es asimétrica y, peor, hay <strong>censura</strong>: al terminar la observación, algunos individuos todavía no experimentan el evento (siguen desempleados, el crédito sigue al día) y solo sabemos que <span class="math inline">\(T&gt;t_{\text{obs}}\)</span>. Hoy desarrollamos las herramientas para ambos.</p>
+</section>
+<section id="parte-a-variables-de-conteo" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Parte A: variables de conteo</h1>
+<section id="el-modelo-de-poisson" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-modelo-de-poisson"><span class="header-section-number">2.1</span> El modelo de Poisson</h2>
+<p>La distribución natural para un conteo es la de Poisson: <span class="math inline">\(P(y = k) = e^{-\mu}\mu^k/k!\)</span>, con <span class="math inline">\(\mathbb{E}[y] = \operatorname{Var}(y) = \mu\)</span>. Para incorporar regresores, necesitamos que <span class="math inline">\(\mu(x)&gt;0\)</span> siempre, así que se toma la forma exponencial: <span class="math display">\[
+\mu(x) = \mathbb{E}[y\mid x] = \exp(x'\beta).
+\]</span> La log-verosimilitud, el score y el hessiano son <span class="math display">\[
+\ell_n(\beta) = \sum_i\big[y_ix_i'\beta - e^{x_i'\beta} - \log y_i!\big],\quad
+S(\beta) = \sum_i(y_i - \mu_i)x_i,\quad
+\nabla^2\ell_n = -\sum_i\mu_ix_ix_i'.
+\]</span> El hessiano es definido negativo (como en el logit): <span class="math inline">\(\ell_n\)</span> es globalmente cóncava y Newton–Raphson funciona sin problemas. La interpretación es muy natural: <span class="math inline">\(\partial\log\mu/\partial x_j = \beta_j\)</span>. El coeficiente es una <strong>semielasticidad</strong>: una unidad más de <span class="math inline">\(x_j\)</span> multiplica la media por <span class="math inline">\(e^{\beta_j}\)</span>, lo que equivale, aproximadamente, a un cambio porcentual de <span class="math inline">\(100\beta_j\)</span> (si <span class="math inline">\(\beta_j\)</span> es chico). El efecto marginal en niveles es <span class="math inline">\(\partial\mu/\partial x_j = \mu\beta_j\)</span>, que depende de <span class="math inline">\(x\)</span>.</p>
+<p>La condición de primer orden <span class="math inline">\(\sum_i(y_i - \hat\mu_i)x_i = 0\)</span> implica, con una constante, <span class="math inline">\(\sum\hat\mu_i = \sum y_i\)</span> (el promedio ajustado coincide con el promedio de los datos), y lo mismo grupo a grupo para cada dummy incluida.</p>
+</section>
+<section id="el-problema-equidispersión" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="el-problema-equidispersión"><span class="header-section-number">2.2</span> El problema: equidispersión</h2>
+<p>El modelo de Poisson impone <span class="math inline">\(\operatorname{Var}(y\mid x) = \mathbb{E}[y\mid x]\)</span> (<strong>equidispersión</strong>). En los datos reales casi siempre ocurre <strong>sobredispersión</strong>, <span class="math inline">\(\operatorname{Var}&gt;\mathbb{E}\)</span>, porque hay heterogeneidad no observada: dos individuos con las mismas <span class="math inline">\(x\)</span> no tienen la misma media. Si ignoramos esto, ¿qué se rompe? Veamos que <strong>menos de lo que se cree</strong>.</p>
+</section>
+<section id="poisson-como-estimador-de-cuasi-máxima-verosimilitud" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="poisson-como-estimador-de-cuasi-máxima-verosimilitud"><span class="header-section-number">2.3</span> Poisson como estimador de cuasi-máxima verosimilitud</h2>
+<div id="thm-poisson-qmle" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Consistencia del QMLE de Poisson)</strong></span> Si <span class="math inline">\(\mathbb{E}[y\mid x] = \exp(x'\beta_0)\)</span> (la media está bien especificada), el estimador de Poisson <span class="math inline">\(\hat\beta\)</span> es consistente para <span class="math inline">\(\beta_0\)</span> y asintóticamente normal <strong>sin importar cuál sea la distribución de <span class="math inline">\(y\)</span> condicional en <span class="math inline">\(x\)</span></strong>: <span class="math display">\[
+\sqrt n(\hat\beta - \beta_0)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),
+\quad A = -\mathbb{E}[\mu xx'],\quad B = \mathbb{E}\big[\operatorname{Var}(y\mid x)\,xx'\big],
+\]</span> con <span class="math inline">\(\mu = \exp(x'\beta_0)\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Por la Clase 1 solo tengo que verificar que el score tenga media cero en <span class="math inline">\(\beta_0\)</span> (consistencia, vía identificación) y calcular <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span>. El score es <span class="math inline">\((y - \mu)x\)</span>, con esperanza condicional <span class="math inline">\((\mathbb{E}[y\mid x] - \mu)x = 0\)</span> si la media está bien especificada. <strong>No hace falta que <span class="math inline">\(y\)</span> sea Poisson</strong>: la verosimilitud de Poisson es “mala” pero su condición de primer orden poblacional solo depende de la media. Eso es lo que hace que sea un buen QMLE. Para <span class="math inline">\(B\)</span>, basta calcular <span class="math inline">\(\mathbb{E}[(y - \mu)^2xx'] = \mathbb{E}[\operatorname{Var}(y\mid x)xx']\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>El criterio <span class="math inline">\(m(y,x,\beta) = yx'\beta - e^{x'\beta}\)</span> cumple <span class="math inline">\(\nabla m = (y - e^{x'\beta})x\)</span> y <span class="math inline">\(\nabla^2m = -e^{x'\beta}xx'\)</span>.</p>
+<p><em>Media cero del score en <span class="math inline">\(\beta_0\)</span>:</em> <span class="math inline">\(\mathbb{E}[(y - \mu)x] = \mathbb{E}\big[x\,\mathbb{E}[y - \mu\mid x]\big] = 0\)</span> pues la media condicional es <span class="math inline">\(\mu\)</span> por supuesto.</p>
+<p><em>Identificación:</em> <span class="math inline">\(Q_0(\beta) = \mathbb{E}[yx'\beta - e^{x'\beta}] = \mathbb{E}[\mu\,x'\beta - e^{x'\beta}]\)</span>, que es estrictamente cóncava en <span class="math inline">\(\beta\)</span> (si <span class="math inline">\(\mathbb{E}[xx']\succ0\)</span>) y tiene derivada cero en <span class="math inline">\(\beta_0\)</span> (el score tiene media cero ahí): <span class="math inline">\(\beta_0\)</span> es su único maximizador.</p>
+<p><em>Sándwich:</em> <span class="math inline">\(A = \mathbb{E}[\nabla^2m] = -\mathbb{E}[\mu xx']\)</span> y <span class="math inline">\(B = \mathbb{E}[(y - \mu)^2xx'] = \mathbb{E}[\operatorname{Var}(y\mid x)xx']\)</span>. El resto es el teorema de normalidad asintótica de la Clase 1, que vale con la concavidad global (Ejercicio 1.7 de la Clase 1) en lugar de compacidad.</p>
+</div>
+<p>Si además se cumple equidispersión, <span class="math inline">\(\operatorname{Var}(y\mid x) = \mu\)</span> y <span class="math inline">\(B = -A\)</span>: se recupera la varianza usual <span class="math inline">\(\mathcal{I}^{-1}\)</span>. Si no, la varianza correcta es el sándwich y <strong>los errores estándar “de manual” están mal</strong> (típicamente subestimados). Es la misma lección de la Clase 2: la consistencia depende de la media; la inferencia, de la varianza.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Recomendación práctica">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Recomendación práctica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Usa <strong>siempre</strong> errores estándar robustos (sándwich) con Poisson. Y no te limites a conteos: el QMLE de Poisson sirve para <strong>cualquier variable no negativa</strong> con media exponencial (ingresos, ventas, flujos comerciales), incluyendo variables con muchos ceros. Es el estimador que se prefiere hoy para las <em>ecuaciones de gravedad</em> del comercio internacional (Santos Silva y Tenreyro, 2006).</p>
+</div>
+</div>
+</section>
+<section id="binomial-negativa" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="binomial-negativa"><span class="header-section-number">2.4</span> Binomial negativa</h2>
+<p>Para modelar la sobredispersión explícitamente se agrega heterogeneidad no observada multiplicativa. Sea <span class="math inline">\(y\mid x,\nu\sim\text{Poisson}(\mu\nu)\)</span>, con <span class="math inline">\(\mu = e^{x'\beta}\)</span> y <span class="math inline">\(\nu\)</span> independiente de <span class="math inline">\(x\)</span>, con <span class="math inline">\(\mathbb{E}[\nu] = 1\)</span> y <span class="math inline">\(\operatorname{Var}(\nu) = \alpha\)</span> (típicamente gamma). Entonces:</p>
+<ul>
+<li><span class="math inline">\(\mathbb{E}[y\mid x] = \mathbb{E}\big[\mathbb{E}[y\mid x,\nu]\big] = \mu\,\mathbb{E}[\nu] = \mu\)</span>.</li>
+<li>Por la ley de la varianza total, <span class="math inline">\(\operatorname{Var}(y\mid x) = \mathbb{E}[\mu\nu] + \operatorname{Var}(\mu\nu) = \mu + \alpha\mu^2\)</span>.</li>
+</ul>
+<p>Con <span class="math inline">\(\nu\sim\text{Gamma}\)</span>, integrando <span class="math inline">\(\nu\)</span> queda la distribución <strong>binomial negativa</strong> (NB2), con <span class="math inline">\(\operatorname{Var} = \mu(1 + \alpha\mu)\)</span>. Si <span class="math inline">\(\alpha = 0\)</span> se vuelve Poisson. El parámetro <span class="math inline">\(\alpha\)</span> se estima por MV junto con <span class="math inline">\(\beta\)</span>. Observa algo importante: el score para <span class="math inline">\(\beta\)</span> en NB2 es <span class="math inline">\(\dfrac{y - \mu}{1 + \alpha\mu}x\)</span>, que tiene media cero <strong>siempre que <span class="math inline">\(\mathbb{E}[y\mid x] = \mu\)</span>, para cualquier valor de <span class="math inline">\(\alpha\)</span></strong>. Entonces la NB2 también es un QMLE consistente para <span class="math inline">\(\beta\)</span> aunque la distribución sea incorrecta, y gana eficiencia sobre Poisson si el término de varianza <span class="math inline">\(\mu + \alpha\mu^2\)</span> es correcto.</p>
+<p><strong>Test de sobredispersión (Cameron–Trivedi).</strong> Bajo <span class="math inline">\(H_0:\alpha = 0\)</span> y alternativa <span class="math inline">\(\operatorname{Var}(y\mid x) = \mu + \alpha\mu^2\)</span>: <span class="math inline">\(\mathbb{E}\big[(y - \mu)^2 - y\mid x\big] = \alpha\mu^2\)</span>. Se estima Poisson, se calcula <span class="math inline">\(\hat\mu_i\)</span>, y se regresa por MCO (sin constante) <span class="math inline">\(\dfrac{(y_i - \hat\mu_i)^2 - y_i}{\hat\mu_i}\)</span> sobre <span class="math inline">\(\hat\mu_i\)</span>; el test <span class="math inline">\(t\)</span> del coeficiente contrasta <span class="math inline">\(\alpha = 0\)</span>.</p>
+</section>
+<section id="otros-modelos-de-conteo" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="otros-modelos-de-conteo"><span class="header-section-number">2.5</span> Otros modelos de conteo</h2>
+<p>Muchos ceros (“más ceros de los que Poisson permite”): <strong>modelo de ceros inflados</strong> (una mezcla entre una masa en cero y una Poisson) o <strong>modelo de barrera</strong> (<em>hurdle</em>: primero un probit de si <span class="math inline">\(y&gt;0\)</span>, luego una Poisson truncada en cero para los positivos). Distintas ideas, mismas herramientas: MV de una densidad bien definida (Clases 1–3). Para exposición variable (cada unidad observada en períodos distintos), se agrega un <strong>offset</strong>: <span class="math inline">\(\mu_i = t_i\exp(x_i'\beta)\)</span>, con <span class="math inline">\(\log t_i\)</span> como regresor de coeficiente fijo en uno.</p>
+</section>
+</section>
+<section id="parte-b-duraciones" class="level1 page-columns page-full" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Parte B: duraciones</h1>
+<section id="función-de-supervivencia-y-de-riesgo" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="función-de-supervivencia-y-de-riesgo"><span class="header-section-number">3.1</span> Función de supervivencia y de riesgo</h2>
+<p>Sea <span class="math inline">\(T&gt;0\)</span> una duración con densidad <span class="math inline">\(f\)</span> y distribución <span class="math inline">\(F\)</span>. Definimos:</p>
+<ul>
+<li><strong>Función de supervivencia:</strong> <span class="math inline">\(S(t) = P(T&gt;t) = 1 - F(t)\)</span>.</li>
+<li><strong>Función de riesgo (<em>hazard</em>):</strong> <span class="math inline">\(\lambda(t) = \displaystyle\lim_{h\downarrow0}\frac{P(t\le T&lt;t + h\mid T\ge t)}{h} = \frac{f(t)}{S(t)}\)</span>.</li>
+<li><strong>Riesgo acumulado:</strong> <span class="math inline">\(\Lambda(t) = \int_0^t\lambda(s)\,ds\)</span>.</li>
+</ul>
+<p>El riesgo responde: <em>dado que el evento no ha ocurrido hasta <span class="math inline">\(t\)</span>, ¿con qué intensidad ocurre ahora?</em> (la probabilidad instantánea de salir del desempleo, dado que sigues desempleado). Es el objeto natural porque condiciona en la información disponible.</p>
+<div id="prp-hazard" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Identidades de supervivencia)</strong></span> <span class="math inline">\(\lambda(t) = -\dfrac{d\log S(t)}{dt}\)</span>, y por lo tanto <span class="math inline">\(S(t) = \exp\big(-\Lambda(t)\big)\)</span> y <span class="math inline">\(f(t) = \lambda(t)\exp\big(-\Lambda(t)\big)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Como <span class="math inline">\(f = -S'\)</span>, <span class="math inline">\(\lambda = f/S = -S'/S = -(\log S)'\)</span>. Integrando desde <span class="math inline">\(0\)</span> con <span class="math inline">\(S(0) = 1\)</span>: <span class="math inline">\(\log S(t) = -\int_0^t\lambda = -\Lambda(t)\)</span>. Luego <span class="math inline">\(f = \lambda S = \lambda e^{-\Lambda}\)</span>.</p>
+</div>
+<p>Tres ejemplos: <strong>exponencial</strong>, <span class="math inline">\(\lambda(t) = \lambda\)</span> constante (“sin memoria”; <span class="math inline">\(S = e^{-\lambda t}\)</span>); <strong>Weibull</strong>, <span class="math inline">\(\lambda(t) = \lambda\alpha t^{\alpha - 1}\)</span> (creciente si <span class="math inline">\(\alpha&gt;1\)</span>, decreciente si <span class="math inline">\(\alpha&lt;1\)</span>; <span class="math inline">\(S = e^{-\lambda t^\alpha}\)</span>); y <strong>riesgo no monótono</strong> (log-logística, que sube y luego baja).</p>
+</section>
+<section id="censura-y-verosimilitud" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="censura-y-verosimilitud"><span class="header-section-number">3.2</span> Censura y verosimilitud</h2>
+<p>Con censura por la derecha observamos <span class="math inline">\(t_i = \min(T_i,C_i)\)</span> (donde <span class="math inline">\(C_i\)</span> es el momento de censura) y el indicador <span class="math inline">\(\delta_i = \mathbf{1}\{T_i\le C_i\}\)</span> (1 si vimos el evento, 0 si fue censurado). Suponemos que la censura es <strong>no informativa</strong> (independiente de <span class="math inline">\(T_i\)</span> dado <span class="math inline">\(x_i\)</span>). Cada observación aporta:</p>
+<ul>
+<li>si <span class="math inline">\(\delta_i = 1\)</span>: la densidad <span class="math inline">\(f(t_i)\)</span>;</li>
+<li>si <span class="math inline">\(\delta_i = 0\)</span>: solo sabemos que <span class="math inline">\(T_i&gt;t_i\)</span>, o sea <span class="math inline">\(S(t_i)\)</span>.</li>
+</ul>
+<p>Entonces <span class="math inline">\(L = \prod_if(t_i)^{\delta_i}S(t_i)^{1-\delta_i}\)</span> y, usando la <a href="#prp-hazard" class="quarto-xref">Proposición&nbsp;1</a>, <span id="eq-lik-duracion"><span class="math display">\[
+\ell_n = \sum_i\big[\delta_i\log\lambda(t_i) - \Lambda(t_i)\big].
+\tag{1}\]</span></span> (Porque <span class="math inline">\(\log f = \log\lambda - \Lambda\)</span> y <span class="math inline">\(\log S = -\Lambda\)</span>.) Una observación censurada <strong>no se descarta</strong> (eso sesgaría hacia duraciones cortas) ni se trata como si el evento hubiera ocurrido en <span class="math inline">\(t_i\)</span>: aporta información parcial, que es exactamente <span class="math inline">\(S(t_i)\)</span>.</p>
+<div id="exm-exp-poisson" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (La exponencial censurada es una Poisson)</strong></span> Con riesgo exponencial <span class="math inline">\(\lambda(t\mid x) = \exp(x'\beta)\)</span>, <span class="math inline">\(\Lambda(t) = t\,e^{x'\beta}\)</span> y <a href="#eq-lik-duracion" class="quarto-xref">Ecuación&nbsp;1</a> queda <span class="math inline">\(\ell_n = \sum_i[\delta_ix_i'\beta - t_ie^{x_i'\beta}]\)</span>. Esto es <em>exactamente</em> la log-verosimilitud de Poisson de la Parte A con variable dependiente <span class="math inline">\(\delta_i\)</span> y <em>exposición</em> <span class="math inline">\(t_i\)</span> (offset <span class="math inline">\(\log t_i\)</span>), salvo constantes. Por lo tanto, el score es <span class="math inline">\(\sum_i(\delta_i - t_ie^{x_i'\beta})x_i\)</span> y todo el aparato de Poisson (incluida la concavidad) se aplica. La exponencial con censura es un modelo de conteo de eventos por unidad de tiempo expuesto.</p>
+</div>
+<p>Para la exponencial <em>sin</em> regresores, con <span class="math inline">\(d = \sum\delta_i\)</span> eventos y tiempo total expuesto <span class="math inline">\(\sum t_i\)</span>, el MV es <span class="math inline">\(\hat\lambda = d/\sum_it_i\)</span>: <strong>eventos por unidad de tiempo en riesgo</strong> (Ejercicio 7.5).</p>
+</section>
+<section id="riesgos-proporcionales-y-el-modelo-de-cox" class="level2 page-columns page-full" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="riesgos-proporcionales-y-el-modelo-de-cox"><span class="header-section-number">3.3</span> Riesgos proporcionales y el modelo de Cox</h2>
+<p>El modelo de regresión más usado para duraciones es el de <strong>riesgos proporcionales</strong> (Cox, 1972): <span class="math display">\[
+\lambda(t\mid x) = \lambda_0(t)\,\exp(x'\beta),
+\]</span> donde <span class="math inline">\(\lambda_0(t)\)</span> es un riesgo <strong>base</strong> que depende solo del tiempo y las covariables <strong>escalan</strong> el riesgo multiplicativamente. Si <span class="math inline">\(x_j\)</span> sube una unidad, el riesgo se multiplica por <span class="math inline">\(e^{\beta_j}\)</span> (la <strong>razón de riesgos</strong>, <em>hazard ratio</em>) en <strong>todo</strong> <span class="math inline">\(t\)</span>. Con <span class="math inline">\(\beta_j = 0{,}4\)</span>, <span class="math inline">\(e^{0{,}4} = 1{,}49\)</span>: el riesgo es 49 % mayor.</p>
+<p>Si elegimos una forma paramétrica para <span class="math inline">\(\lambda_0\)</span> (constante, Weibull) usamos MV con <a href="#eq-lik-duracion" class="quarto-xref">Ecuación&nbsp;1</a>. Pero la forma de <span class="math inline">\(\lambda_0\)</span> rara vez interesa y es fácil equivocarse. La idea brillante de Cox: <strong>estimar <span class="math inline">\(\beta\)</span> sin especificar <span class="math inline">\(\lambda_0\)</span></strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ordeno los eventos observados: <span class="math inline">\(t_{(1)}&lt;t_{(2)}&lt;\dots&lt;t_{(J)}\)</span> (sin empates). En <span class="math inline">\(t_{(j)}\)</span> hay un <strong>conjunto en riesgo</strong> <span class="math inline">\(R_j\)</span> (los individuos que aún no han tenido el evento ni han sido censurados). Pregunto: sabiendo que <em>alguien</em> en <span class="math inline">\(R_j\)</span> tiene el evento en <span class="math inline">\(t_{(j)}\)</span>, ¿cuál es la probabilidad de que sea justamente el individuo <span class="math inline">\(i_{(j)}\)</span> que observamos? Es el cociente de su riesgo sobre la suma de los riesgos en <span class="math inline">\(R_j\)</span>. Pero cada riesgo es <span class="math inline">\(\lambda_0(t_{(j)})e^{x_l'\beta}\)</span>, y <span class="math inline">\(\lambda_0(t_{(j)})\)</span> <strong>aparece en el numerador y en cada término del denominador y se cancela</strong>. Queda una probabilidad que depende solo de <span class="math inline">\(\beta\)</span>.</p>
+</div>
+</div>
+<p>La probabilidad condicional es <span class="math display">\[
+P\big(\text{falla }i_{(j)}\mid\text{falla alguien de }R_j\text{ en }t_{(j)}\big) = \frac{\lambda_0(t_{(j)})e^{x_{(j)}'\beta}}{\sum_{l\in R_j}\lambda_0(t_{(j)})e^{x_l'\beta}} = \frac{e^{x_{(j)}'\beta}}{\sum_{l\in R_j}e^{x_l'\beta}},
+\]</span> y la <strong>verosimilitud parcial de Cox</strong> es el producto sobre los eventos: <span class="math display">\[
+L_p(\beta) = \prod_{j=1}^J\frac{\exp(x_{(j)}'\beta)}{\sum_{l\in R_j}\exp(x_l'\beta)},\qquad
+S_p(\beta) = \sum_{j=1}^J\Big[x_{(j)} - \sum_{l\in R_j}w_{jl}(\beta)\,x_l\Big],\quad w_{jl} = \frac{e^{x_l'\beta}}{\sum_{m\in R_j}e^{x_m'\beta}}.
+\]</span> El score es una suma de “covariable observada <strong>menos</strong> covariable esperada bajo <span class="math inline">\(\beta\)</span> en el conjunto en riesgo”: una condición de ortogonalidad idéntica en espíritu a MCO. Cox (1975) mostró que <span class="math inline">\(\hat\beta\)</span>, el maximizador de <span class="math inline">\(L_p\)</span>, es consistente y asintóticamente normal con varianza dada por el inverso de la información parcial, aunque <span class="math inline">\(L_p\)</span> <strong>no es una verosimilitud</strong> (no es la densidad de nada) y los factores no son independientes; la demostración rigurosa usa la teoría de martingalas y procesos de conteo (Andersen y Gill, 1982), que supera el nivel del curso.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Los empates (varios eventos en el mismo instante) se manejan con aproximaciones (Breslow, Efron). Las covariables que varían en el tiempo se incorporan sin dificultad porque <span class="math inline">\(L_p\)</span> solo evalúa <span class="math inline">\(x_l\)</span> en cada tiempo de evento.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;El artículo de Cox de 1972, “Regression Models and Life-Tables”, es uno de los más citados de toda la estadística. El método llegó antes que su justificación completa: Cox formalizó la verosimilitud parcial en 1975 y la teoría general de martingalas llegó recién con Andersen y Gill en 1982. Es el orden inverso del ideal, pero bastante habitual en la historia de la estadística.</p></div></div><p>Una vez estimado <span class="math inline">\(\hat\beta\)</span> se puede recuperar el riesgo base acumulado con el estimador de <strong>Breslow</strong>, <span class="math inline">\(\hat\Lambda_0(t) = \sum_{t_{(j)}\le t}\Big[\sum_{l\in R_j}e^{x_l'\hat\beta}\Big]^{-1}\)</span>, que da curvas de supervivencia <span class="math inline">\(\hat S(t\mid x) = \exp\big(-\hat\Lambda_0(t)e^{x'\hat\beta}\big)\)</span>.</p>
+</section>
+</section>
+<section id="postgrado-cox-como-verosimilitud-perfilada" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> ★ Postgrado: Cox como verosimilitud perfilada</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La verosimilitud parcial de Cox no es un truco: es la verosimilitud completa en la que <strong>se concentra el riesgo base</strong> (se maximiza sobre él, dejando <span class="math inline">\(\beta\)</span> libre).</p>
+</div>
+</div>
+<div id="prp-cox-perfil" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Cox = verosimilitud perfilada sobre el riesgo base)</strong></span> Supón que <span class="math inline">\(\lambda_0\)</span> es una función escalonada que solo puede saltar en los tiempos de evento, con valores <span class="math inline">\(\lambda_j = \lambda_0(t_{(j)})\)</span>, y sin empates. Entonces el máximo de <a href="#eq-lik-duracion" class="quarto-xref">Ecuación&nbsp;1</a> respecto de <span class="math inline">\(\lambda_1,\dots,\lambda_J\)</span>, con <span class="math inline">\(\beta\)</span> fijo, es <span class="math inline">\(\log L_p(\beta) - J\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con riesgo acumulado individual <span class="math inline">\(\Lambda(t_i) = e^{x_i'\beta}\sum_{j:\,t_{(j)}\le t_i}\lambda_j\)</span> (el riesgo base sólo acumula en los tiempos de evento) y <span class="math inline">\(\log\lambda(t_i) = \log\lambda_0(t_i) + x_i'\beta\)</span>, <a href="#eq-lik-duracion" class="quarto-xref">Ecuación&nbsp;1</a> es <span class="math display">\[
+\ell_n = \sum_{j=1}^J\big[\log\lambda_j + x_{(j)}'\beta\big] - \sum_i\sum_{j:\,t_{(j)}\le t_i}\lambda_je^{x_i'\beta}.
+\]</span> La doble suma, intercambiando el orden, es <span class="math inline">\(\sum_j\lambda_jD_j\)</span> con <span class="math inline">\(D_j = \sum_{i:\,t_i\ge t_{(j)}}e^{x_i'\beta} = \sum_{l\in R_j}e^{x_l'\beta}\)</span>. Entonces <span class="math inline">\(\ell_n = \sum_j[\log\lambda_j + x_{(j)}'\beta - \lambda_jD_j]\)</span>, y cada <span class="math inline">\(\lambda_j\)</span> aparece solo en su propio término. La CPO es <span class="math inline">\(1/\lambda_j = D_j\)</span>, o sea <span class="math inline">\(\hat\lambda_j = 1/D_j\)</span> (¡el estimador de Breslow!). Reemplazando, <span class="math inline">\(\ell_n^{\text{perfil}} = \sum_j[-\log D_j + x_{(j)}'\beta - 1] = \sum_j\big[x_{(j)}'\beta - \log\sum_{l\in R_j}e^{x_l'\beta}\big] - J = \log L_p(\beta) - J\)</span>.</p>
+</div>
+<p>Por eso, maximizar <span class="math inline">\(L_p\)</span> equivale a maximizar la verosimilitud completa respecto de <span class="math inline">\(\beta\)</span> y de un riesgo base completamente libre. Es la forma moderna de ver el resultado de Cox: la verosimilitud parcial es “la verosimilitud con el riesgo base perfilado”.</p>
+</section>
+<section id="resumen" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Resumen</h1>
+<ul>
+<li><strong>Conteos:</strong> <span class="math inline">\(\mathbb{E}[y\mid x] = e^{x'\beta}\)</span>; el score de Poisson <span class="math inline">\(\sum(y - \mu)x\)</span> tiene media cero si la <strong>media</strong> está bien especificada: Poisson es un QMLE consistente aunque la distribución sea falsa (<a href="#thm-poisson-qmle" class="quarto-xref">Teorema&nbsp;1</a>). Usa errores robustos.</li>
+<li><strong>Sobredispersión:</strong> <span class="math inline">\(\operatorname{Var} = \mu + \alpha\mu^2\)</span> (binomial negativa); el test de Cameron–Trivedi usa una regresión auxiliar.</li>
+<li><strong>Duraciones:</strong> el riesgo <span class="math inline">\(\lambda(t)\)</span> determina todo: <span class="math inline">\(S = e^{-\Lambda}\)</span>, <span class="math inline">\(f = \lambda e^{-\Lambda}\)</span> (<a href="#prp-hazard" class="quarto-xref">Proposición&nbsp;1</a>). La censura se maneja con <span class="math inline">\(\ell = \sum[\delta\log\lambda - \Lambda]\)</span>.</li>
+<li>La exponencial censurada es una Poisson con <em>offset</em> (<a href="#exm-exp-poisson" class="quarto-xref">Ejemplo&nbsp;1</a>).</li>
+<li><strong>Cox:</strong> <span class="math inline">\(\lambda = \lambda_0(t)e^{x'\beta}\)</span>; la <strong>verosimilitud parcial</strong> elimina <span class="math inline">\(\lambda_0\)</span> y su máximo coincide con la verosimilitud perfilada (<a href="#prp-cox-perfil" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Ejercicios</h1>
+<p><strong>Ejercicio 7.1.</strong> En una regresión de Poisson con constante y una dummy <span class="math inline">\(d\)</span>, demuestra que <span class="math inline">\(\hat\mu\)</span> promedio en cada grupo (<span class="math inline">\(d = 0\)</span> y <span class="math inline">\(d = 1\)</span>) coincide con la media muestral de <span class="math inline">\(y\)</span> en ese grupo. ¿Cuánto vale <span class="math inline">\(e^{\hat\beta_d}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Las CPO son <span class="math inline">\(\sum_i(y_i - \hat\mu_i)x_i = 0\)</span> con <span class="math inline">\(x_i = (1,d_i)'\)</span>: <span class="math inline">\(\sum_i(y_i - \hat\mu_i) = 0\)</span> y <span class="math inline">\(\sum_{d_i = 1}(y_i - \hat\mu_i) = 0\)</span>. Como <span class="math inline">\(\hat\mu_i\)</span> solo toma dos valores (uno por grupo), <span class="math inline">\(\hat\mu_{(d)} = \bar y_{(d)}\)</span>, el promedio del grupo. Entonces <span class="math inline">\(e^{\hat\beta_0} = \bar y_{(0)}\)</span> y <span class="math inline">\(e^{\hat\beta_0 + \hat\beta_d} = \bar y_{(1)}\)</span>, así que <span class="math inline">\(e^{\hat\beta_d} = \bar y_{(1)}/\bar y_{(0)}\)</span>, la <strong>razón de promedios</strong>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.2.</strong> Los datos tienen <span class="math inline">\(\mathbb{E}[y] = \mu\)</span> y <span class="math inline">\(\operatorname{Var}(y) = 2\mu\)</span> (sobredispersión de factor 2), sin regresores salvo la constante. Estima por Poisson: <span class="math inline">\(\hat\beta_0 = \log\bar y\)</span>. Calcula la varianza asintótica verdadera de <span class="math inline">\(\hat\beta_0\)</span> y la que reportaría el programa si usa errores “de manual”. ¿Por cuánto se subestima el error estándar?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(x = 1\)</span>: <span class="math inline">\(A = -\mu\)</span>, <span class="math inline">\(B = \operatorname{Var}(y) = 2\mu\)</span>. Varianza verdadera: <span class="math inline">\(A^{-1}BA^{-1} = 2\mu/\mu^2 = 2/\mu\)</span>. La de manual es <span class="math inline">\(-A^{-1} = 1/\mu\)</span>. El error estándar de manual es <span class="math inline">\(\sqrt{1/\mu}\)</span> y el verdadero <span class="math inline">\(\sqrt{2/\mu}\)</span>: <strong>se subestima en un factor <span class="math inline">\(\sqrt2\approx1{,}41\)</span></strong> (el error estándar real es 41 % mayor). Como los <span class="math inline">\(t\)</span> salen <span class="math inline">\(\sqrt2\)</span> veces más grandes de lo que deberían, un coeficiente con <span class="math inline">\(t = 1{,}6\)</span> (no significativo) se vería como <span class="math inline">\(t = 2{,}3\)</span> (significativo). Por eso conviene siempre usar errores robustos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.3.</strong> Calcula <span class="math inline">\(\operatorname{Var}(y)\)</span> para el modelo de heterogeneidad multiplicativa con <span class="math inline">\(\mu = 2\)</span> y <span class="math inline">\(\alpha = 0{,}5\)</span>, y compara con Poisson. ¿Cuántas veces mayor es la varianza?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(y) = \mu + \alpha\mu^2 = 2 + 0{,}5\cdot4 = 4\)</span>. En Poisson sería <span class="math inline">\(\operatorname{Var} = \mu = 2\)</span>: la varianza es <strong>el doble</strong>. Con <span class="math inline">\(\mu = 10\)</span> y el mismo <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\operatorname{Var} = 10 + 50 = 60\)</span>, seis veces la de Poisson: la sobredispersión de NB2 crece con la media.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.4.</strong> Para el riesgo de Weibull <span class="math inline">\(\lambda(t) = \lambda\alpha t^{\alpha - 1}\)</span>, calcula <span class="math inline">\(\Lambda(t)\)</span>, <span class="math inline">\(S(t)\)</span> y <span class="math inline">\(f(t)\)</span>. Describe la forma del riesgo según <span class="math inline">\(\alpha\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Lambda(t) = \int_0^t\lambda\alpha s^{\alpha - 1}ds = \lambda t^\alpha\)</span>. <span class="math inline">\(S(t) = e^{-\lambda t^\alpha}\)</span>, <span class="math inline">\(f(t) = \lambda\alpha t^{\alpha - 1}e^{-\lambda t^\alpha}\)</span>. Si <span class="math inline">\(\alpha = 1\)</span> es la exponencial (riesgo constante); si <span class="math inline">\(\alpha&gt;1\)</span> el riesgo <strong>crece</strong> con <span class="math inline">\(t\)</span> (envejecimiento: componentes que se desgastan); si <span class="math inline">\(\alpha&lt;1\)</span> <strong>decrece</strong> (mortalidad infantil: el que sobrevive los primeros meses mejora sus chances).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.5.</strong> (Exponencial censurada.) Se observan 20 individuos durante un total de 50 años-persona, con 5 eventos y 15 censurados. Calcula el MV de <span class="math inline">\(\lambda\)</span> y su error estándar.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\ell(\lambda) = d\log\lambda - \lambda\sum t_i\)</span> con <span class="math inline">\(d = 5\)</span>, <span class="math inline">\(\sum t_i = 50\)</span>. CPO: <span class="math inline">\(d/\lambda = \sum t_i\Rightarrow\hat\lambda = 5/50 = 0{,}10\)</span> eventos por año-persona. Segunda derivada: <span class="math inline">\(-d/\lambda^2\)</span>; información observada <span class="math inline">\(= d/\hat\lambda^2\)</span>; <span class="math inline">\(\operatorname{Avar} = \hat\lambda^2/d = 0{,}01/5 = 0{,}002\)</span> y el error estándar es <span class="math inline">\(0{,}0447\)</span>. Nótese que el error estándar depende de <span class="math inline">\(d\)</span> (el número de <strong>eventos</strong>), no de <span class="math inline">\(n\)</span>: las observaciones censuradas contribuyen solo a través del tiempo total. Una IC de 95 % aproximado: <span class="math inline">\(0{,}10\pm1{,}96\cdot0{,}0447 = (0{,}012;\,0{,}188)\)</span>, muy ancho con apenas 5 eventos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.6.</strong> En un modelo de Cox para el riesgo de <strong>salir del empleo</strong>, el coeficiente de educación es <span class="math inline">\(\hat\beta_{\text{educ}} = -0{,}08\)</span> (por año adicional). Interpreta <span class="math inline">\(e^{\hat\beta}\)</span> y el efecto de 4 años más de educación.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(e^{-0{,}08} = 0{,}923\)</span>: cada año adicional de educación <strong>multiplica por 0,923</strong> el riesgo instantáneo de dejar el empleo, es decir lo reduce 7,7 %, en todo momento de la duración (supuesto de riesgos proporcionales). Cuatro años más: <span class="math inline">\(e^{-0{,}32} = 0{,}726\)</span>: el riesgo cae 27 %. Esto no dice que “la duración media aumente en 27 %”: con riesgos proporcionales el efecto sobre la duración esperada depende de la forma de <span class="math inline">\(\lambda_0\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.7 ★.</strong> (Logaritmar no es Poisson.) Sea <span class="math inline">\(y = \exp(x'\beta)\eta\)</span> con <span class="math inline">\(\mathbb{E}[\eta\mid x] = 1\)</span>. Muestra que, en general, la regresión por MCO de <span class="math inline">\(\log y\)</span> sobre <span class="math inline">\(x\)</span> <strong>no</strong> es consistente para los coeficientes de pendiente <span class="math inline">\(\beta\)</span> si <span class="math inline">\(\operatorname{Var}(\eta\mid x)\)</span> depende de <span class="math inline">\(x\)</span>, mientras que el QMLE de Poisson sí lo es.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\log y = x'\beta + \log\eta\)</span>, así que <span class="math inline">\(\mathbb{E}[\log y\mid x] = x'\beta + \mathbb{E}[\log\eta\mid x]\)</span>. Por la desigualdad de Jensen, <span class="math inline">\(\mathbb{E}[\log\eta\mid x]&lt;\log\mathbb{E}[\eta\mid x] = 0\)</span>, y en una aproximación de segundo orden, <span class="math inline">\(\mathbb{E}[\log\eta\mid x]\approx-\tfrac12\operatorname{Var}(\eta\mid x)\)</span>. Si la varianza de <span class="math inline">\(\eta\)</span> depende de <span class="math inline">\(x\)</span>, también el sesgo <span class="math inline">\(\mathbb{E}[\log\eta\mid x]\)</span>, y la regresión lineal de <span class="math inline">\(\log y\)</span> sobre <span class="math inline">\(x\)</span> captura <span class="math inline">\(x'\beta + c(x)\)</span> en lugar de <span class="math inline">\(x'\beta\)</span>: las pendientes quedan sesgadas. Con <span class="math inline">\(\operatorname{Var}(\eta\mid x)\)</span> constante, solo el intercepto se sesga y las pendientes sobreviven. En cambio, Poisson solo necesita <span class="math inline">\(\mathbb{E}[y\mid x] = e^{x'\beta}\)</span>, que se cumple porque <span class="math inline">\(\mathbb{E}[\eta\mid x] = 1\)</span> (<a href="#thm-poisson-qmle" class="quarto-xref">Teorema&nbsp;1</a>). Este es el argumento de Santos Silva y Tenreyro (2006) contra la práctica de linealizar con logaritmos las ecuaciones de gravedad. Además, <span class="math inline">\(\log y\)</span> no está definido si <span class="math inline">\(y = 0\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-06.html" class="pagination-link" aria-label="Clase 6 · Elección discreta II">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 6 · Elección discreta II</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Estimadores definidos como máximos de un criterio muestral: teorema de consistencia, ley de los grandes números uniforme, normalidad asintótica y varianza sándwich general.">
+
+<title>Clase 1 · Estimación por extremos – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-01.html">Clase 1 · Estimación por extremos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#una-sola-demostración-para-casi-todo" id="toc-una-sola-demostración-para-casi-todo" class="nav-link active" data-scroll-target="#una-sola-demostración-para-casi-todo"><span class="header-section-number">1</span> Una sola demostración para casi todo</a></li>
+  <li><a href="#ejemplos-ya-conoces-a-la-familia" id="toc-ejemplos-ya-conoces-a-la-familia" class="nav-link" data-scroll-target="#ejemplos-ya-conoces-a-la-familia"><span class="header-section-number">2</span> Ejemplos: ya conoces a la familia</a></li>
+  <li><a href="#consistencia" id="toc-consistencia" class="nav-link" data-scroll-target="#consistencia"><span class="header-section-number">3</span> Consistencia</a></li>
+  <li><a href="#normalidad-asintótica" id="toc-normalidad-asintótica" class="nav-link" data-scroll-target="#normalidad-asintótica"><span class="header-section-number">4</span> Normalidad asintótica</a></li>
+  <li><a href="#estimación-de-la-varianza-y-tests" id="toc-estimación-de-la-varianza-y-tests" class="nav-link" data-scroll-target="#estimación-de-la-varianza-y-tests"><span class="header-section-number">5</span> Estimación de la varianza y tests</a></li>
+  <li><a href="#cuando-la-información-importa-un-adelanto" id="toc-cuando-la-información-importa-un-adelanto" class="nav-link" data-scroll-target="#cuando-la-información-importa-un-adelanto"><span class="header-section-number">6</span> Cuando la información importa: un adelanto</a></li>
+  <li><a href="#postgrado-demostración-del-lema-de-lgn-uniforme" id="toc-postgrado-demostración-del-lema-de-lgn-uniforme" class="nav-link" data-scroll-target="#postgrado-demostración-del-lema-de-lgn-uniforme"><span class="header-section-number">7</span> ★ Postgrado: demostración del lema de LGN uniforme</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 1 · Estimación por extremos</h1>
+<p class="subtitle lead">Consistencia y normalidad asintótica de los M-estimadores</p>
+</div>
+
+<div>
+  <div class="description">
+    Estimadores definidos como máximos de un criterio muestral: teorema de consistencia, ley de los grandes números uniforme, normalidad asintótica y varianza sándwich general.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a></p>
+<section id="una-sola-demostración-para-casi-todo" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Una sola demostración para casi todo</h1>
+<p>En Econometría 1 demostramos que MCO es consistente y asintóticamente normal. Después vino la pregunta incómoda: ¿tengo que repetir toda la demostración para cada estimador nuevo? Para probit, para mínimos cuadrados no lineales, para la mediana, para GMM… La respuesta es que <strong>no</strong>. Casi todos los estimadores de la econometría son, en el fondo, el mismo objeto:</p>
+<p><span id="eq-m-estimador"><span class="math display">\[
+\hat\theta = \arg\max_{\theta\in\Theta}\ \hat Q_n(\theta),\qquad \hat Q_n(\theta) = \frac1n\sum_{i=1}^nm(w_i,\theta).
+\tag{1}\]</span></span></p>
+<p>Aquí <span class="math inline">\(w_i\)</span> son los datos de la observación <span class="math inline">\(i\)</span> (por ejemplo <span class="math inline">\((y_i, x_i)\)</span>), <span class="math inline">\(\theta\in\Theta\subset\mathbb{R}^p\)</span> es el parámetro, y <span class="math inline">\(m\)</span> es una función <strong>criterio</strong> que el econometrista elige. Hacemos la teoría una vez, para un <span class="math inline">\(m\)</span> cualquiera, y después cada estimador es un caso particular: basta calcular dos matrices.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;La idea es de Peter Huber (1964, 1967), que estudiaba estimadores robustos y quería una teoría que cubriera la mediana, la media y todo lo que hubiera entre ambas. La “M” es de <em>maximum-likelihood-type</em>. Los economistas los llaman también <em>estimadores por extremos</em> (Amemiya, 1985), que suena más serio y menos a nombre de producto de limpieza.</p></div></div><div class="callout callout-style-default callout-caution callout-titled" title="Notación y supuesto de muestreo">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Notación y supuesto de muestreo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En todo el curso, <span class="math inline">\(\{w_i\}_{i=1}^n\)</span> son i.i.d. salvo que se diga lo contrario (los paneles de la Clase 9 y las series de tiempo de Econometría 3 relajan esto). Escribimos <span class="math inline">\(\nabla\)</span> para el gradiente en <span class="math inline">\(\theta\)</span> (<span class="math inline">\(p\times1\)</span>) y <span class="math inline">\(\nabla^2\)</span> para el hessiano (<span class="math inline">\(p\times p\)</span>). Maximizamos; para minimizar, cambia el signo de <span class="math inline">\(m\)</span>. Usaremos sin demostrar lo de Econometría 1: LGN, TCL, Slutsky y método delta (Clase 6).</p>
+</div>
+</div>
+</section>
+<section id="ejemplos-ya-conoces-a-la-familia" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Ejemplos: ya conoces a la familia</h1>
+<div id="exm-familia" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Algunos M-estimadores)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><strong>Media:</strong> <span class="math inline">\(m(w,\theta) = -(w - \theta)^2\)</span>. El máximo de <span class="math inline">\(\hat Q_n\)</span> es <span class="math inline">\(\bar w\)</span>.</li>
+<li><strong>MCO:</strong> <span class="math inline">\(m(w,\theta) = -\tfrac12(y - x'\theta)^2\)</span>, con <span class="math inline">\(w = (y,x)\)</span>.</li>
+<li><strong>Mínimos cuadrados no lineales:</strong> <span class="math inline">\(m(w,\theta) = -\tfrac12\big(y - g(x,\theta)\big)^2\)</span>.</li>
+<li><strong>Máxima verosimilitud:</strong> <span class="math inline">\(m(w,\theta) = \log f(w;\theta)\)</span> (Clase 2).</li>
+<li><strong>Mediana:</strong> <span class="math inline">\(m(w,\theta) = -|w - \theta|\)</span>. ¡Ojo! Esta no es derivable: es la Clase 12.</li>
+<li><strong>GMM:</strong> el criterio es <span class="math inline">\(-\tfrac12 \bar g(\theta)'W\bar g(\theta)\)</span> con <span class="math inline">\(\bar g = \frac1n\sum g(w_i,\theta)\)</span>. No es un promedio, pero la teoría de esta clase se adapta (Clase 4).</li>
+</ol>
+</div>
+</section>
+<section id="consistencia" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Consistencia</h1>
+<p>La idea es la misma de toda la teoría asintótica: la muestra imita a la población. Si <span class="math inline">\(\hat Q_n(\theta)\)</span> se parece (para todo <span class="math inline">\(\theta\)</span> a la vez) a su <strong>análogo poblacional</strong> <span class="math inline">\(Q_0(\theta) = \mathbb{E}[m(w,\theta)]\)</span>, entonces los maximizadores también deberían parecerse. Para esto necesitamos dos cosas: que la convergencia sea <strong>uniforme</strong> y que <span class="math inline">\(Q_0\)</span> tenga un único máximo.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de consistencia (C)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de consistencia (C)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>C1 (compacidad):</strong> <span class="math inline">\(\Theta\)</span> es compacto.</li>
+<li><strong>C2 (continuidad y dominancia):</strong> <span class="math inline">\(m(w,\cdot)\)</span> es continua en <span class="math inline">\(\Theta\)</span> con probabilidad uno, y <span class="math inline">\(\mathbb{E}\big[\sup_{\theta\in\Theta}|m(w,\theta)|\big]&lt;\infty\)</span>.</li>
+<li><strong>C3 (identificación):</strong> existe un único <span class="math inline">\(\theta_0\in\Theta\)</span> que maximiza <span class="math inline">\(Q_0(\theta) = \mathbb{E}[m(w,\theta)]\)</span>.</li>
+</ul>
+</div>
+</div>
+<p>C3 es el supuesto con contenido económico: dice que los <strong>datos distinguen</strong> al parámetro verdadero de cualquier otro. Si falla, ningún tamaño de muestra te salva (Ejercicio 1.4). C1 y C2 son técnicos: C1 se puede relajar (si <span class="math inline">\(\hat Q_n\)</span> es cóncava, por ejemplo) y C2 se verifica casi siempre sin esfuerzo.</p>
+<div id="lem-ulln" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Ley de los grandes números uniforme)</strong></span> Bajo C1, C2 y muestreo i.i.d., <span class="math inline">\(Q_0\)</span> es continua y <span class="math inline">\(\sup_{\theta\in\Theta}\big|\hat Q_n(\theta) - Q_0(\theta)\big|\xrightarrow{p}0\)</span>.</p>
+</div>
+<p>La LGN de Econometría 1 dice que, <strong>para cada <span class="math inline">\(\theta\)</span> fijo</strong>, <span class="math inline">\(\hat Q_n(\theta)\to Q_0(\theta)\)</span>. Pero <span class="math inline">\(\hat\theta\)</span> es un punto <em>aleatorio</em> que se mueve con la muestra, así que necesitamos la convergencia simultánea en todo <span class="math inline">\(\Theta\)</span>. Demostramos el lema en la sección ★; por ahora lo usamos.</p>
+<div id="thm-consistencia-m" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Consistencia de M-estimadores)</strong></span> Bajo C1–C3 y muestreo i.i.d., <span class="math inline">\(\hat\theta\xrightarrow{p}\theta_0\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quiero mostrar que, para cualquier vecindad <span class="math inline">\(N\)</span> de <span class="math inline">\(\theta_0\)</span>, <span class="math inline">\(\hat\theta\in N\)</span> con probabilidad que tiende a uno. Fuera de <span class="math inline">\(N\)</span>, el máximo de <span class="math inline">\(Q_0\)</span> está <em>estrictamente</em> por debajo de <span class="math inline">\(Q_0(\theta_0)\)</span>: es aquí donde entran la identificación (único máximo) y la compacidad (el sup se alcanza en algún punto). Digamos que la brecha es <span class="math inline">\(\varepsilon &gt; 0\)</span>. Cuando <span class="math inline">\(\hat Q_n\)</span> está a menos de <span class="math inline">\(\varepsilon/2\)</span> de <span class="math inline">\(Q_0\)</span> en todas partes, ningún punto fuera de <span class="math inline">\(N\)</span> puede ganarle a <span class="math inline">\(\theta_0\)</span> en <span class="math inline">\(\hat Q_n\)</span>, así que el maximizador de <span class="math inline">\(\hat Q_n\)</span> tiene que estar dentro de <span class="math inline">\(N\)</span>. Y el lema dice que “estar a menos de <span class="math inline">\(\varepsilon/2\)</span> en todas partes” ocurre con probabilidad que tiende a uno.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(N\)</span> una vecindad abierta de <span class="math inline">\(\theta_0\)</span>. El conjunto <span class="math inline">\(\Theta\setminus N\)</span> es compacto (cerrado dentro de un compacto) y <span class="math inline">\(Q_0\)</span> es continua (<a href="#lem-ulln" class="quarto-xref">Lema&nbsp;1</a>), así que si <span class="math inline">\(\Theta\setminus N\)</span> no es vacío alcanza su máximo en algún <span class="math inline">\(\theta^*\in\Theta\setminus N\)</span>. Como <span class="math inline">\(\theta^*\ne\theta_0\)</span>, C3 implica <span class="math inline">\(Q_0(\theta^*)&lt;Q_0(\theta_0)\)</span>. Sea <span class="math inline">\(\varepsilon = Q_0(\theta_0) - Q_0(\theta^*)&gt;0\)</span>.</p>
+<p>Definamos el evento <span class="math inline">\(E_n = \{\sup_\Theta|\hat Q_n - Q_0|&lt;\varepsilon/2\}\)</span>. Por <a href="#lem-ulln" class="quarto-xref">Lema&nbsp;1</a>, <span class="math inline">\(P(E_n)\to1\)</span>. En <span class="math inline">\(E_n\)</span>, para todo <span class="math inline">\(\theta\in\Theta\setminus N\)</span>: <span class="math display">\[
+\hat Q_n(\theta) &lt; Q_0(\theta) + \tfrac\varepsilon2 \le Q_0(\theta^*) + \tfrac\varepsilon2 = Q_0(\theta_0) - \tfrac\varepsilon2 &lt; \hat Q_n(\theta_0).
+\]</span> Luego ningún <span class="math inline">\(\theta\notin N\)</span> puede maximizar <span class="math inline">\(\hat Q_n\)</span> (pues <span class="math inline">\(\theta_0\)</span> lo supera), es decir, <span class="math inline">\(\hat\theta\in N\)</span> en <span class="math inline">\(E_n\)</span>. Entonces <span class="math inline">\(P(\hat\theta\in N)\ge P(E_n)\to1\)</span>. Como <span class="math inline">\(N\)</span> era una vecindad arbitraria, <span class="math inline">\(\hat\theta\xrightarrow{p}\theta_0\)</span>.</p>
+</div>
+<p>Esta demostración funciona igual si <span class="math inline">\(\hat\theta\)</span> no maximiza exactamente <span class="math inline">\(\hat Q_n\)</span> sino que cumple <span class="math inline">\(\hat Q_n(\hat\theta)\ge\sup_\Theta\hat Q_n - o_p(1)\)</span>. Es importante en la práctica: los optimizadores numéricos paran en una tolerancia, no en el máximo exacto.</p>
+</section>
+<section id="normalidad-asintótica" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Normalidad asintótica</h1>
+<p>Con <span class="math inline">\(\hat\theta\to_p\theta_0\)</span> en mano, miramos más de cerca. Si <span class="math inline">\(\theta_0\)</span> es interior a <span class="math inline">\(\Theta\)</span>, entonces (con probabilidad que tiende a uno) <span class="math inline">\(\hat\theta\)</span> también lo es, y satisface la <strong>condición de primer orden</strong> <span class="math inline">\(\nabla\hat Q_n(\hat\theta) = 0\)</span>. La idea: linealizar esa condición alrededor de <span class="math inline">\(\theta_0\)</span>, como hicimos con el método delta.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de normalidad asintótica (N)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de normalidad asintótica (N)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>N1:</strong> <span class="math inline">\(\hat\theta\xrightarrow{p}\theta_0\)</span> y <span class="math inline">\(\theta_0\)</span> es un punto interior de <span class="math inline">\(\Theta\)</span>.</li>
+<li><strong>N2:</strong> <span class="math inline">\(m(w,\cdot)\)</span> es dos veces continuamente diferenciable en una vecindad <span class="math inline">\(\mathcal{N}\)</span> de <span class="math inline">\(\theta_0\)</span>.</li>
+<li><strong>N3:</strong> <span class="math inline">\(\mathbb{E}\|\nabla m(w,\theta_0)\|^2&lt;\infty\)</span>, y definimos <span class="math inline">\(B = \mathbb{E}\big[\nabla m(w,\theta_0)\nabla m(w,\theta_0)'\big]\)</span>.</li>
+<li><strong>N4:</strong> <span class="math inline">\(\mathbb{E}\big[\sup_{\theta\in\mathcal{N}}\|\nabla^2m(w,\theta)\|\big]&lt;\infty\)</span>, y <span class="math inline">\(A = \mathbb{E}\big[\nabla^2m(w,\theta_0)\big]\)</span> es <strong>invertible</strong>.</li>
+</ul>
+</div>
+</div>
+<p>La matriz <span class="math inline">\(A\)</span> (el hessiano esperado) mide <strong>cuánta curvatura</strong> tiene el criterio en el máximo; <span class="math inline">\(B\)</span> (la varianza del gradiente, o <em>score</em>) mide <strong>cuánto ruido</strong> hay en la condición de primer orden. Ya adivinas el resultado: la varianza es “ruido sobre curvatura al cuadrado”.</p>
+<div id="thm-normalidad-m" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Normalidad asintótica de M-estimadores)</strong></span> Bajo C1–C3 y N1–N4, <span class="math display">\[
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big).
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Escribo la condición de primer orden <span class="math inline">\(0 = \nabla\hat Q_n(\hat\theta)\)</span> y expando alrededor de <span class="math inline">\(\theta_0\)</span> con el teorema del valor medio: <span class="math inline">\(0 = \nabla\hat Q_n(\theta_0) + \nabla^2\hat Q_n(\bar\theta)(\hat\theta - \theta_0)\)</span>. Despejo: <span class="math inline">\(\sqrt n(\hat\theta - \theta_0) = -[\nabla^2\hat Q_n(\bar\theta)]^{-1}\sqrt n\,\nabla\hat Q_n(\theta_0)\)</span>. Dos piezas. El gradiente en <span class="math inline">\(\theta_0\)</span> es un promedio i.i.d.; si tiene media cero, el TCL le da una normal. El hessiano está evaluado en un punto intermedio <span class="math inline">\(\bar\theta\)</span> entre <span class="math inline">\(\hat\theta\)</span> y <span class="math inline">\(\theta_0\)</span>, que por consistencia converge a <span class="math inline">\(\theta_0\)</span>: si el hessiano es “continuo en promedio”, converge a <span class="math inline">\(A\)</span>. Slutsky pega las dos piezas. Falta una cosa: que el gradiente tenga media cero. Eso es la condición de primer orden <em>poblacional</em>.</p>
+</div>
+</div>
+<p>Primero, ese paso pendiente.</p>
+<div id="lem-score-cero" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 2 (El score tiene media cero)</strong></span> Bajo N1–N4 y C3, <span class="math inline">\(\mathbb{E}[\nabla m(w,\theta_0)] = 0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\theta_0\)</span> maximiza <span class="math inline">\(Q_0(\theta) = \mathbb{E}[m(w,\theta)]\)</span> y es interior, así que <span class="math inline">\(\nabla Q_0(\theta_0) = 0\)</span> siempre que <span class="math inline">\(Q_0\)</span> sea derivable. Por N4, <span class="math inline">\(\|\nabla m(w,\theta)\|\)</span> está dominado en <span class="math inline">\(\mathcal N\)</span> (integrando el hessiano a lo largo de un segmento y usando N3), así que se puede derivar dentro de la esperanza (teorema de convergencia dominada): <span class="math inline">\(\nabla Q_0(\theta_0) = \mathbb{E}[\nabla m(w,\theta_0)]\)</span>. Por lo tanto la esperanza del score es cero.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><strong>(del <a href="#thm-normalidad-m" class="quarto-xref">Teorema&nbsp;2</a>).</strong> Por N1, la probabilidad de que <span class="math inline">\(\hat\theta\)</span> esté en el interior de <span class="math inline">\(\mathcal N\)</span> tiende a uno, y en ese evento <span class="math inline">\(\nabla\hat Q_n(\hat\theta) = 0\)</span>. Aplicando el teorema del valor medio a cada componente del gradiente, existen puntos <span class="math inline">\(\bar\theta_j\)</span> en el segmento entre <span class="math inline">\(\hat\theta\)</span> y <span class="math inline">\(\theta_0\)</span> tales que <span class="math display">\[
+0 = \nabla\hat Q_n(\theta_0) + \tilde H_n(\hat\theta - \theta_0),
+\]</span> donde <span class="math inline">\(\tilde H_n\)</span> es la matriz cuya fila <span class="math inline">\(j\)</span> es la fila <span class="math inline">\(j\)</span> de <span class="math inline">\(\nabla^2\hat Q_n(\bar\theta_j)\)</span>.</p>
+<p><em>Paso 1: <span class="math inline">\(\tilde H_n\xrightarrow{p}A\)</span>.</em> Cada <span class="math inline">\(\bar\theta_j\xrightarrow{p}\theta_0\)</span> porque está entre <span class="math inline">\(\hat\theta\)</span> y <span class="math inline">\(\theta_0\)</span>. Por N2 y N4, el lema de ley de los grandes números uniforme (<a href="#lem-ulln" class="quarto-xref">Lema&nbsp;1</a> aplicado a las entradas de <span class="math inline">\(\nabla^2m\)</span> en una vecindad compacta de <span class="math inline">\(\theta_0\)</span>) da <span class="math inline">\(\sup_{\theta\in\mathcal N'}\|\nabla^2\hat Q_n(\theta) - \mathbb{E}[\nabla^2m(w,\theta)]\|\xrightarrow{p}0\)</span> y la función <span class="math inline">\(\theta\mapsto\mathbb{E}[\nabla^2m(w,\theta)]\)</span> es continua en <span class="math inline">\(\theta_0\)</span>. Entonces <span class="math inline">\(\nabla^2\hat Q_n(\bar\theta_j)\xrightarrow{p}A\)</span> (distancia a <span class="math inline">\(\mathbb{E}\nabla^2m(\bar\theta_j)\)</span> chica por la uniformidad; esta a su vez cercana a <span class="math inline">\(A\)</span> por continuidad), y lo mismo ocurre con la matriz <span class="math inline">\(\tilde H_n\)</span>.</p>
+<p><em>Paso 2: <span class="math inline">\(\sqrt n\nabla\hat Q_n(\theta_0)\xrightarrow{d}N(0,B)\)</span>.</em> Tenemos <span class="math inline">\(\sqrt n\nabla\hat Q_n(\theta_0) = \sqrt n\cdot\frac1n\sum_i\nabla m(w_i,\theta_0)\)</span>. Los sumandos son i.i.d., con media cero (<a href="#lem-score-cero" class="quarto-xref">Lema&nbsp;2</a>) y varianza <span class="math inline">\(B\)</span> finita (N3). Aplica el TCL multivariado.</p>
+<p><em>Paso 3.</em> Como <span class="math inline">\(A\)</span> es invertible y <span class="math inline">\(\tilde H_n\to_pA\)</span>, <span class="math inline">\(\tilde H_n\)</span> es invertible con probabilidad que tiende a uno y <span class="math inline">\(\tilde H_n^{-1}\to_pA^{-1}\)</span> (función continua). Despejando, <span class="math display">\[
+\sqrt n(\hat\theta - \theta_0) = -\tilde H_n^{-1}\sqrt n\nabla\hat Q_n(\theta_0)\xrightarrow{d}-A^{-1}N(0,B) = N\big(0, A^{-1}BA^{-1\prime}\big),
+\]</span> por Slutsky y el teorema de transformaciones lineales. Como <span class="math inline">\(A\)</span> es simétrica, <span class="math inline">\(A^{-1\prime} = A^{-1}\)</span>.</p>
+</div>
+<p>Dos observaciones sobre el resultado. Primero, <span class="math inline">\(A^{-1}BA^{-1}\)</span> se llama <strong>varianza sándwich</strong>: <span class="math inline">\(B\)</span> es el “relleno” entre dos “panes” <span class="math inline">\(A^{-1}\)</span>. Segundo, es la misma estructura de la Clase 7 de Econometría 1, como veremos ahora.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="¿Es $A$ negativa definida?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>¿Es <span class="math inline">\(A\)</span> negativa definida?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Como <span class="math inline">\(\theta_0\)</span> es un <em>máximo</em> de <span class="math inline">\(Q_0\)</span>, <span class="math inline">\(A\)</span> es semidefinida negativa; con <span class="math inline">\(A\)</span> invertible, es definida negativa. El signo no importa en la varianza (<span class="math inline">\(A^{-1}BA^{-1}\)</span> es invariante a <span class="math inline">\(A\to-A\)</span>), pero sí importa en la práctica: si tu hessiano numérico en <span class="math inline">\(\hat\theta\)</span> <strong>no</strong> es definido negativo, el optimizador no encontró un máximo y la matriz de varianzas que reportas no tiene sentido.</p>
+</div>
+</div>
+</section>
+<section id="estimación-de-la-varianza-y-tests" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Estimación de la varianza y tests</h1>
+<p>Para hacer inferencia estimamos <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> con sus análogos muestrales evaluados en <span class="math inline">\(\hat\theta\)</span>: <span class="math display">\[
+\hat A = \frac1n\sum_{i=1}^n\nabla^2m(w_i,\hat\theta),\qquad
+\hat B = \frac1n\sum_{i=1}^n\nabla m(w_i,\hat\theta)\nabla m(w_i,\hat\theta)',\qquad
+\widehat{\operatorname{Avar}}(\hat\theta) = \frac1n\hat A^{-1}\hat B\hat A^{-1}.
+\]</span> La consistencia de <span class="math inline">\(\hat A\)</span> y <span class="math inline">\(\hat B\)</span> se demuestra igual que la de <span class="math inline">\(\hat Q\)</span> y <span class="math inline">\(\hat\Omega\)</span> en la Clase 7 de Econometría 1: LGN uniforme más el hecho de que <span class="math inline">\(\hat\theta\to_p\theta_0\)</span>. Con ella, todo lo de inferencia sigue sin cambios: el error estándar de <span class="math inline">\(\hat\theta_j\)</span> es la raíz del elemento <span class="math inline">\((j,j)\)</span> de <span class="math inline">\(\widehat{\operatorname{Avar}}\)</span>, y para <span class="math inline">\(H_0:h(\theta_0) = 0\)</span>, con <span class="math inline">\(h\)</span> de dimensión <span class="math inline">\(q\)</span> y jacobiano <span class="math inline">\(H(\theta) = \partial h/\partial\theta'\)</span> de rango <span class="math inline">\(q\)</span>, el <strong>test de Wald</strong> <span class="math display">\[
+W = n\,h(\hat\theta)'\big[H(\hat\theta)\hat A^{-1}\hat B\hat A^{-1}H(\hat\theta)'\big]^{-1}h(\hat\theta)\xrightarrow{d}\chi^2_q
+\]</span> (método delta de la Clase 6 más el lema de la <span class="math inline">\(\chi^2\)</span> con la inversa de la varianza, Clase 5 de Econometría 1).</p>
+<div id="exm-mco-sandwich" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (MCO es un caso particular)</strong></span> Con <span class="math inline">\(m(w,\theta) = -\tfrac12(y - x'\theta)^2\)</span> tenemos <span class="math inline">\(\nabla m = x(y - x'\theta)\)</span> y <span class="math inline">\(\nabla^2m = -xx'\)</span>. En <span class="math inline">\(\theta_0=\beta\)</span>, el coeficiente de proyección lineal, <span class="math inline">\(\nabla m = xu\)</span>. Entonces <span class="math display">\[
+A = -\mathbb{E}[xx'],\qquad B = \mathbb{E}[u^2xx'],\qquad A^{-1}BA^{-1} = \mathbb{E}[xx']^{-1}\,\mathbb{E}[u^2xx']\,\mathbb{E}[xx']^{-1}.
+\]</span> Es exactamente la varianza sándwich de la Clase 7 de Econometría 1, y <span class="math inline">\(\hat A^{-1}\hat B\hat A^{-1}\)</span> es la fórmula de White. Todo lo que demostramos allí a mano era un caso del <a href="#thm-normalidad-m" class="quarto-xref">Teorema&nbsp;2</a>.</p>
+</div>
+<div id="exm-mcnl" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Mínimos cuadrados no lineales)</strong></span> Con <span class="math inline">\(m = -\tfrac12(y - g(x,\theta))^2\)</span> y <span class="math inline">\(u = y - g(x,\theta_0)\)</span>: <span class="math display">\[
+\nabla m = u\,\nabla g,\qquad \nabla^2m = -\nabla g\nabla g' + u\,\nabla^2g.
+\]</span> Si el modelo está bien especificado en la media, <span class="math inline">\(\mathbb{E}[u\mid x] = 0\)</span>, entonces <span class="math inline">\(\mathbb{E}[u\nabla^2g] = 0\)</span> y <span class="math inline">\(A = -\mathbb{E}[\nabla g\nabla g']\)</span>, <span class="math inline">\(B = \mathbb{E}[u^2\nabla g\nabla g']\)</span>. Es el mismo sándwich de MCO con el regresor <span class="math inline">\(x\)</span> reemplazado por el <strong>gradiente</strong> <span class="math inline">\(\nabla g(x,\theta_0)\)</span>: MCNL es “MCO sobre el modelo linealizado”.</p>
+</div>
+</section>
+<section id="cuando-la-información-importa-un-adelanto" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Cuando la información importa: un adelanto</h1>
+<p>En los dos ejemplos de arriba, <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> eran matrices distintas y el sándwich no se simplificaba. Pero hay un caso, central en la econometría, donde <span class="math inline">\(B = -A\)</span> y el sándwich colapsa a <span class="math inline">\(-A^{-1} = B^{-1}\)</span>: la <strong>máxima verosimilitud bien especificada</strong>. La Clase 2 demuestra esa igualdad (la <em>igualdad de la información</em>) y usa <span class="math inline">\(B^{-1}\)</span> como cota para la varianza de cualquier estimador.</p>
+<p>Por ahora quédate con esto: <strong>el sándwich es el default honesto</strong>, que vale aunque el criterio <span class="math inline">\(m\)</span> sea un modelo equivocado de los datos. Colapsar el sándwich es una ganancia que se <em>paga</em> con el supuesto de que el modelo está bien especificado.</p>
+</section>
+<section id="postgrado-demostración-del-lema-de-lgn-uniforme" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: demostración del lema de LGN uniforme</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Demostramos <a href="#lem-ulln" class="quarto-xref">Lema&nbsp;1</a>. Es un argumento de recubrimiento finito: la compacidad convierte un problema “para todo <span class="math inline">\(\theta\)</span>” en un problema con finitos puntos.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para cada <span class="math inline">\(\theta\in\Theta\)</span> miro una bolita de radio <span class="math inline">\(\delta\)</span> y mido la mayor oscilación de <span class="math inline">\(m(w,\cdot)\)</span> dentro de ella: <span class="math inline">\(\Delta(w,\theta,\delta)\)</span>. Por continuidad, la oscilación se achica a cero cuando <span class="math inline">\(\delta\to0\)</span>, y como está dominada por <span class="math inline">\(2\sup|m|\)</span> (integrable), también su esperanza va a cero. Elijo <span class="math inline">\(\delta_\theta\)</span> para que la esperanza de la oscilación sea menor que <span class="math inline">\(\varepsilon\)</span>. Las bolitas cubren <span class="math inline">\(\Theta\)</span> y, por compacidad, bastan finitas. Dentro de cada bolita, <span class="math inline">\(\hat Q_n\)</span> y <span class="math inline">\(Q_0\)</span> se mueven poco; en el centro, la LGN ordinaria las acerca. Tres cotas y un finito, y listo.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para <span class="math inline">\(\theta\in\Theta\)</span> y <span class="math inline">\(\delta&gt;0\)</span> sea <span class="math display">\[
+\Delta(w,\theta,\delta) = \sup_{\theta'\in\Theta:\ \|\theta' - \theta\|&lt;\delta}\big|m(w,\theta') - m(w,\theta)\big|.
+\]</span> Por C2, <span class="math inline">\(\Delta(w,\theta,\delta)\to0\)</span> cuando <span class="math inline">\(\delta\to0\)</span> con probabilidad uno (continuidad en <span class="math inline">\(\theta\)</span>), y <span class="math inline">\(\Delta\le2\sup_\Theta|m(w,\cdot)|\)</span>, que es integrable. Por convergencia dominada, <span class="math inline">\(\mathbb{E}[\Delta(w,\theta,\delta)]\to0\)</span> cuando <span class="math inline">\(\delta\to0\)</span>.</p>
+<p><em><span class="math inline">\(Q_0\)</span> es continua.</em> <span class="math inline">\(|Q_0(\theta') - Q_0(\theta)|\le\mathbb{E}\,\Delta(w,\theta,\delta)\to0\)</span> si <span class="math inline">\(\|\theta' - \theta\|&lt;\delta\to0\)</span>.</p>
+<p><em>Convergencia uniforme.</em> Fija <span class="math inline">\(\varepsilon&gt;0\)</span>. Para cada <span class="math inline">\(\theta\in\Theta\)</span> elige <span class="math inline">\(\delta_\theta&gt;0\)</span> con <span class="math inline">\(\mathbb{E}\,\Delta(w,\theta,\delta_\theta)&lt;\varepsilon\)</span>. Las bolas abiertas <span class="math inline">\(B(\theta,\delta_\theta)\)</span> cubren <span class="math inline">\(\Theta\)</span>, que es compacto: existen <span class="math inline">\(\theta_1,\dots,\theta_J\)</span> con <span class="math inline">\(\Theta\subset\bigcup_jB(\theta_j,\delta_j)\)</span>. Si <span class="math inline">\(\theta\in B(\theta_j,\delta_j)\)</span>, <span class="math display">\[
+\big|\hat Q_n(\theta) - Q_0(\theta)\big|\le\underbrace{\big|\hat Q_n(\theta) - \hat Q_n(\theta_j)\big|}_{\le\frac1n\sum_i\Delta(w_i,\theta_j,\delta_j)}+\big|\hat Q_n(\theta_j) - Q_0(\theta_j)\big| + \underbrace{\big|Q_0(\theta_j) - Q_0(\theta)\big|}_{\le\mathbb{E}\Delta(w,\theta_j,\delta_j)&lt;\varepsilon}.
+\]</span> Entonces <span class="math display">\[
+\sup_{\theta\in\Theta}\big|\hat Q_n(\theta) - Q_0(\theta)\big|\le\max_{1\le j\le J}\Big\{\frac1n\sum_{i}\Delta(w_i,\theta_j,\delta_j) + \big|\hat Q_n(\theta_j) - Q_0(\theta_j)\big|\Big\} + \varepsilon.
+\]</span> Como <span class="math inline">\(J\)</span> es finito, la LGN ordinaria (aplicada a las <span class="math inline">\(2J\)</span> cantidades) da que el máximo converge en probabilidad a <span class="math inline">\(\max_j\{\mathbb{E}\Delta(w,\theta_j,\delta_j)\}&lt;\varepsilon\)</span> (el segundo sumando converge a <span class="math inline">\(0\)</span>). Luego <span class="math inline">\(P\big(\sup|\hat Q_n - Q_0|&gt;3\varepsilon\big)\to0\)</span> para todo <span class="math inline">\(\varepsilon&gt;0\)</span>, que es la convergencia uniforme en probabilidad.</p>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li>Un <strong>M-estimador</strong> maximiza <span class="math inline">\(\hat Q_n(\theta) = \frac1n\sum m(w_i,\theta)\)</span>. MCO, MCNL, MV, la mediana y GMM son casos particulares.</li>
+<li><strong>Consistencia</strong> (<a href="#thm-consistencia-m" class="quarto-xref">Teorema&nbsp;1</a>): compacidad + continuidad con dominancia + <strong>identificación</strong> (único máximo de <span class="math inline">\(Q_0\)</span>). La herramienta es la LGN uniforme (<a href="#lem-ulln" class="quarto-xref">Lema&nbsp;1</a>).</li>
+<li><strong>Normalidad</strong> (<a href="#thm-normalidad-m" class="quarto-xref">Teorema&nbsp;2</a>): <span class="math inline">\(\sqrt n(\hat\theta - \theta_0)\to N(0, A^{-1}BA^{-1})\)</span> con <span class="math inline">\(A = \mathbb{E}[\nabla^2m]\)</span> (“curvatura”) y <span class="math inline">\(B = \mathbb{E}[\nabla m\nabla m']\)</span> (“ruido del score”).</li>
+<li>Para cada estimador nuevo el trabajo se reduce a calcular <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> y verificar los supuestos.</li>
+<li>Si el modelo es verosímil y está bien especificado, <span class="math inline">\(B = -A\)</span> y el sándwich colapsa (Clase 2).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 1.1.</strong> Muestra que la media muestral es un M-estimador con <span class="math inline">\(m(w,\theta) = -(w-\theta)^2\)</span>, calcula <span class="math inline">\(A\)</span> y <span class="math inline">\(B\)</span> y verifica que la varianza asintótica es <span class="math inline">\(\operatorname{Var}(w)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\nabla m = 2(w - \theta)\)</span> y <span class="math inline">\(\nabla^2m = -2\)</span>. En <span class="math inline">\(\theta_0 = \mathbb{E}[w]\)</span>: <span class="math inline">\(A = -2\)</span> y <span class="math inline">\(B = \mathbb{E}[4(w-\theta_0)^2] = 4\operatorname{Var}(w)\)</span>. Entonces <span class="math inline">\(A^{-1}BA^{-1} = \frac{1}{4}\cdot4\operatorname{Var}(w) = \operatorname{Var}(w)\)</span>. Es el TCL de siempre. Nota que <span class="math inline">\(m\)</span> no es una verosimilitud (para eso habría que suponer una distribución) y aun así obtuvimos la varianza correcta sin suponer normalidad.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.2.</strong> Sea <span class="math inline">\(w\)</span> exponencial con densidad <span class="math inline">\(f(w;\theta) = \theta e^{-\theta w}\)</span>, <span class="math inline">\(w&gt;0\)</span>. Toma <span class="math inline">\(m(w,\theta) = \log\theta - \theta w\)</span>. Calcula el estimador, <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> y la varianza asintótica. Comprueba el resultado con el método delta aplicado a <span class="math inline">\(\hat\theta = 1/\bar w\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat Q_n = \log\theta - \theta\bar w\)</span> se maximiza en <span class="math inline">\(\hat\theta = 1/\bar w\)</span>. <span class="math inline">\(\nabla m = 1/\theta - w\)</span>, <span class="math inline">\(\nabla^2m = -1/\theta^2\)</span>. En <span class="math inline">\(\theta_0\)</span>, <span class="math inline">\(\mathbb{E}[w] = 1/\theta_0\)</span> y <span class="math inline">\(\operatorname{Var}(w) = 1/\theta_0^2\)</span>. Luego <span class="math inline">\(A = -1/\theta_0^2\)</span> y <span class="math inline">\(B = \operatorname{Var}(w) = 1/\theta_0^2 = -A\)</span> (¡igualdad de la información!). La varianza asintótica es <span class="math inline">\(A^{-1}BA^{-1} = \theta_0^4\cdot\theta_0^{-2} = \theta_0^2\)</span>. Método delta: <span class="math inline">\(\sqrt n(\bar w - 1/\theta_0)\to N(0,1/\theta_0^2)\)</span> y <span class="math inline">\(g(x) = 1/x\)</span> tiene <span class="math inline">\(g'(1/\theta_0) = -\theta_0^2\)</span>, así que la varianza es <span class="math inline">\(\theta_0^4\cdot\theta_0^{-2} = \theta_0^2\)</span>. Coinciden.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.3.</strong> (Especificación incorrecta.) Los datos son i.i.d. con <span class="math inline">\(\mathbb{E}[w] = \mu_0\)</span> y <span class="math inline">\(\operatorname{Var}(w) = \sigma^2\)</span> (distribución desconocida). Un economista ajusta <span class="math inline">\(N(\mu,1)\)</span> por máxima verosimilitud, es decir, <span class="math inline">\(m(w,\mu) = -\tfrac12(w-\mu)^2\)</span> (omitimos constantes). ¿A qué converge <span class="math inline">\(\hat\mu\)</span>? ¿Cuál es su varianza asintótica verdadera? ¿Qué reportaría el programa si usara la fórmula “de manual” <span class="math inline">\(-A^{-1}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\mu = \bar w\to_p\mu_0\)</span> (el <em>valor pseudo-verdadero</em>, el que maximiza <span class="math inline">\(Q_0\)</span>: <span class="math inline">\(Q_0(\mu) = -\frac12(\sigma^2 + (\mu_0-\mu)^2)\)</span>). <span class="math inline">\(A = -1\)</span>, <span class="math inline">\(B = \mathbb{E}[(w-\mu_0)^2] = \sigma^2\)</span>. La varianza verdadera es <span class="math inline">\(A^{-1}BA^{-1} = \sigma^2\)</span>. La fórmula de manual dice <span class="math inline">\(-A^{-1} = 1\)</span> (la varianza supuesta). Si <span class="math inline">\(\sigma^2 = 4\)</span> los errores estándar reportados serían la mitad de los verdaderos y el test al 5 % rechazaría mucho más del 5 % de las veces. Moraleja: el sándwich protege contra la especificación incorrecta de la <strong>varianza</strong>; la consistencia aquí sobrevivió porque la media sí estaba bien especificada.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.4.</strong> (Falla de identificación.) Considera <span class="math inline">\(y = \theta_1\theta_2x + u\)</span> con <span class="math inline">\(\mathbb{E}[xu] = 0\)</span> y <span class="math inline">\(\mathbb{E}[x^2]&gt;0\)</span>, y <span class="math inline">\(m = -\tfrac12(y - \theta_1\theta_2x)^2\)</span>. Muestra que C3 falla. ¿Qué parámetro sí está identificado?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(Q_0(\theta) = -\tfrac12\mathbb{E}\big[(u + (\theta_{1,0}\theta_{2,0} - \theta_1\theta_2)x)^2\big] = -\tfrac12\big(\mathbb{E}u^2 + (\theta_{1,0}\theta_{2,0} - \theta_1\theta_2)^2\mathbb{E}x^2\big)\)</span> (el término cruzado es cero por <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>). Es máxima en <strong>todo el conjunto</strong> <span class="math inline">\(\{\theta:\theta_1\theta_2 = \theta_{1,0}\theta_{2,0}\}\)</span>, una hipérbola: el máximo no es único. Solo el <strong>producto</strong> <span class="math inline">\(\theta_1\theta_2\)</span> está identificado. <span class="math inline">\(\hat\theta\)</span> no converge a un punto, y el hessiano en cualquier punto de la hipérbola es singular (viola N4). El programa reportará errores estándar enormes o un hessiano no invertible.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.5.</strong> Para <span class="math inline">\(y = \exp(\theta x) + u\)</span> con <span class="math inline">\(\mathbb{E}[u\mid x] = 0\)</span> y <span class="math inline">\(\operatorname{Var}(u\mid x) = \sigma^2\)</span>, calcula la varianza asintótica del MCNL escalar. ¿Se parece a la de MCO?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(g(x,\theta) = e^{\theta x}\)</span>, <span class="math inline">\(\nabla g = xe^{\theta x}\)</span>. Por <a href="#exm-mcnl" class="quarto-xref">Ejemplo&nbsp;3</a>, <span class="math inline">\(A = -\mathbb{E}[x^2e^{2\theta_0x}]\)</span> y <span class="math inline">\(B = \sigma^2\mathbb{E}[x^2e^{2\theta_0x}]\)</span>. Entonces <span class="math inline">\(\operatorname{Avar} = \sigma^2/\mathbb{E}[x^2e^{2\theta_0x}]\)</span>. Es la fórmula de MCO con homocedasticidad, <span class="math inline">\(\sigma^2/\mathbb{E}[x^2]\)</span>, reemplazando <span class="math inline">\(x\)</span> por el regresor linealizado <span class="math inline">\(\nabla g = xe^{\theta_0x}\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.6.</strong> Escribe el test de Wald para <span class="math inline">\(H_0:\theta_1/\theta_2 = 1\)</span> en un M-estimador con <span class="math inline">\(\theta\in\mathbb{R}^2\)</span>. ¿Qué jacobiano usas? ¿Por qué podría ser preferible testear <span class="math inline">\(\theta_1 - \theta_2 = 0\)</span> si <span class="math inline">\(\theta_2\)</span> está cerca de cero?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(h(\theta) = \theta_1/\theta_2 - 1\)</span> y <span class="math inline">\(H(\theta) = (1/\theta_2,\ -\theta_1/\theta_2^2)\)</span>. <span class="math inline">\(W = n\,h(\hat\theta)^2/\big(H(\hat\theta)\hat V H(\hat\theta)'\big)\to\chi^2_1\)</span> con <span class="math inline">\(\hat V = \hat A^{-1}\hat B\hat A^{-1}\)</span>. En realidad el test del cociente es <em>peor</em> si <span class="math inline">\(\theta_2\approx0\)</span>: el método delta linealiza <span class="math inline">\(h\)</span> y la linealización es mala cuando <span class="math inline">\(\theta_2\)</span> está cerca de cero (la derivada explota). Mejor reescribir la hipótesis como <span class="math inline">\(\theta_1 - \theta_2 = 0\)</span>, que es lineal: el test de Wald <strong>no es invariante a reparametrizaciones</strong> (problema que la Clase 3 resuelve con el test de razón de verosimilitud).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 1.7 ★.</strong> Demuestra que si <span class="math inline">\(m(w,\cdot)\)</span> es cóncava para todo <span class="math inline">\(w\)</span> y <span class="math inline">\(\theta_0\)</span> es interior, se puede reemplazar C1 por que <span class="math inline">\(\theta_0\)</span> sea el único maximizador de <span class="math inline">\(Q_0\)</span> en <span class="math inline">\(\Theta\)</span> convexo y <span class="math inline">\(\mathbb{E}|m(w,\theta)|&lt;\infty\)</span> para todo <span class="math inline">\(\theta\)</span>. Da la idea: ¿por qué la concavidad compensa la falta de compacidad?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 1.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 1.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Idea (Newey y McFadden, 1994, Teorema 2.7). Para cada <span class="math inline">\(\theta\)</span> fijo, la LGN da <span class="math inline">\(\hat Q_n(\theta)\to_pQ_0(\theta)\)</span> y <span class="math inline">\(Q_0\)</span> es cóncava y estrictamente máxima en <span class="math inline">\(\theta_0\)</span>. Sea <span class="math inline">\(N = \{\|\theta - \theta_0\|\le\delta\}\)</span> y <span class="math inline">\(\theta\)</span> un punto fuera de <span class="math inline">\(N\)</span>. Si <span class="math inline">\(\hat\theta\)</span> estuviera fuera de <span class="math inline">\(N\)</span>, el segmento de <span class="math inline">\(\theta_0\)</span> a <span class="math inline">\(\hat\theta\)</span> cruza la frontera de <span class="math inline">\(N\)</span> en un punto <span class="math inline">\(\theta_\delta\)</span>. Por concavidad de <span class="math inline">\(\hat Q_n\)</span> y por <span class="math inline">\(\hat Q_n(\hat\theta)\ge\hat Q_n(\theta_0)\)</span>, se cumple <span class="math inline">\(\hat Q_n(\theta_\delta)\ge\hat Q_n(\theta_0)\)</span>. Pero la frontera de <span class="math inline">\(N\)</span> es compacta, y la convergencia puntual de funciones cóncavas implica convergencia <strong>uniforme sobre compactos</strong> (resultado clásico de análisis convexo). Con eso, <span class="math inline">\(\hat Q_n(\theta_\delta)&lt;\hat Q_n(\theta_0)\)</span> con probabilidad que tiende a uno, contradicción. La concavidad “controla” lo que ocurre lejos usando solo lo que ocurre en la frontera de una vecindad compacta. Es por esto que probit, logit y MCO tienen consistencia sin pedir <span class="math inline">\(\Theta\)</span> compacto.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/index.html" class="pagination-link" aria-label="Econometría 2">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Econometría 2</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

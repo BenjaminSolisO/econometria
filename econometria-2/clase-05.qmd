@@ -1,0 +1,257 @@
+---
+title: "Clase 5 · Elección discreta I"
+subtitle: "Probit, logit y efectos marginales"
+description: "Modelos de respuesta binaria: variable latente, identificación de escala, máxima verosimilitud, concavidad del logit, distribución asintótica, efectos marginales con método delta y tres trampas de interpretación."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-05.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Una variable que solo dice sí o no
+
+Muchas decisiones económicas son binarias: trabajar o no, comprar o no, caer en mora o no. Sea $y\in\{0,1\}$. Como $y$ solo toma dos valores, su distribución condicional queda completamente determinada por una cosa:
+$$
+\mathbb{E}[y\mid x] = P(y = 1\mid x) =: p(x).
+$$
+La CEF *es* la probabilidad. Y como $y$ es Bernoulli con parámetro $p(x)$, la varianza condicional también es función de $p(x)$:
+$$
+\operatorname{Var}(y\mid x) = p(x)\big(1 - p(x)\big).
+$$
+Esto nos dice dos cosas sobre el **modelo de probabilidad lineal** (MPL, $p(x) = x'\beta$ estimado por MCO). Primero, es *necesariamente heterocedástico* (salvo que $p$ sea constante), así que hay que usar errores robustos. Segundo, nada obliga a $x'\beta$ a quedar entre 0 y 1: para valores extremos de $x$ las predicciones son "probabilidades" de $-0{,}2$ o $1{,}3$. Buscamos un modelo con $p(x)\in(0,1)$ siempre.
+
+# El modelo de variable latente
+
+La respuesta estándar viene de la teoría de la decisión. Hay una **utilidad neta latente** $y^*$ que no observamos, y observamos solo su signo:
+$$
+y^* = x'\beta + \varepsilon,\qquad y = \mathbf{1}\{y^*>0\},\qquad\varepsilon\mid x\sim F,
+$$
+con $F$ una función de distribución continua y simétrica alrededor de cero. Entonces
+$$
+P(y = 1\mid x) = P(\varepsilon>-x'\beta\mid x) = 1 - F(-x'\beta) = F(x'\beta),
+$$ {#eq-binario}
+usando la simetría de $F$. Dos elecciones de $F$ dan los dos modelos clásicos:
+
+| Modelo | $F(\eta)$ | Densidad $f(\eta)$ |
+|---|---|---|
+| **Probit** | $\Phi(\eta)$ (normal estándar) | $\phi(\eta)$ |
+| **Logit** | $\Lambda(\eta) = \dfrac{e^\eta}{1 + e^\eta}$ (logística) | $\Lambda(\eta)\big(1 - \Lambda(\eta)\big)$ |
+
+Ambas son curvas en S: crecientes, simétricas, con límites 0 y 1. Se parecen tanto que en la práctica es difícil distinguirlas con datos; la logística tiene colas algo más gordas.[^probit]
+
+[^probit]: "Probit" viene de *probability unit*, acuñado por Chester Bliss (1934) para analizar la mortalidad de insectos expuestos a pesticidas en distintas dosis. Dudamos que los insectos hayan sido consultados. "Logit" lo acuñó Joseph Berkson (1944) por analogía; Berkson defendió toda su vida que el logit era mejor que el probit, y la profesión se dividió durante años en dos bandos con la intensidad de los hinchas de fútbol, hasta que ambos descubrieron que daban casi lo mismo.
+
+## La escala no está identificada
+
+Hay una sutileza que no existe en MCO. Si $\varepsilon\sim N(0,\sigma^2)$ en lugar de $N(0,1)$, entonces $P(y = 1\mid x) = P(\varepsilon/\sigma>-x'\beta/\sigma) = \Phi(x'\beta/\sigma)$. Los datos solo dependen de $\beta/\sigma$.
+
+::: {#prp-escala}
+## Normalización de escala
+En el modelo $y^* = x'\beta + \varepsilon$, $y = \mathbf{1}\{y^*>0\}$, los parámetros $(\beta,\sigma)$ no están identificados por separado: solo se identifica $\beta/\sigma$. Por eso se **normaliza** $\sigma = 1$ (probit) o la varianza de $\varepsilon$ a la de la logística, $\pi^2/3$ (logit).
+:::
+
+La razón es que *multiplicar* $y^*$ por una constante positiva no cambia $\mathbf{1}\{y^*>0\}$. Las $\beta$ de un probit están en "unidades de desviación estándar del error", y las de un logit en "unidades de la logística" ($\sqrt{\pi^2/3}\approx1{,}81$ desviaciones estándar). De ahí la regla empírica $\hat\beta_{\text{logit}}\approx1{,}6\ \hat\beta_{\text{probit}}$ (Amemiya sugiere $1{,}6$ por ajuste de las curvas; $1{,}81$ sería el cociente exacto de desviaciones estándar). **Los coeficientes de un probit y de un logit no son comparables directamente**, ni tampoco entre dos probits con distintas variables incluidas (más sobre esto abajo).
+
+# Estimación por máxima verosimilitud
+
+La observación $i$ es Bernoulli con parámetro $F(x_i'\beta)$, así que
+$$
+\ell_n(\beta) = \sum_{i=1}^n\Big[y_i\log F(x_i'\beta) + (1 - y_i)\log\big(1 - F(x_i'\beta)\big)\Big].
+$$
+Derivando, el **score** de una observación es
+$$
+s_i(\beta) = \frac{y_i - F(x_i'\beta)}{F(x_i'\beta)\big(1 - F(x_i'\beta)\big)}\,f(x_i'\beta)\,x_i.
+$$ {#eq-score-binario}
+(Se obtiene derivando $y\log F + (1-y)\log(1-F)$ respecto de $\eta = x'\beta$ y multiplicando por $\partial\eta/\partial\beta = x$.) La condición de primer orden $\sum_is_i(\hat\beta) = 0$ **no tiene solución en forma cerrada**: se resuelve numéricamente (Newton–Raphson). Y aquí aparece una sorpresa para el logit: como $f = F(1-F)$, el score se simplifica a
+$$
+s_i^{\text{logit}}(\beta) = \big(y_i - \Lambda(x_i'\beta)\big)x_i,
+$$
+las "ecuaciones normales" de MCO con $\Lambda(x'\beta)$ como valor ajustado. Los residuos $y_i - \hat p_i$ son ortogonales a los regresores. (Ejercicio 5.3.)
+
+::: {#thm-concavidad-logit}
+## Concavidad del logit
+La log-verosimilitud del logit es **globalmente cóncava**: su hessiano es
+$$
+\nabla^2\ell_n(\beta) = -\sum_{i=1}^n\Lambda(x_i'\beta)\big(1 - \Lambda(x_i'\beta)\big)x_ix_i',
+$$
+que es definido negativo para todo $\beta$ si $X'X$ es invertible. Por lo tanto, si el MV existe es **único**, y Newton–Raphson converge desde cualquier punto de partida razonable.
+:::
+
+::: {.proof}
+Derivando el score del logit respecto de $\beta'$: $\partial\big[(y_i - \Lambda(x_i'\beta))x_i\big]/\partial\beta' = -\Lambda'(x_i'\beta)\,x_ix_i'$ y $\Lambda' = \Lambda(1-\Lambda)\in(0,\tfrac14]$. Para cualquier $a\ne0$,
+$$
+a'\nabla^2\ell_n(\beta)a = -\sum_i\Lambda_i(1 - \Lambda_i)(x_i'a)^2<0
+$$
+porque los pesos son estrictamente positivos y no todos los $x_i'a$ son cero (pues $X'X$ es invertible, $Xa\ne0$). Una función con hessiano definido negativo en todas partes es estrictamente cóncava, y tiene a lo más un máximo.
+:::
+
+El probit también es globalmente cóncavo (porque $\Phi$ y $1-\Phi$ son log-cóncavas; Ejercicio 5.7), así que ninguno de los dos presenta problemas de máximos locales. Eso no es cierto para los modelos de elección más complejos (Clase 6).
+
+::: {.callout-warning title="El MV puede no existir: separación"}
+Si existe $\beta$ con $x_i'\beta>0$ cuando $y_i = 1$ y $x_i'\beta<0$ cuando $y_i = 0$ para **todo** $i$ (las dos clases están separadas por un hiperplano), la verosimilitud crece sin límite al escalar $\beta\to c\beta$, $c\to\infty$: el máximo se "escapa al infinito". Los programas reportan coeficientes enormes y errores estándar absurdos, o un aviso de "separación perfecta". Suele ocurrir con una dummy rara que predice perfectamente. Es un problema de **existencia**, no de identificación (Ejercicio 5.4).
+:::
+
+## Distribución asintótica
+
+Aplicamos las Clases 1 y 2 con $m = \log f(y\mid x;\beta)$ (la verosimilitud condicional; la distribución marginal de $x$ no depende de $\beta$ y se cancela). La información es $\mathcal{I} = \mathbb{E}[s\,s']$. Condicional en $x$, $y - F$ tiene media cero y varianza $F(1-F)$, así que
+$$
+\mathbb{E}[s\,s'\mid x] = \frac{\operatorname{Var}(y\mid x)\,f^2}{F^2(1-F)^2}\,xx' = \frac{f(x'\beta)^2}{F(x'\beta)\big(1 - F(x'\beta)\big)}\,xx'.
+$$
+
+::: {#thm-binario-normal}
+## Normalidad asintótica de probit y logit
+Con el modelo bien especificado, $\mathbb{E}\|x\|^2<\infty$, $\mathbb{E}[xx']$ definida positiva y $\beta_0$ en el interior,
+$$
+\sqrt n(\hat\beta - \beta_0)\xrightarrow{d}N\big(0,\mathcal{I}^{-1}\big),\qquad
+\mathcal{I} = \mathbb{E}\Big[\frac{f(x'\beta_0)^2}{F(x'\beta_0)(1 - F(x'\beta_0))}\,xx'\Big].
+$$
+Para el logit, $\mathcal{I} = \mathbb{E}\big[\Lambda(x'\beta_0)(1 - \Lambda(x'\beta_0))\,xx'\big]$.
+:::
+
+::: {.proof}
+Es el resultado de la Clase 2 (MV bien especificado). Para el logit, la concavidad global del @thm-concavidad-logit evita pedir compacidad (Ejercicio 1.7 de la Clase 1). La expresión de $\mathcal{I}$ es la que acabamos de calcular, y para el logit $f = F(1-F)$ simplifica $f^2/[F(1-F)] = F(1-F)$.
+:::
+
+En la práctica, $\widehat{\operatorname{Avar}}(\hat\beta) = \big[\sum_i\hat w_ix_ix_i'\big]^{-1}$ con pesos $\hat w_i = f(x_i'\hat\beta)^2/[\hat F_i(1 - \hat F_i)]$. Es una "MCP" donde los pesos son mayores para las observaciones con probabilidad predicha cercana a $0{,}5$ (que son las más informativas: una observación con $p\approx0{,}99$ casi no tiene incertidumbre sobre $y$ y por lo tanto casi no informa).
+
+# Efectos marginales
+
+El coeficiente $\beta_j$ **no** es el efecto de $x_j$ sobre la probabilidad: eso solo es cierto en el modelo lineal. Como $p(x) = F(x'\beta)$ es no lineal,
+$$
+\frac{\partial P(y = 1\mid x)}{\partial x_j} = f(x'\beta)\,\beta_j.
+$$ {#eq-me}
+Tres cosas importantes. (i) El **signo** del efecto marginal coincide con el de $\beta_j$ (porque $f>0$). (ii) La **magnitud** depende de $x$ a través de $f(x'\beta)$: es máxima cuando $x'\beta = 0$ ($p = 0{,}5$, donde la densidad es la más alta) y se achica en las colas. (iii) Para una variable binaria $d$, el efecto es una **diferencia discreta** $F(x'\beta + \beta_d) - F(x'\beta)$, no una derivada.
+
+Como el efecto depende de $x$, hay que elegir **dónde** evaluarlo:
+
+- **Efecto marginal promedio (AME):** $\widehat{\text{AME}}_j = \hat\beta_j\cdot\frac1n\sum_if(x_i'\hat\beta)$. Responde: ¿cuál es el efecto promedio sobre la población? Es el que más se parece al coeficiente de un MPL.
+- **Efecto marginal en la media (MEM):** $f(\bar x'\hat\beta)\hat\beta_j$. Evalúa en un individuo "promedio", que puede no existir (¿cuál es la proporción promedio de mujeres?).
+- **Efecto marginal en un valor representativo:** para el caso o escenario que interesa.
+
+El AME es lo que suele recomendarse: no depende de inventar un individuo ficticio.
+
+::: {#exm-me}
+## Un ejemplo numérico
+Sea $P(y=1\mid x) = F(-1 + 0{,}5x)$ y evaluamos en $x = 2$, donde el índice vale $\eta = 0$. En el **logit**, $f(0) = \Lambda(0)(1-\Lambda(0)) = 0{,}25$ y el efecto es $0{,}25\times0{,}5 = 0{,}125$: un punto más de $x$ sube la probabilidad en 12,5 puntos porcentuales. En el **probit** con los mismos coeficientes, $f(0) = \phi(0)\approx0{,}399$ y el efecto sería $0{,}199$. Pero los coeficientes no son comparables: un probit con $\beta_{\text{probit}}\approx\beta_{\text{logit}}/1{,}6$ tendría $0{,}399\times0{,}5/1{,}6\approx0{,}125$: **los efectos marginales de logit y probit casi coinciden**, aunque los coeficientes difieran en un factor 1,6. Por eso conviene comparar efectos marginales y no coeficientes.
+:::
+
+## Errores estándar por el método delta
+
+Los efectos marginales son funciones de $\hat\beta$, así que su varianza se obtiene con el método delta (Clase 6 de Econometría 1). Para $\text{ME}_j(x) = f(x'\beta)\beta_j$, el gradiente respecto de $\beta$ es
+$$
+\frac{\partial\,\text{ME}_j(x)}{\partial\beta} = f(x'\beta)\,e_j + \beta_jf'(x'\beta)\,x,
+$$
+con $e_j$ el $j$-ésimo vector canónico. En el probit, $f' = \phi' = -\eta\phi$; en el logit, $f' = f(1 - 2\Lambda)$. Entonces $\widehat{\operatorname{Var}}(\widehat{\text{ME}}_j(x)) = \hat D'\,\widehat{\operatorname{Avar}}(\hat\beta)\,\hat D$, donde $\hat D$ es el gradiente evaluado en $\hat\beta$.
+
+Para el AME hay una sutileza: el promedio sobre la muestra tiene dos fuentes de variación (la de $\hat\beta$ y la de los $x_i$ mismos). El tratamiento correcto estima todo en un solo sistema de momentos (GMM de la Clase 4 con los momentos del score y el del promedio). En muestras grandes y con $\hat\beta$ dominando, el delta sobre $\hat\beta$ con $x_i$ fijos es una buena aproximación.
+
+# Tres trampas de interpretación
+
+## Trampa 1: los coeficientes dependen de qué más incluyas
+
+En un modelo lineal, agregar un regresor ortogonal a $x_1$ no cambia el coeficiente de $x_1$. En un probit **sí lo cambia**, aunque el regresor omitido sea independiente de $x_1$.
+
+::: {#prp-atenuacion}
+## Atenuación por heterogeneidad omitida
+Sea $y^* = \beta_1x_1 + \beta_2x_2 + \varepsilon$, con $\varepsilon\sim N(0,1)$, $x_2\sim N(0,\tau^2)$, y $(x_1,\varepsilon,x_2)$ independientes entre sí. Si se estima un probit de $y$ sobre $x_1$ **sin** $x_2$, el estimador converge a
+$$
+\beta_1^\dagger = \frac{\beta_1}{\sqrt{1 + \beta_2^2\tau^2}},
+$$
+que es menor en valor absoluto que $\beta_1$ si $\beta_2\ne0$.
+:::
+
+::: {.proof}
+Sin $x_2$, el error compuesto es $\varepsilon + \beta_2x_2\sim N(0,1 + \beta_2^2\tau^2)$, independiente de $x_1$. Entonces $P(y = 1\mid x_1) = P(\varepsilon + \beta_2x_2>-\beta_1x_1) = \Phi\big(\beta_1x_1/\sqrt{1 + \beta_2^2\tau^2}\big)$, que es un probit con coeficiente $\beta_1^\dagger$. Como ese modelo reducido está bien especificado, el probit converge a $\beta_1^\dagger$ (Clase 2).
+:::
+
+Esto es la @prp-escala en acción: agregar $x_2$ reduce la varianza del error residual y por lo tanto "reescala" los coeficientes. **No puedes comparar coeficientes entre modelos probit con distintos controles** ni, con más razón, entre grupos con distintas varianzas de $\varepsilon$ (mismo modelo, dos países: ¿los coeficientes difieren por diferencias reales o por distinta varianza residual?). Esto obliga a comparar *efectos marginales*, que sí están en unidades de probabilidad.
+
+## Trampa 2: el modelo mal especificado es inconsistente
+
+En MCO, una CEF no lineal igual deja un coeficiente de proyección con sentido (Clase 2 de Econometría 1). En probit, **no**: si $\varepsilon$ es heterocedástico (por ejemplo, $\varepsilon\mid x\sim N(0,\sigma(x)^2)$), entonces $P(y = 1\mid x) = \Phi(x'\beta/\sigma(x))\ne\Phi(x'\beta)$ y el estimador de MV converge al pseudo-verdadero de la Clase 2, que no es $\beta$ ni tiene interpretación estructural. Es la diferencia fundamental entre estimadores cuyo sentido sobrevive (MCO, Poisson) y los que no (probit, logit). Se puede testear con un LM (Clase 3): probit heterocedástico $\Phi(x'\beta/\exp(z'\gamma))$ y $H_0:\gamma = 0$.
+
+## Trampa 3: términos de interacción
+
+En un modelo lineal, el coeficiente de la interacción $x_1x_2$ **es** el efecto cruzado. En un modelo no lineal, el efecto cruzado $\partial^2p/\partial x_1\partial x_2$ **no** es $\beta_{12}f(\cdot)$: incluye además términos como $\beta_1\beta_2f'(\cdot)$, que no se anulan aunque $\beta_{12} = 0$ (Ai y Norton, 2003). Un efecto cruzado puede ser distinto de cero, y hasta cambiar de signo según $x$, sin que el coeficiente de interacción lo diga.
+
+# ¿Y el modelo lineal?
+
+Con todo esto, ¿para qué usar MPL? Porque (a) si los regresores son **saturados** (todas las variables son dummies y se incluyen todas las interacciones), la CEF es lineal *por construcción* y el MPL reproduce $p(x)$ exactamente; (b) con regresores continuos, el MPL estima la mejor aproximación lineal a $p(x)$ (el coeficiente de proyección, Clase 2 de Econometría 1), y suele dar efectos marginales promedio muy parecidos a los del probit; (c) no tiene problemas de existencia, ni de escala, ni de interacción. Angrist y Pischke (2009) lo recomiendan de partida. Por otro lado, es un mal predictor de probabilidades individuales (sale de $[0,1]$) y poco confiable con $p$ cerca de 0 o de 1 (eventos raros). La elección entre MPL y probit/logit **no es de corrección** sino de qué cantidad te interesa y qué tan lejos de $[0,1]$ viven tus datos.
+
+# Ajuste y comparación
+
+El análogo del $R^2$ es el **pseudo-$R^2$ de McFadden**, $1 - \ell_n(\hat\beta)/\ell_n(\hat\beta_0)$, con $\hat\beta_0$ el modelo con solo constante. No es una proporción de varianza explicada: valores de 0,2 a 0,4 se consideran un muy buen ajuste. Para testear hipótesis sobre $\beta$ se usa la trinidad de la Clase 3: el LR compara el modelo completo contra el restringido, y el LM permite testear variables omitidas sin estimarlas. Las **tablas de clasificación** (porcentaje de aciertos con regla $\hat p>0{,}5$) son malas: un modelo que siempre predice "0" acierta 90 % si 90 % son ceros. Mejor evaluar la calibración y el área bajo la curva ROC.
+
+# ★ Postgrado: concavidad del probit
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos que $\ell_n$ del probit es cóncava. Una función $F$ tal que $\log F$ y $\log(1-F)$ son cóncavas garantiza la concavidad de $\ell_n$.
+:::
+
+::: {#prp-concavidad-probit}
+## Concavidad de la log-verosimilitud con $F$ log-cóncava
+Si $\log F$ y $\log(1 - F)$ son funciones cóncavas de $\eta$, entonces $\ell_n(\beta)$ es cóncava en $\beta$. Si además son estrictamente cóncavas, $\ell_n$ lo es (dado que $X'X$ es invertible).
+:::
+
+::: {.proof}
+$\ell_n(\beta) = \sum_i\big[y_i\log F(x_i'\beta) + (1 - y_i)\log(1 - F(x_i'\beta))\big]$ es una suma de funciones de la forma $\psi_i(x_i'\beta)$, con $\psi_i = \log F$ o $\log(1-F)$ según $y_i$. La composición de una función cóncava con una función lineal (afín) es cóncava, y una suma de cóncavas es cóncava. Si cada $\psi_i$ es estrictamente cóncava y $Xa\ne0$ para $a\ne0$, la suma lo es estrictamente.
+:::
+
+Para el probit: $\log\Phi$ es cóncava, pues $(\log\Phi)'' = \lambda'(\eta)$ con $\lambda = \phi/\Phi$ la razón inversa de Mills, que cumple $\lambda'(\eta) = -\lambda(\eta)\big(\eta + \lambda(\eta)\big)<0$ (se sigue de $\Phi(\eta)>-\phi(\eta)/\eta$ para $\eta<0$, la desigualdad de Mills). Como $1 - \Phi(\eta) = \Phi(-\eta)$, $\log(1 - \Phi)$ también es cóncava. En el logit, $(\log\Lambda)'' = -\Lambda(1-\Lambda)<0$ y $(\log(1 - \Lambda))'' = -\Lambda(1-\Lambda)<0$, lo que reproduce el @thm-concavidad-logit.
+
+# Resumen
+
+- En un modelo binario la CEF es la probabilidad: $p(x) = F(x'\beta)$ con $F$ una distribución simétrica (normal: probit; logística: logit). Sale de un modelo de variable latente.
+- La **escala** no está identificada: $\varepsilon$ se normaliza, y los coeficientes están en unidades arbitrarias (@prp-escala).
+- El MV se resuelve numéricamente; el logit tiene score $\sum(y - \Lambda)x$ y es **globalmente cóncavo** (@thm-concavidad-logit); puede no existir si hay separación perfecta.
+- $\sqrt n(\hat\beta - \beta)\to N(0,\mathcal{I}^{-1})$ (@thm-binario-normal).
+- Los **efectos marginales** $f(x'\beta)\beta_j$ dependen de $x$; reporta AME o MEM con errores estándar por método delta. Comparar efectos marginales, no coeficientes.
+- **Trampas:** coeficientes que cambian con los controles (@prp-atenuacion), inconsistencia bajo heterocedasticidad, interacciones.
+
+# Ejercicios
+
+**Ejercicio 5.1.** Muestra que en el modelo de variable latente con $\varepsilon\sim N(0,1)$ simétrica, $P(y = 1\mid x) = \Phi(x'\beta)$, y que la verosimilitud de una observación es $\Phi(x'\beta)^y\,\Phi(-x'\beta)^{1-y}$.
+
+::: {.callout-tip collapse="true" title="Solución 5.1"}
+$P(y = 1\mid x) = P(x'\beta + \varepsilon>0) = P(\varepsilon>-x'\beta) = 1 - \Phi(-x'\beta) = \Phi(x'\beta)$ por simetría. Luego $P(y = 0\mid x) = 1 - \Phi(x'\beta) = \Phi(-x'\beta)$ y la función de probabilidad de $y$ dado $x$ es $\Phi(x'\beta)^y\Phi(-x'\beta)^{1-y}$ para $y\in\{0,1\}$. Su log es $y\log\Phi(x'\beta) + (1-y)\log\Phi(-x'\beta)$.
+:::
+
+**Ejercicio 5.2.** En un logit con $\beta = (-1; 0{,}5)$ (constante, $x$), calcula el efecto marginal de $x$ en $x = 0$ y en $x = 4$ y compara con el efecto en $x = 2$ (calculado en el @exm-me). ¿Qué patrón ves?
+
+::: {.callout-tip collapse="true" title="Solución 5.2"}
+En $x = 0$: $\eta = -1$, $\Lambda(-1) = 0{,}2689$, $f = 0{,}2689\times0{,}7311 = 0{,}1966$, efecto $= 0{,}1966\times0{,}5 = 0{,}098$. En $x = 4$: $\eta = 1$, $\Lambda(1) = 0{,}7311$, $f = 0{,}1966$, efecto $0{,}098$ (simetría). En $x = 2$: $0{,}125$. El efecto es **máximo en el centro** ($p = 0{,}5$) y se achica hacia las colas, de forma simétrica. Un mismo coeficiente $\beta_x = 0{,}5$ produce efectos marginales de 9,8 a 12,5 puntos porcentuales según el punto donde se evalúe.
+:::
+
+**Ejercicio 5.3.** En un logit con constante entre los regresores, demuestra que $\sum_i\hat p_i = \sum_iy_i$ (la probabilidad predicha promedio coincide con la proporción muestral de unos). Si hay una dummy $d_i$, ¿qué más se cumple?
+
+::: {.callout-tip collapse="true" title="Solución 5.3"}
+Las CPO del logit son $\sum_i(y_i - \hat p_i)x_i = 0$. La fila correspondiente a la constante da $\sum_i(y_i - \hat p_i) = 0$. La fila de la dummy da $\sum_i(y_i - \hat p_i)d_i = 0$: en el grupo $d = 1$, la suma de probabilidades predichas es igual a la suma de $y$. Más en general, **para todo regresor incluido, los residuos $y - \hat p$ son ortogonales a él.** Esta propiedad no la tiene el probit.
+:::
+
+**Ejercicio 5.4.** (Separación.) Sea $x$ escalar sin constante, con datos $(x_i,y_i)$ tales que $y_i = 1$ si y solo si $x_i>0$. Muestra que el logit no tiene MV finito.
+
+::: {.callout-tip collapse="true" title="Solución 5.4"}
+Para cada $i$, $y_i\log\Lambda(\beta x_i) + (1 - y_i)\log(1 - \Lambda(\beta x_i))$: si $x_i>0$ ($y_i = 1$), el término es $\log\Lambda(\beta x_i)$, creciente en $\beta$ y que tiende a $0$ cuando $\beta\to\infty$; si $x_i<0$ ($y_i = 0$), es $\log(1 - \Lambda(\beta x_i)) = \log\Lambda(-\beta x_i)$, también creciente en $\beta$ (porque $-\beta x_i>0$ crece con $\beta$) y con límite $0$. Cada término es estrictamente creciente en $\beta$ y acotado por cero: $\ell_n(\beta)\uparrow0$ cuando $\beta\to\infty$ sin alcanzarlo. El supremo no se alcanza. La separación es perfecta y el estimador "es" $+\infty$.
+:::
+
+**Ejercicio 5.5.** Calcula el gradiente de $\text{ME}_j(x) = \phi(x'\beta)\beta_j$ del probit respecto de $\beta$ y úsalo para dar la varianza del efecto marginal en $x$ en términos de $\operatorname{Avar}(\hat\beta)$.
+
+::: {.callout-tip collapse="true" title="Solución 5.5"}
+Usando $\phi'(\eta) = -\eta\phi(\eta)$: $\dfrac{\partial\,\text{ME}_j}{\partial\beta} = \phi(x'\beta)e_j - (x'\beta)\phi(x'\beta)\beta_jx = \phi(x'\beta)\big[e_j - (x'\beta)\beta_jx\big]$. Con $D = \phi(x'\beta)[e_j - (x'\beta)\beta_jx]$, $\operatorname{Var}(\widehat{\text{ME}}_j)\approx D'\operatorname{Avar}(\hat\beta)D/n$. En $x'\beta = 0$ el segundo término se anula y el gradiente es $\phi(0)e_j$: el error estándar del efecto marginal es $\phi(0)\cdot\text{ee}(\hat\beta_j)\approx0{,}4\,\text{ee}(\hat\beta_j)$.
+:::
+
+**Ejercicio 5.6.** Dos grupos (hombres y mujeres) estiman el mismo probit de participación laboral y obtienen $\hat\beta_{\text{educ}} = 0{,}20$ y $0{,}30$, respectivamente. ¿Puedes concluir que la educación importa más para las mujeres?
+
+::: {.callout-tip collapse="true" title="Solución 5.6"}
+No directamente. Por la @prp-escala, cada coeficiente es $\beta/\sigma_g$ con $\sigma_g$ la desviación estándar del error latente en el grupo $g$. Si el error de las mujeres tiene menor varianza ($\sigma_M<\sigma_H$), $\hat\beta/\sigma$ es mayor aun si $\beta$ fuera igual. Hay que comparar **efectos marginales** (en unidades de probabilidad), o testear explícitamente heterocedasticidad entre grupos (Allison, 1999, propone el probit heterocedástico con $\sigma_g$ libre).
+:::
+
+**Ejercicio 5.7 ★.** Demuestra que $\lambda(\eta) = \phi(\eta)/\Phi(\eta)$ cumple $\lambda'(\eta) = -\lambda(\eta)(\eta + \lambda(\eta))$, y que $\log\Phi$ es cóncava si $\eta + \lambda(\eta)>0$ para todo $\eta$.
+
+::: {.callout-tip collapse="true" title="Solución 5.7 ★"}
+$(\log\Phi)' = \phi/\Phi = \lambda$. $\lambda' = \dfrac{\phi'\Phi - \phi^2}{\Phi^2} = \dfrac{-\eta\phi\Phi - \phi^2}{\Phi^2} = -\lambda\eta - \lambda^2 = -\lambda(\eta + \lambda)$. Como $\lambda>0$, la concavidad de $\log\Phi$ es equivalente a $\eta + \lambda(\eta)>0$, es decir $\phi(\eta)>-\eta\Phi(\eta)$. Para $\eta\ge0$ es trivial (el lado derecho es $\le0<\phi$). Para $\eta<0$, hay que probar $\Phi(\eta)<\phi(\eta)/|\eta|$, la **desigualdad de Mills**: $\Phi(\eta) = \int_{-\infty}^\eta\phi(t)\,dt$. Para $t<\eta<0$ se cumple $t/\eta>1$, así que $\int_{-\infty}^\eta\phi(t)\,dt<\frac1\eta\int_{-\infty}^\eta t\,\phi(t)\,dt = \frac1\eta\big[-\phi(\eta)\big] = \phi(\eta)/|\eta|$ (usando $\int t\phi(t)\,dt = -\phi(t)$). Luego $\Phi(\eta)|\eta|<\phi(\eta)$, o sea $\eta + \lambda(\eta)>0$.
+:::

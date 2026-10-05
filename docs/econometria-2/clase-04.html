@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="GMM: condiciones de momentos, identificación, consistencia, normalidad asintótica, la matriz de pesos óptima, GMM en dos pasos, el test J de sobreidentificación y la relación con MC2E.">
+
+<title>Clase 4 · Método generalizado de momentos – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-05.html" rel="next">
+<link href="../econometria-2/clase-03.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-04.html">Clase 4 · Método generalizado de momentos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-no-quieres-o-no-puedes-escribir-la-verosimilitud" id="toc-cuando-no-quieres-o-no-puedes-escribir-la-verosimilitud" class="nav-link active" data-scroll-target="#cuando-no-quieres-o-no-puedes-escribir-la-verosimilitud"><span class="header-section-number">1</span> Cuando no quieres (o no puedes) escribir la verosimilitud</a></li>
+  <li><a href="#el-estimador" id="toc-el-estimador" class="nav-link" data-scroll-target="#el-estimador"><span class="header-section-number">2</span> El estimador</a></li>
+  <li><a href="#consistencia-y-normalidad" id="toc-consistencia-y-normalidad" class="nav-link" data-scroll-target="#consistencia-y-normalidad"><span class="header-section-number">3</span> Consistencia y normalidad</a></li>
+  <li><a href="#la-matriz-de-pesos-óptima" id="toc-la-matriz-de-pesos-óptima" class="nav-link" data-scroll-target="#la-matriz-de-pesos-óptima"><span class="header-section-number">4</span> La matriz de pesos óptima</a>
+  <ul class="collapse">
+  <li><a href="#gmm-eficiente-en-dos-pasos" id="toc-gmm-eficiente-en-dos-pasos" class="nav-link" data-scroll-target="#gmm-eficiente-en-dos-pasos"><span class="header-section-number">4.1</span> GMM eficiente en dos pasos</a></li>
+  </ul></li>
+  <li><a href="#el-test-j-son-compatibles-los-momentos" id="toc-el-test-j-son-compatibles-los-momentos" class="nav-link" data-scroll-target="#el-test-j-son-compatibles-los-momentos"><span class="header-section-number">5</span> El test J: ¿son compatibles los momentos?</a></li>
+  <li><a href="#gmm-y-variables-instrumentales" id="toc-gmm-y-variables-instrumentales" class="nav-link" data-scroll-target="#gmm-y-variables-instrumentales"><span class="header-section-number">6</span> GMM y variables instrumentales</a></li>
+  <li><a href="#postgrado-por-qué-no-importa-el-primer-paso" id="toc-postgrado-por-qué-no-importa-el-primer-paso" class="nav-link" data-scroll-target="#postgrado-por-qué-no-importa-el-primer-paso"><span class="header-section-number">7</span> ★ Postgrado: ¿por qué no importa el primer paso?</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-04.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 4 · Método generalizado de momentos</h1>
+<p class="subtitle lead">Matriz de pesos óptima y el test J de Hansen</p>
+</div>
+
+<div>
+  <div class="description">
+    GMM: condiciones de momentos, identificación, consistencia, normalidad asintótica, la matriz de pesos óptima, GMM en dos pasos, el test J de sobreidentificación y la relación con MC2E.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-no-quieres-o-no-puedes-escribir-la-verosimilitud" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando no quieres (o no puedes) escribir la verosimilitud</h1>
+<p>La máxima verosimilitud exige conocer toda la distribución de los datos. Pero muchos modelos económicos solo dicen <strong>algo</strong> sobre ella. Un modelo de consumo con expectativas racionales dice que, en promedio, cierta combinación de variables tiene esperanza cero, y nada más.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Esa afirmación parcial se llama <strong>condición de momentos</strong>:</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Lars Peter Hansen introdujo el GMM en 1982 para estimar modelos de equilibrio con expectativas racionales (donde, además, la teoría solo da condiciones de ortogonalidad). Por ese trabajo recibió el Nobel de Economía en 2013, junto con Fama y Shiller, que habían llegado a conclusiones opuestas sobre la misma pregunta: otra muestra de que la econometría no zanja desacuerdos, pero sí los hace precisos.</p></div></div><p><span id="eq-momentos"><span class="math display">\[
+\mathbb{E}\big[g(w_i,\theta_0)\big] = 0,\qquad g:\ \mathbb{R}^{d}\times\Theta\to\mathbb{R}^r.
+\tag{1}\]</span></span></p>
+<p>Si <span class="math inline">\(r = p\)</span> (tantas condiciones como parámetros) basta resolver el sistema muestral <span class="math inline">\(\bar g_n(\theta) = 0\)</span>. Si <span class="math inline">\(r&gt;p\)</span> el sistema no tiene solución exacta y hay que elegir <strong>qué tan cerca</strong> de cero queremos llegar en cada dirección. El método generalizado de momentos (GMM) ordena este problema, y lo hace tan bien que unifica casi todo lo que hemos visto.</p>
+<div id="exm-momentos" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Condiciones de momentos que ya conoces)</strong></span> &nbsp;</p>
+<ol type="1">
+<li><strong>MCO:</strong> <span class="math inline">\(g(w,\theta) = x(y - x'\theta)\)</span>, es decir <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>. Aquí <span class="math inline">\(r = p\)</span>.</li>
+<li><strong>Variables instrumentales:</strong> <span class="math inline">\(g(w,\theta) = z(y - x'\theta)\)</span> con <span class="math inline">\(\mathbb{E}[zu] = 0\)</span>. Si hay más instrumentos que regresores endógenos, <span class="math inline">\(r&gt;p\)</span>.</li>
+<li><strong>MV:</strong> <span class="math inline">\(g(w,\theta) = s(w;\theta)\)</span>, el score de la Clase 2. Es el caso <span class="math inline">\(r = p\)</span>.</li>
+<li><strong>Ecuación de Euler del consumo (Hansen–Singleton):</strong> <span class="math inline">\(\mathbb{E}\big[\big(\beta(C_{t+1}/C_t)^{-\gamma}R_{t+1} - 1\big)z_t\big] = 0\)</span>, con <span class="math inline">\(z_t\)</span> cualquier variable conocida en <span class="math inline">\(t\)</span>. Aquí <span class="math inline">\(\theta = (\beta,\gamma)\)</span> y cada instrumento agrega un momento.</li>
+</ol>
+</div>
+</section>
+<section id="el-estimador" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El estimador</h1>
+<p>El estimador GMM elige <span class="math inline">\(\theta\)</span> para que el <strong>vector de promedios muestrales</strong> <span class="math inline">\(\bar g_n(\theta) = \frac1n\sum_ig(w_i,\theta)\)</span> quede lo más cerca posible de cero, midiendo la distancia con una <strong>matriz de pesos</strong> <span class="math inline">\(\hat W_n\)</span> (simétrica definida positiva):</p>
+<p><span id="eq-gmm"><span class="math display">\[
+\hat\theta = \arg\min_{\theta\in\Theta}\ \bar g_n(\theta)'\,\hat W_n\,\bar g_n(\theta).
+\tag{2}\]</span></span></p>
+<p>Con <span class="math inline">\(r = p\)</span> y una solución de <span class="math inline">\(\bar g_n(\theta) = 0\)</span>, el criterio vale cero y <span class="math inline">\(\hat W_n\)</span> no importa. Con <span class="math inline">\(r&gt;p\)</span>, importa mucho: la matriz <span class="math inline">\(\hat W_n\)</span> decide cuánto pesa cada momento.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>G1:</strong> <span class="math inline">\(\{w_i\}\)</span> i.i.d., <span class="math inline">\(\Theta\)</span> compacto, <span class="math inline">\(g(w,\cdot)\)</span> continua con <span class="math inline">\(\mathbb{E}\sup_\Theta\|g\|&lt;\infty\)</span>.</li>
+<li><strong>G2 (identificación):</strong> <span class="math inline">\(\mathbb{E}[g(w,\theta)] = 0\)</span> <strong>solo</strong> para <span class="math inline">\(\theta = \theta_0\)</span>.</li>
+<li><strong>G3:</strong> <span class="math inline">\(\hat W_n\xrightarrow{p}W\)</span>, con <span class="math inline">\(W\)</span> simétrica definida positiva.</li>
+<li><strong>G4:</strong> <span class="math inline">\(\theta_0\)</span> es interior; <span class="math inline">\(g(w,\cdot)\)</span> es continuamente diferenciable cerca de <span class="math inline">\(\theta_0\)</span>; <span class="math inline">\(\mathbb{E}\sup\|\nabla g\|&lt;\infty\)</span> allí; <span class="math inline">\(\Omega = \mathbb{E}[g(w,\theta_0)g(w,\theta_0)']\)</span> es definida positiva (finita); y <span class="math inline">\(G = \mathbb{E}[\nabla_{\theta'}g(w,\theta_0)]\)</span> (<span class="math inline">\(r\times p\)</span>) tiene <strong>rango columna completo <span class="math inline">\(p\)</span></strong>.</li>
+</ul>
+</div>
+</div>
+<p>El rango de <span class="math inline">\(G\)</span> es la <strong>condición de rango</strong> para identificación local: pide que cada parámetro mueva los momentos de manera distinta (en MCO, <span class="math inline">\(G = -\mathbb{E}[xx']\)</span> invertible; en VI, <span class="math inline">\(G = -\mathbb{E}[zx']\)</span> de rango <span class="math inline">\(p\)</span>, que es la condición de relevancia de la Clase 10 de Econometría 1).</p>
+</section>
+<section id="consistencia-y-normalidad" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Consistencia y normalidad</h1>
+<div id="thm-gmm-consistencia" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Consistencia de GMM)</strong></span> Bajo G1–G3, <span class="math inline">\(\hat\theta\xrightarrow{p}\theta_0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>El criterio es <span class="math inline">\(\hat Q_n(\theta) = -\bar g_n(\theta)'\hat W_n\bar g_n(\theta)\)</span> (se maximiza). Por la LGN uniforme (el lema de la Clase 1, aplicado a cada componente de <span class="math inline">\(g\)</span>), <span class="math inline">\(\sup_\Theta\|\bar g_n(\theta) - \mathbb{E}g(w,\theta)\|\xrightarrow{p}0\)</span>; como <span class="math inline">\(\hat W_n\to_pW\)</span> y <span class="math inline">\(\mathbb{E}g(w,\cdot)\)</span> es acotada, <span class="math inline">\(\sup_\Theta|\hat Q_n(\theta) - Q_0(\theta)|\xrightarrow{p}0\)</span> con <span class="math inline">\(Q_0(\theta) = -\mathbb{E}[g]'W\,\mathbb{E}[g]\)</span>, continua. Como <span class="math inline">\(W\succ0\)</span>, <span class="math inline">\(Q_0(\theta)\le0\)</span> con igualdad si y solo si <span class="math inline">\(\mathbb{E}g(w,\theta) = 0\)</span>, que por G2 ocurre solo en <span class="math inline">\(\theta_0\)</span>. La demostración del teorema de consistencia de la Clase 1 solo usó (i) convergencia uniforme del criterio a un límite continuo y (ii) que el límite tenga un único máximo; ambas valen aquí.</p>
+</div>
+<div id="thm-gmm-normal" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Normalidad asintótica de GMM)</strong></span> Bajo G1–G4, <span class="math display">\[
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}\big).
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mismo guion de siempre: condición de primer orden, Taylor, TCL. La CPO de minimizar <span class="math inline">\(\bar g'\hat W\bar g\)</span> es <span class="math inline">\(\hat G'\hat W\bar g(\hat\theta) = 0\)</span>, donde <span class="math inline">\(\hat G = \nabla\bar g_n(\hat\theta)\)</span> es el jacobiano muestral. Expando <span class="math inline">\(\bar g(\hat\theta)\)</span> alrededor de <span class="math inline">\(\theta_0\)</span>: <span class="math inline">\(\bar g(\hat\theta) = \bar g(\theta_0) + \bar G(\hat\theta - \theta_0)\)</span>. Meto eso en la CPO y despejo. El factor <span class="math inline">\(\hat G'\hat W\)</span> del frente va a <span class="math inline">\(G'W\)</span> por consistencia, el <span class="math inline">\(\sqrt n\bar g(\theta_0)\to N(0,\Omega)\)</span> por el TCL, y todo se pega con Slutsky. La forma que sale, “pan-relleno-pan”, es el sándwich de la Clase 1: aquí el relleno es <span class="math inline">\(\Omega\)</span> y los panes son <span class="math inline">\((G'WG)^{-1}G'W\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con probabilidad que tiende a uno <span class="math inline">\(\hat\theta\)</span> es interior y satisface la CPO <span class="math display">\[
+\hat G'\hat W\,\bar g_n(\hat\theta) = 0,\qquad\hat G = \nabla_{\theta'}\bar g_n(\hat\theta).
+\]</span> Por el teorema del valor medio aplicado fila a fila, <span class="math inline">\(\bar g_n(\hat\theta) = \bar g_n(\theta_0) + \bar G_n(\hat\theta - \theta_0)\)</span>, con <span class="math inline">\(\bar G_n\)</span> el jacobiano evaluado en puntos intermedios. Como <span class="math inline">\(\hat\theta\to_p\theta_0\)</span>, la LGN uniforme y la continuidad dan <span class="math inline">\(\hat G\to_pG\)</span> y <span class="math inline">\(\bar G_n\to_pG\)</span>. Sustituyendo en la CPO, <span class="math display">\[
+0 = \hat G'\hat W\bar g_n(\theta_0) + \hat G'\hat W\bar G_n(\hat\theta - \theta_0)
+\ \Longrightarrow\
+\sqrt n(\hat\theta - \theta_0) = -\big(\hat G'\hat W\bar G_n\big)^{-1}\hat G'\hat W\,\sqrt n\,\bar g_n(\theta_0).
+\]</span> La matriz <span class="math inline">\(G'WG\)</span> es invertible porque <span class="math inline">\(G\)</span> tiene rango columna <span class="math inline">\(p\)</span> y <span class="math inline">\(W\succ0\)</span>, así que <span class="math inline">\(\hat G'\hat W\bar G_n\)</span> lo es con probabilidad que tiende a uno y <span class="math inline">\((\hat G'\hat W\bar G_n)^{-1}\hat G'\hat W\to_p(G'WG)^{-1}G'W =: \mathcal{C}\)</span>. Por el TCL, <span class="math inline">\(\sqrt n\bar g_n(\theta_0)\to_dN(0,\Omega)\)</span> (<span class="math inline">\(\mathbb{E}g(w,\theta_0) = 0\)</span> y varianza <span class="math inline">\(\Omega\)</span>). Por Slutsky, el límite es <span class="math inline">\(-\mathcal{C}\cdot N(0,\Omega) = N(0,\mathcal{C}\Omega\mathcal{C}')\)</span>, que es la fórmula del enunciado.</p>
+</div>
+<p>Cuando <span class="math inline">\(r = p\)</span>, <span class="math inline">\(G\)</span> es cuadrada e invertible, <span class="math inline">\((G'WG)^{-1}G'W = G^{-1}\)</span>, y la varianza se reduce a <span class="math inline">\(G^{-1}\Omega G^{-1\prime}\)</span> <strong>independiente de <span class="math inline">\(W\)</span></strong> (como ya sabíamos: con <span class="math inline">\(r = p\)</span> el criterio vale cero y los pesos no importan). En MCO eso es <span class="math inline">\(\mathbb{E}[xx']^{-1}\mathbb{E}[u^2xx']\mathbb{E}[xx']^{-1}\)</span>, el sándwich de White.</p>
+</section>
+<section id="la-matriz-de-pesos-óptima" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La matriz de pesos óptima</h1>
+<p>Con <span class="math inline">\(r&gt;p\)</span> el resultado depende de <span class="math inline">\(W\)</span>. ¿Cuál es la <strong>mejor</strong> elección? Es una pregunta de eficiencia: queremos la menor varianza asintótica, en el sentido de que <span class="math inline">\(V_W - V_{W^*}\)</span> sea semidefinida positiva para toda otra <span class="math inline">\(W\)</span>.</p>
+<div id="thm-w-optima" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Matriz de pesos óptima)</strong></span> Sea <span class="math inline">\(V(W) = (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}\)</span>. Entonces para toda <span class="math inline">\(W\succ0\)</span>, <span class="math display">\[
+V(W)\ \succeq\ (G'\Omega^{-1}G)^{-1} = V(\Omega^{-1}).
+\]</span> Es decir, <span class="math inline">\(W^* = \Omega^{-1}\)</span> (o cualquier múltiplo) minimiza la varianza asintótica, y la varianza óptima es <span class="math inline">\((G'\Omega^{-1}G)^{-1}\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Intuición: <span class="math inline">\(\Omega\)</span> es la varianza de los momentos. Un momento muy ruidoso (varianza grande) debería pesar poco; dos momentos muy correlacionados dicen casi lo mismo y no conviene contar lo mismo dos veces. Eso es exactamente lo que hace <span class="math inline">\(\Omega^{-1}\)</span> (como en MCG de la Clase 9 de Econometría 1: ponderar por la inversa de la varianza). Para demostrarlo uso el truco de siempre: la diferencia entre dos estimadores lineales se escribe como una forma cuadrática <span class="math inline">\((A-B)\Omega(A-B)'\succeq0\)</span>, y todo calza si <span class="math inline">\(B\Omega A' = B\Omega B'\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sean <span class="math inline">\(\mathcal{A} = (G'WG)^{-1}G'W\)</span> y <span class="math inline">\(\mathcal{B} = (G'\Omega^{-1}G)^{-1}G'\Omega^{-1}\)</span>, matrices <span class="math inline">\(p\times r\)</span>. Entonces <span class="math inline">\(V(W) = \mathcal{A}\Omega\mathcal{A}'\)</span> y <span class="math inline">\(V(\Omega^{-1}) = \mathcal{B}\Omega\mathcal{B}' = (G'\Omega^{-1}G)^{-1}\)</span> (reemplazando y simplificando). Calculamos el término cruzado: <span class="math display">\[
+\mathcal{A}\Omega\mathcal{B}' = (G'WG)^{-1}G'W\,\Omega\,\Omega^{-1}G(G'\Omega^{-1}G)^{-1} = (G'WG)^{-1}(G'WG)(G'\Omega^{-1}G)^{-1} = (G'\Omega^{-1}G)^{-1}.
+\]</span> Entonces <span class="math display">\[
+(\mathcal{A} - \mathcal{B})\Omega(\mathcal{A} - \mathcal{B})' = \mathcal{A}\Omega\mathcal{A}' - \mathcal{A}\Omega\mathcal{B}' - \mathcal{B}\Omega\mathcal{A}' + \mathcal{B}\Omega\mathcal{B}' = V(W) - (G'\Omega^{-1}G)^{-1} - (G'\Omega^{-1}G)^{-1} + (G'\Omega^{-1}G)^{-1}.
+\]</span> Es decir, <span class="math inline">\(V(W) - (G'\Omega^{-1}G)^{-1} = (\mathcal{A} - \mathcal{B})\Omega(\mathcal{A} - \mathcal{B})'\succeq0\)</span>, por ser de la forma <span class="math inline">\(C\Omega C'\)</span> con <span class="math inline">\(\Omega\succ0\)</span>.</p>
+</div>
+<p>Esta es la misma demostración que Gauss–Markov y Aitken (Clases 4 y 9 de Econometría 1): una “diferencia de estimadores lineales” que resulta ser una forma cuadrática. Con <span class="math inline">\(W^* = \Omega^{-1}\)</span> el sándwich <strong>colapsa</strong> a <span class="math inline">\((G'\Omega^{-1}G)^{-1}\)</span>: es el análogo exacto de la igualdad de la información de la Clase 2.</p>
+<section id="gmm-eficiente-en-dos-pasos" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="gmm-eficiente-en-dos-pasos"><span class="header-section-number">4.1</span> GMM eficiente en dos pasos</h2>
+<p><span class="math inline">\(\Omega\)</span> no se conoce, pero se puede estimar. El procedimiento estándar:</p>
+<ol type="1">
+<li><strong>Primer paso:</strong> estima <span class="math inline">\(\hat\theta_1\)</span> con una <span class="math inline">\(W\)</span> cualquiera (por ejemplo <span class="math inline">\(W = I\)</span>, o <span class="math inline">\((\frac1n\sum z_iz_i')^{-1}\)</span> en VI). Es consistente, aunque no eficiente.</li>
+<li><strong>Segundo paso:</strong> calcula <span class="math inline">\(\hat\Omega = \frac1n\sum_ig(w_i,\hat\theta_1)g(w_i,\hat\theta_1)'\)</span> y reestima con <span class="math inline">\(\hat W = \hat\Omega^{-1}\)</span>.</li>
+</ol>
+<p>Como <span class="math inline">\(\hat\Omega\to_p\Omega\)</span> (por consistencia de <span class="math inline">\(\hat\theta_1\)</span> y LGN), <span class="math inline">\(\hat W\to_p\Omega^{-1}\)</span> y por el <a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a> solo importa el <strong>límite</strong> <span class="math inline">\(W\)</span>: el estimador de dos pasos tiene la misma distribución asintótica que el que usara <span class="math inline">\(\Omega^{-1}\)</span> conocida, o sea la varianza óptima <span class="math inline">\((G'\Omega^{-1}G)^{-1}\)</span>. El error de estimar <span class="math inline">\(\hat\Omega\)</span> no afecta al primer orden.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Eficiente asintóticamente, sesgado en muestras finitas">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Eficiente asintóticamente, sesgado en muestras finitas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con muchos momentos (<span class="math inline">\(r\)</span> grande) y <span class="math inline">\(n\)</span> moderado, <span class="math inline">\(\hat\Omega\)</span> es ruidoso y está correlacionado con <span class="math inline">\(\bar g\)</span>, y GMM de dos pasos tiene <strong>sesgo considerable</strong> en muestras finitas (Altonji–Segal, 1996, mostraron que a veces es peor que la matriz identidad). Alternativas: iterar hasta convergencia, el estimador de actualización continua (CUE), o simplemente <strong>usar pocos momentos</strong>. Tener más instrumentos no es gratis.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="el-test-j-son-compatibles-los-momentos" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El test J: ¿son compatibles los momentos?</h1>
+<p>Con <span class="math inline">\(r&gt;p\)</span> hay <span class="math inline">\(r - p\)</span> momentos “de sobra”. Si el modelo es correcto, <strong>todos</strong> los momentos son ciertos, y los <span class="math inline">\(p\)</span> parámetros se estiman usando <span class="math inline">\(p\)</span> combinaciones lineales; las <span class="math inline">\(r - p\)</span> restantes deberían quedar cerca de cero. Si el modelo es incorrecto (algún instrumento no es válido), los momentos se contradicen entre sí y no hay <span class="math inline">\(\theta\)</span> que los ponga a todos en cero.</p>
+<div id="thm-j" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Test J de Hansen)</strong></span> Bajo G1–G4, con <span class="math inline">\(r&gt;p\)</span> y <span class="math inline">\(\hat W\to_p\Omega^{-1}\)</span> (GMM eficiente), <span class="math display">\[
+J = n\,\bar g_n(\hat\theta)'\,\hat\Omega^{-1}\,\bar g_n(\hat\theta)\xrightarrow{d}\chi^2_{r-p}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El valor mínimo del criterio, multiplicado por <span class="math inline">\(n\)</span>, es el estadístico. Para ver su distribución necesito expresar <span class="math inline">\(\sqrt n\bar g(\hat\theta)\)</span> en términos de <span class="math inline">\(\sqrt n\bar g(\theta_0)\)</span>, que es normal. Eso ya está hecho en la demostración anterior: <span class="math inline">\(\bar g(\hat\theta) = \bar g(\theta_0) + G(\hat\theta - \theta_0)\)</span> con <span class="math inline">\(\sqrt n(\hat\theta - \theta_0)\)</span> dado por la fórmula. Sale un operador “$I - $ proyección” aplicado a un vector normal: una matriz idempotente de rango <span class="math inline">\(r - p\)</span>. Es el lema de las formas cuadráticas idempotentes de la Clase 5 de Econometría 1.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(W = \Omega^{-1}\)</span>, de la demostración del <a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math display">\[
+\sqrt n(\hat\theta - \theta_0) = -(G'\Omega^{-1}G)^{-1}G'\Omega^{-1}\sqrt n\,\bar g_n(\theta_0) + o_p(1),
+\]</span> y por el teorema del valor medio <span class="math inline">\(\sqrt n\bar g_n(\hat\theta) = \sqrt n\bar g_n(\theta_0) + G\sqrt n(\hat\theta - \theta_0) + o_p(1)\)</span>. Juntando, <span class="math display">\[
+\sqrt n\bar g_n(\hat\theta) = \big[I_r - G(G'\Omega^{-1}G)^{-1}G'\Omega^{-1}\big]\sqrt n\bar g_n(\theta_0) + o_p(1).
+\]</span> Sea <span class="math inline">\(z_n = \Omega^{-1/2}\sqrt n\bar g_n(\theta_0)\xrightarrow{d}N(0,I_r)\)</span> y <span class="math inline">\(D = \Omega^{-1/2}G\)</span> (de <span class="math inline">\(r\times p\)</span>, rango <span class="math inline">\(p\)</span>). Multiplicando por <span class="math inline">\(\Omega^{-1/2}\)</span> a la izquierda, <span class="math display">\[
+\Omega^{-1/2}\sqrt n\bar g_n(\hat\theta) = \big[I_r - D(D'D)^{-1}D'\big]z_n + o_p(1) = (I_r - P_D)z_n + o_p(1),
+\]</span> donde <span class="math inline">\(P_D\)</span> es la proyección ortogonal sobre las columnas de <span class="math inline">\(D\)</span>. Como <span class="math inline">\(\hat\Omega\to_p\Omega\)</span>, <span class="math inline">\(J = z_n'(I - P_D)'(I - P_D)z_n + o_p(1) = z_n'(I - P_D)z_n + o_p(1)\)</span>. La matriz <span class="math inline">\(I - P_D\)</span> es simétrica, idempotente y de rango <span class="math inline">\(r - p\)</span> (Clase 1 de Econometría 1), y <span class="math inline">\(z_n\to_dN(0,I_r)\)</span>. Por el lema de formas cuadráticas idempotentes, <span class="math inline">\(z'(I - P_D)z\sim\chi^2_{r-p}\)</span>, y <span class="math inline">\(J\to_d\chi^2_{r-p}\)</span>.</p>
+</div>
+<p>Dos advertencias. Primero, <strong>el test J solo existe si <span class="math inline">\(r&gt;p\)</span></strong>: con <span class="math inline">\(r = p\)</span>, <span class="math inline">\(J = 0\)</span> idénticamente, y no hay nada que contrastar. Un modelo exactamente identificado es “inrefutable” con sus propios datos. Segundo, <strong>un rechazo no dice cuál momento está mal</strong>: solo que algo en el conjunto es incompatible. Y un <em>no</em> rechazo no prueba validez: si todos los instrumentos fallan de la misma manera, el J puede no detectarlo.</p>
+</section>
+<section id="gmm-y-variables-instrumentales" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> GMM y variables instrumentales</h1>
+<p>El modelo de VI de la Clase 10 de Econometría 1 es un caso particular, y GMM aclara cuándo MC2E es óptimo y cuándo no.</p>
+<div id="prp-mc2e-gmm" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (MC2E es GMM con <span class="math inline">\(W = (Z'Z/n)^{-1}\)</span>)</strong></span> Para <span class="math inline">\(g = z(y - x'\theta)\)</span> con <span class="math inline">\(r&gt;p\)</span>, el GMM con <span class="math inline">\(\hat W = (Z'Z/n)^{-1}\)</span> es MC2E: <span class="math display">\[
+\hat\theta = (X'P_ZX)^{-1}X'P_Zy,\qquad P_Z = Z(Z'Z)^{-1}Z'.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\bar g_n(\theta) = \frac1nZ'(y - X\theta)\)</span>, así que el criterio es <span class="math inline">\(\frac1{n^2}(y - X\theta)'Z(Z'Z/n)^{-1}Z'(y - X\theta) = \frac1n(y - X\theta)'P_Z(y - X\theta)\)</span>. Minimizar esto en <span class="math inline">\(\theta\)</span> es una regresión MCO de <span class="math inline">\(P_Zy\)</span> sobre <span class="math inline">\(P_ZX\)</span>, cuya solución es <span class="math inline">\((X'P_ZX)^{-1}X'P_Zy\)</span> (usando <span class="math inline">\(P_Z'P_Z = P_Z\)</span>).</p>
+</div>
+<p>¿Es óptimo? La varianza óptima requiere <span class="math inline">\(W\propto\Omega^{-1}\)</span> con <span class="math inline">\(\Omega = \mathbb{E}[u^2zz']\)</span>. Si hay <strong>homocedasticidad condicional</strong> (<span class="math inline">\(\mathbb{E}[u^2\mid z] = \sigma^2\)</span>), entonces <span class="math inline">\(\Omega = \sigma^2\mathbb{E}[zz']\)</span> y <span class="math inline">\(\Omega^{-1}\propto\mathbb{E}[zz']^{-1}\)</span>: <strong>MC2E es GMM eficiente</strong>. Pero con heterocedasticidad, <span class="math inline">\(W^*\ne(Z'Z/n)^{-1}\)</span> y GMM de dos pasos (con <span class="math inline">\(\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'\)</span>) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J <strong>es</strong> el test de Sargan robusto (el Sargan clásico es el J bajo homocedasticidad).</p>
+</section>
+<section id="postgrado-por-qué-no-importa-el-primer-paso" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: ¿por qué no importa el primer paso?</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El <a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a> muestra que la distribución asintótica de <span class="math inline">\(\hat\theta\)</span> depende de <span class="math inline">\(\hat W\)</span> <strong>solo a través de su límite</strong> <span class="math inline">\(W\)</span>. Esto implica que el primer paso (que fija <span class="math inline">\(\hat\Omega\)</span>) no afecta la distribución asintótica del segundo, pero no dice nada sobre el <em>tamaño de la muestra</em> necesaria para que eso sea una buena aproximación.</p>
+</div>
+</div>
+<p>La razón es un hecho general: <span class="math inline">\(\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|\)</span>, y <span class="math inline">\(\|\hat W - W\| = o_p(1)\)</span>. Entonces la diferencia entre los dos estimadores es <span class="math inline">\(o_p(n^{-1/2})\)</span> y desaparece al escalar por <span class="math inline">\(\sqrt n\)</span>. Pero a segundo orden, la variabilidad de <span class="math inline">\(\hat\Omega\)</span> aparece. En términos de la expansión de Nagar (el equivalente de la aproximación de segundo orden), el sesgo de GMM de dos pasos crece con el cociente <span class="math inline">\((r - p)/n\)</span>. La teoría de muestras finitas de GMM es el origen del interés por <em>instrumentos débiles</em> y por <em>muchos instrumentos</em>, que cubrimos parcialmente en la Clase 10 de Econometría 1.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li><strong>GMM</strong> minimiza <span class="math inline">\(\bar g_n(\theta)'\hat W\bar g_n(\theta)\)</span>. Cubre MCO, VI, MV y las ecuaciones de Euler como casos particulares.</li>
+<li><strong>Consistencia</strong> (<a href="#thm-gmm-consistencia" class="quarto-xref">Teorema&nbsp;1</a>): LGN uniforme más identificación. <strong>Normalidad</strong> (<a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a>): <span class="math inline">\(V(W) = (G'WG)^{-1}G'W\Omega WG(G'WG)^{-1}\)</span>.</li>
+<li><strong>Pesos óptimos</strong> (<a href="#thm-w-optima" class="quarto-xref">Teorema&nbsp;3</a>): <span class="math inline">\(W^* = \Omega^{-1}\)</span>, con varianza <span class="math inline">\((G'\Omega^{-1}G)^{-1}\)</span>. Se implementa en <strong>dos pasos</strong>.</li>
+<li><strong>Test J</strong> (<a href="#thm-j" class="quarto-xref">Teorema&nbsp;4</a>): <span class="math inline">\(n\bar g(\hat\theta)'\hat\Omega^{-1}\bar g(\hat\theta)\to\chi^2_{r-p}\)</span>. Solo existe si <span class="math inline">\(r&gt;p\)</span> y mide la compatibilidad entre momentos.</li>
+<li><strong>MC2E</strong> es GMM con <span class="math inline">\(W = (Z'Z/n)^{-1}\)</span>, eficiente solo bajo homocedasticidad (<a href="#prp-mc2e-gmm" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 4.1.</strong> Muestra que con <span class="math inline">\(g = x(y - x'\theta)\)</span> y <span class="math inline">\(r = p = k\)</span>, el GMM coincide con MCO para cualquier <span class="math inline">\(W\)</span> y calcula <span class="math inline">\(G\)</span> y <span class="math inline">\(\Omega\)</span>. Verifica que se obtiene el sándwich de White.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\bar g_n(\theta) = \frac1nX'(y - X\theta) = 0\)</span> tiene solución <span class="math inline">\(\hat\theta = (X'X)^{-1}X'y\)</span> (única si <span class="math inline">\(X'X\)</span> es invertible), y como el criterio vale cero ahí, es el mínimo para cualquier <span class="math inline">\(\hat W\succ0\)</span>. <span class="math inline">\(G = \mathbb{E}[\nabla_{\theta'}(x(y - x'\theta))] = -\mathbb{E}[xx']\)</span>, <span class="math inline">\(\Omega = \mathbb{E}[u^2xx']\)</span>. Como <span class="math inline">\(G\)</span> es cuadrada e invertible, <span class="math inline">\(V = G^{-1}\Omega G^{-1\prime} = \mathbb{E}[xx']^{-1}\mathbb{E}[u^2xx']\mathbb{E}[xx']^{-1}\)</span>: White.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.2.</strong> Para VI exactamente identificado (<span class="math inline">\(r = p\)</span>, <span class="math inline">\(g = z(y - x'\theta)\)</span>), halla el estimador y su varianza asintótica.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\bar g_n = \frac1nZ'(y - X\theta) = 0\Rightarrow\hat\theta = (Z'X)^{-1}Z'y\)</span>. <span class="math inline">\(G = -\mathbb{E}[zx']\)</span> (cuadrada, invertible por relevancia), <span class="math inline">\(\Omega = \mathbb{E}[u^2zz']\)</span>. Varianza: <span class="math inline">\(G^{-1}\Omega G^{-1\prime} = \mathbb{E}[zx']^{-1}\mathbb{E}[u^2zz']\mathbb{E}[xz']^{-1}\)</span>, que bajo homocedasticidad es <span class="math inline">\(\sigma^2\mathbb{E}[zx']^{-1}\mathbb{E}[zz']\mathbb{E}[xz']^{-1}\)</span>, la fórmula de VI de la Clase 10 de Econometría 1.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.3.</strong> (Ponderar por precisión.) Tienes dos estimaciones independientes e insesgadas <span class="math inline">\(x_1,x_2\)</span> del mismo parámetro <span class="math inline">\(\theta\)</span>, con varianzas <span class="math inline">\(\sigma_1^2 = 1\)</span> y <span class="math inline">\(\sigma_2^2 = 4\)</span> (por observación). Toma <span class="math inline">\(g = (x_1 - \theta,\ x_2 - \theta)'\)</span>. Calcula el GMM con <span class="math inline">\(W = I\)</span>, el GMM óptimo y compara sus varianzas asintóticas. Escribe el estadístico <span class="math inline">\(J\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(G = (-1,-1)'\)</span>, <span class="math inline">\(\Omega = \operatorname{diag}(1,4)\)</span>. Con <span class="math inline">\(W = I\)</span>: <span class="math inline">\(\hat\theta = (\bar x_1 + \bar x_2)/2\)</span>, <span class="math inline">\(V = (G'G)^{-1}G'\Omega G(G'G)^{-1} = (1+4)/4 = 1{,}25\)</span>. Óptimo: <span class="math inline">\(\hat\theta = \dfrac{\bar x_1/1 + \bar x_2/4}{1/1 + 1/4} = 0{,}8\bar x_1 + 0{,}2\bar x_2\)</span>, con <span class="math inline">\(V = (G'\Omega^{-1}G)^{-1} = (1 + 1/4)^{-1} = 0{,}8\)</span>. El promedio ponderado por precisión reduce la varianza de 1,25 a 0,8 (36 % menos). Como <span class="math inline">\(r - p = 1\)</span>, <span class="math inline">\(J = n\,\dfrac{(\bar x_1 - \bar x_2)^2}{\sigma_1^2 + \sigma_2^2}\to\chi^2_1\)</span>: contrasta que ambas estimaciones apuntan al mismo <span class="math inline">\(\theta\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.4.</strong> Un modelo con <span class="math inline">\(p = 2\)</span> parámetros y <span class="math inline">\(r = 5\)</span> momentos tiene <span class="math inline">\(J = 7{,}1\)</span>. ¿Se rechaza al 5 %? (El cuantil <span class="math inline">\(0{,}95\)</span> de la <span class="math inline">\(\chi^2_3\)</span> es <span class="math inline">\(7{,}81\)</span>.) ¿Qué cambia si <span class="math inline">\(r = 4\)</span> y el mismo <span class="math inline">\(J\)</span>? (Cuantil de <span class="math inline">\(\chi^2_2\)</span>: <span class="math inline">\(5{,}99\)</span>.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(r = 5\)</span>: grados de libertad <span class="math inline">\(r - p = 3\)</span>, crítico <span class="math inline">\(7{,}81 &gt; 7{,}1\)</span>: <strong>no se rechaza</strong>. Con <span class="math inline">\(r = 4\)</span>: <span class="math inline">\(r - p = 2\)</span>, crítico <span class="math inline">\(5{,}99 &lt; 7{,}1\)</span>: <strong>se rechaza</strong>. Mismo estadístico, distinta conclusión: los grados de libertad son <span class="math inline">\(r - p\)</span>, no <span class="math inline">\(r\)</span>. Agregar momentos “inofensivos” sube los grados de libertad y puede ocultar un mal ajuste.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.5.</strong> Demuestra que si <span class="math inline">\(r = p\)</span> el estadístico <span class="math inline">\(J\)</span> es idénticamente cero (con <span class="math inline">\(\hat W\)</span> cualquiera) y explica por qué esto no contradice <a href="#thm-j" class="quarto-xref">Teorema&nbsp;4</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(r = p\)</span>, <span class="math inline">\(\bar g_n(\hat\theta) = 0\)</span> (el sistema tiene solución), así que <span class="math inline">\(J = 0\)</span>. El teorema afirma <span class="math inline">\(J\to\chi^2_{r-p} = \chi^2_0\)</span>, que es la distribución degenerada en cero, así que no hay contradicción. Es el mismo punto de la discusión: un modelo exactamente identificado no tiene restricciones sobre los momentos que se puedan testear.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.6.</strong> Para el modelo <span class="math inline">\(y = x\theta + u\)</span> con un solo regresor y dos instrumentos <span class="math inline">\(z_1,z_2\)</span>, escribe <span class="math inline">\(g\)</span>, <span class="math inline">\(G\)</span>, y la matriz de pesos que da MC2E. ¿Cuándo MC2E y GMM de dos pasos coinciden asintóticamente?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(g = (z_1u, z_2u)'\)</span> con <span class="math inline">\(u = y - x\theta\)</span>, <span class="math inline">\(G = -(\mathbb{E}[z_1x],\mathbb{E}[z_2x])'\)</span> (<span class="math inline">\(2\times1\)</span>), <span class="math inline">\(r - p = 1\)</span>. MC2E usa <span class="math inline">\(\hat W = (Z'Z/n)^{-1}\)</span>. Coinciden asintóticamente cuando <span class="math inline">\(\Omega\propto\mathbb{E}[zz']\)</span>, es decir, bajo <span class="math inline">\(\mathbb{E}[u^2\mid z] = \sigma^2\)</span> (homocedasticidad condicional). Si hay heterocedasticidad, el GMM de dos pasos es más eficiente.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.7 ★.</strong> Demuestra que si <span class="math inline">\(\hat W_n\to_pW\)</span> y <span class="math inline">\(\tilde W_n\to_pW\)</span> (dos estimadores de la misma matriz), los GMM correspondientes satisfacen <span class="math inline">\(\sqrt n(\hat\theta - \tilde\theta) = o_p(1)\)</span>. Concluye que usar un primer paso ineficiente para estimar <span class="math inline">\(\Omega\)</span> no altera la distribución asintótica del segundo paso.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>De la demostración del <a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(\sqrt n(\hat\theta - \theta_0) = -(\hat G'\hat W\bar G_n)^{-1}\hat G'\hat W\sqrt n\bar g_n(\theta_0)\)</span> y lo mismo con <span class="math inline">\(\tilde W\)</span>. La función <span class="math inline">\(W\mapsto(G'WG)^{-1}G'W\)</span> es continua en <span class="math inline">\(W\succ0\)</span> (para <span class="math inline">\(G\)</span> de rango <span class="math inline">\(p\)</span>), y <span class="math inline">\(\hat W,\tilde W\to_pW\)</span>; luego las dos matrices del frente convergen a la misma matriz <span class="math inline">\(\mathcal{A}\)</span> y su diferencia es <span class="math inline">\(o_p(1)\)</span>. Como <span class="math inline">\(\sqrt n\bar g_n(\theta_0) = O_p(1)\)</span> (TCL), la diferencia de los estimadores escalados es <span class="math inline">\(o_p(1)\cdot O_p(1) = o_p(1)\)</span>. En el segundo paso, <span class="math inline">\(\hat\Omega(\hat\theta_1)\to_p\Omega\)</span> para <strong>cualquier</strong> <span class="math inline">\(\hat\theta_1\)</span> consistente: el primer paso solo tiene que ser consistente, no eficiente.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-03.html" class="pagination-link" aria-label="Clase 3 · Los tres tests de la trinidad">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 3 · Los tres tests de la trinidad</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-05.html" class="pagination-link" aria-label="Clase 5 · Elección discreta I">
+        <span class="nav-page-text">Clase 5 · Elección discreta I</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Censura, truncamiento y selección muestral: el tobit y su distribución, medias condicionales con la razón inversa de Mills, efectos marginales, el modelo de selección de Heckman, estimación en dos pasos y por máxima verosimilitud.">
+
+<title>Clase 8 · Datos censurados y selección – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-07.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-08.html">Clase 8 · Datos censurados y selección</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-la-muestra-no-es-la-población" id="toc-cuando-la-muestra-no-es-la-población" class="nav-link active" data-scroll-target="#cuando-la-muestra-no-es-la-población"><span class="header-section-number">1</span> Cuando la muestra no es la población</a></li>
+  <li><a href="#el-modelo-tobit" id="toc-el-modelo-tobit" class="nav-link" data-scroll-target="#el-modelo-tobit"><span class="header-section-number">2</span> El modelo tobit</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-mco-falla" id="toc-por-qué-mco-falla" class="nav-link" data-scroll-target="#por-qué-mco-falla"><span class="header-section-number">2.1</span> ¿Por qué MCO falla?</a></li>
+  <li><a href="#efectos-marginales-tres-preguntas-distintas" id="toc-efectos-marginales-tres-preguntas-distintas" class="nav-link" data-scroll-target="#efectos-marginales-tres-preguntas-distintas"><span class="header-section-number">2.2</span> Efectos marginales: tres preguntas distintas</a></li>
+  <li><a href="#estimación-por-máxima-verosimilitud" id="toc-estimación-por-máxima-verosimilitud" class="nav-link" data-scroll-target="#estimación-por-máxima-verosimilitud"><span class="header-section-number">2.3</span> Estimación por máxima verosimilitud</a></li>
+  </ul></li>
+  <li><a href="#el-modelo-de-selección-de-heckman" id="toc-el-modelo-de-selección-de-heckman" class="nav-link" data-scroll-target="#el-modelo-de-selección-de-heckman"><span class="header-section-number">3</span> El modelo de selección de Heckman</a>
+  <ul class="collapse">
+  <li><a href="#estimador-en-dos-pasos" id="toc-estimador-en-dos-pasos" class="nav-link" data-scroll-target="#estimador-en-dos-pasos"><span class="header-section-number">3.1</span> Estimador en dos pasos</a></li>
+  <li><a href="#la-restricción-de-exclusión" id="toc-la-restricción-de-exclusión" class="nav-link" data-scroll-target="#la-restricción-de-exclusión"><span class="header-section-number">3.2</span> La restricción de exclusión</a></li>
+  <li><a href="#máxima-verosimilitud-completa" id="toc-máxima-verosimilitud-completa" class="nav-link" data-scroll-target="#máxima-verosimilitud-completa"><span class="header-section-number">3.3</span> Máxima verosimilitud completa</a></li>
+  </ul></li>
+  <li><a href="#postgrado-concavidad-del-tobit" id="toc-postgrado-concavidad-del-tobit" class="nav-link" data-scroll-target="#postgrado-concavidad-del-tobit"><span class="header-section-number">4</span> ★ Postgrado: concavidad del tobit</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">5</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">6</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-08.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 8 · Datos censurados y selección</h1>
+<p class="subtitle lead">El modelo tobit y el modelo de Heckman</p>
+</div>
+
+<div>
+  <div class="description">
+    Censura, truncamiento y selección muestral: el tobit y su distribución, medias condicionales con la razón inversa de Mills, efectos marginales, el modelo de selección de Heckman, estimación en dos pasos y por máxima verosimilitud.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-08.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-la-muestra-no-es-la-población" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando la muestra no es la población</h1>
+<p>Hasta ahora supusimos que observábamos <span class="math inline">\(y\)</span> tal cual. Pero a menudo el mecanismo de observación <strong>distorsiona</strong> los datos. Hay tres situaciones que conviene distinguir:</p>
+<ul>
+<li><strong>Censura:</strong> observamos al individuo, pero <span class="math inline">\(y\)</span> está “cortada” en un umbral. Ejemplo: horas trabajadas. Mucha gente trabaja cero horas, no porque su “oferta de trabajo deseada” sea cero, sino porque la oferta deseada es negativa a los salarios disponibles y el dato se corta en cero. Sabemos cuántos están en cero y conocemos sus <span class="math inline">\(x\)</span>.</li>
+<li><strong>Truncamiento:</strong> ni siquiera observamos a los individuos que quedaron fuera del umbral. Ejemplo: una encuesta solo a hogares pobres (ingreso bajo cierto nivel). Los no pobres no están en la base de datos.</li>
+<li><strong>Selección muestral (truncamiento incidental):</strong> <span class="math inline">\(y\)</span> solo se observa para quienes pasan un filtro que depende de <strong>otra</strong> variable, correlacionada con <span class="math inline">\(y\)</span>. Ejemplo: el salario solo se observa para quienes trabajan, y quién trabaja depende de variables que también afectan el salario.</li>
+</ul>
+<p>Las tres producen <strong>sesgo en MCO</strong>. Las dos primeras se resuelven con el modelo <strong>tobit</strong>; la tercera, con el modelo de <strong>Heckman</strong>. En ambos casos el problema es, en el fondo, una pregunta de especificación: qué hay que modelar además de la ecuación de interés.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;James Heckman recibió el Nobel de Economía en 2000, junto con McFadden, precisamente por su trabajo sobre selección muestral. Su artículo de 1979, “Sample selection bias as a specification error”, nació de estudiar los salarios de las mujeres casadas, que solo se observan para las que trabajan, y generó el concepto de <em>selección sobre inobservables</em>: si las personas que entran a la muestra se <em>autoseleccionan</em> por razones que también afectan el resultado, MCO captura una mezcla del efecto de las <span class="math inline">\(x\)</span> y de esa selección.</p></div></div></section>
+<section id="el-modelo-tobit" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El modelo tobit</h1>
+<p>Tobin (1958) estudió el gasto de los hogares en bienes durables: muchos hogares gastan cero y el resto gasta cantidades positivas.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Su modelo (llamado <em>tobit</em> por el apodo, “Tobin’s probit”) supone una variable latente y un corte en cero: <span id="eq-tobit"><span class="math display">\[
+y^* = x'\beta + u,\quad u\mid x\sim N(0,\sigma^2),\qquad y = \max(0,\,y^*).
+\tag{1}\]</span></span> Se observa <span class="math inline">\(y\)</span> y <span class="math inline">\(x\)</span> para todos; <span class="math inline">\(y^*\)</span> es lo que el individuo “demandaría” si no hubiera restricción de no negatividad. La interpretación estructural interesa a <span class="math inline">\(\beta\)</span> (el efecto sobre la variable <strong>latente</strong>).</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;El nombre “tobit” (Tobin + probit) lo acuñó Arthur Goldberger en 1964, y desde entonces la familia “-it” (probit, logit, tobit) no ha dejado de crecer. Goldberger es también el de la “micronumerosidad” de la Clase 8 de Econometría 1.</p></div></div><section id="por-qué-mco-falla" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="por-qué-mco-falla"><span class="header-section-number">2.1</span> ¿Por qué MCO falla?</h2>
+<p>Hay dos regresiones tentadoras, ambas incorrectas:</p>
+<ol type="1">
+<li><strong>MCO sobre todos</strong> (incluyendo los ceros). Mezcla la masa en cero con la parte continua, y la media condicional <span class="math inline">\(\mathbb{E}[y\mid x]\)</span> <strong>no es lineal</strong> en <span class="math inline">\(x\)</span> (veremos su forma exacta).</li>
+<li><strong>MCO solo sobre los positivos.</strong> Elimina los ceros y por lo tanto selecciona sobre el valor de <span class="math inline">\(u\)</span>: solo quedan los que tienen <span class="math inline">\(u&gt;-x'\beta\)</span>. Esto sesga.</li>
+</ol>
+<p>Calculemos exactamente lo que ocurre.</p>
+<div id="lem-mills" class="theorem lemma">
+<p><span class="theorem-title"><strong>Lema 1 (Medias del tobit)</strong></span> Sea <span class="math inline">\(c = x'\beta/\sigma\)</span> y <span class="math inline">\(\lambda(c) = \phi(c)/\Phi(c)\)</span> la <strong>razón inversa de Mills</strong>. Bajo <a href="#eq-tobit" class="quarto-xref">Ecuación&nbsp;1</a>: <span class="math display">\[
+\mathbb{E}[y^*\mid x,\ y^*&gt;0] = x'\beta + \sigma\lambda(c),
+\qquad
+\mathbb{E}[y\mid x] = \Phi(c)\,x'\beta + \sigma\phi(c).
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(u = \sigma z\)</span>, <span class="math inline">\(z\sim N(0,1)\)</span>: <span class="math inline">\(y^*&gt;0\iff z&gt;-c\)</span>. Entonces <span class="math display">\[
+\mathbb{E}[u\mid u&gt;-x'\beta] = \sigma\,\mathbb{E}[z\mid z&gt;-c] = \sigma\,\frac{\int_{-c}^\infty z\phi(z)\,dz}{P(z&gt;-c)} = \sigma\,\frac{\phi(-c)}{\Phi(c)} = \sigma\lambda(c),
+\]</span> porque <span class="math inline">\(\int_a^\infty z\phi(z)\,dz = \phi(a)\)</span> y <span class="math inline">\(\phi\)</span> es simétrica. Luego <span class="math inline">\(\mathbb{E}[y^*\mid y^*&gt;0] = x'\beta + \sigma\lambda(c)\)</span>. Para la segunda fórmula, <span class="math inline">\(y = 0\)</span> con probabilidad <span class="math inline">\(\Phi(-c) = 1 - \Phi(c)\)</span> y <span class="math inline">\(y = y^*&gt;0\)</span> con probabilidad <span class="math inline">\(\Phi(c)\)</span>: <span class="math display">\[
+\mathbb{E}[y\mid x] = 0\cdot P(y = 0) + P(y^*&gt;0)\,\mathbb{E}[y^*\mid y^*&gt;0] = \Phi(c)\big[x'\beta + \sigma\lambda(c)\big] = \Phi(c)x'\beta + \sigma\phi(c).
+\]</span></p>
+</div>
+<p>Dos consecuencias importantes. Primero, regresar <span class="math inline">\(y\)</span> sobre <span class="math inline">\(x\)</span> solo con los positivos <strong>omite el término <span class="math inline">\(\sigma\lambda(c)\)</span></strong>, que depende de <span class="math inline">\(x\)</span> y se correlaciona con <span class="math inline">\(x\)</span>: es un clásico caso de <em>variable omitida</em>. Segundo, ambas medias son <strong>no lineales</strong> en <span class="math inline">\(x\)</span>, por lo que ni MCO sobre todos ni sobre positivos pueden recuperar <span class="math inline">\(\beta\)</span>.</p>
+</section>
+<section id="efectos-marginales-tres-preguntas-distintas" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="efectos-marginales-tres-preguntas-distintas"><span class="header-section-number">2.2</span> Efectos marginales: tres preguntas distintas</h2>
+<p>Hay tres efectos marginales distintos, y hay que saber cuál se pregunta.</p>
+<div id="prp-me-tobit" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Efectos marginales del tobit)</strong></span> Con <span class="math inline">\(c = x'\beta/\sigma\)</span>:</p>
+<ol type="1">
+<li><strong>Sobre la variable latente:</strong> <span class="math inline">\(\partial\mathbb{E}[y^*\mid x]/\partial x_j = \beta_j\)</span>.</li>
+<li><strong>Sobre la media observada (incondicional):</strong> <span class="math inline">\(\partial\mathbb{E}[y\mid x]/\partial x_j = \Phi(c)\,\beta_j\)</span>.</li>
+<li><strong>Sobre la media entre los positivos:</strong> <span class="math inline">\(\partial\mathbb{E}[y\mid x,y&gt;0]/\partial x_j = \beta_j\big[1 - \lambda(c)\big(c + \lambda(c)\big)\big]\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li>es inmediato. (2) Derivando <span class="math inline">\(\Phi(c)x'\beta + \sigma\phi(c)\)</span> con <span class="math inline">\(\partial c/\partial x_j = \beta_j/\sigma\)</span> y <span class="math inline">\(\phi'(c) = -c\phi(c)\)</span>: <span class="math display">\[
+\phi(c)\frac{\beta_j}{\sigma}x'\beta + \Phi(c)\beta_j + \sigma(-c\phi(c))\frac{\beta_j}{\sigma} = c\phi\beta_j + \Phi\beta_j - c\phi\beta_j = \Phi(c)\beta_j,
+\]</span> donde usamos <span class="math inline">\(x'\beta/\sigma = c\)</span>. (3) Derivando <span class="math inline">\(x'\beta + \sigma\lambda(c)\)</span>: <span class="math inline">\(\beta_j + \sigma\lambda'(c)\beta_j/\sigma = \beta_j(1 + \lambda'(c))\)</span>, y <span class="math inline">\(\lambda'(c) = -\lambda(c)(c + \lambda(c))\)</span> (Clase 5, ejercicio 5.7).</li>
+</ol>
+</div>
+<p>Observaciones. El efecto sobre <span class="math inline">\(\mathbb{E}[y\mid x]\)</span> es <span class="math inline">\(\beta_j\)</span> <strong>escalado por la probabilidad de ser positivo</strong>, <span class="math inline">\(\Phi(c)\in(0,1)\)</span>, y por lo tanto menor que <span class="math inline">\(\beta_j\)</span> en valor absoluto. Ninguna de las dos regresiones por MCO recupera el parámetro estructural <span class="math inline">\(\beta_j\)</span>: la de todos los datos estima, aproximadamente, un promedio de efectos del tipo <span class="math inline">\(\Phi(c)\beta_j\)</span> (que es el efecto sobre la media observada, no sobre la latente), y la de los positivos tiene pendiente <span class="math inline">\(\beta_j[1 - \lambda(c+\lambda)]\)</span>, atenuada porque <span class="math inline">\(0&lt;\lambda(c+\lambda)&lt;1\)</span> (Ejercicio 8.2). Los tres efectos responden preguntas distintas: el primero, qué haría la demanda deseada; el segundo, qué pasa con el promedio observado; el tercero, qué pasa con quienes ya participan. La descomposición de McDonald–Moffitt separa el segundo en dos canales: el efecto sobre la probabilidad de participar y el efecto sobre el monto entre los que participan.</p>
+</section>
+<section id="estimación-por-máxima-verosimilitud" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="estimación-por-máxima-verosimilitud"><span class="header-section-number">2.3</span> Estimación por máxima verosimilitud</h2>
+<p>La observación con <span class="math inline">\(y = 0\)</span> aporta <span class="math inline">\(P(y^* \le 0\mid x) = \Phi(-x'\beta/\sigma)\)</span>; la con <span class="math inline">\(y&gt;0\)</span>, la densidad de <span class="math inline">\(y^* = y\)</span>, que es <span class="math inline">\(\frac1\sigma\phi\big((y - x'\beta)/\sigma\big)\)</span>. Entonces <span id="eq-tobit-lik"><span class="math display">\[
+\ell_n(\beta,\sigma) = \sum_{y_i = 0}\log\Phi\Big(-\frac{x_i'\beta}\sigma\Big) + \sum_{y_i&gt;0}\Big[-\log\sigma + \log\phi\Big(\frac{y_i - x_i'\beta}\sigma\Big)\Big].
+\tag{2}\]</span></span> Esta es una <strong>mezcla de dos tipos de observación</strong> (una parte tipo probit, otra tipo regresión lineal). Con <span class="math inline">\(\gamma = \beta/\sigma\)</span> y <span class="math inline">\(h = 1/\sigma\)</span> (la reparametrización de Olsen, 1978), <span class="math inline">\(\ell_n\)</span> resulta <strong>globalmente cóncava</strong> en <span class="math inline">\((\gamma,h)\)</span>, de modo que el MV es único y se calcula sin dificultad (sección ★). El estimador es consistente y asintóticamente normal por las Clases 1 y 2.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="El tobit es frágil">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>El tobit es frágil
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A diferencia de MCO (donde la consistencia solo exige <span class="math inline">\(\mathbb{E}[xu] = 0\)</span>), la consistencia del tobit <strong>exige la distribución completa</strong>: normalidad <em>y homocedasticidad</em> de <span class="math inline">\(u\)</span>. Si <span class="math inline">\(\operatorname{Var}(u\mid x)\)</span> depende de <span class="math inline">\(x\)</span> o <span class="math inline">\(u\)</span> no es normal, <span class="math inline">\(\hat\beta\)</span> es <strong>inconsistente</strong>: el modelo no es un QMLE (el score de <a href="#eq-tobit-lik" class="quarto-xref">Ecuación&nbsp;2</a> no tiene media cero fuera de la especificación correcta). Además, supone que <strong>el mismo <span class="math inline">\(\beta\)</span></strong> gobierna la decisión de participar y la cantidad. Si no (por ejemplo, el ingreso afecta la decisión de gastar pero no cuánto), conviene un modelo en <strong>dos partes</strong> (<em>hurdle</em>, Clase 7) o el de selección de Heckman, que separa ambas decisiones. Alternativas robustas: el <strong>LAD censurado</strong> de Powell (1984), que solo exige que la <em>mediana</em> de <span class="math inline">\(u\)</span> sea cero.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="el-modelo-de-selección-de-heckman" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El modelo de selección de Heckman</h1>
+<p>Considera una ecuación de interés (por ejemplo, el salario) y una ecuación de <strong>selección</strong> (participar en el mercado laboral): <span class="math display">\[
+y = x'\beta + u\ \ (\text{observado solo si }s = 1),\qquad s = \mathbf{1}\{z'\gamma + v&gt;0\},
+\]</span> con <span class="math inline">\((u,v)\mid(x,z)\)</span> <strong>normal bivariada</strong> con medias cero, <span class="math inline">\(\operatorname{Var}(u) = \sigma^2\)</span>, <span class="math inline">\(\operatorname{Var}(v) = 1\)</span> (normalización de escala, como en el probit) y <span class="math inline">\(\operatorname{Corr}(u,v) = \rho\)</span>. Aquí <span class="math inline">\(z\)</span> contiene a <span class="math inline">\(x\)</span> y quizá otras variables. Observamos <span class="math inline">\(s\)</span> y <span class="math inline">\(z\)</span> para todos, pero <span class="math inline">\(y\)</span> solo cuando <span class="math inline">\(s = 1\)</span>.</p>
+<p>El <strong>parámetro clave es <span class="math inline">\(\rho\)</span></strong>. Si <span class="math inline">\(\rho = 0\)</span>, la selección es <strong>ignorable</strong> (los no observables que afectan la participación no afectan el salario) y MCO sobre los seleccionados es consistente. Si <span class="math inline">\(\rho\ne0\)</span>, quienes participan lo hacen <em>por razones que también afectan su salario</em>, y los salarios observados no son una muestra aleatoria de los potenciales.</p>
+<div id="prp-heckman" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (La media condicional con selección)</strong></span> <span class="math display">\[
+\mathbb{E}[y\mid x,z,s = 1] = x'\beta + \rho\sigma\,\lambda(z'\gamma),
+\]</span> con <span class="math inline">\(\lambda(a) = \phi(a)/\Phi(a)\)</span> la razón inversa de Mills.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Necesito <span class="math inline">\(\mathbb{E}[u\mid v&gt;-z'\gamma]\)</span>. Como <span class="math inline">\((u,v)\)</span> es normal conjunta, puedo descomponer <span class="math inline">\(u\)</span> en una parte lineal en <span class="math inline">\(v\)</span> y un residuo independiente de <span class="math inline">\(v\)</span>: <span class="math inline">\(u = \rho\sigma v + e\)</span>, con <span class="math inline">\(e\perp v\)</span>. La parte de <span class="math inline">\(e\)</span> no está afectada por condicionar en <span class="math inline">\(v\)</span> (independencia), así que solo sobrevive <span class="math inline">\(\rho\sigma\,\mathbb{E}[v\mid v&gt;-z'\gamma]\)</span>, que es justo una media truncada de una normal estándar. Y eso lo calculamos arriba.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por normalidad conjunta, la proyección de <span class="math inline">\(u\)</span> sobre <span class="math inline">\(v\)</span> es <span class="math inline">\(\mathbb{E}[u\mid v] = \dfrac{\operatorname{Cov}(u,v)}{\operatorname{Var}(v)}v = \rho\sigma v\)</span>. Sea <span class="math inline">\(e = u - \rho\sigma v\)</span>; entonces <span class="math inline">\(\operatorname{Cov}(e,v) = 0\)</span> y, siendo conjuntamente normales, <span class="math inline">\(e\)</span> y <span class="math inline">\(v\)</span> son independientes (Clase 5 de Econometría 1). Así <span class="math display">\[
+\mathbb{E}[u\mid x,z,s = 1] = \mathbb{E}[u\mid v&gt;-z'\gamma] = \rho\sigma\,\mathbb{E}[v\mid v&gt;-z'\gamma] + \mathbb{E}[e] = \rho\sigma\lambda(z'\gamma),
+\]</span> pues <span class="math inline">\(v\sim N(0,1)\)</span> y, como en el <a href="#lem-mills" class="quarto-xref">Lema&nbsp;1</a>, <span class="math inline">\(\mathbb{E}[v\mid v&gt;-a] = \phi(a)/\Phi(a) = \lambda(a)\)</span>. Luego <span class="math inline">\(\mathbb{E}[y\mid x,z,s = 1] = x'\beta + \rho\sigma\lambda(z'\gamma)\)</span>.</p>
+</div>
+<p>Este resultado explica el sesgo de MCO en la muestra seleccionada: la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(x\)</span> <strong>omite</strong> <span class="math inline">\(\lambda(z'\gamma)\)</span>, y esa variable omitida está correlacionada con <span class="math inline">\(x\)</span> (porque <span class="math inline">\(x\subset z\)</span>). Y sugiere la solución.</p>
+<section id="estimador-en-dos-pasos" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="estimador-en-dos-pasos"><span class="header-section-number">3.1</span> Estimador en dos pasos</h2>
+<div class="callout callout-style-default callout-caution callout-titled" title="Procedimiento de Heckman (1979)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Procedimiento de Heckman (1979)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Probit</strong> de <span class="math inline">\(s\)</span> sobre <span class="math inline">\(z\)</span> con <strong>toda</strong> la muestra: obtén <span class="math inline">\(\hat\gamma\)</span> y calcula <span class="math inline">\(\hat\lambda_i = \lambda(z_i'\hat\gamma)\)</span>.</li>
+<li><strong>MCO</strong> de <span class="math inline">\(y_i\)</span> sobre <span class="math inline">\(x_i\)</span> y <span class="math inline">\(\hat\lambda_i\)</span>, usando <strong>solo</strong> las observaciones con <span class="math inline">\(s_i = 1\)</span>. El coeficiente de <span class="math inline">\(\hat\lambda_i\)</span> estima <span class="math inline">\(\theta = \rho\sigma\)</span>.</li>
+</ol>
+</div>
+</div>
+<p>Por la <a href="#prp-heckman" class="quarto-xref">Proposición&nbsp;2</a>, el paso 2 es una regresión con la variable omitida incluida: <span class="math inline">\(y_i = x_i'\beta + \theta\lambda(z_i'\gamma) + e_i\)</span> con <span class="math inline">\(\mathbb{E}[e_i\mid x_i,z_i,s_i = 1] = 0\)</span>. Sustituir <span class="math inline">\(\hat\lambda\)</span> por <span class="math inline">\(\lambda\)</span> introduce un <strong>error de estimación</strong> del primer paso, así que <span class="math inline">\(\hat\beta\)</span> es consistente. El <strong>test de selección</strong> es <span class="math inline">\(H_0:\theta = 0\)</span> (equivalentemente <span class="math inline">\(\rho = 0\)</span>): el <span class="math inline">\(t\)</span> del coeficiente de <span class="math inline">\(\hat\lambda\)</span>.</p>
+<p><strong>Los errores estándar de MCO del paso 2 son incorrectos</strong> por dos razones: (i) <span class="math inline">\(\hat\lambda_i\)</span> es un <strong>regresor generado</strong>, con error de estimación que se propaga, y (ii) el error <span class="math inline">\(e_i\)</span> es heterocedástico: <span class="math inline">\(\operatorname{Var}(y_i\mid x_i,z_i,s_i = 1) = \sigma^2\big[1 - \rho^2\delta_i\big]\)</span> con <span class="math inline">\(\delta_i = \lambda_i(\lambda_i + z_i'\gamma)\)</span>. La corrección es un caso de <strong>M-estimación en dos pasos</strong>: se expande el momento del segundo paso alrededor del verdadero <span class="math inline">\(\gamma_0\)</span>, <span class="math display">\[
+\sqrt n\,\bar g_2(\hat\beta_0,\hat\gamma) = \sqrt n\,\bar g_2(\beta_0,\gamma_0) + G_\gamma\sqrt n(\hat\gamma - \gamma_0) + o_p(1),
+\]</span> y el segundo término es una suma i.i.d. (función de influencia del probit) que se suma a la del primero; la varianza resultante se estima por sándwich (Newey y McFadden, 1994). En la práctica se usa el <em>bootstrap</em> o la corrección analítica que traen los programas.</p>
+</section>
+<section id="la-restricción-de-exclusión" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="la-restricción-de-exclusión"><span class="header-section-number">3.2</span> La restricción de exclusión</h2>
+<p>El estimador de Heckman está <em>identificado</em> por la no linealidad de <span class="math inline">\(\lambda(\cdot)\)</span> aun si <span class="math inline">\(z = x\)</span>. Pero esto es <strong>frágil</strong>. Sobre un rango amplio de valores, <span class="math inline">\(\lambda(a)\)</span> es casi lineal en <span class="math inline">\(a\)</span>: <span class="math inline">\(\lambda(-1) = 1{,}53\)</span>, <span class="math inline">\(\lambda(0) = 0{,}80\)</span>, <span class="math inline">\(\lambda(1) = 0{,}29\)</span>, con una pendiente que va de <span class="math inline">\(-0{,}73\)</span> a <span class="math inline">\(-0{,}51\)</span>. Si <span class="math inline">\(z = x\)</span>, <span class="math inline">\(\lambda(x'\gamma)\)</span> es casi una <strong>combinación lineal de <span class="math inline">\(x\)</span></strong>, y en el paso 2 hay <strong>multicolinealidad casi perfecta</strong> entre <span class="math inline">\(x\)</span> y <span class="math inline">\(\hat\lambda\)</span>: los errores estándar explotan y la estimación es inestable (Clase 8 de Econometría 1).</p>
+<p>La salida estándar es una <strong>restricción de exclusión</strong>: incluir en <span class="math inline">\(z\)</span> al menos una variable que <strong>afecta la participación pero no el salario</strong> directamente (el número de hijos pequeños afecta la decisión de trabajar, pero ¿no el salario por hora de quien trabaja?). Esa variable actúa como un <strong>instrumento para la selección</strong> y hace que <span class="math inline">\(\lambda\)</span> varíe independientemente de <span class="math inline">\(x\)</span>. Es una de las decisiones de identificación más importantes, y más debatibles, en cualquier aplicación de Heckman: la validez de la exclusión es un juicio económico que los datos no pueden confirmar.</p>
+</section>
+<section id="máxima-verosimilitud-completa" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="máxima-verosimilitud-completa"><span class="header-section-number">3.3</span> Máxima verosimilitud completa</h2>
+<p>Alternativamente se estima todo por MV (FIML). Una observación con <span class="math inline">\(s = 0\)</span> aporta <span class="math inline">\(P(s = 0) = \Phi(-z'\gamma)\)</span>. Una con <span class="math inline">\(s = 1\)</span> aporta <span class="math inline">\(f(y,s = 1) = f(y)\,P(s = 1\mid y)\)</span>. Como <span class="math inline">\(y\mid x\sim N(x'\beta,\sigma^2)\)</span> y, condicional en <span class="math inline">\(u\)</span>, <span class="math inline">\(v\sim N\big(\rho u/\sigma,\,1 - \rho^2\big)\)</span>: <span class="math display">\[
+\ell_n = \sum_{s_i = 0}\log\Phi(-z_i'\gamma) + \sum_{s_i = 1}\Big[\log\frac1\sigma\phi\Big(\frac{y_i - x_i'\beta}\sigma\Big) + \log\Phi\Big(\frac{z_i'\gamma + \rho(y_i - x_i'\beta)/\sigma}{\sqrt{1 - \rho^2}}\Big)\Big].
+\]</span> Es más eficiente que dos pasos si la normalidad conjunta es cierta, pero comparte (y agrava) la fragilidad: sin normalidad, es inconsistente. Una solución es no paramétrica: la corrección de selección se modela con una función flexible <span class="math inline">\(\kappa(z'\gamma)\)</span> en lugar de <span class="math inline">\(\rho\sigma\lambda\)</span>, lo que exige de nuevo una variable de exclusión.</p>
+</section>
+</section>
+<section id="postgrado-concavidad-del-tobit" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> ★ Postgrado: concavidad del tobit</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La log-verosimilitud <a href="#eq-tobit-lik" class="quarto-xref">Ecuación&nbsp;2</a> <strong>no</strong> es cóncava en <span class="math inline">\((\beta,\sigma)\)</span>, pero sí lo es en la reparametrización <span class="math inline">\((\gamma,h) = (\beta/\sigma,1/\sigma)\)</span>.</p>
+</div>
+</div>
+<div id="prp-tobit-concavo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Concavidad de Olsen)</strong></span> En términos de <span class="math inline">\(\gamma = \beta/\sigma\)</span> y <span class="math inline">\(h = 1/\sigma&gt;0\)</span>, la log-verosimilitud del tobit es una función cóncava de <span class="math inline">\((\gamma,h)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para <span class="math inline">\(y_i&gt;0\)</span>, el término es <span class="math inline">\(-\log\sigma + \log\phi\big((y_i - x_i'\beta)/\sigma\big) = \log h - \tfrac12(hy_i - x_i'\gamma)^2 - \tfrac12\log2\pi\)</span>, pues <span class="math inline">\((y_i - x_i'\beta)/\sigma = hy_i - x_i'\gamma\)</span>. Es suma de <span class="math inline">\(\log h\)</span> (cóncava en <span class="math inline">\(h\)</span>) y de menos el cuadrado de una función <strong>lineal</strong> de <span class="math inline">\((\gamma,h)\)</span> (cóncava). Para <span class="math inline">\(y_i = 0\)</span>, el término es <span class="math inline">\(\log\Phi(-x_i'\gamma)\)</span>, composición de la función cóncava <span class="math inline">\(\log\Phi\)</span> (Clase 5, sección ★) con una función lineal de <span class="math inline">\(\gamma\)</span>: cóncava. La suma de funciones cóncavas es cóncava.</p>
+</div>
+<p>Entonces el MV del tobit se calcula de forma robusta con cualquier algoritmo de gradiente (y el máximo local es global), y de <span class="math inline">\((\hat\gamma,\hat h)\)</span> se recupera <span class="math inline">\(\hat\sigma = 1/\hat h\)</span> y <span class="math inline">\(\hat\beta = \hat\gamma/\hat h\)</span>, con errores estándar por el método delta.</p>
+</section>
+<section id="resumen" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Resumen</h1>
+<ul>
+<li><strong>Censura</strong> (valores cortados en un umbral), <strong>truncamiento</strong> (individuos excluidos) y <strong>selección</strong> (se observa <span class="math inline">\(y\)</span> solo si pasa un filtro correlacionado con <span class="math inline">\(y\)</span>) sesgan MCO.</li>
+<li><strong>Tobit:</strong> <span class="math inline">\(y = \max(0,y^*)\)</span>. <span class="math inline">\(\mathbb{E}[y\mid x] = \Phi(c)x'\beta + \sigma\phi(c)\)</span> (<a href="#lem-mills" class="quarto-xref">Lema&nbsp;1</a>). Efecto marginal sobre <span class="math inline">\(\mathbb{E}[y\mid x]\)</span>: <span class="math inline">\(\Phi(c)\beta_j\)</span> (<a href="#prp-me-tobit" class="quarto-xref">Proposición&nbsp;1</a>). Se estima por MV (cóncava en la parametrización de Olsen).</li>
+<li>El tobit exige <strong>normalidad y homocedasticidad</strong> y un solo mecanismo para participar y para el monto.</li>
+<li><strong>Heckman:</strong> <span class="math inline">\(\mathbb{E}[y\mid x,s = 1] = x'\beta + \rho\sigma\lambda(z'\gamma)\)</span> (<a href="#prp-heckman" class="quarto-xref">Proposición&nbsp;2</a>). Dos pasos: probit y luego MCO con <span class="math inline">\(\hat\lambda\)</span>; <span class="math inline">\(t\)</span> de <span class="math inline">\(\hat\lambda\)</span> testea selección (<span class="math inline">\(\rho = 0\)</span>).</li>
+<li><strong>Exclusión:</strong> hace falta una variable en <span class="math inline">\(z\)</span> fuera de <span class="math inline">\(x\)</span>; sin ella, la identificación depende solo de la forma funcional de <span class="math inline">\(\lambda\)</span>.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Ejercicios</h1>
+<p><strong>Ejercicio 8.1.</strong> En un tobit con <span class="math inline">\(x'\beta = 1\)</span> y <span class="math inline">\(\sigma = 2\)</span>, calcula <span class="math inline">\(P(y = 0\mid x)\)</span>, <span class="math inline">\(\mathbb{E}[y\mid y&gt;0,x]\)</span> y <span class="math inline">\(\mathbb{E}[y\mid x]\)</span>. (Usa <span class="math inline">\(\Phi(0{,}5) = 0{,}691\)</span> y <span class="math inline">\(\phi(0{,}5) = 0{,}352\)</span>.) Si <span class="math inline">\(\beta_j = 0{,}5\)</span>, ¿cuánto vale el efecto marginal sobre <span class="math inline">\(\mathbb{E}[y\mid x]\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(c = x'\beta/\sigma = 0{,}5\)</span>. <span class="math inline">\(P(y = 0) = \Phi(-0{,}5) = 1 - 0{,}691 = 0{,}309\)</span>. <span class="math inline">\(\lambda(0{,}5) = 0{,}352/0{,}691 = 0{,}509\)</span> y <span class="math inline">\(\mathbb{E}[y\mid y&gt;0] = 1 + 2(0{,}509) = 2{,}018\)</span>. <span class="math inline">\(\mathbb{E}[y\mid x] = \Phi(c)x'\beta + \sigma\phi(c) = 0{,}691 + 2(0{,}352) = 1{,}395\)</span> (comprobación: <span class="math inline">\(\Phi\cdot\mathbb{E}[y\mid y&gt;0] = 0{,}691\times2{,}018 = 1{,}395\)</span>). Efecto marginal: <span class="math inline">\(\Phi(c)\beta_j = 0{,}691\times0{,}5 = 0{,}346\)</span>, menor que el efecto latente <span class="math inline">\(0{,}5\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.2.</strong> Demuestra que <span class="math inline">\(0&lt;\lambda(c)\big(c + \lambda(c)\big)&lt;1\)</span> y concluye que la regresión por MCO sobre los positivos subestima la pendiente <span class="math inline">\(\beta_j\)</span> en valor absoluto (atenuación).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La cota inferior es la desigualdad de Mills de la Clase 5 (<span class="math inline">\(c + \lambda(c)&gt;0\)</span>) y <span class="math inline">\(\lambda&gt;0\)</span>. Para la cota superior, <span class="math inline">\(\operatorname{Var}(z\mid z&gt;-c) = 1 - \lambda(c)(c + \lambda(c))\)</span> es la varianza de una normal estándar truncada en <span class="math inline">\(-c\)</span>, que es <strong>positiva</strong>; luego <span class="math inline">\(\lambda(c + \lambda)&lt;1\)</span>. (Directamente: <span class="math inline">\(\mathbb{E}[z^2\mid z&gt;-c] = 1 - c\lambda\)</span> y <span class="math inline">\(\mathbb{E}[z\mid z&gt;-c] = \lambda\)</span>, de donde <span class="math inline">\(\operatorname{Var} = 1 - c\lambda - \lambda^2\)</span>.) Por la parte (3) de la <a href="#prp-me-tobit" class="quarto-xref">Proposición&nbsp;1</a>, la pendiente de <span class="math inline">\(\mathbb{E}[y\mid y&gt;0,x]\)</span> es <span class="math inline">\(\beta_j[1 - \lambda(c+\lambda)]\in(0,\beta_j)\)</span> si <span class="math inline">\(\beta_j&gt;0\)</span>. Recortar la muestra a los positivos <strong>atenúa</strong> los coeficientes hacia cero.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.3.</strong> En una regresión de Heckman para salarios (logaritmo) de mujeres, el coeficiente del término de Mills es <span class="math inline">\(-0{,}20\)</span> y <span class="math inline">\(\hat\sigma = 0{,}40\)</span>. Calcula <span class="math inline">\(\hat\rho\)</span> e interpreta el signo.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\theta = \hat\rho\hat\sigma = -0{,}20\Rightarrow\hat\rho = -0{,}20/0{,}40 = -0{,}5\)</span>. <span class="math inline">\(\rho&lt;0\)</span>: las mujeres con características no observables que <strong>aumentan la probabilidad de trabajar</strong> (alta motivación, bajo costo de oportunidad en el hogar) tienen <strong>salarios más bajos</strong> que lo que sugieren sus <span class="math inline">\(x\)</span>: selección <strong>negativa</strong>: <span class="math inline">\(\mathbb{E}[u\mid s = 1] = \rho\sigma\lambda&lt;0\)</span>, de modo que los salarios observados quedan, en promedio, <strong>por debajo</strong> de lo que sus <span class="math inline">\(x\)</span> predicen. MCO sin corrección estimaría entonces un salario más bajo que el de una muestra aleatoria de la población. La historia económica detrás de ese signo es un juicio del investigador; el dato solo entrega el signo y la magnitud de <span class="math inline">\(\rho\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.4.</strong> Muestra que si <span class="math inline">\((u,v)\)</span> es normal bivariada con <span class="math inline">\(\operatorname{Var}(v) = 1\)</span> y <span class="math inline">\(\operatorname{Cov}(u,v) = \rho\sigma\)</span>, entonces <span class="math inline">\(\mathbb{E}[u\mid v&gt;-a] = \rho\sigma\lambda(a)\)</span>, y que este resultado vale con <span class="math inline">\(\rho = 0\)</span> y con <span class="math inline">\(\rho = 1\)</span> como casos extremos. ¿Qué modelo es el caso <span class="math inline">\(\rho = 1\)</span>, <span class="math inline">\(z = x\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Es la <a href="#prp-heckman" class="quarto-xref">Proposición&nbsp;2</a>. Con <span class="math inline">\(\rho = 0\)</span>, <span class="math inline">\(\mathbb{E}[u\mid v&gt;-a] = 0\)</span>: la selección es ignorable. Con <span class="math inline">\(\rho = 1\)</span> y <span class="math inline">\(u = \sigma v\)</span>: <span class="math inline">\(\mathbb{E}[u\mid v&gt;-a] = \sigma\lambda(a)\)</span>, la media truncada del tobit del <a href="#lem-mills" class="quarto-xref">Lema&nbsp;1</a>. En efecto, el tobit es el caso particular del modelo de selección donde <strong>selección y resultado vienen del mismo shock</strong> (<span class="math inline">\(u = \sigma v\)</span>, <span class="math inline">\(z = x\)</span>, <span class="math inline">\(\gamma = \beta/\sigma\)</span>): participar y cuánto se participa dependen de la misma latente <span class="math inline">\(y^*\)</span>. Heckman generaliza al permitir shocks distintos y correlacionados.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.5.</strong> Evalúa la razón de Mills <span class="math inline">\(\lambda(a) = \phi(a)/\Phi(a)\)</span> en <span class="math inline">\(a = -1,0,1\)</span> y calcula la pendiente promedio entre puntos. ¿Qué implica para el paso 2 de Heckman si <span class="math inline">\(z = x\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\lambda(-1) = 0{,}242/0{,}159 = 1{,}525\)</span>; <span class="math inline">\(\lambda(0) = 0{,}399/0{,}5 = 0{,}798\)</span>; <span class="math inline">\(\lambda(1) = 0{,}242/0{,}841 = 0{,}288\)</span>. Pendientes: <span class="math inline">\((0{,}798 - 1{,}525)/1 = -0{,}727\)</span> y <span class="math inline">\((0{,}288 - 0{,}798)/1 = -0{,}510\)</span>: casi constante. En ese rango, <span class="math inline">\(\lambda(x'\gamma)\approx a + b\,x'\gamma\)</span>: una función <strong>casi lineal</strong> de <span class="math inline">\(x\)</span>, perfectamente colineal con <span class="math inline">\(x\)</span> salvo por la curvatura. En el paso 2, el coeficiente de <span class="math inline">\(\hat\lambda\)</span> y los de <span class="math inline">\(x\)</span> no se pueden separar con precisión: errores estándar enormes. Con una variable de exclusión en <span class="math inline">\(z\)</span> (<span class="math inline">\(z\ne x\)</span>), <span class="math inline">\(\hat\lambda\)</span> varía además con ella y la colinealidad se rompe.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.6.</strong> Un investigador estima el efecto de la educación sobre el salario con el método de Heckman, y usa como variable de exclusión la edad. ¿Es una buena elección? ¿Y el número de hijos menores de 6 años?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La edad <strong>no</strong> es buena exclusión: afecta tanto la participación como el salario (a través de la experiencia). La restricción de exclusión exige <span class="math inline">\(\operatorname{Corr}(z_{\text{excl}},u) = 0\)</span> (no afecta el salario más que por la selección) y <span class="math inline">\(z_{\text{excl}}\)</span> relevante para la participación. Los hijos pequeños son el ejemplo clásico: afectan fuertemente la decisión de trabajar y es defendible (aunque debatible) que no afectan el salario por hora de quien trabaja. Pero si las mujeres con hijos pequeños eligen empleos más flexibles y peor pagados, la exclusión falla. La validez es un supuesto económico que los datos no pueden verificar.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 8.7 ★.</strong> Obtén la media condicional <span class="math inline">\(\mathbb{E}[y^*\mid x,y^*&gt;0]\)</span> para un error con distribución general (no normal) con densidad <span class="math inline">\(g\)</span> y distribución <span class="math inline">\(G\)</span>, y explica por qué el tobit es inconsistente si el error es, digamos, <span class="math inline">\(t\)</span> de Student con pocos grados de libertad.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 8.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}[u\mid u&gt;-x'\beta] = \dfrac{\int_{-x'\beta}^\infty ug(u)\,du}{1 - G(-x'\beta)}\)</span>. Con <span class="math inline">\(g = \sigma^{-1}\phi(\cdot/\sigma)\)</span> da <span class="math inline">\(\sigma\lambda(c)\)</span>; con otra <span class="math inline">\(g\)</span> la función cambia. El MV del tobit maximiza una verosimilitud que <strong>supone</strong> <span class="math inline">\(\sigma\lambda(c)\)</span> y <span class="math inline">\(\Phi(c)\)</span> como correctos; con una <span class="math inline">\(t\)</span> de pocos grados de libertad (colas más gordas), el score del tobit no tiene media cero evaluado en <span class="math inline">\(\beta_0\)</span>: el máximo de <span class="math inline">\(Q_0\)</span> está en un pseudo-verdadero <span class="math inline">\(\beta^*\ne\beta_0\)</span> (Clase 2). A diferencia del probit con error mal especificado (donde al menos el signo suele sobrevivir), en el tobit la inconsistencia afecta también la magnitud. Alternativas semiparamétricas: LAD censurado de Powell, que solo exige mediana cero del error (conexión con la regresión cuantílica, Clase 12).</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-07.html" class="pagination-link" aria-label="Clase 7 · Conteo y duración">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 7 · Conteo y duración</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,232 @@
+---
+title: "Clase 8 · Datos censurados y selección"
+subtitle: "El modelo tobit y el modelo de Heckman"
+description: "Censura, truncamiento y selección muestral: el tobit y su distribución, medias condicionales con la razón inversa de Mills, efectos marginales, el modelo de selección de Heckman, estimación en dos pasos y por máxima verosimilitud."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-08.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando la muestra no es la población
+
+Hasta ahora supusimos que observábamos $y$ tal cual. Pero a menudo el mecanismo de observación **distorsiona** los datos. Hay tres situaciones que conviene distinguir:
+
+- **Censura:** observamos al individuo, pero $y$ está "cortada" en un umbral. Ejemplo: horas trabajadas. Mucha gente trabaja cero horas, no porque su "oferta de trabajo deseada" sea cero, sino porque la oferta deseada es negativa a los salarios disponibles y el dato se corta en cero. Sabemos cuántos están en cero y conocemos sus $x$.
+- **Truncamiento:** ni siquiera observamos a los individuos que quedaron fuera del umbral. Ejemplo: una encuesta solo a hogares pobres (ingreso bajo cierto nivel). Los no pobres no están en la base de datos.
+- **Selección muestral (truncamiento incidental):** $y$ solo se observa para quienes pasan un filtro que depende de **otra** variable, correlacionada con $y$. Ejemplo: el salario solo se observa para quienes trabajan, y quién trabaja depende de variables que también afectan el salario.
+
+Las tres producen **sesgo en MCO**. Las dos primeras se resuelven con el modelo **tobit**; la tercera, con el modelo de **Heckman**. En ambos casos el problema es, en el fondo, una pregunta de especificación: qué hay que modelar además de la ecuación de interés.[^heckman]
+
+[^heckman]: James Heckman recibió el Nobel de Economía en 2000, junto con McFadden, precisamente por su trabajo sobre selección muestral. Su artículo de 1979, "Sample selection bias as a specification error", nació de estudiar los salarios de las mujeres casadas, que solo se observan para las que trabajan, y generó el concepto de *selección sobre inobservables*: si las personas que entran a la muestra se *autoseleccionan* por razones que también afectan el resultado, MCO captura una mezcla del efecto de las $x$ y de esa selección.
+
+# El modelo tobit
+
+Tobin (1958) estudió el gasto de los hogares en bienes durables: muchos hogares gastan cero y el resto gasta cantidades positivas.[^tobit] Su modelo (llamado *tobit* por el apodo, "Tobin's probit") supone una variable latente y un corte en cero:
+$$
+y^* = x'\beta + u,\quad u\mid x\sim N(0,\sigma^2),\qquad y = \max(0,\,y^*).
+$$ {#eq-tobit}
+Se observa $y$ y $x$ para todos; $y^*$ es lo que el individuo "demandaría" si no hubiera restricción de no negatividad. La interpretación estructural interesa a $\beta$ (el efecto sobre la variable **latente**).
+
+[^tobit]: El nombre "tobit" (Tobin + probit) lo acuñó Arthur Goldberger en 1964, y desde entonces la familia "-it" (probit, logit, tobit) no ha dejado de crecer. Goldberger es también el de la "micronumerosidad" de la Clase 8 de Econometría 1.
+
+## ¿Por qué MCO falla?
+
+Hay dos regresiones tentadoras, ambas incorrectas:
+
+1. **MCO sobre todos** (incluyendo los ceros). Mezcla la masa en cero con la parte continua, y la media condicional $\mathbb{E}[y\mid x]$ **no es lineal** en $x$ (veremos su forma exacta).
+2. **MCO solo sobre los positivos.** Elimina los ceros y por lo tanto selecciona sobre el valor de $u$: solo quedan los que tienen $u>-x'\beta$. Esto sesga.
+
+Calculemos exactamente lo que ocurre.
+
+::: {#lem-mills}
+## Medias del tobit
+Sea $c = x'\beta/\sigma$ y $\lambda(c) = \phi(c)/\Phi(c)$ la **razón inversa de Mills**. Bajo @eq-tobit:
+$$
+\mathbb{E}[y^*\mid x,\ y^*>0] = x'\beta + \sigma\lambda(c),
+\qquad
+\mathbb{E}[y\mid x] = \Phi(c)\,x'\beta + \sigma\phi(c).
+$$
+:::
+
+::: {.proof}
+Con $u = \sigma z$, $z\sim N(0,1)$: $y^*>0\iff z>-c$. Entonces
+$$
+\mathbb{E}[u\mid u>-x'\beta] = \sigma\,\mathbb{E}[z\mid z>-c] = \sigma\,\frac{\int_{-c}^\infty z\phi(z)\,dz}{P(z>-c)} = \sigma\,\frac{\phi(-c)}{\Phi(c)} = \sigma\lambda(c),
+$$
+porque $\int_a^\infty z\phi(z)\,dz = \phi(a)$ y $\phi$ es simétrica. Luego $\mathbb{E}[y^*\mid y^*>0] = x'\beta + \sigma\lambda(c)$. Para la segunda fórmula, $y = 0$ con probabilidad $\Phi(-c) = 1 - \Phi(c)$ y $y = y^*>0$ con probabilidad $\Phi(c)$:
+$$
+\mathbb{E}[y\mid x] = 0\cdot P(y = 0) + P(y^*>0)\,\mathbb{E}[y^*\mid y^*>0] = \Phi(c)\big[x'\beta + \sigma\lambda(c)\big] = \Phi(c)x'\beta + \sigma\phi(c).
+$$
+:::
+
+Dos consecuencias importantes. Primero, regresar $y$ sobre $x$ solo con los positivos **omite el término $\sigma\lambda(c)$**, que depende de $x$ y se correlaciona con $x$: es un clásico caso de *variable omitida*. Segundo, ambas medias son **no lineales** en $x$, por lo que ni MCO sobre todos ni sobre positivos pueden recuperar $\beta$.
+
+## Efectos marginales: tres preguntas distintas
+
+Hay tres efectos marginales distintos, y hay que saber cuál se pregunta.
+
+::: {#prp-me-tobit}
+## Efectos marginales del tobit
+Con $c = x'\beta/\sigma$:
+
+1. **Sobre la variable latente:** $\partial\mathbb{E}[y^*\mid x]/\partial x_j = \beta_j$.
+2. **Sobre la media observada (incondicional):** $\partial\mathbb{E}[y\mid x]/\partial x_j = \Phi(c)\,\beta_j$.
+3. **Sobre la media entre los positivos:** $\partial\mathbb{E}[y\mid x,y>0]/\partial x_j = \beta_j\big[1 - \lambda(c)\big(c + \lambda(c)\big)\big]$.
+:::
+
+::: {.proof}
+(1) es inmediato. (2) Derivando $\Phi(c)x'\beta + \sigma\phi(c)$ con $\partial c/\partial x_j = \beta_j/\sigma$ y $\phi'(c) = -c\phi(c)$:
+$$
+\phi(c)\frac{\beta_j}{\sigma}x'\beta + \Phi(c)\beta_j + \sigma(-c\phi(c))\frac{\beta_j}{\sigma} = c\phi\beta_j + \Phi\beta_j - c\phi\beta_j = \Phi(c)\beta_j,
+$$
+donde usamos $x'\beta/\sigma = c$. (3) Derivando $x'\beta + \sigma\lambda(c)$: $\beta_j + \sigma\lambda'(c)\beta_j/\sigma = \beta_j(1 + \lambda'(c))$, y $\lambda'(c) = -\lambda(c)(c + \lambda(c))$ (Clase 5, ejercicio 5.7).
+:::
+
+Observaciones. El efecto sobre $\mathbb{E}[y\mid x]$ es $\beta_j$ **escalado por la probabilidad de ser positivo**, $\Phi(c)\in(0,1)$, y por lo tanto menor que $\beta_j$ en valor absoluto. Ninguna de las dos regresiones por MCO recupera el parámetro estructural $\beta_j$: la de todos los datos estima, aproximadamente, un promedio de efectos del tipo $\Phi(c)\beta_j$ (que es el efecto sobre la media observada, no sobre la latente), y la de los positivos tiene pendiente $\beta_j[1 - \lambda(c+\lambda)]$, atenuada porque $0<\lambda(c+\lambda)<1$ (Ejercicio 8.2). Los tres efectos responden preguntas distintas: el primero, qué haría la demanda deseada; el segundo, qué pasa con el promedio observado; el tercero, qué pasa con quienes ya participan. La descomposición de McDonald–Moffitt separa el segundo en dos canales: el efecto sobre la probabilidad de participar y el efecto sobre el monto entre los que participan.
+
+## Estimación por máxima verosimilitud
+
+La observación con $y = 0$ aporta $P(y^* \le 0\mid x) = \Phi(-x'\beta/\sigma)$; la con $y>0$, la densidad de $y^* = y$, que es $\frac1\sigma\phi\big((y - x'\beta)/\sigma\big)$. Entonces
+$$
+\ell_n(\beta,\sigma) = \sum_{y_i = 0}\log\Phi\Big(-\frac{x_i'\beta}\sigma\Big) + \sum_{y_i>0}\Big[-\log\sigma + \log\phi\Big(\frac{y_i - x_i'\beta}\sigma\Big)\Big].
+$$ {#eq-tobit-lik}
+Esta es una **mezcla de dos tipos de observación** (una parte tipo probit, otra tipo regresión lineal). Con $\gamma = \beta/\sigma$ y $h = 1/\sigma$ (la reparametrización de Olsen, 1978), $\ell_n$ resulta **globalmente cóncava** en $(\gamma,h)$, de modo que el MV es único y se calcula sin dificultad (sección ★). El estimador es consistente y asintóticamente normal por las Clases 1 y 2.
+
+::: {.callout-warning title="El tobit es frágil"}
+A diferencia de MCO (donde la consistencia solo exige $\mathbb{E}[xu] = 0$), la consistencia del tobit **exige la distribución completa**: normalidad *y homocedasticidad* de $u$. Si $\operatorname{Var}(u\mid x)$ depende de $x$ o $u$ no es normal, $\hat\beta$ es **inconsistente**: el modelo no es un QMLE (el score de @eq-tobit-lik no tiene media cero fuera de la especificación correcta). Además, supone que **el mismo $\beta$** gobierna la decisión de participar y la cantidad. Si no (por ejemplo, el ingreso afecta la decisión de gastar pero no cuánto), conviene un modelo en **dos partes** (*hurdle*, Clase 7) o el de selección de Heckman, que separa ambas decisiones. Alternativas robustas: el **LAD censurado** de Powell (1984), que solo exige que la *mediana* de $u$ sea cero.
+:::
+
+# El modelo de selección de Heckman
+
+Considera una ecuación de interés (por ejemplo, el salario) y una ecuación de **selección** (participar en el mercado laboral):
+$$
+y = x'\beta + u\ \ (\text{observado solo si }s = 1),\qquad s = \mathbf{1}\{z'\gamma + v>0\},
+$$
+con $(u,v)\mid(x,z)$ **normal bivariada** con medias cero, $\operatorname{Var}(u) = \sigma^2$, $\operatorname{Var}(v) = 1$ (normalización de escala, como en el probit) y $\operatorname{Corr}(u,v) = \rho$. Aquí $z$ contiene a $x$ y quizá otras variables. Observamos $s$ y $z$ para todos, pero $y$ solo cuando $s = 1$.
+
+El **parámetro clave es $\rho$**. Si $\rho = 0$, la selección es **ignorable** (los no observables que afectan la participación no afectan el salario) y MCO sobre los seleccionados es consistente. Si $\rho\ne0$, quienes participan lo hacen *por razones que también afectan su salario*, y los salarios observados no son una muestra aleatoria de los potenciales.
+
+::: {#prp-heckman}
+## La media condicional con selección
+$$
+\mathbb{E}[y\mid x,z,s = 1] = x'\beta + \rho\sigma\,\lambda(z'\gamma),
+$$
+con $\lambda(a) = \phi(a)/\Phi(a)$ la razón inversa de Mills.
+:::
+
+::: {.callout-note title="Borrador"}
+Necesito $\mathbb{E}[u\mid v>-z'\gamma]$. Como $(u,v)$ es normal conjunta, puedo descomponer $u$ en una parte lineal en $v$ y un residuo independiente de $v$: $u = \rho\sigma v + e$, con $e\perp v$. La parte de $e$ no está afectada por condicionar en $v$ (independencia), así que solo sobrevive $\rho\sigma\,\mathbb{E}[v\mid v>-z'\gamma]$, que es justo una media truncada de una normal estándar. Y eso lo calculamos arriba.
+:::
+
+::: {.proof}
+Por normalidad conjunta, la proyección de $u$ sobre $v$ es $\mathbb{E}[u\mid v] = \dfrac{\operatorname{Cov}(u,v)}{\operatorname{Var}(v)}v = \rho\sigma v$. Sea $e = u - \rho\sigma v$; entonces $\operatorname{Cov}(e,v) = 0$ y, siendo conjuntamente normales, $e$ y $v$ son independientes (Clase 5 de Econometría 1). Así
+$$
+\mathbb{E}[u\mid x,z,s = 1] = \mathbb{E}[u\mid v>-z'\gamma] = \rho\sigma\,\mathbb{E}[v\mid v>-z'\gamma] + \mathbb{E}[e] = \rho\sigma\lambda(z'\gamma),
+$$
+pues $v\sim N(0,1)$ y, como en el @lem-mills, $\mathbb{E}[v\mid v>-a] = \phi(a)/\Phi(a) = \lambda(a)$. Luego $\mathbb{E}[y\mid x,z,s = 1] = x'\beta + \rho\sigma\lambda(z'\gamma)$.
+:::
+
+Este resultado explica el sesgo de MCO en la muestra seleccionada: la regresión de $y$ sobre $x$ **omite** $\lambda(z'\gamma)$, y esa variable omitida está correlacionada con $x$ (porque $x\subset z$). Y sugiere la solución.
+
+## Estimador en dos pasos
+
+::: {.callout-caution title="Procedimiento de Heckman (1979)"}
+1. **Probit** de $s$ sobre $z$ con **toda** la muestra: obtén $\hat\gamma$ y calcula $\hat\lambda_i = \lambda(z_i'\hat\gamma)$.
+2. **MCO** de $y_i$ sobre $x_i$ y $\hat\lambda_i$, usando **solo** las observaciones con $s_i = 1$. El coeficiente de $\hat\lambda_i$ estima $\theta = \rho\sigma$.
+:::
+
+Por la @prp-heckman, el paso 2 es una regresión con la variable omitida incluida: $y_i = x_i'\beta + \theta\lambda(z_i'\gamma) + e_i$ con $\mathbb{E}[e_i\mid x_i,z_i,s_i = 1] = 0$. Sustituir $\hat\lambda$ por $\lambda$ introduce un **error de estimación** del primer paso, así que $\hat\beta$ es consistente. El **test de selección** es $H_0:\theta = 0$ (equivalentemente $\rho = 0$): el $t$ del coeficiente de $\hat\lambda$.
+
+**Los errores estándar de MCO del paso 2 son incorrectos** por dos razones: (i) $\hat\lambda_i$ es un **regresor generado**, con error de estimación que se propaga, y (ii) el error $e_i$ es heterocedástico: $\operatorname{Var}(y_i\mid x_i,z_i,s_i = 1) = \sigma^2\big[1 - \rho^2\delta_i\big]$ con $\delta_i = \lambda_i(\lambda_i + z_i'\gamma)$. La corrección es un caso de **M-estimación en dos pasos**: se expande el momento del segundo paso alrededor del verdadero $\gamma_0$,
+$$
+\sqrt n\,\bar g_2(\hat\beta_0,\hat\gamma) = \sqrt n\,\bar g_2(\beta_0,\gamma_0) + G_\gamma\sqrt n(\hat\gamma - \gamma_0) + o_p(1),
+$$
+y el segundo término es una suma i.i.d. (función de influencia del probit) que se suma a la del primero; la varianza resultante se estima por sándwich (Newey y McFadden, 1994). En la práctica se usa el *bootstrap* o la corrección analítica que traen los programas.
+
+## La restricción de exclusión
+
+El estimador de Heckman está *identificado* por la no linealidad de $\lambda(\cdot)$ aun si $z = x$. Pero esto es **frágil**. Sobre un rango amplio de valores, $\lambda(a)$ es casi lineal en $a$: $\lambda(-1) = 1{,}53$, $\lambda(0) = 0{,}80$, $\lambda(1) = 0{,}29$, con una pendiente que va de $-0{,}73$ a $-0{,}51$. Si $z = x$, $\lambda(x'\gamma)$ es casi una **combinación lineal de $x$**, y en el paso 2 hay **multicolinealidad casi perfecta** entre $x$ y $\hat\lambda$: los errores estándar explotan y la estimación es inestable (Clase 8 de Econometría 1).
+
+La salida estándar es una **restricción de exclusión**: incluir en $z$ al menos una variable que **afecta la participación pero no el salario** directamente (el número de hijos pequeños afecta la decisión de trabajar, pero ¿no el salario por hora de quien trabaja?). Esa variable actúa como un **instrumento para la selección** y hace que $\lambda$ varíe independientemente de $x$. Es una de las decisiones de identificación más importantes, y más debatibles, en cualquier aplicación de Heckman: la validez de la exclusión es un juicio económico que los datos no pueden confirmar.
+
+## Máxima verosimilitud completa
+
+Alternativamente se estima todo por MV (FIML). Una observación con $s = 0$ aporta $P(s = 0) = \Phi(-z'\gamma)$. Una con $s = 1$ aporta $f(y,s = 1) = f(y)\,P(s = 1\mid y)$. Como $y\mid x\sim N(x'\beta,\sigma^2)$ y, condicional en $u$, $v\sim N\big(\rho u/\sigma,\,1 - \rho^2\big)$:
+$$
+\ell_n = \sum_{s_i = 0}\log\Phi(-z_i'\gamma) + \sum_{s_i = 1}\Big[\log\frac1\sigma\phi\Big(\frac{y_i - x_i'\beta}\sigma\Big) + \log\Phi\Big(\frac{z_i'\gamma + \rho(y_i - x_i'\beta)/\sigma}{\sqrt{1 - \rho^2}}\Big)\Big].
+$$
+Es más eficiente que dos pasos si la normalidad conjunta es cierta, pero comparte (y agrava) la fragilidad: sin normalidad, es inconsistente. Una solución es no paramétrica: la corrección de selección se modela con una función flexible $\kappa(z'\gamma)$ en lugar de $\rho\sigma\lambda$, lo que exige de nuevo una variable de exclusión.
+
+# ★ Postgrado: concavidad del tobit
+
+::: {.callout-important title="★ Postgrado"}
+La log-verosimilitud @eq-tobit-lik **no** es cóncava en $(\beta,\sigma)$, pero sí lo es en la reparametrización $(\gamma,h) = (\beta/\sigma,1/\sigma)$.
+:::
+
+::: {#prp-tobit-concavo}
+## Concavidad de Olsen
+En términos de $\gamma = \beta/\sigma$ y $h = 1/\sigma>0$, la log-verosimilitud del tobit es una función cóncava de $(\gamma,h)$.
+:::
+
+::: {.proof}
+Para $y_i>0$, el término es $-\log\sigma + \log\phi\big((y_i - x_i'\beta)/\sigma\big) = \log h - \tfrac12(hy_i - x_i'\gamma)^2 - \tfrac12\log2\pi$, pues $(y_i - x_i'\beta)/\sigma = hy_i - x_i'\gamma$. Es suma de $\log h$ (cóncava en $h$) y de menos el cuadrado de una función **lineal** de $(\gamma,h)$ (cóncava). Para $y_i = 0$, el término es $\log\Phi(-x_i'\gamma)$, composición de la función cóncava $\log\Phi$ (Clase 5, sección ★) con una función lineal de $\gamma$: cóncava. La suma de funciones cóncavas es cóncava.
+:::
+
+Entonces el MV del tobit se calcula de forma robusta con cualquier algoritmo de gradiente (y el máximo local es global), y de $(\hat\gamma,\hat h)$ se recupera $\hat\sigma = 1/\hat h$ y $\hat\beta = \hat\gamma/\hat h$, con errores estándar por el método delta.
+
+# Resumen
+
+- **Censura** (valores cortados en un umbral), **truncamiento** (individuos excluidos) y **selección** (se observa $y$ solo si pasa un filtro correlacionado con $y$) sesgan MCO.
+- **Tobit:** $y = \max(0,y^*)$. $\mathbb{E}[y\mid x] = \Phi(c)x'\beta + \sigma\phi(c)$ (@lem-mills). Efecto marginal sobre $\mathbb{E}[y\mid x]$: $\Phi(c)\beta_j$ (@prp-me-tobit). Se estima por MV (cóncava en la parametrización de Olsen).
+- El tobit exige **normalidad y homocedasticidad** y un solo mecanismo para participar y para el monto.
+- **Heckman:** $\mathbb{E}[y\mid x,s = 1] = x'\beta + \rho\sigma\lambda(z'\gamma)$ (@prp-heckman). Dos pasos: probit y luego MCO con $\hat\lambda$; $t$ de $\hat\lambda$ testea selección ($\rho = 0$).
+- **Exclusión:** hace falta una variable en $z$ fuera de $x$; sin ella, la identificación depende solo de la forma funcional de $\lambda$.
+
+# Ejercicios
+
+**Ejercicio 8.1.** En un tobit con $x'\beta = 1$ y $\sigma = 2$, calcula $P(y = 0\mid x)$, $\mathbb{E}[y\mid y>0,x]$ y $\mathbb{E}[y\mid x]$. (Usa $\Phi(0{,}5) = 0{,}691$ y $\phi(0{,}5) = 0{,}352$.) Si $\beta_j = 0{,}5$, ¿cuánto vale el efecto marginal sobre $\mathbb{E}[y\mid x]$?
+
+::: {.callout-tip collapse="true" title="Solución 8.1"}
+$c = x'\beta/\sigma = 0{,}5$. $P(y = 0) = \Phi(-0{,}5) = 1 - 0{,}691 = 0{,}309$. $\lambda(0{,}5) = 0{,}352/0{,}691 = 0{,}509$ y $\mathbb{E}[y\mid y>0] = 1 + 2(0{,}509) = 2{,}018$. $\mathbb{E}[y\mid x] = \Phi(c)x'\beta + \sigma\phi(c) = 0{,}691 + 2(0{,}352) = 1{,}395$ (comprobación: $\Phi\cdot\mathbb{E}[y\mid y>0] = 0{,}691\times2{,}018 = 1{,}395$). Efecto marginal: $\Phi(c)\beta_j = 0{,}691\times0{,}5 = 0{,}346$, menor que el efecto latente $0{,}5$.
+:::
+
+**Ejercicio 8.2.** Demuestra que $0<\lambda(c)\big(c + \lambda(c)\big)<1$ y concluye que la regresión por MCO sobre los positivos subestima la pendiente $\beta_j$ en valor absoluto (atenuación).
+
+::: {.callout-tip collapse="true" title="Solución 8.2"}
+La cota inferior es la desigualdad de Mills de la Clase 5 ($c + \lambda(c)>0$) y $\lambda>0$. Para la cota superior, $\operatorname{Var}(z\mid z>-c) = 1 - \lambda(c)(c + \lambda(c))$ es la varianza de una normal estándar truncada en $-c$, que es **positiva**; luego $\lambda(c + \lambda)<1$. (Directamente: $\mathbb{E}[z^2\mid z>-c] = 1 - c\lambda$ y $\mathbb{E}[z\mid z>-c] = \lambda$, de donde $\operatorname{Var} = 1 - c\lambda - \lambda^2$.) Por la parte (3) de la @prp-me-tobit, la pendiente de $\mathbb{E}[y\mid y>0,x]$ es $\beta_j[1 - \lambda(c+\lambda)]\in(0,\beta_j)$ si $\beta_j>0$. Recortar la muestra a los positivos **atenúa** los coeficientes hacia cero.
+:::
+
+**Ejercicio 8.3.** En una regresión de Heckman para salarios (logaritmo) de mujeres, el coeficiente del término de Mills es $-0{,}20$ y $\hat\sigma = 0{,}40$. Calcula $\hat\rho$ e interpreta el signo.
+
+::: {.callout-tip collapse="true" title="Solución 8.3"}
+$\hat\theta = \hat\rho\hat\sigma = -0{,}20\Rightarrow\hat\rho = -0{,}20/0{,}40 = -0{,}5$. $\rho<0$: las mujeres con características no observables que **aumentan la probabilidad de trabajar** (alta motivación, bajo costo de oportunidad en el hogar) tienen **salarios más bajos** que lo que sugieren sus $x$: selección **negativa**: $\mathbb{E}[u\mid s = 1] = \rho\sigma\lambda<0$, de modo que los salarios observados quedan, en promedio, **por debajo** de lo que sus $x$ predicen. MCO sin corrección estimaría entonces un salario más bajo que el de una muestra aleatoria de la población. La historia económica detrás de ese signo es un juicio del investigador; el dato solo entrega el signo y la magnitud de $\rho$.
+:::
+
+**Ejercicio 8.4.** Muestra que si $(u,v)$ es normal bivariada con $\operatorname{Var}(v) = 1$ y $\operatorname{Cov}(u,v) = \rho\sigma$, entonces $\mathbb{E}[u\mid v>-a] = \rho\sigma\lambda(a)$, y que este resultado vale con $\rho = 0$ y con $\rho = 1$ como casos extremos. ¿Qué modelo es el caso $\rho = 1$, $z = x$?
+
+::: {.callout-tip collapse="true" title="Solución 8.4"}
+Es la @prp-heckman. Con $\rho = 0$, $\mathbb{E}[u\mid v>-a] = 0$: la selección es ignorable. Con $\rho = 1$ y $u = \sigma v$: $\mathbb{E}[u\mid v>-a] = \sigma\lambda(a)$, la media truncada del tobit del @lem-mills. En efecto, el tobit es el caso particular del modelo de selección donde **selección y resultado vienen del mismo shock** ($u = \sigma v$, $z = x$, $\gamma = \beta/\sigma$): participar y cuánto se participa dependen de la misma latente $y^*$. Heckman generaliza al permitir shocks distintos y correlacionados.
+:::
+
+**Ejercicio 8.5.** Evalúa la razón de Mills $\lambda(a) = \phi(a)/\Phi(a)$ en $a = -1,0,1$ y calcula la pendiente promedio entre puntos. ¿Qué implica para el paso 2 de Heckman si $z = x$?
+
+::: {.callout-tip collapse="true" title="Solución 8.5"}
+$\lambda(-1) = 0{,}242/0{,}159 = 1{,}525$; $\lambda(0) = 0{,}399/0{,}5 = 0{,}798$; $\lambda(1) = 0{,}242/0{,}841 = 0{,}288$. Pendientes: $(0{,}798 - 1{,}525)/1 = -0{,}727$ y $(0{,}288 - 0{,}798)/1 = -0{,}510$: casi constante. En ese rango, $\lambda(x'\gamma)\approx a + b\,x'\gamma$: una función **casi lineal** de $x$, perfectamente colineal con $x$ salvo por la curvatura. En el paso 2, el coeficiente de $\hat\lambda$ y los de $x$ no se pueden separar con precisión: errores estándar enormes. Con una variable de exclusión en $z$ ($z\ne x$), $\hat\lambda$ varía además con ella y la colinealidad se rompe.
+:::
+
+**Ejercicio 8.6.** Un investigador estima el efecto de la educación sobre el salario con el método de Heckman, y usa como variable de exclusión la edad. ¿Es una buena elección? ¿Y el número de hijos menores de 6 años?
+
+::: {.callout-tip collapse="true" title="Solución 8.6"}
+La edad **no** es buena exclusión: afecta tanto la participación como el salario (a través de la experiencia). La restricción de exclusión exige $\operatorname{Corr}(z_{\text{excl}},u) = 0$ (no afecta el salario más que por la selección) y $z_{\text{excl}}$ relevante para la participación. Los hijos pequeños son el ejemplo clásico: afectan fuertemente la decisión de trabajar y es defendible (aunque debatible) que no afectan el salario por hora de quien trabaja. Pero si las mujeres con hijos pequeños eligen empleos más flexibles y peor pagados, la exclusión falla. La validez es un supuesto económico que los datos no pueden verificar.
+:::
+
+**Ejercicio 8.7 ★.** Obtén la media condicional $\mathbb{E}[y^*\mid x,y^*>0]$ para un error con distribución general (no normal) con densidad $g$ y distribución $G$, y explica por qué el tobit es inconsistente si el error es, digamos, $t$ de Student con pocos grados de libertad.
+
+::: {.callout-tip collapse="true" title="Solución 8.7 ★"}
+$\mathbb{E}[u\mid u>-x'\beta] = \dfrac{\int_{-x'\beta}^\infty ug(u)\,du}{1 - G(-x'\beta)}$. Con $g = \sigma^{-1}\phi(\cdot/\sigma)$ da $\sigma\lambda(c)$; con otra $g$ la función cambia. El MV del tobit maximiza una verosimilitud que **supone** $\sigma\lambda(c)$ y $\Phi(c)$ como correctos; con una $t$ de pocos grados de libertad (colas más gordas), el score del tobit no tiene media cero evaluado en $\beta_0$: el máximo de $Q_0$ está en un pseudo-verdadero $\beta^*\ne\beta_0$ (Clase 2). A diferencia del probit con error mal especificado (donde al menos el signo suele sobrevivir), en el tobit la inconsistencia afecta también la magnitud. Alternativas semiparamétricas: LAD censurado de Powell, que solo exige mediana cero del error (conexión con la regresión cuantílica, Clase 12).
+:::

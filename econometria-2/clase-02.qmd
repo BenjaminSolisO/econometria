@@ -1,0 +1,263 @@
+---
+title: "Clase 2 · Máxima verosimilitud"
+subtitle: "Identificación, información de Fisher, cota de Cramér–Rao y eficiencia"
+description: "El estimador de máxima verosimilitud como M-estimador: desigualdad de Gibbs, igualdad de la información, normalidad asintótica, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De "un criterio" al criterio
+
+La Clase 1 nos dio un teorema para cualquier criterio $m$. La pregunta natural: ¿cuál $m$ es **el mejor**? Si estamos dispuestos a decir cómo se generan los datos, o sea a suponer una familia de densidades $f(w;\theta)$, hay una respuesta clásica: $m(w,\theta) = \log f(w;\theta)$. Es la **máxima verosimilitud** (MV), y hoy veremos tres razones para quererla.
+
+1. Identifica correctamente el parámetro (la desigualdad de Gibbs).
+2. Tiene la varianza asintótica más simple posible (la igualdad de la información).
+3. Esa varianza es la más chica que se puede lograr (la cota de Cramér–Rao).[^fisher]
+
+[^fisher]: Ronald Fisher propuso la MV en 1912 y 1922, pero no la inventó: Gauss, Laplace y Daniel Bernoulli ya habían maximizado verosimilitudes sin ponerles nombre. Fisher le dio el nombre, la teoría de la información y una pelea pública con Karl Pearson que duró décadas. De las peleas académicas se aprende poco; de la teoría, mucho.
+
+::: {.callout-caution title="Marco"}
+Los datos $w_1,\dots,w_n$ son i.i.d. con densidad (o función de probabilidad) $f(w;\theta_0)$, para algún $\theta_0\in\Theta\subset\mathbb{R}^p$. Es decir, el **modelo está bien especificado**; al final de la clase soltamos este supuesto. La *log-verosimilitud* es $\ell_n(\theta) = \sum_i\log f(w_i;\theta)$, el **score** es $s(w;\theta) = \nabla_\theta\log f(w;\theta)$ y la **matriz de información** es $\mathcal{I}(\theta) = \mathbb{E}_\theta[s(w;\theta)s(w;\theta)']$. El estimador MV es $\hat\theta = \arg\max\ell_n(\theta)$.
+:::
+
+# Identificación: la desigualdad de Gibbs
+
+En la Clase 1 vimos que la consistencia necesita que $\theta_0$ sea el **único** maximizador de $Q_0(\theta) = \mathbb{E}_{\theta_0}[\log f(w;\theta)]$. Para MV esto es casi gratis.
+
+::: {#def-id-param}
+## Identificación del parámetro
+El modelo $\{f(\cdot;\theta)\}$ está **identificado** si para todo $\theta\ne\theta_0$ en $\Theta$, las densidades $f(\cdot;\theta)$ y $f(\cdot;\theta_0)$ difieren en un conjunto de probabilidad positiva bajo $f(\cdot;\theta_0)$.
+:::
+
+::: {#thm-gibbs}
+## Desigualdad de Gibbs (o de la información)
+Si el modelo está identificado, para todo $\theta\ne\theta_0$,
+$$
+\mathbb{E}_{\theta_0}\big[\log f(w;\theta)\big] < \mathbb{E}_{\theta_0}\big[\log f(w;\theta_0)\big].
+$$
+Es decir, $\theta_0$ es el único maximizador de $Q_0$.
+:::
+
+::: {.callout-note title="Borrador"}
+Quiero comparar dos esperanzas de logaritmos, o sea una esperanza de $\log\frac{f(w;\theta)}{f(w;\theta_0)}$. Una esperanza de un logaritmo está acotada por el logaritmo de la esperanza: Jensen, con $\log$ cóncava. Y la esperanza (bajo $\theta_0$) de la razón de densidades es $\int\frac{f(\theta)}{f(\theta_0)}f(\theta_0) = \int f(\theta)\le1$. El logaritmo de algo $\le1$ es $\le0$. La estrictez viene de que la razón no es constante cuando las densidades difieren, y Jensen es estricto para funciones estrictamente cóncavas con variables no degeneradas.
+:::
+
+::: {.proof}
+Sea $\rho(w) = f(w;\theta)/f(w;\theta_0)$, definida donde $f(w;\theta_0)>0$ (casi seguramente bajo $\theta_0$). Si $\rho$ fuera constante casi seguramente, esa constante sería $1$ (porque ambas densidades integran 1), y las densidades coincidirían en un conjunto de probabilidad uno bajo $\theta_0$, contradiciendo la identificación. Luego $\rho$ no es degenerada y, como $\log$ es estrictamente cóncava, la desigualdad de Jensen estricta da
+$$
+\mathbb{E}_{\theta_0}[\log\rho(w)] < \log\mathbb{E}_{\theta_0}[\rho(w)] = \log\int_{\{f(\cdot;\theta_0)>0\}}f(w;\theta)\,dw\le\log1 = 0.
+$$
+Pero $\mathbb{E}_{\theta_0}[\log\rho] = Q_0(\theta) - Q_0(\theta_0)$.
+:::
+
+La cantidad $\mathrm{KL}(\theta_0\Vert\theta) = Q_0(\theta_0) - Q_0(\theta)\ge0$ es la **divergencia de Kullback–Leibler**: "qué tan lejos" está $f(\cdot;\theta)$ de la verdad. Maximizar la log-verosimilitud muestral equivale a **minimizar la divergencia KL estimada**. Con la @def-id-param, la Clase 1 se aplica: bajo compacidad y dominancia, $\hat\theta\xrightarrow{p}\theta_0$.
+
+# La igualdad de la información
+
+Ahora las propiedades del score. Necesitamos que se pueda **derivar dentro de la integral**: que el soporte de $f(\cdot;\theta)$ no dependa de $\theta$ y que haya dominancia suficiente. (Falla, por ejemplo, para $w\sim U[0,\theta]$.) Llamamos a esto condiciones de regularidad (R).
+
+::: {#thm-info-igualdad}
+## Media cero del score e igualdad de la información
+Bajo (R), con $\theta_0$ el valor verdadero:
+
+1. $\mathbb{E}_{\theta_0}[s(w;\theta_0)] = 0$.
+2. $\mathcal{I}(\theta_0) = \mathbb{E}[s\,s'] = -\mathbb{E}\big[\nabla_\theta s(w;\theta_0)\big] = -\mathbb{E}\big[\nabla^2\log f(w;\theta_0)\big]$.
+:::
+
+::: {.callout-note title="Borrador"}
+Como $f$ integra a uno para todo $\theta$, la derivada de $\int f(w;\theta)dw$ es cero. Derivando dentro de la integral aparece $\int\nabla f = \int s\,f = \mathbb{E}[s] = 0$ (usando $\nabla f = s\,f$). Para la segunda parte, derivo *otra vez* la identidad $\int s(w;\theta)f(w;\theta)\,dw = 0$: sale $\int(\nabla s)f + \int s\,\nabla'f = 0$, y $\nabla'f = s'f$.
+:::
+
+::: {.proof}
+(1) Como $\int f(w;\theta)\,dw = 1$ para todo $\theta$, derivando en $\theta$ y pasando la derivada dentro de la integral, $0 = \int\nabla f(w;\theta)\,dw = \int s(w;\theta)f(w;\theta)\,dw$, usando $\nabla f = f\nabla\log f = fs$. Evaluando en $\theta_0$, $\mathbb{E}_{\theta_0}[s(w;\theta_0)] = 0$. En realidad la identidad vale para todo $\theta$ con la esperanza tomada bajo ese mismo $\theta$.
+
+(2) Derivando la identidad $\int s(w;\theta)f(w;\theta)\,dw = 0$ otra vez en $\theta'$ (pasando la derivada dentro de la integral):
+$$
+0 = \int\nabla_{\theta'}s(w;\theta)\,f(w;\theta)\,dw + \int s(w;\theta)\,\nabla_{\theta'}f(w;\theta)\,dw = \mathbb{E}[\nabla s] + \int s\,s'\,f\,dw = \mathbb{E}[\nabla s] + \mathbb{E}[ss'].
+$$
+Luego $\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]$.
+:::
+
+Dos lecturas útiles. La parte (1) es el lema de la Clase 1 sin esfuerzo: el score tiene media cero porque $\theta_0$ maximiza $Q_0$. La parte (2) dice que la **curvatura** de la log-verosimilitud ($-A$) y su **ruido** ($B$) son la misma matriz: $B = -A = \mathcal{I}(\theta_0)$. Se cumple *solo* si el modelo está bien especificado.
+
+# Normalidad asintótica y eficiencia
+
+::: {#thm-mv-normal}
+## Normalidad asintótica del estimador MV
+Bajo las condiciones de consistencia de la Clase 1, (R) y $\mathcal{I}(\theta_0)$ invertible,
+$$
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ \mathcal{I}(\theta_0)^{-1}\big).
+$$
+:::
+
+::: {.proof}
+Es el teorema de normalidad asintótica de la Clase 1 con $m = \log f$. Por el @thm-info-igualdad, $A = -\mathcal{I}(\theta_0)$ y $B = \mathcal{I}(\theta_0)$. Entonces $A^{-1}BA^{-1} = \mathcal{I}^{-1}\mathcal{I}\mathcal{I}^{-1} = \mathcal{I}^{-1}$.
+:::
+
+Esa es la varianza asintótica del MV. Hay tres formas consistentes de estimarla, y todas son equivalentes si el modelo está bien especificado:
+
+| Estimador | Fórmula | Nombre |
+|---|---|---|
+| Hessiano | $\big[-\frac1n\sum\nabla s(w_i;\hat\theta)\big]^{-1}$ | de la información observada |
+| Producto externo | $\big[\frac1n\sum s(w_i;\hat\theta)s(w_i;\hat\theta)'\big]^{-1}$ | OPG o BHHH |
+| Sándwich | $\hat A^{-1}\hat B\hat A^{-1}$ | robusto (White) |
+
+Si el modelo está **mal** especificado, solo el sándwich es consistente para la varianza correcta (más abajo).
+
+## ¿Por qué esa varianza es la mejor?
+
+Ahora demostramos que $\mathcal{I}^{-1}$ no se puede superar: la **cota de Cramér–Rao**. La versión de muestras finitas es la más fácil de probar; la asintótica sigue la misma idea.
+
+::: {#thm-cr}
+## Cota de Cramér–Rao
+Sea $T = T(w_1,\dots,w_n)$ un estimador insesgado de $\theta$: $\mathbb{E}_\theta[T] = \theta$ para todo $\theta$ en una vecindad de $\theta_0$. Bajo (R),
+$$
+\operatorname{Var}_{\theta_0}(T)\ \succeq\ \big[n\,\mathcal{I}(\theta_0)\big]^{-1}.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+La varianza de $T$ no puede ser menor que algo, y ese "algo" debería involucrar a la información. La conexión entre $T$ y el score total $S_n = \sum_is(w_i;\theta_0)$ la da el insesgamiento: derivando $\mathbb{E}_\theta[T] = \theta$ en $\theta$ aparece $\mathbb{E}[T\,S_n'] = I_p$. Ahora tengo un vector aleatorio $(T, S_n)$ con matriz de covarianza conocida a bloques (conozco $\operatorname{Var}(S_n) = n\mathcal{I}$ y la covarianza cruzada). Una matriz de covarianza siempre es semidefinida positiva, y exigir que la matriz de bloques lo sea me da la desigualdad (complemento de Schur).
+:::
+
+::: {.proof}
+Sea $f_n(w_{1:n};\theta) = \prod_if(w_i;\theta)$ la densidad conjunta, cuyo score es $S_n = \nabla\log f_n = \sum_is(w_i;\theta)$. Como los datos son i.i.d., $\mathbb{E}[S_n] = 0$ y $\operatorname{Var}(S_n) = n\mathcal{I}(\theta_0)$ (varianza de una suma de i.i.d. con media cero).
+
+Derivando el insesgamiento $\theta = \int T f_n\,dw_{1:n}$ en $\theta$ y pasando la derivada dentro de la integral:
+$$
+I_p = \int T\,\nabla'f_n\,dw_{1:n} = \int T\,S_n'\,f_n\,dw_{1:n} = \mathbb{E}[T\,S_n'] = \operatorname{Cov}(T,S_n),
+$$
+la última igualdad porque $\mathbb{E}[S_n] = 0$.
+
+La matriz de covarianza del vector $(T', S_n')'$ es semidefinida positiva:
+$$
+\begin{pmatrix}\operatorname{Var}(T) & I_p\\ I_p & n\mathcal{I}\end{pmatrix}\succeq0.
+$$
+Para todo $a\in\mathbb{R}^p$, tomando el vector $(a',\,-a'(n\mathcal{I})^{-1})$ y multiplicando por la izquierda y por la derecha:
+$$
+0\le a'\operatorname{Var}(T)a - 2a'(n\mathcal{I})^{-1}a + a'(n\mathcal{I})^{-1}(n\mathcal{I})(n\mathcal{I})^{-1}a = a'\Big[\operatorname{Var}(T) - (n\mathcal{I})^{-1}\Big]a.
+$$
+Como $a$ es arbitrario, $\operatorname{Var}(T)\succeq(n\mathcal{I})^{-1}$.
+:::
+
+El $\hat\theta$ de MV **no** es insesgado en general, así que la cota no se le aplica en muestras finitas. Pero asintóticamente sí: $\operatorname{Avar}(\hat\theta) = \mathcal{I}^{-1}$ coincide con la cota $(n\mathcal{I})^{-1}$ escalada por $n$. Decimos que el MV es **asintóticamente eficiente**: ningún estimador "regular" (que no se comporte raro localmente) tiene varianza asintótica menor. La sección ★ muestra por qué hay que decir "regular".
+
+::: {#exm-normal-lineal}
+## El modelo lineal normal
+$y\mid x\sim N(x'\beta,\sigma^2)$, con $\theta = (\beta',\sigma^2)'$. La log-verosimilitud de una observación es $-\tfrac12\log(2\pi\sigma^2) - (y - x'\beta)^2/(2\sigma^2)$, con score
+$$
+s_\beta = \frac{xu}{\sigma^2},\qquad s_{\sigma^2} = -\frac1{2\sigma^2} + \frac{u^2}{2\sigma^4},\qquad u = y - x'\beta.
+$$
+Maximizar en $\beta$ equivale a minimizar $\sum(y_i - x_i'\beta)^2$, así que **$\hat\beta_{MV} = \hat\beta_{MCO}$**. En $\sigma^2$: $\hat\sigma^2 = \frac1n\sum\hat u_i^2$, que es el MCO sin corregir por grados de libertad: sesgado, pero consistente (y asintóticamente equivalente a $s^2$).
+
+La información es **diagonal por bloques**: $\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2$, $\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)$ y $\mathcal{I}_{\beta\sigma^2} = 0$ (usando $\mathbb{E}[u\mid x] = 0$, $\mathbb{E}[u^2\mid x] = \sigma^2$ y $\mathbb{E}[u^4\mid x] = 3\sigma^4$). Así, $\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}$: la fórmula de MCO.
+
+Consecuencia notable: **bajo normalidad, MCO alcanza la cota de Cramér–Rao** (asintóticamente). En Econometría 1 (Clase 4) vimos Gauss–Markov, que lo hacía mejor que cualquier estimador *lineal insesgado*. Con normalidad es mejor que *cualquier* estimador regular, lineal o no.
+:::
+
+# Cuando el modelo está mal: cuasi-verosimilitud
+
+Suponer que conocemos la familia $f(w;\theta)$ es exigente. ¿Qué ocurre si maximizamos una verosimilitud que es **incorrecta**? Sea $g$ la densidad verdadera, que no pertenece a $\{f(\cdot;\theta)\}$. El M-estimador $\hat\theta$ es el **estimador de cuasi-máxima verosimilitud** (QMV). La Clase 1 sigue valiendo con $m = \log f$, pero el límite cambia:
+
+$$
+\hat\theta\xrightarrow{p}\theta^* = \arg\max_\theta\mathbb{E}_g[\log f(w;\theta)] = \arg\min_\theta\mathrm{KL}\big(g\Vert f(\cdot;\theta)\big).
+$$
+
+El **valor pseudo-verdadero** $\theta^*$ es la mejor aproximación de $g$ dentro de la familia, en el sentido de KL.[^white] Lo notable es que la varianza ya **no** es $\mathcal{I}^{-1}$: $B\ne-A$, y la distribución es la del sándwich de la Clase 1,
+$$
+\sqrt n(\hat\theta - \theta^*)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}_g[\nabla^2\log f(w;\theta^*)],\quad B = \mathbb{E}_g[ss'].
+$$
+
+[^white]: Halbert White (1982) demostró esto en "Maximum likelihood estimation of misspecified models", el artículo que popularizó el sándwich y el término *pseudo-verdadero*. White es más conocido por sus errores estándar robustos (1980), y por el test de especificación que lleva su nombre: dos de los artículos más citados de la econometría.
+
+Hay dos situaciones prácticas. Si $\theta^*$ **tiene el significado que te interesa** (por ejemplo, es la media condicional correcta aunque la distribución esté mal), entonces la QMV da inferencia válida usando el sándwich: esto ocurre, por ejemplo, para el **Poisson** con la media condicional bien especificada (Clase 7) o para MCO bajo no normalidad. Si $\theta^*$ **no** tiene ese significado (por ejemplo, un probit con heterocedasticidad en el error latente, Clase 5), $\hat\theta$ converge a algo que no te interesa y ni el sándwich lo salva.
+
+La **prueba de la igualdad de la información** de White se basa en esto: bajo especificación correcta, $A = -B$; la prueba chequea si $\hat A + \hat B$ es cero. Que no se cumpla es síntoma de mala especificación.
+
+# ★ Postgrado: la superioridad de Hodges y la eficiencia regular
+
+::: {.callout-important title="★ Postgrado"}
+¿Es cierto que ningún estimador tiene varianza asintótica menor a $\mathcal{I}^{-1}$? No sin una condición adicional. El **estimador de Hodges** (1951) la rompe, y por eso se define eficiencia entre estimadores *regulares*.
+:::
+
+Sea $w_i\sim N(\theta,1)$ i.i.d., con $\mathcal{I}(\theta) = 1$, y $\bar w$ el MV. Definimos
+$$
+\hat\theta_H = \begin{cases}\bar w &\text{si }|\bar w|>n^{-1/4},\\ 0&\text{si }|\bar w|\le n^{-1/4}.\end{cases}
+$$
+
+::: {#prp-hodges}
+## El estimador de Hodges
+1. Si $\theta\ne0$, $\sqrt n(\hat\theta_H - \theta)\xrightarrow{d}N(0,1)$.
+2. Si $\theta = 0$, $\sqrt n\hat\theta_H\xrightarrow{p}0$: varianza asintótica **cero**, menor que $1/\mathcal{I}$.
+3. Pero para $\theta_n = h/\sqrt n$ con $h\ne0$: $\sqrt n(\hat\theta_H - \theta_n)\xrightarrow{p}-h$, que **no** está acotado cuando $h$ crece.
+:::
+
+::: {.proof}
+$\bar w\sim N(\theta,1/n)$, es decir, $\bar w = \theta + z/\sqrt n$ con $z\sim N(0,1)$.
+
+(1) Si $\theta\ne0$, $P(|\bar w|\le n^{-1/4})\to0$ (porque $\bar w\to_p\theta$ y $n^{-1/4}\to0$). Entonces con probabilidad que tiende a uno $\hat\theta_H = \bar w$ y la distribución límite es la del MV.
+
+(2) Si $\theta = 0$, $|\bar w| = |z|/\sqrt n\le n^{-1/4}$ equivale a $|z|\le n^{1/4}$, que ocurre con probabilidad que tiende a uno. Luego $\hat\theta_H = 0$ con probabilidad que tiende a uno y $\sqrt n\hat\theta_H = 0$ en ese evento.
+
+(3) Con $\theta_n = h/\sqrt n$: $\bar w = (h+z)/\sqrt n$ y $|\bar w|\le n^{-1/4}$ equivale a $|h + z|\le n^{1/4}$, de nuevo con probabilidad que tiende a uno. Luego $\hat\theta_H = 0$ y $\sqrt n(\hat\theta_H - \theta_n) = -h$.
+:::
+
+En $\theta=0$ Hodges "gana" al MV, pero es un espejismo: en una vecindad de tamaño $n^{-1/2}$ alrededor de $0$ (que no podemos distinguir de $0$ con $n$ observaciones) su error es arbitrariamente grande. El **teorema de convolución** de Hájek–Le Cam formaliza la salida: entre estimadores *regulares* (cuya distribución límite no cambia bajo perturbaciones locales $\theta_n = \theta + h/\sqrt n$), cualquier límite es $N(0,\mathcal{I}^{-1})$ convolucionado con otra distribución, y por lo tanto con varianza $\succeq\mathcal{I}^{-1}$. El MV es regular y alcanza el piso.
+
+# Resumen
+
+- Para MV, $m = \log f$. **Identificación** (@thm-gibbs): por Jensen, $\theta_0$ maximiza $\mathbb{E}\log f(w;\theta)$ de manera única. La diferencia es la divergencia KL.
+- **Igualdad de la información** (@thm-info-igualdad): bajo especificación correcta, $\mathbb{E}[s] = 0$ y $\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]$. Por eso $A = -B$.
+- **Normalidad** (@thm-mv-normal): $\sqrt n(\hat\theta - \theta_0)\to N(0,\mathcal{I}^{-1})$.
+- **Cramér–Rao** (@thm-cr): ningún estimador insesgado tiene varianza menor que $(n\mathcal{I})^{-1}$; el MV la alcanza asintóticamente.
+- Con el modelo **mal** especificado, el QMV converge al pseudo-verdadero y la varianza es el sándwich.
+
+# Ejercicios
+
+**Ejercicio 2.1.** Para $w\sim\text{Bernoulli}(\theta)$ calcula el MV, el score, la información $\mathcal{I}(\theta)$ y la varianza asintótica. Verifica que $\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]$.
+
+::: {.callout-tip collapse="true" title="Solución 2.1"}
+$\log f = w\log\theta + (1-w)\log(1-\theta)$; $\hat\theta = \bar w$. Score: $s = w/\theta - (1-w)/(1-\theta) = \dfrac{w - \theta}{\theta(1-\theta)}$. $\mathbb{E}[s^2] = \dfrac{\operatorname{Var}(w)}{\theta^2(1-\theta)^2} = \dfrac1{\theta(1-\theta)}$. Derivada del score: $\nabla s = -w/\theta^2 - (1-w)/(1-\theta)^2$, con esperanza $-1/\theta - 1/(1-\theta) = -\dfrac1{\theta(1-\theta)}$. Coinciden con signo opuesto. Varianza asintótica: $\mathcal{I}^{-1} = \theta(1-\theta)$, el resultado clásico del TCL.
+:::
+
+**Ejercicio 2.2.** Sea $w\sim\text{Poisson}(\lambda)$. Calcula el MV y su varianza asintótica. Muestra que alcanza la cota de Cramér–Rao *exactamente* (en muestras finitas).
+
+::: {.callout-tip collapse="true" title="Solución 2.2"}
+$\log f = w\log\lambda - \lambda - \log w!$. $s = w/\lambda - 1$, $\hat\lambda = \bar w$. $\mathcal{I}(\lambda) = \operatorname{Var}(w)/\lambda^2 = 1/\lambda$. Cota: $\operatorname{Var}(T)\ge\lambda/n$. Pero $\operatorname{Var}(\bar w) = \lambda/n$ y $\bar w$ es insesgado: alcanza la cota exacta. (Es un caso de familia exponencial: el estimador insesgado de varianza mínima coincide con el MV.)
+:::
+
+**Ejercicio 2.3.** Verifica la información del @exm-normal-lineal para $\sigma^2$: calcula $\mathbb{E}[s_{\sigma^2}^2]$ y $-\mathbb{E}[\partial s_{\sigma^2}/\partial\sigma^2]$ y comprueba que son iguales a $1/(2\sigma^4)$. ¿Qué momento de $u$ necesitaste para la primera?
+
+::: {.callout-tip collapse="true" title="Solución 2.3"}
+$s_{\sigma^2} = \dfrac{u^2 - \sigma^2}{2\sigma^4}$, así que $\mathbb{E}[s^2] = \dfrac{\operatorname{Var}(u^2)}{4\sigma^8} = \dfrac{\mathbb{E}u^4 - \sigma^4}{4\sigma^8} = \dfrac{3\sigma^4 - \sigma^4}{4\sigma^8} = \dfrac1{2\sigma^4}$; aquí se usó $\mathbb{E}[u^4] = 3\sigma^4$ (cuarto momento de la normal). Por otro lado, $\partial s/\partial\sigma^2 = \dfrac1{2\sigma^4} - \dfrac{u^2}{\sigma^6}$, con esperanza $\dfrac1{2\sigma^4} - \dfrac1{\sigma^4} = -\dfrac1{2\sigma^4}$. Coinciden. Si $u$ no es normal, $\mathbb{E}[u^4]\ne3\sigma^4$, la igualdad de la información **falla** para $\sigma^2$ y el MV de $\sigma^2$ tendría varianza sándwich distinta (aunque $\hat\beta$ siga bien).
+:::
+
+**Ejercicio 2.4.** Un investigador ajusta por QMV un modelo $N(\mu, 1)$ a datos con media $\mu_0$ y varianza $\sigma^2$ desconocida. Calcula $A$, $B$ y el sándwich. ¿Cuándo el sándwich coincide con $-A^{-1}$? (Es el Ejercicio 1.3 desde el punto de vista de esta clase.)
+
+::: {.callout-tip collapse="true" title="Solución 2.4"}
+$m = -\tfrac12(w - \mu)^2$: $A = -1$, $B = \sigma^2$, sándwich $= \sigma^2$. Coincide con $-A^{-1} = 1$ solo si $\sigma^2 = 1$, es decir, cuando la varianza supuesta es la verdadera. En general $A+B = \sigma^2 - 1\ne0$ y el test de igualdad de la información rechaza: está detectando que la especificación de la varianza es incorrecta.
+:::
+
+**Ejercicio 2.5.** (Invarianza del MV.) Si $\hat\theta$ es el MV de $\theta$ y $\gamma = g(\theta)$ con $g$ biyectiva, muestra que $g(\hat\theta)$ es el MV de $\gamma$ y que su varianza asintótica es $G\,\mathcal{I}^{-1}G'$, con $G = \partial g/\partial\theta'$.
+
+::: {.callout-tip collapse="true" title="Solución 2.5"}
+La log-verosimilitud en $\gamma$ es $\tilde\ell(\gamma) = \ell(g^{-1}(\gamma))$, cuyo máximo se alcanza en $\hat\gamma = g(\hat\theta)$ porque $g^{-1}$ es biyección. La normalidad asintótica sigue del método delta (Clase 6 de Econometría 1): $\sqrt n(g(\hat\theta) - g(\theta_0))\to N(0, G\mathcal{I}^{-1}G')$. Alternativamente se llega igual con la información de $\gamma$: $\tilde{\mathcal{I}}(\gamma) = G^{-1\prime}\mathcal{I}G^{-1}$ y su inversa es $G\mathcal{I}^{-1}G'$.
+:::
+
+**Ejercicio 2.6.** Sea $w\sim U[0,\theta]$. Calcula el MV y muestra que $n(\theta - \hat\theta)$ converge a una exponencial (no a una normal). ¿Qué condición de (R) falla?
+
+::: {.callout-tip collapse="true" title="Solución 2.6"}
+$f(w;\theta) = 1/\theta$ si $0\le w\le\theta$. La verosimilitud $\theta^{-n}$ es decreciente en $\theta$ y solo es positiva si $\theta\ge\max_iw_i$: $\hat\theta = \max_iw_i$. $P(n(\theta - \hat\theta)>t) = P(\hat\theta<\theta - t/n) = (1 - t/(n\theta))^n\to e^{-t/\theta}$. La tasa es $n$, no $\sqrt n$, y la distribución es exponencial. Falla la condición de que el soporte no dependa de $\theta$ (no se puede derivar dentro de la integral): la verosimilitud no es derivable en el máximo.
+:::
+
+**Ejercicio 2.7 ★.** Demuestra la cota de Cramér–Rao para estimar una función $g(\theta)$ escalar con un estimador insesgado $T$ de $g(\theta)$: $\operatorname{Var}(T)\ge\nabla g'(n\mathcal{I})^{-1}\nabla g$.
+
+::: {.callout-tip collapse="true" title="Solución 2.7 ★"}
+Derivando $\mathbb{E}_\theta[T] = g(\theta)$: $\operatorname{Cov}(T,S_n) = \nabla g(\theta)'$ (fila). La matriz de covarianza de $(T,S_n')'$ es $\begin{pmatrix}\operatorname{Var}(T) & \nabla g'\\ \nabla g & n\mathcal{I}\end{pmatrix}\succeq0$. Multiplicando por el vector $(1,\,-\nabla g'(n\mathcal{I})^{-1})$ por la izquierda y su transpuesta por la derecha: $0\le\operatorname{Var}(T) - 2\nabla g'(n\mathcal{I})^{-1}\nabla g + \nabla g'(n\mathcal{I})^{-1}\nabla g = \operatorname{Var}(T) - \nabla g'(n\mathcal{I})^{-1}\nabla g$. Con $g(\theta) = a'\theta$ se recupera la prueba del teorema.
+:::

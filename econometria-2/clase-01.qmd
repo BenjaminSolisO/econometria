@@ -1,0 +1,261 @@
+---
+title: "Clase 1 · Estimación por extremos"
+subtitle: "Consistencia y normalidad asintótica de los M-estimadores"
+description: "Estimadores definidos como máximos de un criterio muestral: teorema de consistencia, ley de los grandes números uniforme, normalidad asintótica y varianza sándwich general."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Una sola demostración para casi todo
+
+En Econometría 1 demostramos que MCO es consistente y asintóticamente normal. Después vino la pregunta incómoda: ¿tengo que repetir toda la demostración para cada estimador nuevo? Para probit, para mínimos cuadrados no lineales, para la mediana, para GMM... La respuesta es que **no**. Casi todos los estimadores de la econometría son, en el fondo, el mismo objeto:
+
+$$
+\hat\theta = \arg\max_{\theta\in\Theta}\ \hat Q_n(\theta),\qquad \hat Q_n(\theta) = \frac1n\sum_{i=1}^nm(w_i,\theta).
+$$ {#eq-m-estimador}
+
+Aquí $w_i$ son los datos de la observación $i$ (por ejemplo $(y_i, x_i)$), $\theta\in\Theta\subset\mathbb{R}^p$ es el parámetro, y $m$ es una función **criterio** que el econometrista elige. Hacemos la teoría una vez, para un $m$ cualquiera, y después cada estimador es un caso particular: basta calcular dos matrices.[^huber]
+
+[^huber]: La idea es de Peter Huber (1964, 1967), que estudiaba estimadores robustos y quería una teoría que cubriera la mediana, la media y todo lo que hubiera entre ambas. La "M" es de *maximum-likelihood-type*. Los economistas los llaman también *estimadores por extremos* (Amemiya, 1985), que suena más serio y menos a nombre de producto de limpieza.
+
+::: {.callout-caution title="Notación y supuesto de muestreo"}
+En todo el curso, $\{w_i\}_{i=1}^n$ son i.i.d. salvo que se diga lo contrario (los paneles de la Clase 9 y las series de tiempo de Econometría 3 relajan esto). Escribimos $\nabla$ para el gradiente en $\theta$ ($p\times1$) y $\nabla^2$ para el hessiano ($p\times p$). Maximizamos; para minimizar, cambia el signo de $m$. Usaremos sin demostrar lo de Econometría 1: LGN, TCL, Slutsky y método delta (Clase 6).
+:::
+
+# Ejemplos: ya conoces a la familia
+
+::: {#exm-familia}
+## Algunos M-estimadores
+1. **Media:** $m(w,\theta) = -(w - \theta)^2$. El máximo de $\hat Q_n$ es $\bar w$.
+2. **MCO:** $m(w,\theta) = -\tfrac12(y - x'\theta)^2$, con $w = (y,x)$.
+3. **Mínimos cuadrados no lineales:** $m(w,\theta) = -\tfrac12\big(y - g(x,\theta)\big)^2$.
+4. **Máxima verosimilitud:** $m(w,\theta) = \log f(w;\theta)$ (Clase 2).
+5. **Mediana:** $m(w,\theta) = -|w - \theta|$. ¡Ojo! Esta no es derivable: es la Clase 12.
+6. **GMM:** el criterio es $-\tfrac12 \bar g(\theta)'W\bar g(\theta)$ con $\bar g = \frac1n\sum g(w_i,\theta)$. No es un promedio, pero la teoría de esta clase se adapta (Clase 4).
+:::
+
+# Consistencia
+
+La idea es la misma de toda la teoría asintótica: la muestra imita a la población. Si $\hat Q_n(\theta)$ se parece (para todo $\theta$ a la vez) a su **análogo poblacional** $Q_0(\theta) = \mathbb{E}[m(w,\theta)]$, entonces los maximizadores también deberían parecerse. Para esto necesitamos dos cosas: que la convergencia sea **uniforme** y que $Q_0$ tenga un único máximo.
+
+::: {.callout-caution title="Supuestos de consistencia (C)"}
+- **C1 (compacidad):** $\Theta$ es compacto.
+- **C2 (continuidad y dominancia):** $m(w,\cdot)$ es continua en $\Theta$ con probabilidad uno, y $\mathbb{E}\big[\sup_{\theta\in\Theta}|m(w,\theta)|\big]<\infty$.
+- **C3 (identificación):** existe un único $\theta_0\in\Theta$ que maximiza $Q_0(\theta) = \mathbb{E}[m(w,\theta)]$.
+:::
+
+C3 es el supuesto con contenido económico: dice que los **datos distinguen** al parámetro verdadero de cualquier otro. Si falla, ningún tamaño de muestra te salva (Ejercicio 1.4). C1 y C2 son técnicos: C1 se puede relajar (si $\hat Q_n$ es cóncava, por ejemplo) y C2 se verifica casi siempre sin esfuerzo.
+
+::: {#lem-ulln}
+## Ley de los grandes números uniforme
+Bajo C1, C2 y muestreo i.i.d., $Q_0$ es continua y $\sup_{\theta\in\Theta}\big|\hat Q_n(\theta) - Q_0(\theta)\big|\xrightarrow{p}0$.
+:::
+
+La LGN de Econometría 1 dice que, **para cada $\theta$ fijo**, $\hat Q_n(\theta)\to Q_0(\theta)$. Pero $\hat\theta$ es un punto *aleatorio* que se mueve con la muestra, así que necesitamos la convergencia simultánea en todo $\Theta$. Demostramos el lema en la sección ★; por ahora lo usamos.
+
+::: {#thm-consistencia-m}
+## Consistencia de M-estimadores
+Bajo C1–C3 y muestreo i.i.d., $\hat\theta\xrightarrow{p}\theta_0$.
+:::
+
+::: {.callout-note title="Borrador"}
+Quiero mostrar que, para cualquier vecindad $N$ de $\theta_0$, $\hat\theta\in N$ con probabilidad que tiende a uno. Fuera de $N$, el máximo de $Q_0$ está *estrictamente* por debajo de $Q_0(\theta_0)$: es aquí donde entran la identificación (único máximo) y la compacidad (el sup se alcanza en algún punto). Digamos que la brecha es $\varepsilon > 0$. Cuando $\hat Q_n$ está a menos de $\varepsilon/2$ de $Q_0$ en todas partes, ningún punto fuera de $N$ puede ganarle a $\theta_0$ en $\hat Q_n$, así que el maximizador de $\hat Q_n$ tiene que estar dentro de $N$. Y el lema dice que "estar a menos de $\varepsilon/2$ en todas partes" ocurre con probabilidad que tiende a uno.
+:::
+
+::: {.proof}
+Sea $N$ una vecindad abierta de $\theta_0$. El conjunto $\Theta\setminus N$ es compacto (cerrado dentro de un compacto) y $Q_0$ es continua (@lem-ulln), así que si $\Theta\setminus N$ no es vacío alcanza su máximo en algún $\theta^*\in\Theta\setminus N$. Como $\theta^*\ne\theta_0$, C3 implica $Q_0(\theta^*)<Q_0(\theta_0)$. Sea $\varepsilon = Q_0(\theta_0) - Q_0(\theta^*)>0$.
+
+Definamos el evento $E_n = \{\sup_\Theta|\hat Q_n - Q_0|<\varepsilon/2\}$. Por @lem-ulln, $P(E_n)\to1$. En $E_n$, para todo $\theta\in\Theta\setminus N$:
+$$
+\hat Q_n(\theta) < Q_0(\theta) + \tfrac\varepsilon2 \le Q_0(\theta^*) + \tfrac\varepsilon2 = Q_0(\theta_0) - \tfrac\varepsilon2 < \hat Q_n(\theta_0).
+$$
+Luego ningún $\theta\notin N$ puede maximizar $\hat Q_n$ (pues $\theta_0$ lo supera), es decir, $\hat\theta\in N$ en $E_n$. Entonces $P(\hat\theta\in N)\ge P(E_n)\to1$. Como $N$ era una vecindad arbitraria, $\hat\theta\xrightarrow{p}\theta_0$.
+:::
+
+Esta demostración funciona igual si $\hat\theta$ no maximiza exactamente $\hat Q_n$ sino que cumple $\hat Q_n(\hat\theta)\ge\sup_\Theta\hat Q_n - o_p(1)$. Es importante en la práctica: los optimizadores numéricos paran en una tolerancia, no en el máximo exacto.
+
+# Normalidad asintótica
+
+Con $\hat\theta\to_p\theta_0$ en mano, miramos más de cerca. Si $\theta_0$ es interior a $\Theta$, entonces (con probabilidad que tiende a uno) $\hat\theta$ también lo es, y satisface la **condición de primer orden** $\nabla\hat Q_n(\hat\theta) = 0$. La idea: linealizar esa condición alrededor de $\theta_0$, como hicimos con el método delta.
+
+::: {.callout-caution title="Supuestos de normalidad asintótica (N)"}
+- **N1:** $\hat\theta\xrightarrow{p}\theta_0$ y $\theta_0$ es un punto interior de $\Theta$.
+- **N2:** $m(w,\cdot)$ es dos veces continuamente diferenciable en una vecindad $\mathcal{N}$ de $\theta_0$.
+- **N3:** $\mathbb{E}\|\nabla m(w,\theta_0)\|^2<\infty$, y definimos $B = \mathbb{E}\big[\nabla m(w,\theta_0)\nabla m(w,\theta_0)'\big]$.
+- **N4:** $\mathbb{E}\big[\sup_{\theta\in\mathcal{N}}\|\nabla^2m(w,\theta)\|\big]<\infty$, y $A = \mathbb{E}\big[\nabla^2m(w,\theta_0)\big]$ es **invertible**.
+:::
+
+La matriz $A$ (el hessiano esperado) mide **cuánta curvatura** tiene el criterio en el máximo; $B$ (la varianza del gradiente, o *score*) mide **cuánto ruido** hay en la condición de primer orden. Ya adivinas el resultado: la varianza es "ruido sobre curvatura al cuadrado".
+
+::: {#thm-normalidad-m}
+## Normalidad asintótica de M-estimadores
+Bajo C1–C3 y N1–N4,
+$$
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big).
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Escribo la condición de primer orden $0 = \nabla\hat Q_n(\hat\theta)$ y expando alrededor de $\theta_0$ con el teorema del valor medio: $0 = \nabla\hat Q_n(\theta_0) + \nabla^2\hat Q_n(\bar\theta)(\hat\theta - \theta_0)$. Despejo: $\sqrt n(\hat\theta - \theta_0) = -[\nabla^2\hat Q_n(\bar\theta)]^{-1}\sqrt n\,\nabla\hat Q_n(\theta_0)$. Dos piezas. El gradiente en $\theta_0$ es un promedio i.i.d.; si tiene media cero, el TCL le da una normal. El hessiano está evaluado en un punto intermedio $\bar\theta$ entre $\hat\theta$ y $\theta_0$, que por consistencia converge a $\theta_0$: si el hessiano es "continuo en promedio", converge a $A$. Slutsky pega las dos piezas. Falta una cosa: que el gradiente tenga media cero. Eso es la condición de primer orden *poblacional*.
+:::
+
+Primero, ese paso pendiente.
+
+::: {#lem-score-cero}
+## El score tiene media cero
+Bajo N1–N4 y C3, $\mathbb{E}[\nabla m(w,\theta_0)] = 0$.
+:::
+
+::: {.proof}
+$\theta_0$ maximiza $Q_0(\theta) = \mathbb{E}[m(w,\theta)]$ y es interior, así que $\nabla Q_0(\theta_0) = 0$ siempre que $Q_0$ sea derivable. Por N4, $\|\nabla m(w,\theta)\|$ está dominado en $\mathcal N$ (integrando el hessiano a lo largo de un segmento y usando N3), así que se puede derivar dentro de la esperanza (teorema de convergencia dominada): $\nabla Q_0(\theta_0) = \mathbb{E}[\nabla m(w,\theta_0)]$. Por lo tanto la esperanza del score es cero.
+:::
+
+::: {.proof}
+**(del @thm-normalidad-m).** Por N1, la probabilidad de que $\hat\theta$ esté en el interior de $\mathcal N$ tiende a uno, y en ese evento $\nabla\hat Q_n(\hat\theta) = 0$. Aplicando el teorema del valor medio a cada componente del gradiente, existen puntos $\bar\theta_j$ en el segmento entre $\hat\theta$ y $\theta_0$ tales que
+$$
+0 = \nabla\hat Q_n(\theta_0) + \tilde H_n(\hat\theta - \theta_0),
+$$
+donde $\tilde H_n$ es la matriz cuya fila $j$ es la fila $j$ de $\nabla^2\hat Q_n(\bar\theta_j)$.
+
+*Paso 1: $\tilde H_n\xrightarrow{p}A$.* Cada $\bar\theta_j\xrightarrow{p}\theta_0$ porque está entre $\hat\theta$ y $\theta_0$. Por N2 y N4, el lema de ley de los grandes números uniforme (@lem-ulln aplicado a las entradas de $\nabla^2m$ en una vecindad compacta de $\theta_0$) da $\sup_{\theta\in\mathcal N'}\|\nabla^2\hat Q_n(\theta) - \mathbb{E}[\nabla^2m(w,\theta)]\|\xrightarrow{p}0$ y la función $\theta\mapsto\mathbb{E}[\nabla^2m(w,\theta)]$ es continua en $\theta_0$. Entonces $\nabla^2\hat Q_n(\bar\theta_j)\xrightarrow{p}A$ (distancia a $\mathbb{E}\nabla^2m(\bar\theta_j)$ chica por la uniformidad; esta a su vez cercana a $A$ por continuidad), y lo mismo ocurre con la matriz $\tilde H_n$.
+
+*Paso 2: $\sqrt n\nabla\hat Q_n(\theta_0)\xrightarrow{d}N(0,B)$.* Tenemos $\sqrt n\nabla\hat Q_n(\theta_0) = \sqrt n\cdot\frac1n\sum_i\nabla m(w_i,\theta_0)$. Los sumandos son i.i.d., con media cero (@lem-score-cero) y varianza $B$ finita (N3). Aplica el TCL multivariado.
+
+*Paso 3.* Como $A$ es invertible y $\tilde H_n\to_pA$, $\tilde H_n$ es invertible con probabilidad que tiende a uno y $\tilde H_n^{-1}\to_pA^{-1}$ (función continua). Despejando,
+$$
+\sqrt n(\hat\theta - \theta_0) = -\tilde H_n^{-1}\sqrt n\nabla\hat Q_n(\theta_0)\xrightarrow{d}-A^{-1}N(0,B) = N\big(0, A^{-1}BA^{-1\prime}\big),
+$$
+por Slutsky y el teorema de transformaciones lineales. Como $A$ es simétrica, $A^{-1\prime} = A^{-1}$.
+:::
+
+Dos observaciones sobre el resultado. Primero, $A^{-1}BA^{-1}$ se llama **varianza sándwich**: $B$ es el "relleno" entre dos "panes" $A^{-1}$. Segundo, es la misma estructura de la Clase 7 de Econometría 1, como veremos ahora.
+
+::: {.callout-warning title="¿Es $A$ negativa definida?"}
+Como $\theta_0$ es un *máximo* de $Q_0$, $A$ es semidefinida negativa; con $A$ invertible, es definida negativa. El signo no importa en la varianza ($A^{-1}BA^{-1}$ es invariante a $A\to-A$), pero sí importa en la práctica: si tu hessiano numérico en $\hat\theta$ **no** es definido negativo, el optimizador no encontró un máximo y la matriz de varianzas que reportas no tiene sentido.
+:::
+
+# Estimación de la varianza y tests
+
+Para hacer inferencia estimamos $A$ y $B$ con sus análogos muestrales evaluados en $\hat\theta$:
+$$
+\hat A = \frac1n\sum_{i=1}^n\nabla^2m(w_i,\hat\theta),\qquad
+\hat B = \frac1n\sum_{i=1}^n\nabla m(w_i,\hat\theta)\nabla m(w_i,\hat\theta)',\qquad
+\widehat{\operatorname{Avar}}(\hat\theta) = \frac1n\hat A^{-1}\hat B\hat A^{-1}.
+$$
+La consistencia de $\hat A$ y $\hat B$ se demuestra igual que la de $\hat Q$ y $\hat\Omega$ en la Clase 7 de Econometría 1: LGN uniforme más el hecho de que $\hat\theta\to_p\theta_0$. Con ella, todo lo de inferencia sigue sin cambios: el error estándar de $\hat\theta_j$ es la raíz del elemento $(j,j)$ de $\widehat{\operatorname{Avar}}$, y para $H_0:h(\theta_0) = 0$, con $h$ de dimensión $q$ y jacobiano $H(\theta) = \partial h/\partial\theta'$ de rango $q$, el **test de Wald**
+$$
+W = n\,h(\hat\theta)'\big[H(\hat\theta)\hat A^{-1}\hat B\hat A^{-1}H(\hat\theta)'\big]^{-1}h(\hat\theta)\xrightarrow{d}\chi^2_q
+$$
+(método delta de la Clase 6 más el lema de la $\chi^2$ con la inversa de la varianza, Clase 5 de Econometría 1).
+
+::: {#exm-mco-sandwich}
+## MCO es un caso particular
+Con $m(w,\theta) = -\tfrac12(y - x'\theta)^2$ tenemos $\nabla m = x(y - x'\theta)$ y $\nabla^2m = -xx'$. En $\theta_0=\beta$, el coeficiente de proyección lineal, $\nabla m = xu$. Entonces
+$$
+A = -\mathbb{E}[xx'],\qquad B = \mathbb{E}[u^2xx'],\qquad A^{-1}BA^{-1} = \mathbb{E}[xx']^{-1}\,\mathbb{E}[u^2xx']\,\mathbb{E}[xx']^{-1}.
+$$
+Es exactamente la varianza sándwich de la Clase 7 de Econometría 1, y $\hat A^{-1}\hat B\hat A^{-1}$ es la fórmula de White. Todo lo que demostramos allí a mano era un caso del @thm-normalidad-m.
+:::
+
+::: {#exm-mcnl}
+## Mínimos cuadrados no lineales
+Con $m = -\tfrac12(y - g(x,\theta))^2$ y $u = y - g(x,\theta_0)$:
+$$
+\nabla m = u\,\nabla g,\qquad \nabla^2m = -\nabla g\nabla g' + u\,\nabla^2g.
+$$
+Si el modelo está bien especificado en la media, $\mathbb{E}[u\mid x] = 0$, entonces $\mathbb{E}[u\nabla^2g] = 0$ y $A = -\mathbb{E}[\nabla g\nabla g']$, $B = \mathbb{E}[u^2\nabla g\nabla g']$. Es el mismo sándwich de MCO con el regresor $x$ reemplazado por el **gradiente** $\nabla g(x,\theta_0)$: MCNL es "MCO sobre el modelo linealizado".
+:::
+
+# Cuando la información importa: un adelanto
+
+En los dos ejemplos de arriba, $A$ y $B$ eran matrices distintas y el sándwich no se simplificaba. Pero hay un caso, central en la econometría, donde $B = -A$ y el sándwich colapsa a $-A^{-1} = B^{-1}$: la **máxima verosimilitud bien especificada**. La Clase 2 demuestra esa igualdad (la *igualdad de la información*) y usa $B^{-1}$ como cota para la varianza de cualquier estimador.
+
+Por ahora quédate con esto: **el sándwich es el default honesto**, que vale aunque el criterio $m$ sea un modelo equivocado de los datos. Colapsar el sándwich es una ganancia que se *paga* con el supuesto de que el modelo está bien especificado.
+
+# ★ Postgrado: demostración del lema de LGN uniforme
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos @lem-ulln. Es un argumento de recubrimiento finito: la compacidad convierte un problema "para todo $\theta$" en un problema con finitos puntos.
+:::
+
+::: {.callout-note title="Borrador"}
+Para cada $\theta\in\Theta$ miro una bolita de radio $\delta$ y mido la mayor oscilación de $m(w,\cdot)$ dentro de ella: $\Delta(w,\theta,\delta)$. Por continuidad, la oscilación se achica a cero cuando $\delta\to0$, y como está dominada por $2\sup|m|$ (integrable), también su esperanza va a cero. Elijo $\delta_\theta$ para que la esperanza de la oscilación sea menor que $\varepsilon$. Las bolitas cubren $\Theta$ y, por compacidad, bastan finitas. Dentro de cada bolita, $\hat Q_n$ y $Q_0$ se mueven poco; en el centro, la LGN ordinaria las acerca. Tres cotas y un finito, y listo.
+:::
+
+::: {.proof}
+Para $\theta\in\Theta$ y $\delta>0$ sea
+$$
+\Delta(w,\theta,\delta) = \sup_{\theta'\in\Theta:\ \|\theta' - \theta\|<\delta}\big|m(w,\theta') - m(w,\theta)\big|.
+$$
+Por C2, $\Delta(w,\theta,\delta)\to0$ cuando $\delta\to0$ con probabilidad uno (continuidad en $\theta$), y $\Delta\le2\sup_\Theta|m(w,\cdot)|$, que es integrable. Por convergencia dominada, $\mathbb{E}[\Delta(w,\theta,\delta)]\to0$ cuando $\delta\to0$.
+
+*$Q_0$ es continua.* $|Q_0(\theta') - Q_0(\theta)|\le\mathbb{E}\,\Delta(w,\theta,\delta)\to0$ si $\|\theta' - \theta\|<\delta\to0$.
+
+*Convergencia uniforme.* Fija $\varepsilon>0$. Para cada $\theta\in\Theta$ elige $\delta_\theta>0$ con $\mathbb{E}\,\Delta(w,\theta,\delta_\theta)<\varepsilon$. Las bolas abiertas $B(\theta,\delta_\theta)$ cubren $\Theta$, que es compacto: existen $\theta_1,\dots,\theta_J$ con $\Theta\subset\bigcup_jB(\theta_j,\delta_j)$. Si $\theta\in B(\theta_j,\delta_j)$,
+$$
+\big|\hat Q_n(\theta) - Q_0(\theta)\big|\le\underbrace{\big|\hat Q_n(\theta) - \hat Q_n(\theta_j)\big|}_{\le\frac1n\sum_i\Delta(w_i,\theta_j,\delta_j)}+\big|\hat Q_n(\theta_j) - Q_0(\theta_j)\big| + \underbrace{\big|Q_0(\theta_j) - Q_0(\theta)\big|}_{\le\mathbb{E}\Delta(w,\theta_j,\delta_j)<\varepsilon}.
+$$
+Entonces
+$$
+\sup_{\theta\in\Theta}\big|\hat Q_n(\theta) - Q_0(\theta)\big|\le\max_{1\le j\le J}\Big\{\frac1n\sum_{i}\Delta(w_i,\theta_j,\delta_j) + \big|\hat Q_n(\theta_j) - Q_0(\theta_j)\big|\Big\} + \varepsilon.
+$$
+Como $J$ es finito, la LGN ordinaria (aplicada a las $2J$ cantidades) da que el máximo converge en probabilidad a $\max_j\{\mathbb{E}\Delta(w,\theta_j,\delta_j)\}<\varepsilon$ (el segundo sumando converge a $0$). Luego $P\big(\sup|\hat Q_n - Q_0|>3\varepsilon\big)\to0$ para todo $\varepsilon>0$, que es la convergencia uniforme en probabilidad.
+:::
+
+# Resumen
+
+- Un **M-estimador** maximiza $\hat Q_n(\theta) = \frac1n\sum m(w_i,\theta)$. MCO, MCNL, MV, la mediana y GMM son casos particulares.
+- **Consistencia** (@thm-consistencia-m): compacidad + continuidad con dominancia + **identificación** (único máximo de $Q_0$). La herramienta es la LGN uniforme (@lem-ulln).
+- **Normalidad** (@thm-normalidad-m): $\sqrt n(\hat\theta - \theta_0)\to N(0, A^{-1}BA^{-1})$ con $A = \mathbb{E}[\nabla^2m]$ ("curvatura") y $B = \mathbb{E}[\nabla m\nabla m']$ ("ruido del score").
+- Para cada estimador nuevo el trabajo se reduce a calcular $A$ y $B$ y verificar los supuestos.
+- Si el modelo es verosímil y está bien especificado, $B = -A$ y el sándwich colapsa (Clase 2).
+
+# Ejercicios
+
+**Ejercicio 1.1.** Muestra que la media muestral es un M-estimador con $m(w,\theta) = -(w-\theta)^2$, calcula $A$ y $B$ y verifica que la varianza asintótica es $\operatorname{Var}(w)$.
+
+::: {.callout-tip collapse="true" title="Solución 1.1"}
+$\nabla m = 2(w - \theta)$ y $\nabla^2m = -2$. En $\theta_0 = \mathbb{E}[w]$: $A = -2$ y $B = \mathbb{E}[4(w-\theta_0)^2] = 4\operatorname{Var}(w)$. Entonces $A^{-1}BA^{-1} = \frac{1}{4}\cdot4\operatorname{Var}(w) = \operatorname{Var}(w)$. Es el TCL de siempre. Nota que $m$ no es una verosimilitud (para eso habría que suponer una distribución) y aun así obtuvimos la varianza correcta sin suponer normalidad.
+:::
+
+**Ejercicio 1.2.** Sea $w$ exponencial con densidad $f(w;\theta) = \theta e^{-\theta w}$, $w>0$. Toma $m(w,\theta) = \log\theta - \theta w$. Calcula el estimador, $A$, $B$ y la varianza asintótica. Comprueba el resultado con el método delta aplicado a $\hat\theta = 1/\bar w$.
+
+::: {.callout-tip collapse="true" title="Solución 1.2"}
+$\hat Q_n = \log\theta - \theta\bar w$ se maximiza en $\hat\theta = 1/\bar w$. $\nabla m = 1/\theta - w$, $\nabla^2m = -1/\theta^2$. En $\theta_0$, $\mathbb{E}[w] = 1/\theta_0$ y $\operatorname{Var}(w) = 1/\theta_0^2$. Luego $A = -1/\theta_0^2$ y $B = \operatorname{Var}(w) = 1/\theta_0^2 = -A$ (¡igualdad de la información!). La varianza asintótica es $A^{-1}BA^{-1} = \theta_0^4\cdot\theta_0^{-2} = \theta_0^2$. Método delta: $\sqrt n(\bar w - 1/\theta_0)\to N(0,1/\theta_0^2)$ y $g(x) = 1/x$ tiene $g'(1/\theta_0) = -\theta_0^2$, así que la varianza es $\theta_0^4\cdot\theta_0^{-2} = \theta_0^2$. Coinciden.
+:::
+
+**Ejercicio 1.3.** (Especificación incorrecta.) Los datos son i.i.d. con $\mathbb{E}[w] = \mu_0$ y $\operatorname{Var}(w) = \sigma^2$ (distribución desconocida). Un economista ajusta $N(\mu,1)$ por máxima verosimilitud, es decir, $m(w,\mu) = -\tfrac12(w-\mu)^2$ (omitimos constantes). ¿A qué converge $\hat\mu$? ¿Cuál es su varianza asintótica verdadera? ¿Qué reportaría el programa si usara la fórmula "de manual" $-A^{-1}$?
+
+::: {.callout-tip collapse="true" title="Solución 1.3"}
+$\hat\mu = \bar w\to_p\mu_0$ (el *valor pseudo-verdadero*, el que maximiza $Q_0$: $Q_0(\mu) = -\frac12(\sigma^2 + (\mu_0-\mu)^2)$). $A = -1$, $B = \mathbb{E}[(w-\mu_0)^2] = \sigma^2$. La varianza verdadera es $A^{-1}BA^{-1} = \sigma^2$. La fórmula de manual dice $-A^{-1} = 1$ (la varianza supuesta). Si $\sigma^2 = 4$ los errores estándar reportados serían la mitad de los verdaderos y el test al 5 % rechazaría mucho más del 5 % de las veces. Moraleja: el sándwich protege contra la especificación incorrecta de la **varianza**; la consistencia aquí sobrevivió porque la media sí estaba bien especificada.
+:::
+
+**Ejercicio 1.4.** (Falla de identificación.) Considera $y = \theta_1\theta_2x + u$ con $\mathbb{E}[xu] = 0$ y $\mathbb{E}[x^2]>0$, y $m = -\tfrac12(y - \theta_1\theta_2x)^2$. Muestra que C3 falla. ¿Qué parámetro sí está identificado?
+
+::: {.callout-tip collapse="true" title="Solución 1.4"}
+$Q_0(\theta) = -\tfrac12\mathbb{E}\big[(u + (\theta_{1,0}\theta_{2,0} - \theta_1\theta_2)x)^2\big] = -\tfrac12\big(\mathbb{E}u^2 + (\theta_{1,0}\theta_{2,0} - \theta_1\theta_2)^2\mathbb{E}x^2\big)$ (el término cruzado es cero por $\mathbb{E}[xu] = 0$). Es máxima en **todo el conjunto** $\{\theta:\theta_1\theta_2 = \theta_{1,0}\theta_{2,0}\}$, una hipérbola: el máximo no es único. Solo el **producto** $\theta_1\theta_2$ está identificado. $\hat\theta$ no converge a un punto, y el hessiano en cualquier punto de la hipérbola es singular (viola N4). El programa reportará errores estándar enormes o un hessiano no invertible.
+:::
+
+**Ejercicio 1.5.** Para $y = \exp(\theta x) + u$ con $\mathbb{E}[u\mid x] = 0$ y $\operatorname{Var}(u\mid x) = \sigma^2$, calcula la varianza asintótica del MCNL escalar. ¿Se parece a la de MCO?
+
+::: {.callout-tip collapse="true" title="Solución 1.5"}
+$g(x,\theta) = e^{\theta x}$, $\nabla g = xe^{\theta x}$. Por @exm-mcnl, $A = -\mathbb{E}[x^2e^{2\theta_0x}]$ y $B = \sigma^2\mathbb{E}[x^2e^{2\theta_0x}]$. Entonces $\operatorname{Avar} = \sigma^2/\mathbb{E}[x^2e^{2\theta_0x}]$. Es la fórmula de MCO con homocedasticidad, $\sigma^2/\mathbb{E}[x^2]$, reemplazando $x$ por el regresor linealizado $\nabla g = xe^{\theta_0x}$.
+:::
+
+**Ejercicio 1.6.** Escribe el test de Wald para $H_0:\theta_1/\theta_2 = 1$ en un M-estimador con $\theta\in\mathbb{R}^2$. ¿Qué jacobiano usas? ¿Por qué podría ser preferible testear $\theta_1 - \theta_2 = 0$ si $\theta_2$ está cerca de cero?
+
+::: {.callout-tip collapse="true" title="Solución 1.6"}
+$h(\theta) = \theta_1/\theta_2 - 1$ y $H(\theta) = (1/\theta_2,\ -\theta_1/\theta_2^2)$. $W = n\,h(\hat\theta)^2/\big(H(\hat\theta)\hat V H(\hat\theta)'\big)\to\chi^2_1$ con $\hat V = \hat A^{-1}\hat B\hat A^{-1}$. En realidad el test del cociente es *peor* si $\theta_2\approx0$: el método delta linealiza $h$ y la linealización es mala cuando $\theta_2$ está cerca de cero (la derivada explota). Mejor reescribir la hipótesis como $\theta_1 - \theta_2 = 0$, que es lineal: el test de Wald **no es invariante a reparametrizaciones** (problema que la Clase 3 resuelve con el test de razón de verosimilitud).
+:::
+
+**Ejercicio 1.7 ★.** Demuestra que si $m(w,\cdot)$ es cóncava para todo $w$ y $\theta_0$ es interior, se puede reemplazar C1 por que $\theta_0$ sea el único maximizador de $Q_0$ en $\Theta$ convexo y $\mathbb{E}|m(w,\theta)|<\infty$ para todo $\theta$. Da la idea: ¿por qué la concavidad compensa la falta de compacidad?
+
+::: {.callout-tip collapse="true" title="Solución 1.7 ★"}
+Idea (Newey y McFadden, 1994, Teorema 2.7). Para cada $\theta$ fijo, la LGN da $\hat Q_n(\theta)\to_pQ_0(\theta)$ y $Q_0$ es cóncava y estrictamente máxima en $\theta_0$. Sea $N = \{\|\theta - \theta_0\|\le\delta\}$ y $\theta$ un punto fuera de $N$. Si $\hat\theta$ estuviera fuera de $N$, el segmento de $\theta_0$ a $\hat\theta$ cruza la frontera de $N$ en un punto $\theta_\delta$. Por concavidad de $\hat Q_n$ y por $\hat Q_n(\hat\theta)\ge\hat Q_n(\theta_0)$, se cumple $\hat Q_n(\theta_\delta)\ge\hat Q_n(\theta_0)$. Pero la frontera de $N$ es compacta, y la convergencia puntual de funciones cóncavas implica convergencia **uniforme sobre compactos** (resultado clásico de análisis convexo). Con eso, $\hat Q_n(\theta_\delta)<\hat Q_n(\theta_0)$ con probabilidad que tiende a uno, contradicción. La concavidad "controla" lo que ocurre lejos usando solo lo que ocurre en la frontera de una vecindad compacta. Es por esto que probit, logit y MCO tienen consistencia sin pedir $\Theta$ compacto.
+:::

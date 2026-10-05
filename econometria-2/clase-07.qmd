@@ -1,0 +1,236 @@
+---
+title: "Clase 7 · Conteo y duración"
+subtitle: "Poisson, binomial negativa, QMLE, función de riesgo y modelo de Cox"
+description: "Modelos para variables de conteo (Poisson, binomial negativa, sobredispersión, QMLE de Poisson) y para tiempos hasta un evento (función de riesgo, censura, modelo de riesgos proporcionales y verosimilitud parcial de Cox)."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Dos tipos de variable que MCO no entiende
+
+Hay dos clases de variables dependientes que son siempre no negativas y que se prestan mal al modelo lineal:
+
+- **Conteos:** $y\in\{0,1,2,\dots\}$. Número de patentes de una empresa, visitas al médico en un año, accidentes en una intersección.
+- **Duraciones:** $T>0$ continuo. Tiempo que dura un desempleo, tiempo hasta que un crédito cae en mora, tiempo de supervivencia de una empresa.
+
+Con un conteo, la media condicional debe ser **positiva** (no tiene sentido una predicción de $-0{,}3$ patentes), y la varianza crece con la media. Con una duración, la distribución es asimétrica y, peor, hay **censura**: al terminar la observación, algunos individuos todavía no experimentan el evento (siguen desempleados, el crédito sigue al día) y solo sabemos que $T>t_{\text{obs}}$. Hoy desarrollamos las herramientas para ambos.
+
+# Parte A: variables de conteo
+
+## El modelo de Poisson
+
+La distribución natural para un conteo es la de Poisson: $P(y = k) = e^{-\mu}\mu^k/k!$, con $\mathbb{E}[y] = \operatorname{Var}(y) = \mu$. Para incorporar regresores, necesitamos que $\mu(x)>0$ siempre, así que se toma la forma exponencial:
+$$
+\mu(x) = \mathbb{E}[y\mid x] = \exp(x'\beta).
+$$
+La log-verosimilitud, el score y el hessiano son
+$$
+\ell_n(\beta) = \sum_i\big[y_ix_i'\beta - e^{x_i'\beta} - \log y_i!\big],\quad
+S(\beta) = \sum_i(y_i - \mu_i)x_i,\quad
+\nabla^2\ell_n = -\sum_i\mu_ix_ix_i'.
+$$
+El hessiano es definido negativo (como en el logit): $\ell_n$ es globalmente cóncava y Newton–Raphson funciona sin problemas. La interpretación es muy natural: $\partial\log\mu/\partial x_j = \beta_j$. El coeficiente es una **semielasticidad**: una unidad más de $x_j$ multiplica la media por $e^{\beta_j}$, lo que equivale, aproximadamente, a un cambio porcentual de $100\beta_j$ (si $\beta_j$ es chico). El efecto marginal en niveles es $\partial\mu/\partial x_j = \mu\beta_j$, que depende de $x$.
+
+La condición de primer orden $\sum_i(y_i - \hat\mu_i)x_i = 0$ implica, con una constante, $\sum\hat\mu_i = \sum y_i$ (el promedio ajustado coincide con el promedio de los datos), y lo mismo grupo a grupo para cada dummy incluida.
+
+## El problema: equidispersión
+
+El modelo de Poisson impone $\operatorname{Var}(y\mid x) = \mathbb{E}[y\mid x]$ (**equidispersión**). En los datos reales casi siempre ocurre **sobredispersión**, $\operatorname{Var}>\mathbb{E}$, porque hay heterogeneidad no observada: dos individuos con las mismas $x$ no tienen la misma media. Si ignoramos esto, ¿qué se rompe? Veamos que **menos de lo que se cree**.
+
+## Poisson como estimador de cuasi-máxima verosimilitud
+
+::: {#thm-poisson-qmle}
+## Consistencia del QMLE de Poisson
+Si $\mathbb{E}[y\mid x] = \exp(x'\beta_0)$ (la media está bien especificada), el estimador de Poisson $\hat\beta$ es consistente para $\beta_0$ y asintóticamente normal **sin importar cuál sea la distribución de $y$ condicional en $x$**:
+$$
+\sqrt n(\hat\beta - \beta_0)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),
+\quad A = -\mathbb{E}[\mu xx'],\quad B = \mathbb{E}\big[\operatorname{Var}(y\mid x)\,xx'\big],
+$$
+con $\mu = \exp(x'\beta_0)$.
+:::
+
+::: {.callout-note title="Borrador"}
+Por la Clase 1 solo tengo que verificar que el score tenga media cero en $\beta_0$ (consistencia, vía identificación) y calcular $A$ y $B$. El score es $(y - \mu)x$, con esperanza condicional $(\mathbb{E}[y\mid x] - \mu)x = 0$ si la media está bien especificada. **No hace falta que $y$ sea Poisson**: la verosimilitud de Poisson es "mala" pero su condición de primer orden poblacional solo depende de la media. Eso es lo que hace que sea un buen QMLE. Para $B$, basta calcular $\mathbb{E}[(y - \mu)^2xx'] = \mathbb{E}[\operatorname{Var}(y\mid x)xx']$.
+:::
+
+::: {.proof}
+El criterio $m(y,x,\beta) = yx'\beta - e^{x'\beta}$ cumple $\nabla m = (y - e^{x'\beta})x$ y $\nabla^2m = -e^{x'\beta}xx'$.
+
+*Media cero del score en $\beta_0$:* $\mathbb{E}[(y - \mu)x] = \mathbb{E}\big[x\,\mathbb{E}[y - \mu\mid x]\big] = 0$ pues la media condicional es $\mu$ por supuesto.
+
+*Identificación:* $Q_0(\beta) = \mathbb{E}[yx'\beta - e^{x'\beta}] = \mathbb{E}[\mu\,x'\beta - e^{x'\beta}]$, que es estrictamente cóncava en $\beta$ (si $\mathbb{E}[xx']\succ0$) y tiene derivada cero en $\beta_0$ (el score tiene media cero ahí): $\beta_0$ es su único maximizador.
+
+*Sándwich:* $A = \mathbb{E}[\nabla^2m] = -\mathbb{E}[\mu xx']$ y $B = \mathbb{E}[(y - \mu)^2xx'] = \mathbb{E}[\operatorname{Var}(y\mid x)xx']$. El resto es el teorema de normalidad asintótica de la Clase 1, que vale con la concavidad global (Ejercicio 1.7 de la Clase 1) en lugar de compacidad.
+:::
+
+Si además se cumple equidispersión, $\operatorname{Var}(y\mid x) = \mu$ y $B = -A$: se recupera la varianza usual $\mathcal{I}^{-1}$. Si no, la varianza correcta es el sándwich y **los errores estándar "de manual" están mal** (típicamente subestimados). Es la misma lección de la Clase 2: la consistencia depende de la media; la inferencia, de la varianza.
+
+::: {.callout-caution title="Recomendación práctica"}
+Usa **siempre** errores estándar robustos (sándwich) con Poisson. Y no te limites a conteos: el QMLE de Poisson sirve para **cualquier variable no negativa** con media exponencial (ingresos, ventas, flujos comerciales), incluyendo variables con muchos ceros. Es el estimador que se prefiere hoy para las *ecuaciones de gravedad* del comercio internacional (Santos Silva y Tenreyro, 2006).
+:::
+
+## Binomial negativa
+
+Para modelar la sobredispersión explícitamente se agrega heterogeneidad no observada multiplicativa. Sea $y\mid x,\nu\sim\text{Poisson}(\mu\nu)$, con $\mu = e^{x'\beta}$ y $\nu$ independiente de $x$, con $\mathbb{E}[\nu] = 1$ y $\operatorname{Var}(\nu) = \alpha$ (típicamente gamma). Entonces:
+
+- $\mathbb{E}[y\mid x] = \mathbb{E}\big[\mathbb{E}[y\mid x,\nu]\big] = \mu\,\mathbb{E}[\nu] = \mu$.
+- Por la ley de la varianza total, $\operatorname{Var}(y\mid x) = \mathbb{E}[\mu\nu] + \operatorname{Var}(\mu\nu) = \mu + \alpha\mu^2$.
+
+Con $\nu\sim\text{Gamma}$, integrando $\nu$ queda la distribución **binomial negativa** (NB2), con $\operatorname{Var} = \mu(1 + \alpha\mu)$. Si $\alpha = 0$ se vuelve Poisson. El parámetro $\alpha$ se estima por MV junto con $\beta$. Observa algo importante: el score para $\beta$ en NB2 es $\dfrac{y - \mu}{1 + \alpha\mu}x$, que tiene media cero **siempre que $\mathbb{E}[y\mid x] = \mu$, para cualquier valor de $\alpha$**. Entonces la NB2 también es un QMLE consistente para $\beta$ aunque la distribución sea incorrecta, y gana eficiencia sobre Poisson si el término de varianza $\mu + \alpha\mu^2$ es correcto.
+
+**Test de sobredispersión (Cameron–Trivedi).** Bajo $H_0:\alpha = 0$ y alternativa $\operatorname{Var}(y\mid x) = \mu + \alpha\mu^2$: $\mathbb{E}\big[(y - \mu)^2 - y\mid x\big] = \alpha\mu^2$. Se estima Poisson, se calcula $\hat\mu_i$, y se regresa por MCO (sin constante) $\dfrac{(y_i - \hat\mu_i)^2 - y_i}{\hat\mu_i}$ sobre $\hat\mu_i$; el test $t$ del coeficiente contrasta $\alpha = 0$.
+
+## Otros modelos de conteo
+
+Muchos ceros ("más ceros de los que Poisson permite"): **modelo de ceros inflados** (una mezcla entre una masa en cero y una Poisson) o **modelo de barrera** (*hurdle*: primero un probit de si $y>0$, luego una Poisson truncada en cero para los positivos). Distintas ideas, mismas herramientas: MV de una densidad bien definida (Clases 1–3). Para exposición variable (cada unidad observada en períodos distintos), se agrega un **offset**: $\mu_i = t_i\exp(x_i'\beta)$, con $\log t_i$ como regresor de coeficiente fijo en uno.
+
+# Parte B: duraciones
+
+## Función de supervivencia y de riesgo
+
+Sea $T>0$ una duración con densidad $f$ y distribución $F$. Definimos:
+
+- **Función de supervivencia:** $S(t) = P(T>t) = 1 - F(t)$.
+- **Función de riesgo (*hazard*):** $\lambda(t) = \displaystyle\lim_{h\downarrow0}\frac{P(t\le T<t + h\mid T\ge t)}{h} = \frac{f(t)}{S(t)}$.
+- **Riesgo acumulado:** $\Lambda(t) = \int_0^t\lambda(s)\,ds$.
+
+El riesgo responde: *dado que el evento no ha ocurrido hasta $t$, ¿con qué intensidad ocurre ahora?* (la probabilidad instantánea de salir del desempleo, dado que sigues desempleado). Es el objeto natural porque condiciona en la información disponible.
+
+::: {#prp-hazard}
+## Identidades de supervivencia
+$\lambda(t) = -\dfrac{d\log S(t)}{dt}$, y por lo tanto $S(t) = \exp\big(-\Lambda(t)\big)$ y $f(t) = \lambda(t)\exp\big(-\Lambda(t)\big)$.
+:::
+
+::: {.proof}
+Como $f = -S'$, $\lambda = f/S = -S'/S = -(\log S)'$. Integrando desde $0$ con $S(0) = 1$: $\log S(t) = -\int_0^t\lambda = -\Lambda(t)$. Luego $f = \lambda S = \lambda e^{-\Lambda}$.
+:::
+
+Tres ejemplos: **exponencial**, $\lambda(t) = \lambda$ constante ("sin memoria"; $S = e^{-\lambda t}$); **Weibull**, $\lambda(t) = \lambda\alpha t^{\alpha - 1}$ (creciente si $\alpha>1$, decreciente si $\alpha<1$; $S = e^{-\lambda t^\alpha}$); y **riesgo no monótono** (log-logística, que sube y luego baja).
+
+## Censura y verosimilitud
+
+Con censura por la derecha observamos $t_i = \min(T_i,C_i)$ (donde $C_i$ es el momento de censura) y el indicador $\delta_i = \mathbf{1}\{T_i\le C_i\}$ (1 si vimos el evento, 0 si fue censurado). Suponemos que la censura es **no informativa** (independiente de $T_i$ dado $x_i$). Cada observación aporta:
+
+- si $\delta_i = 1$: la densidad $f(t_i)$;
+- si $\delta_i = 0$: solo sabemos que $T_i>t_i$, o sea $S(t_i)$.
+
+Entonces $L = \prod_if(t_i)^{\delta_i}S(t_i)^{1-\delta_i}$ y, usando la @prp-hazard,
+$$
+\ell_n = \sum_i\big[\delta_i\log\lambda(t_i) - \Lambda(t_i)\big].
+$$ {#eq-lik-duracion}
+(Porque $\log f = \log\lambda - \Lambda$ y $\log S = -\Lambda$.) Una observación censurada **no se descarta** (eso sesgaría hacia duraciones cortas) ni se trata como si el evento hubiera ocurrido en $t_i$: aporta información parcial, que es exactamente $S(t_i)$.
+
+::: {#exm-exp-poisson}
+## La exponencial censurada es una Poisson
+Con riesgo exponencial $\lambda(t\mid x) = \exp(x'\beta)$, $\Lambda(t) = t\,e^{x'\beta}$ y @eq-lik-duracion queda $\ell_n = \sum_i[\delta_ix_i'\beta - t_ie^{x_i'\beta}]$. Esto es *exactamente* la log-verosimilitud de Poisson de la Parte A con variable dependiente $\delta_i$ y *exposición* $t_i$ (offset $\log t_i$), salvo constantes. Por lo tanto, el score es $\sum_i(\delta_i - t_ie^{x_i'\beta})x_i$ y todo el aparato de Poisson (incluida la concavidad) se aplica. La exponencial con censura es un modelo de conteo de eventos por unidad de tiempo expuesto.
+:::
+
+Para la exponencial *sin* regresores, con $d = \sum\delta_i$ eventos y tiempo total expuesto $\sum t_i$, el MV es $\hat\lambda = d/\sum_it_i$: **eventos por unidad de tiempo en riesgo** (Ejercicio 7.5).
+
+## Riesgos proporcionales y el modelo de Cox
+
+El modelo de regresión más usado para duraciones es el de **riesgos proporcionales** (Cox, 1972):
+$$
+\lambda(t\mid x) = \lambda_0(t)\,\exp(x'\beta),
+$$
+donde $\lambda_0(t)$ es un riesgo **base** que depende solo del tiempo y las covariables **escalan** el riesgo multiplicativamente. Si $x_j$ sube una unidad, el riesgo se multiplica por $e^{\beta_j}$ (la **razón de riesgos**, *hazard ratio*) en **todo** $t$. Con $\beta_j = 0{,}4$, $e^{0{,}4} = 1{,}49$: el riesgo es 49 % mayor.
+
+Si elegimos una forma paramétrica para $\lambda_0$ (constante, Weibull) usamos MV con @eq-lik-duracion. Pero la forma de $\lambda_0$ rara vez interesa y es fácil equivocarse. La idea brillante de Cox: **estimar $\beta$ sin especificar $\lambda_0$**.
+
+::: {.callout-note title="Borrador"}
+Ordeno los eventos observados: $t_{(1)}<t_{(2)}<\dots<t_{(J)}$ (sin empates). En $t_{(j)}$ hay un **conjunto en riesgo** $R_j$ (los individuos que aún no han tenido el evento ni han sido censurados). Pregunto: sabiendo que *alguien* en $R_j$ tiene el evento en $t_{(j)}$, ¿cuál es la probabilidad de que sea justamente el individuo $i_{(j)}$ que observamos? Es el cociente de su riesgo sobre la suma de los riesgos en $R_j$. Pero cada riesgo es $\lambda_0(t_{(j)})e^{x_l'\beta}$, y $\lambda_0(t_{(j)})$ **aparece en el numerador y en cada término del denominador y se cancela**. Queda una probabilidad que depende solo de $\beta$.
+:::
+
+La probabilidad condicional es
+$$
+P\big(\text{falla }i_{(j)}\mid\text{falla alguien de }R_j\text{ en }t_{(j)}\big) = \frac{\lambda_0(t_{(j)})e^{x_{(j)}'\beta}}{\sum_{l\in R_j}\lambda_0(t_{(j)})e^{x_l'\beta}} = \frac{e^{x_{(j)}'\beta}}{\sum_{l\in R_j}e^{x_l'\beta}},
+$$
+y la **verosimilitud parcial de Cox** es el producto sobre los eventos:
+$$
+L_p(\beta) = \prod_{j=1}^J\frac{\exp(x_{(j)}'\beta)}{\sum_{l\in R_j}\exp(x_l'\beta)},\qquad
+S_p(\beta) = \sum_{j=1}^J\Big[x_{(j)} - \sum_{l\in R_j}w_{jl}(\beta)\,x_l\Big],\quad w_{jl} = \frac{e^{x_l'\beta}}{\sum_{m\in R_j}e^{x_m'\beta}}.
+$$
+El score es una suma de "covariable observada **menos** covariable esperada bajo $\beta$ en el conjunto en riesgo": una condición de ortogonalidad idéntica en espíritu a MCO. Cox (1975) mostró que $\hat\beta$, el maximizador de $L_p$, es consistente y asintóticamente normal con varianza dada por el inverso de la información parcial, aunque $L_p$ **no es una verosimilitud** (no es la densidad de nada) y los factores no son independientes; la demostración rigurosa usa la teoría de martingalas y procesos de conteo (Andersen y Gill, 1982), que supera el nivel del curso.[^cox] Los empates (varios eventos en el mismo instante) se manejan con aproximaciones (Breslow, Efron). Las covariables que varían en el tiempo se incorporan sin dificultad porque $L_p$ solo evalúa $x_l$ en cada tiempo de evento.
+
+[^cox]: El artículo de Cox de 1972, "Regression Models and Life-Tables", es uno de los más citados de toda la estadística. El método llegó antes que su justificación completa: Cox formalizó la verosimilitud parcial en 1975 y la teoría general de martingalas llegó recién con Andersen y Gill en 1982. Es el orden inverso del ideal, pero bastante habitual en la historia de la estadística.
+
+Una vez estimado $\hat\beta$ se puede recuperar el riesgo base acumulado con el estimador de **Breslow**, $\hat\Lambda_0(t) = \sum_{t_{(j)}\le t}\Big[\sum_{l\in R_j}e^{x_l'\hat\beta}\Big]^{-1}$, que da curvas de supervivencia $\hat S(t\mid x) = \exp\big(-\hat\Lambda_0(t)e^{x'\hat\beta}\big)$.
+
+# ★ Postgrado: Cox como verosimilitud perfilada
+
+::: {.callout-important title="★ Postgrado"}
+La verosimilitud parcial de Cox no es un truco: es la verosimilitud completa en la que **se concentra el riesgo base** (se maximiza sobre él, dejando $\beta$ libre).
+:::
+
+::: {#prp-cox-perfil}
+## Cox = verosimilitud perfilada sobre el riesgo base
+Supón que $\lambda_0$ es una función escalonada que solo puede saltar en los tiempos de evento, con valores $\lambda_j = \lambda_0(t_{(j)})$, y sin empates. Entonces el máximo de @eq-lik-duracion respecto de $\lambda_1,\dots,\lambda_J$, con $\beta$ fijo, es $\log L_p(\beta) - J$.
+:::
+
+::: {.proof}
+Con riesgo acumulado individual $\Lambda(t_i) = e^{x_i'\beta}\sum_{j:\,t_{(j)}\le t_i}\lambda_j$ (el riesgo base sólo acumula en los tiempos de evento) y $\log\lambda(t_i) = \log\lambda_0(t_i) + x_i'\beta$, @eq-lik-duracion es
+$$
+\ell_n = \sum_{j=1}^J\big[\log\lambda_j + x_{(j)}'\beta\big] - \sum_i\sum_{j:\,t_{(j)}\le t_i}\lambda_je^{x_i'\beta}.
+$$
+La doble suma, intercambiando el orden, es $\sum_j\lambda_jD_j$ con $D_j = \sum_{i:\,t_i\ge t_{(j)}}e^{x_i'\beta} = \sum_{l\in R_j}e^{x_l'\beta}$. Entonces $\ell_n = \sum_j[\log\lambda_j + x_{(j)}'\beta - \lambda_jD_j]$, y cada $\lambda_j$ aparece solo en su propio término. La CPO es $1/\lambda_j = D_j$, o sea $\hat\lambda_j = 1/D_j$ (¡el estimador de Breslow!). Reemplazando, $\ell_n^{\text{perfil}} = \sum_j[-\log D_j + x_{(j)}'\beta - 1] = \sum_j\big[x_{(j)}'\beta - \log\sum_{l\in R_j}e^{x_l'\beta}\big] - J = \log L_p(\beta) - J$.
+:::
+
+Por eso, maximizar $L_p$ equivale a maximizar la verosimilitud completa respecto de $\beta$ y de un riesgo base completamente libre. Es la forma moderna de ver el resultado de Cox: la verosimilitud parcial es "la verosimilitud con el riesgo base perfilado".
+
+# Resumen
+
+- **Conteos:** $\mathbb{E}[y\mid x] = e^{x'\beta}$; el score de Poisson $\sum(y - \mu)x$ tiene media cero si la **media** está bien especificada: Poisson es un QMLE consistente aunque la distribución sea falsa (@thm-poisson-qmle). Usa errores robustos.
+- **Sobredispersión:** $\operatorname{Var} = \mu + \alpha\mu^2$ (binomial negativa); el test de Cameron–Trivedi usa una regresión auxiliar.
+- **Duraciones:** el riesgo $\lambda(t)$ determina todo: $S = e^{-\Lambda}$, $f = \lambda e^{-\Lambda}$ (@prp-hazard). La censura se maneja con $\ell = \sum[\delta\log\lambda - \Lambda]$.
+- La exponencial censurada es una Poisson con *offset* (@exm-exp-poisson).
+- **Cox:** $\lambda = \lambda_0(t)e^{x'\beta}$; la **verosimilitud parcial** elimina $\lambda_0$ y su máximo coincide con la verosimilitud perfilada (@prp-cox-perfil).
+
+# Ejercicios
+
+**Ejercicio 7.1.** En una regresión de Poisson con constante y una dummy $d$, demuestra que $\hat\mu$ promedio en cada grupo ($d = 0$ y $d = 1$) coincide con la media muestral de $y$ en ese grupo. ¿Cuánto vale $e^{\hat\beta_d}$?
+
+::: {.callout-tip collapse="true" title="Solución 7.1"}
+Las CPO son $\sum_i(y_i - \hat\mu_i)x_i = 0$ con $x_i = (1,d_i)'$: $\sum_i(y_i - \hat\mu_i) = 0$ y $\sum_{d_i = 1}(y_i - \hat\mu_i) = 0$. Como $\hat\mu_i$ solo toma dos valores (uno por grupo), $\hat\mu_{(d)} = \bar y_{(d)}$, el promedio del grupo. Entonces $e^{\hat\beta_0} = \bar y_{(0)}$ y $e^{\hat\beta_0 + \hat\beta_d} = \bar y_{(1)}$, así que $e^{\hat\beta_d} = \bar y_{(1)}/\bar y_{(0)}$, la **razón de promedios**.
+:::
+
+**Ejercicio 7.2.** Los datos tienen $\mathbb{E}[y] = \mu$ y $\operatorname{Var}(y) = 2\mu$ (sobredispersión de factor 2), sin regresores salvo la constante. Estima por Poisson: $\hat\beta_0 = \log\bar y$. Calcula la varianza asintótica verdadera de $\hat\beta_0$ y la que reportaría el programa si usa errores "de manual". ¿Por cuánto se subestima el error estándar?
+
+::: {.callout-tip collapse="true" title="Solución 7.2"}
+Con $x = 1$: $A = -\mu$, $B = \operatorname{Var}(y) = 2\mu$. Varianza verdadera: $A^{-1}BA^{-1} = 2\mu/\mu^2 = 2/\mu$. La de manual es $-A^{-1} = 1/\mu$. El error estándar de manual es $\sqrt{1/\mu}$ y el verdadero $\sqrt{2/\mu}$: **se subestima en un factor $\sqrt2\approx1{,}41$** (el error estándar real es 41 % mayor). Como los $t$ salen $\sqrt2$ veces más grandes de lo que deberían, un coeficiente con $t = 1{,}6$ (no significativo) se vería como $t = 2{,}3$ (significativo). Por eso conviene siempre usar errores robustos.
+:::
+
+**Ejercicio 7.3.** Calcula $\operatorname{Var}(y)$ para el modelo de heterogeneidad multiplicativa con $\mu = 2$ y $\alpha = 0{,}5$, y compara con Poisson. ¿Cuántas veces mayor es la varianza?
+
+::: {.callout-tip collapse="true" title="Solución 7.3"}
+$\operatorname{Var}(y) = \mu + \alpha\mu^2 = 2 + 0{,}5\cdot4 = 4$. En Poisson sería $\operatorname{Var} = \mu = 2$: la varianza es **el doble**. Con $\mu = 10$ y el mismo $\alpha$, $\operatorname{Var} = 10 + 50 = 60$, seis veces la de Poisson: la sobredispersión de NB2 crece con la media.
+:::
+
+**Ejercicio 7.4.** Para el riesgo de Weibull $\lambda(t) = \lambda\alpha t^{\alpha - 1}$, calcula $\Lambda(t)$, $S(t)$ y $f(t)$. Describe la forma del riesgo según $\alpha$.
+
+::: {.callout-tip collapse="true" title="Solución 7.4"}
+$\Lambda(t) = \int_0^t\lambda\alpha s^{\alpha - 1}ds = \lambda t^\alpha$. $S(t) = e^{-\lambda t^\alpha}$, $f(t) = \lambda\alpha t^{\alpha - 1}e^{-\lambda t^\alpha}$. Si $\alpha = 1$ es la exponencial (riesgo constante); si $\alpha>1$ el riesgo **crece** con $t$ (envejecimiento: componentes que se desgastan); si $\alpha<1$ **decrece** (mortalidad infantil: el que sobrevive los primeros meses mejora sus chances).
+:::
+
+**Ejercicio 7.5.** (Exponencial censurada.) Se observan 20 individuos durante un total de 50 años-persona, con 5 eventos y 15 censurados. Calcula el MV de $\lambda$ y su error estándar.
+
+::: {.callout-tip collapse="true" title="Solución 7.5"}
+$\ell(\lambda) = d\log\lambda - \lambda\sum t_i$ con $d = 5$, $\sum t_i = 50$. CPO: $d/\lambda = \sum t_i\Rightarrow\hat\lambda = 5/50 = 0{,}10$ eventos por año-persona. Segunda derivada: $-d/\lambda^2$; información observada $= d/\hat\lambda^2$; $\operatorname{Avar} = \hat\lambda^2/d = 0{,}01/5 = 0{,}002$ y el error estándar es $0{,}0447$. Nótese que el error estándar depende de $d$ (el número de **eventos**), no de $n$: las observaciones censuradas contribuyen solo a través del tiempo total. Una IC de 95 % aproximado: $0{,}10\pm1{,}96\cdot0{,}0447 = (0{,}012;\,0{,}188)$, muy ancho con apenas 5 eventos.
+:::
+
+**Ejercicio 7.6.** En un modelo de Cox para el riesgo de **salir del empleo**, el coeficiente de educación es $\hat\beta_{\text{educ}} = -0{,}08$ (por año adicional). Interpreta $e^{\hat\beta}$ y el efecto de 4 años más de educación.
+
+::: {.callout-tip collapse="true" title="Solución 7.6"}
+$e^{-0{,}08} = 0{,}923$: cada año adicional de educación **multiplica por 0,923** el riesgo instantáneo de dejar el empleo, es decir lo reduce 7,7 %, en todo momento de la duración (supuesto de riesgos proporcionales). Cuatro años más: $e^{-0{,}32} = 0{,}726$: el riesgo cae 27 %. Esto no dice que "la duración media aumente en 27 %": con riesgos proporcionales el efecto sobre la duración esperada depende de la forma de $\lambda_0$.
+:::
+
+**Ejercicio 7.7 ★.** (Logaritmar no es Poisson.) Sea $y = \exp(x'\beta)\eta$ con $\mathbb{E}[\eta\mid x] = 1$. Muestra que, en general, la regresión por MCO de $\log y$ sobre $x$ **no** es consistente para los coeficientes de pendiente $\beta$ si $\operatorname{Var}(\eta\mid x)$ depende de $x$, mientras que el QMLE de Poisson sí lo es.
+
+::: {.callout-tip collapse="true" title="Solución 7.7 ★"}
+$\log y = x'\beta + \log\eta$, así que $\mathbb{E}[\log y\mid x] = x'\beta + \mathbb{E}[\log\eta\mid x]$. Por la desigualdad de Jensen, $\mathbb{E}[\log\eta\mid x]<\log\mathbb{E}[\eta\mid x] = 0$, y en una aproximación de segundo orden, $\mathbb{E}[\log\eta\mid x]\approx-\tfrac12\operatorname{Var}(\eta\mid x)$. Si la varianza de $\eta$ depende de $x$, también el sesgo $\mathbb{E}[\log\eta\mid x]$, y la regresión lineal de $\log y$ sobre $x$ captura $x'\beta + c(x)$ en lugar de $x'\beta$: las pendientes quedan sesgadas. Con $\operatorname{Var}(\eta\mid x)$ constante, solo el intercepto se sesga y las pendientes sobreviven. En cambio, Poisson solo necesita $\mathbb{E}[y\mid x] = e^{x'\beta}$, que se cumple porque $\mathbb{E}[\eta\mid x] = 1$ (@thm-poisson-qmle). Este es el argumento de Santos Silva y Tenreyro (2006) contra la práctica de linealizar con logaritmos las ecuaciones de gravedad. Además, $\log y$ no está definido si $y = 0$.
+:::

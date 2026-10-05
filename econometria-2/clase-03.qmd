@@ -1,0 +1,268 @@
+---
+title: "Clase 3 · Los tres tests de la trinidad"
+subtitle: "Wald, razón de verosimilitud y multiplicador de Lagrange"
+description: "Tres formas de testear restricciones en modelos de máxima verosimilitud: Wald, LR y LM. Equivalencia asintótica, la desigualdad W ≥ LR ≥ LM en el modelo lineal, el LM como n·R² y la no invarianza del Wald."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-03.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Tres maneras de hacer la misma pregunta
+
+Queremos testear una hipótesis $H_0: h(\theta_0) = 0$ con $q$ restricciones sobre un modelo estimado por MV. Hay tres caminos naturales, y cada uno mira una parte distinta de la log-verosimilitud $\ell_n(\theta)$:
+
+- **Wald:** estima el modelo **sin** restricciones y mira si $h(\hat\theta)$ está lejos de cero. Pregunta: *¿qué tan lejos están las restricciones de cumplirse en el estimador?*
+- **Razón de verosimilitud (LR):** estima **ambos** modelos y compara el valor de $\ell_n$. Pregunta: *¿cuánta verosimilitud perdemos al imponer la restricción?*
+- **Multiplicador de Lagrange (LM, o test de score):** estima **solo el restringido** y mira si el gradiente de $\ell_n$ ahí es cercano a cero. Pregunta: *¿cuánto quisiera moverse el estimador restringido si lo dejáramos?*
+
+Los tres son la misma pregunta en tres lenguajes (distancia, altura y pendiente) y la teoría dice que, bajo $H_0$ y para $n$ grande, dan **lo mismo**. Por eso se llaman la *trinidad*.[^trinidad]
+
+[^trinidad]: Wald (1943), Wilks (1938) y Rao (1948) los propusieron por separado, y Silvey (1959) descubrió que el test de Rao es en realidad el multiplicador de Lagrange del problema restringido. Un *trio* de resultados independientes que resultan ser uno solo: es lo más parecido que tiene la estadística a una doctrina religiosa. (Y como en toda trinidad, el misterio consiste en que son tres y son uno.)
+
+::: {.callout-caution title="Notación"}
+Trabajamos con el modelo bien especificado de la Clase 2. $\hat\theta$ es el MV sin restringir, $\tilde\theta$ el MV sujeto a $h(\theta) = 0$, $\mathcal{I} = \mathcal{I}(\theta_0)$, $H(\theta) = \partial h/\partial\theta'$ ($q\times p$, rango $q$) y $\hat{\mathcal{I}}$, $\tilde{\mathcal{I}}$ son estimadores consistentes de $\mathcal{I}$ evaluados en $\hat\theta$ y $\tilde\theta$. El **score total** es $S(\theta) = \nabla\ell_n(\theta) = \sum_is(w_i;\theta)$.
+:::
+
+# Los tres estadísticos
+
+::: {#def-trinidad}
+## Wald, LR y LM
+$$
+W = n\,h(\hat\theta)'\big[H(\hat\theta)\hat{\mathcal{I}}^{-1}H(\hat\theta)'\big]^{-1}h(\hat\theta),
+$$
+$$
+LR = 2\big[\ell_n(\hat\theta) - \ell_n(\tilde\theta)\big],
+\qquad
+LM = \frac1n\,S(\tilde\theta)'\,\tilde{\mathcal{I}}^{-1}\,S(\tilde\theta).
+$$
+:::
+
+Nota el patrón. $W$ solo usa el estimador **sin** restringir; $LM$ solo el **restringido**; $LR$ necesita ambos. En la práctica esto importa mucho: si el modelo restringido es fácil de estimar y el sin restringir es difícil (o el revés), uno de los tres test es mucho más barato.
+
+::: {#thm-trinidad}
+## Equivalencia asintótica de la trinidad
+Bajo las condiciones de regularidad de las Clases 1 y 2 y $H_0$ verdadera,
+$$
+W\xrightarrow{d}\chi^2_q,\qquad LR\xrightarrow{d}\chi^2_q,\qquad LM\xrightarrow{d}\chi^2_q,
+$$
+y las diferencias entre ellos son $o_p(1)$: $W - LR = o_p(1)$ y $LR - LM = o_p(1)$.
+:::
+
+Vamos primero con el caso más simple y luego el general.
+
+## Hipótesis simple: $H_0:\theta = \theta_0$
+
+Aquí $q = p$, el modelo "restringido" no tiene parámetros libres, $\tilde\theta = \theta_0$ y los tres estadísticos son
+$$
+W = n(\hat\theta - \theta_0)'\hat{\mathcal{I}}(\hat\theta - \theta_0),\quad
+LR = 2[\ell_n(\hat\theta) - \ell_n(\theta_0)],\quad
+LM = \tfrac1nS(\theta_0)'\mathcal{I}^{-1}S(\theta_0).
+$$
+
+::: {.callout-note title="Borrador"}
+Todo se reduce a la expansión de Taylor de $\ell_n$ que ya usamos para la normalidad asintótica: cerca de $\hat\theta$ (donde el gradiente es cero), $\ell_n$ es una parábola con curvatura $-n\mathcal{I}$. En una parábola, "qué tan lejos estoy del máximo" (Wald), "cuánta altura perdí" (LR) y "qué tan empinada es la ladera en $\theta_0$" (LM) son **la misma cantidad** vista desde tres lados: distancia$^2$ × curvatura, altura $= \tfrac12$ × eso, pendiente$^2$ ÷ curvatura. Hay que dar cuenta del error de aproximación de Taylor, pero es de orden menor.
+:::
+
+::: {.proof}
+Sea $\mathcal{S}_n = n^{-1/2}S(\theta_0)\xrightarrow{d}N(0,\mathcal{I})$ por el TCL (el score tiene media cero y varianza $\mathcal{I}$).
+
+*Wald y LM.* De la demostración del teorema de normalidad asintótica (Clase 1), $\sqrt n(\hat\theta - \theta_0) = \mathcal{I}^{-1}\mathcal{S}_n + o_p(1)$ (con $A = -\mathcal{I}$). Como $\hat{\mathcal{I}}\to_p\mathcal{I}$ y $\mathcal{S}_n = O_p(1)$,
+$$
+W = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{I}\,\mathcal{I}^{-1}\mathcal{S}_n + o_p(1) = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n + o_p(1) = LM + o_p(1).
+$$
+Como $\mathcal{S}_n\to_dN(0,\mathcal{I})$, por el lema de la $\chi^2$ con la inversa de la varianza (Clase 5 de Econometría 1) y el teorema de la función continua, $\mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p$. Luego $W$ y $LM$ tienen el mismo límite $\chi^2_p$.
+
+*LR.* Expandimos $\ell_n(\theta_0)$ alrededor de $\hat\theta$ con el teorema del valor medio (resto de segundo orden): como $\nabla\ell_n(\hat\theta) = 0$,
+$$
+\ell_n(\theta_0) = \ell_n(\hat\theta) + \tfrac12(\theta_0 - \hat\theta)'\nabla^2\ell_n(\bar\theta)(\theta_0 - \hat\theta)
+$$
+con $\bar\theta$ entre $\hat\theta$ y $\theta_0$. Entonces
+$$
+LR = 2[\ell_n(\hat\theta) - \ell_n(\theta_0)] = n(\hat\theta - \theta_0)'\Big[-\tfrac1n\nabla^2\ell_n(\bar\theta)\Big](\hat\theta - \theta_0).
+$$
+Como $-\frac1n\nabla^2\ell_n(\bar\theta)\to_p\mathcal{I}$ (Clase 1, paso 1) y $\sqrt n(\hat\theta - \theta_0) = O_p(1)$, resulta $LR = n(\hat\theta - \theta_0)'\mathcal{I}(\hat\theta - \theta_0) + o_p(1) = W + o_p(1)$.
+:::
+
+## Hipótesis compuesta: restricciones lineales
+
+Para $q<p$ la idea es la misma, pero ahora hay que tratar con el estimador restringido. Para fijar ideas, tomamos restricciones **lineales** $H_0: R\theta = r$, con $R$ de $q\times p$ y rango $q$. (El caso no lineal $h(\theta) = 0$ sigue igual linealizando $h$ en $\theta_0$: método delta.)
+
+::: {.callout-note title="Borrador"}
+$\tilde\theta$ resuelve un problema con restricciones, así que el gradiente ahí **no** es cero: es una combinación de las filas de $R$ (el multiplicador de Lagrange): $S(\tilde\theta) = R'\tilde\lambda$. Quiero relacionar $\tilde\theta$ con $\hat\theta$ usando de nuevo la parábola. Expando el score restringido alrededor de $\hat\theta$, donde el score es cero: $S(\tilde\theta)\approx-n\mathcal{I}(\tilde\theta - \hat\theta)$. De ahí sale $\hat\theta - \tilde\theta\approx\mathcal{I}^{-1}R'\tilde\lambda/n$. Multiplico por $R$ (sabiendo que $R\tilde\theta = r$) y despejo el multiplicador. Con eso los tres estadísticos se escriben como la **misma** forma cuadrática en $R\hat\theta - r$.
+:::
+
+::: {.proof}
+**(del @thm-trinidad, caso lineal).** Supongamos que $\tilde\theta$ es consistente y que $\sqrt n(\tilde\theta - \theta_0) = O_p(1)$ (el estimador restringido es un M-estimador en un espacio más chico y vale la Clase 1). Sea $\tilde\lambda$ el multiplicador de Lagrange, de modo que $S(\tilde\theta) = R'\tilde\lambda$ y $R\tilde\theta = r$. Escribimos $\Lambda = n^{-1/2}\tilde\lambda$ para que $n^{-1/2}S(\tilde\theta) = R'\Lambda$.
+
+*Paso 1: relación entre $\hat\theta$ y $\tilde\theta$.* Expandimos el score en $\tilde\theta$ alrededor de $\hat\theta$, donde $S(\hat\theta) = 0$:
+$$
+\frac{1}{\sqrt n}S(\tilde\theta) = \frac{1}{\sqrt n}S(\hat\theta) + \Big[\frac1n\nabla^2\ell_n(\bar\theta)\Big]\sqrt n(\tilde\theta - \hat\theta) = -\mathcal{I}\sqrt n(\tilde\theta - \hat\theta) + o_p(1).
+$$
+(usando $\frac1n\nabla^2\ell_n(\bar\theta)\to_p-\mathcal{I}$ y que $\sqrt n(\tilde\theta - \hat\theta) = O_p(1)$). Por lo tanto
+$$
+\sqrt n(\hat\theta - \tilde\theta) = \mathcal{I}^{-1}R'\Lambda + o_p(1).
+$$ {#eq-trinidad-1}
+
+*Paso 2: el multiplicador.* Multiplicando @eq-trinidad-1 por $R$ y usando $R\tilde\theta = r$, $R\sqrt n(\hat\theta - \tilde\theta) = \sqrt n(R\hat\theta - r)$. Luego
+$$
+\sqrt n(R\hat\theta - r) = R\mathcal{I}^{-1}R'\Lambda + o_p(1)\quad\Longrightarrow\quad\Lambda = (R\mathcal{I}^{-1}R')^{-1}\sqrt n(R\hat\theta - r) + o_p(1).
+$$ {#eq-trinidad-2}
+
+*Paso 3: los tres estadísticos.*
+
+**LM.** $LM = \frac1nS(\tilde\theta)'\mathcal{I}^{-1}S(\tilde\theta) = \Lambda'R\mathcal{I}^{-1}R'\Lambda + o_p(1)$, y por @eq-trinidad-2,
+$$
+LM = n(R\hat\theta - r)'(R\mathcal{I}^{-1}R')^{-1}(R\hat\theta - r) + o_p(1) = W + o_p(1).
+$$
+
+**LR.** Expandiendo $\ell_n(\tilde\theta)$ alrededor de $\hat\theta$ (con $S(\hat\theta) = 0$), $2[\ell_n(\hat\theta) - \ell_n(\tilde\theta)] = n(\hat\theta - \tilde\theta)'\big[-\frac1n\nabla^2\ell_n(\bar\theta)\big](\hat\theta - \tilde\theta)$, que por @eq-trinidad-1 es
+$$
+LR = \Lambda'R\mathcal{I}^{-1}\,\mathcal{I}\,\mathcal{I}^{-1}R'\Lambda + o_p(1) = \Lambda'R\mathcal{I}^{-1}R'\Lambda + o_p(1) = LM + o_p(1).
+$$
+
+**Distribución.** Bajo $H_0$, $R\theta_0 = r$ y $\sqrt n(R\hat\theta - r) = R\sqrt n(\hat\theta - \theta_0)\to_dN(0,R\mathcal{I}^{-1}R')$ (Clase 2 más el teorema de transformaciones lineales). Por el lema de la $\chi^2$ con la inversa de la varianza, $W\to_d\chi^2_q$. Como los otros dos difieren de $W$ en $o_p(1)$, tienen el mismo límite.
+:::
+
+El resultado clave sobre el *multiplicador*: $\tilde\lambda$ mide el "precio sombra" de la restricción, o sea cuánto subiría $\ell_n$ si la relajáramos un poco. Si $H_0$ es cierta, el precio sombra es cercano a cero, y el LM test es precisamente un test de que el precio sombra es cero.
+
+# En el modelo lineal normal: $W\ge LR\ge LM$
+
+Asintóticamente los tres son iguales; en muestras finitas no. Hay un caso donde se puede calcular todo en forma cerrada y la ordenación es exacta.
+
+Considera $y = X\beta + u$, $u\sim N(0,\sigma^2I_n)$ y $H_0:R\beta = r$ con $q$ restricciones. Sean $\text{SCR}_{NR}$ y $\text{SCR}_R$ las sumas de residuos al cuadrado sin y con restricciones (Clase 5 de Econometría 1). El MV de $\sigma^2$ es $\text{SCR}/n$ en cada modelo.
+
+::: {#thm-ordenamiento}
+## Desigualdad de Berndt–Savin
+Con $x = \text{SCR}_R/\text{SCR}_{NR}\ge1$,
+$$
+W = n(x - 1),\qquad LR = n\log x,\qquad LM = n(1 - 1/x),
+$$
+y en consecuencia $W\ge LR\ge LM$ siempre.
+:::
+
+::: {.proof}
+La log-verosimilitud concentrada en $\sigma^2$ es $\ell(\hat\beta,\hat\sigma^2) = -\frac n2\log(2\pi\hat\sigma^2) - \frac n2$ con $\hat\sigma^2 = \text{SCR}/n$. Entonces
+$$
+LR = 2[\ell_{NR} - \ell_R] = n\log\frac{\text{SCR}_R}{\text{SCR}_{NR}} = n\log x.
+$$
+Para Wald, la identidad de la Clase 5 de Econometría 1 da $(R\hat\beta - r)'[R(X'X)^{-1}R']^{-1}(R\hat\beta - r) = \text{SCR}_R - \text{SCR}_{NR}$, y la varianza asintótica de $\hat\beta$ se estima con $\hat\sigma^2_{NR} = \text{SCR}_{NR}/n$:
+$$
+W = \frac{(R\hat\beta - r)'[R(X'X)^{-1}R']^{-1}(R\hat\beta - r)}{\hat\sigma^2_{NR}} = n\,\frac{\text{SCR}_R - \text{SCR}_{NR}}{\text{SCR}_{NR}} = n(x - 1).
+$$
+Para LM, el score en $\beta$ del modelo restringido es $X'\tilde u/\tilde\sigma^2$ (con $\tilde u$ los residuos restringidos, $\tilde\sigma^2 = \text{SCR}_R/n$), y la información en $\beta$ es $X'X/\tilde\sigma^2$, así que $LM = \tilde u'X(X'X)^{-1}X'\tilde u/\tilde\sigma^2$. Por la identidad de los mínimos cuadrados restringidos (Clase 5 de Econometría 1, sección ★), $\tilde u'P_X\tilde u = \text{SCR}_R - \text{SCR}_{NR}$ (los residuos restringidos se descomponen en residuos sin restringir más el desvío $X(\hat\beta - \tilde\beta)$, ortogonales). Entonces $LM = n(\text{SCR}_R - \text{SCR}_{NR})/\text{SCR}_R = n(1 - 1/x)$.
+
+Finalmente, para $x\ge1$: $\log x\le x - 1$ (la recta tangente a $\log$ en $1$ queda por encima de la curva), y $\log x = -\log(1/x)\ge-(1/x - 1) = 1 - 1/x$ (aplicando lo mismo a $1/x$). Multiplicando por $n$ se tiene $W\ge LR\ge LM$.
+:::
+
+::: {.callout-warning title="Una consecuencia incómoda"}
+Como $W\ge LR\ge LM$, el Wald **rechaza más** que el LR y este más que el LM en muestras pequeñas, aunque los tres sean asintóticamente $\chi^2_q$. Con $n$ chico, el Wald tiende a sobre-rechazar (tamaño real mayor que el nominal) y el LM a sub-rechazar. Si el resultado de tu investigación depende de cuál de los tres usas, no tienes un resultado robusto.
+:::
+
+Además, relacionando con el estadístico $F$ de Econometría 1: $W = \dfrac{nq}{n-k}F$. El Wald de MCO es el $F$ multiplicado por $nq/(n-k)$, y por eso $W/q\approx F$ para $n$ grande.
+
+# El test LM como $nR^2$
+
+El LM suele calcularse con una **regresión auxiliar**, lo que explica por qué es tan popular en tests de especificación (Breusch–Pagan de la Clase 9 de Econometría 1, Durbin–Watson generalizado, y cientos más).
+
+::: {#prp-lm-r2}
+## LM como $nR^2_u$
+Sea $\tilde s_i = s(w_i;\tilde\theta)$ el score de la observación $i$ en el estimador restringido, e $\iota$ el vector de unos. Si usamos el estimador OPG de la información, $\tilde{\mathcal{I}} = \frac1n\sum_i\tilde s_i\tilde s_i'$, entonces
+$$
+LM = \iota'\tilde S\,(\tilde S'\tilde S)^{-1}\tilde S'\iota = n\cdot R^2_u,
+$$
+con $\tilde S$ la matriz $n\times p$ con filas $\tilde s_i'$ y $R^2_u$ el $R^2$ **no centrado** de regresar el vector de unos $\iota$ sobre $\tilde S$.
+:::
+
+::: {.proof}
+$S(\tilde\theta) = \sum_i\tilde s_i = \tilde S'\iota$ y $n\tilde{\mathcal{I}} = \tilde S'\tilde S$. Reemplazando en la definición, $LM = \frac1n(\tilde S'\iota)'\big(\tfrac1n\tilde S'\tilde S\big)^{-1}(\tilde S'\iota) = \iota'\tilde S(\tilde S'\tilde S)^{-1}\tilde S'\iota$. Pero $\iota'P_{\tilde S}\iota$ es la suma explicada de cuadrados de la regresión de $\iota$ sobre $\tilde S$, y la suma total no centrada es $\iota'\iota = n$. Entonces $R^2_u = \iota'P_{\tilde S}\iota/n$ y $LM = nR^2_u$.
+:::
+
+Cuándo usarlo: si el modelo restringido es fácil (por ejemplo, MCO) y tienes los scores a la mano, el LM te evita estimar el modelo sin restringir. Es útil para preguntas como "¿debería agregar estas variables?", donde estimar el modelo ampliado es costoso o inestable.
+
+# Cuál usar: tres criterios prácticos
+
+| | Wald | LR | LM |
+|---|---|---|---|
+| Estima | solo sin restringir | ambos | solo restringido |
+| Invariante a reparametrización | **no** | sí | sí (con $\mathcal{I}$ esperada) |
+| Se puede hacer robusto (sándwich) | sí | **no** (necesita MV) | sí |
+| Se usa mucho para | reportar coeficientes | comparar modelos anidados | tests de especificación |
+
+La **no invarianza** del Wald es seria. Si testeas $H_0:\theta = 1$ o $H_0:\theta^{-1} = 1$, que son *la misma hipótesis*, obtienes valores distintos del estadístico (Ejercicio 3.3). El LR no sufre esto, porque compara valores de $\ell_n$, que no dependen de cómo parametrices el modelo. Y **solo el Wald (y el LM) tienen versión robusta a mala especificación**: el LR se apoya en la igualdad de la información ($B = -A$) y pierde su distribución $\chi^2$ si esta falla.
+
+# ★ Postgrado: potencia local
+
+::: {.callout-important title="★ Postgrado"}
+Bajo $H_0$ los tres tienen la misma distribución. Para compararlos como *tests* nos importa también qué hacen bajo la **alternativa**. Como $n$ crece, cualquier alternativa fija se rechaza con probabilidad uno, así que miramos alternativas **locales** que se acercan a $H_0$ a tasa $\sqrt n$.
+:::
+
+Sea $H_0:\theta = \theta_0$ y la secuencia de alternativas $\theta_n = \theta_0 + h/\sqrt n$. Bajo $\theta_n$ el score en $\theta_0$ **ya no** tiene media cero. Con un TCL para arreglos triangulares (o el tercer lema de Le Cam) se obtiene
+$$
+\mathcal{S}_n = n^{-1/2}S(\theta_0)\xrightarrow{d}N(\mathcal{I}h,\ \mathcal{I}),
+$$
+por lo que $LM = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p(\delta)$, una $\chi^2$ **no central** con parámetro de no centralidad $\delta = h'\mathcal{I}h$. La idea del cálculo: bajo $\theta_n$, $\mathbb{E}[\mathcal{S}_n]= \sqrt n\,\mathbb{E}_{\theta_n}[s(w;\theta_0)]$, y la función $\theta\mapsto\mathbb{E}_\theta[s(w;\theta_0)] = \int s(w;\theta_0)f(w;\theta)\,dw$ vale cero en $\theta_0$ y tiene derivada $\int s\,s'f = \mathcal{I}$ ahí. Luego $\mathbb{E}_{\theta_n}[s(w;\theta_0)]\approx\mathcal{I}h/\sqrt n$ y $\mathbb{E}[\mathcal{S}_n]\to\mathcal{I}h$. Como $W$ y $LR$ difieren de $LM$ en $o_p(1)$ también bajo la secuencia local (contigüidad), los tres tienen la misma $\chi^2_p(\delta)$. **Los tres tests son localmente igual de potentes**, y a la vez el más potente posible entre los que tienen tamaño $\alpha$ (lema de Neyman–Pearson en el límite). Las diferencias entre ellos son de orden superior, y es el terreno de la teoría de Edgeworth.
+
+# Resumen
+
+- $W$ mira la **distancia** $h(\hat\theta)$, $LR$ la **altura** perdida, $LM$ la **pendiente** en el restringido. Los tres $\to\chi^2_q$ bajo $H_0$ (@thm-trinidad).
+- La demostración es una sola idea: la log-verosimilitud es localmente una **parábola** con curvatura $n\mathcal{I}$.
+- En el modelo lineal normal, $W = n(x-1)$, $LR = n\log x$, $LM = n(1 - 1/x)$, con $W\ge LR\ge LM$ (@thm-ordenamiento).
+- $LM = nR^2_u$ de una regresión auxiliar de unos sobre los scores restringidos (@prp-lm-r2).
+- El **Wald** no es invariante a reparametrizaciones; el **LR** sí, pero no tiene versión robusta.
+
+# Ejercicios
+
+**Ejercicio 3.1.** Sea $w\sim\text{Bernoulli}(\theta)$ y $H_0:\theta = \theta_0$. Calcula $W$, $LR$ y $LM$ (usa $\mathcal{I}(\theta) = 1/[\theta(1-\theta)]$). ¿Dónde se evalúa la información en cada uno?
+
+::: {.callout-tip collapse="true" title="Solución 3.1"}
+Con $\hat\theta = \bar w$:
+
+$W = n\dfrac{(\bar w - \theta_0)^2}{\bar w(1-\bar w)}$ (información en $\hat\theta$).
+
+$LM = n\dfrac{(\bar w - \theta_0)^2}{\theta_0(1-\theta_0)}$ (score $S(\theta_0) = n(\bar w - \theta_0)/[\theta_0(1-\theta_0)]$, información en $\theta_0$: $LM = \frac1nS^2/\mathcal{I}$).
+
+$LR = 2n\Big[\bar w\log\dfrac{\bar w}{\theta_0} + (1-\bar w)\log\dfrac{1-\bar w}{1-\theta_0}\Big]$.
+
+El numerador es el mismo en $W$ y $LM$; solo cambia la varianza del denominador: *estimada* en Wald (más chica si $\bar w$ está lejos de $\theta_0$ hacia los extremos), *bajo $H_0$* en LM. Este LM es el test $z$ clásico de una proporción, que usa la varianza bajo la nula.
+:::
+
+**Ejercicio 3.2.** En un modelo lineal normal con $n = 50$ y $x = \text{SCR}_R/\text{SCR}_{NR} = 1{,}2$, calcula $W$, $LR$ y $LM$ y comprueba el orden. Con $q = 1$ y un valor crítico $\chi^2_{1,0{,}95} = 3{,}84$, ¿qué concluyes? ¿Y con $q = 2$ y crítico $5{,}99$?
+
+::: {.callout-tip collapse="true" title="Solución 3.2"}
+$W = 50(0{,}2) = 10$; $LR = 50\log1{,}2 = 50(0{,}1823) = 9{,}12$; $LM = 50(1 - 1/1{,}2) = 50(0{,}1667) = 8{,}33$. Orden: $10 > 9{,}12 > 8{,}33$. Los tres superan 3,84 y 5,99: se rechaza $H_0$ con cualquiera. La diferencia entre ellos se haría relevante si el estadístico estuviera cerca del crítico. Con $n = 20$ y el mismo $x$: $W = 4$, $LR = 3{,}65$, $LM = 3{,}33$: el Wald rechaza (para $q=1$) y el LR y LM no.
+:::
+
+**Ejercicio 3.3.** (No invarianza del Wald.) Sea $w$ exponencial con tasa $\theta$ ($\mathbb{E}[w] = 1/\theta$), y la hipótesis $H_0:\theta = 1$, que es equivalente a $H_0:\mu = 1$ con $\mu = 1/\theta$. Calcula el Wald en cada parametrización y el LR. Evalúa para $n = 100$, $\bar w = 2$.
+
+::: {.callout-tip collapse="true" title="Solución 3.3"}
+Del Ejercicio 1.2: $\hat\theta = 1/\bar w$ y $\operatorname{Avar}(\hat\theta) = \theta^2$, estimada con $\hat\theta^2 = 1/\bar w^2$. $W_\theta = n(\hat\theta - 1)^2/\hat\theta^2 = n(1 - \bar w)^2$. Para $\mu$: $\hat\mu = \bar w$ y $\operatorname{Avar}(\hat\mu) = \operatorname{Var}(w) = \mu^2$, estimada con $\bar w^2$. $W_\mu = n(\bar w - 1)^2/\bar w^2$. Con $n = 100$ y $\bar w = 2$: $W_\theta = 100$ y $W_\mu = 100/4 = 25$. **La misma hipótesis, distintos estadísticos** (100 vs 25). LR: $\ell(\theta) = n(\log\theta - \theta\bar w)$, $\ell(\hat\theta) = n(\log0{,}5 - 1) = -1{,}693n$, $\ell(1) = -2n$, $LR = 2(0{,}307)(100) = 61{,}4$, único, porque no depende de la parametrización. El LR cae entre los dos Wald.
+:::
+
+**Ejercicio 3.4.** Para el modelo lineal normal con $H_0:\beta_2 = 0$, demuestra que el LM (con información esperada) es igual a $n\cdot R^2$ de regresar los **residuos restringidos** $\tilde u$ sobre todos los regresores $X$.
+
+::: {.callout-tip collapse="true" title="Solución 3.4"}
+Del @thm-ordenamiento: $LM = \tilde u'P_X\tilde u/\tilde\sigma^2$ con $\tilde\sigma^2 = \tilde u'\tilde u/n$. Entonces $LM = n\,\dfrac{\tilde u'P_X\tilde u}{\tilde u'\tilde u}$, que es la suma explicada sobre la suma total (no centrada) de la regresión de $\tilde u$ sobre $X$: $LM = nR^2_u$. Si el modelo incluye constante, $\tilde u$ tiene media cero y el $R^2_u$ coincide con el $R^2$ usual. Este es el test de Breusch–Godfrey (autocorrelación) y, con $\tilde u^2$ como variable dependiente, el de Breusch–Pagan (Clase 9 de Econometría 1).
+:::
+
+**Ejercicio 3.5.** Muestra que si $\ell_n$ es exactamente cuadrática en $\theta$ (modelo lineal normal con $\sigma^2$ **conocida**) y la restricción es lineal, entonces $W = LR = LM$ **exactamente**, en cualquier $n$.
+
+::: {.callout-tip collapse="true" title="Solución 3.5"}
+Con $\sigma^2$ conocida, $\ell_n(\beta) = c - \frac1{2\sigma^2}\|y - X\beta\|^2$, cuadrática con hessiano constante $-X'X/\sigma^2$. Las expansiones de Taylor del proof del @thm-trinidad no tienen resto, así que valen con igualdad. Por ejemplo, $LR = 2[\ell(\hat\beta) - \ell(\tilde\beta)] = (\text{SCR}_R - \text{SCR}_{NR})/\sigma^2$, y $W = (R\hat\beta - r)'[\sigma^2R(X'X)^{-1}R']^{-1}(R\hat\beta - r) = (\text{SCR}_R - \text{SCR}_{NR})/\sigma^2$ por la identidad de la Clase 5 de Econometría 1. Igual con LM. La diferencia entre los tres en el @thm-ordenamiento proviene únicamente de que $\sigma^2$ se estima, de distinta manera en cada uno.
+:::
+
+**Ejercicio 3.6.** ¿Por qué el LR no es válido si el modelo está mal especificado? ¿Qué distribución tiene en lugar de $\chi^2_q$?
+
+::: {.callout-tip collapse="true" title="Solución 3.6"}
+La demostración de $LR\approx W$ usó que la curvatura de $\ell_n$ ($-A$) y la varianza del score ($B$) coinciden: $\hat\theta - \theta^*\approx-A^{-1}\mathcal{S}_n$ con $\mathcal{S}_n\sim N(0,B)$, mientras que $LR\approx n(\hat\theta - \theta^*)'(-A)(\hat\theta - \theta^*) = \mathcal{S}_n'(-A)^{-1}\mathcal{S}_n$. Con $\mathcal{S}_n = B^{1/2}z$, $z\sim N(0,I)$, queda $z'B^{1/2}(-A)^{-1}B^{1/2}z = \sum_j\lambda_jz_j^2$, una **combinación ponderada de $\chi^2_1$** con pesos $\lambda_j$ los valores propios de $(-A)^{-1}B$. Es una $\chi^2_q$ solo si todos los $\lambda_j = 1$, o sea $B = -A$. Existen correcciones (Rotnitzky–Jewell, Satorra–Bentler) que reescalan el LR, pero no es tan simple como "usar errores robustos".
+:::
+
+**Ejercicio 3.7 ★.** Considera $\theta\in\mathbb{R}$ y $H_0:\theta = 0$ con la alternativa unilateral $\theta>0$. ¿Qué cambia si el parámetro está en la frontera del espacio ($\Theta = [0,\infty)$ y $H_0:\theta = 0$)? Describe la distribución asintótica del $LR$ y la corrección al valor crítico.
+
+::: {.callout-tip collapse="true" title="Solución 3.7 ★"}
+Si $\theta_0 = 0$ está en la frontera, $\sqrt n\hat\theta\to_d\max\{0, Z\}$ con $Z\sim N(0,\mathcal{I}^{-1})$ (el estimador queda pegado a $0$ cuando el MV sin restricciones sería negativo, lo que ocurre con probabilidad $1/2$). El $LR$ converge a $\max\{0,Z'\}^2$, con $Z'\sim N(0,1)$: una mezcla $\frac12\chi^2_0 + \frac12\chi^2_1$ ($\chi^2_0$ es una masa en cero). Entonces $P(LR>c) = \frac12P(\chi^2_1>c)$. Para tamaño 5 % el crítico es el cuantil $0{,}90$ de la $\chi^2_1$, igual a $2{,}71$, **no** $3{,}84$. Usar el crítico habitual de $\chi^2_1$ da un test conservador (tamaño real 2,5 %). Es la situación típica de un test de varianza cero de un efecto aleatorio (Clase 9). (Chernoff, 1954; Self y Liang, 1987.)
+:::
