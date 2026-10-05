@@ -2731,5 +2731,60 @@
       "Inicio",
       "Clase 4 · Determinantes"
     ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-05.html",
+    "href": "algebra-matricial/clase-05.html",
+    "title": "Clase 5 · Ortogonalidad y factorización QR",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Ortogonalidad y factorización QR"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-05.html#rotaciones-y-reflexiones-del-plano",
+    "href": "algebra-matricial/clase-05.html#rotaciones-y-reflexiones-del-plano",
+    "title": "Clase 5 · Ortogonalidad y factorización QR",
+    "section": "4.1 Rotaciones y reflexiones del plano",
+    "text": "4.1 Rotaciones y reflexiones del plano\nLas matrices ortogonales \\(2\\times2\\) son exactamente las rotaciones y las reflexiones (Ejercicio 5.5). La rotación en el ángulo \\(\\theta\\) (antihorario) y la reflexión en la recta por el origen que forma el ángulo \\(\\varphi\\) con el eje \\(x_1\\) son \\[\nR(\\theta) = \\begin{pmatrix}\\cos\\theta&-\\sin\\theta\\\\\\sin\\theta&\\cos\\theta\\end{pmatrix},\\qquad H(\\varphi) = \\begin{pmatrix}\\cos2\\varphi&\\sin2\\varphi\\\\\\sin2\\varphi&-\\cos2\\varphi\\end{pmatrix}.\n\\] Las columnas de \\(R(\\theta)\\) son las imágenes de \\(e_1\\) y \\(e_2\\): \\(e_1 = (1,0)\\) gira hasta \\((\\cos\\theta,\\sin\\theta)\\), y \\(e_2 = (0,1)\\) gira hasta \\((-\\sin\\theta,\\cos\\theta)\\). Son unitarias (\\(\\cos^2 + \\sin^2 = 1\\)) y ortogonales (\\(-\\cos\\theta\\sin\\theta + \\sin\\theta\\cos\\theta = 0\\)), y \\(\\det R(\\theta) = \\cos^2\\theta + \\sin^2\\theta = 1\\).\nPara \\(H(\\varphi)\\), sea \\(u = (\\cos\\varphi,\\sin\\varphi)\\) la dirección del espejo y \\(n = (-\\sin\\varphi,\\cos\\varphi)\\) la perpendicular. Usando \\(\\cos(2\\varphi - \\varphi) = \\cos2\\varphi\\cos\\varphi + \\sin2\\varphi\\sin\\varphi\\) y \\(\\sin(2\\varphi - \\varphi) = \\sin2\\varphi\\cos\\varphi - \\cos2\\varphi\\sin\\varphi\\): \\[\nH(\\varphi)u = \\begin{pmatrix}\\cos2\\varphi\\cos\\varphi + \\sin2\\varphi\\sin\\varphi\\\\\\sin2\\varphi\\cos\\varphi - \\cos2\\varphi\\sin\\varphi\\end{pmatrix} = \\begin{pmatrix}\\cos\\varphi\\\\\\sin\\varphi\\end{pmatrix} = u,\n\\] \\[\nH(\\varphi)n = \\begin{pmatrix}-\\cos2\\varphi\\sin\\varphi + \\sin2\\varphi\\cos\\varphi\\\\-\\sin2\\varphi\\sin\\varphi - \\cos2\\varphi\\cos\\varphi\\end{pmatrix} = \\begin{pmatrix}\\sin\\varphi\\\\-\\cos\\varphi\\end{pmatrix} = -n.\n\\] El espejo deja fija su recta y da vuelta la dirección perpendicular. Su determinante es \\(-\\cos^22\\varphi - \\sin^22\\varphi = -1\\): una reflexión invierte la orientación (Figura 2), como se vio en la Clase 4.\n\n\n\n\n\n\nFigura 2: Izquierda: la rotación \\(R(60°)\\) gira la figura sin deformarla. Derecha: la reflexión \\(H(30°)\\) en la recta de \\(30°\\) la refleja como un espejo; la figura queda “dada vuelta” (\\(\\det = -1\\)).\n\n\n\nComponer dos rotaciones suma los ángulos. Multiplicando y usando las fórmulas del coseno y el seno de una suma, \\[\n\\begin{aligned}\nR(\\alpha)R(\\beta) &= \\begin{pmatrix}\\cos\\alpha\\cos\\beta - \\sin\\alpha\\sin\\beta&-\\cos\\alpha\\sin\\beta - \\sin\\alpha\\cos\\beta\\\\\\sin\\alpha\\cos\\beta + \\cos\\alpha\\sin\\beta&-\\sin\\alpha\\sin\\beta + \\cos\\alpha\\cos\\beta\\end{pmatrix}\\\\\n&= \\begin{pmatrix}\\cos(\\alpha + \\beta)&-\\sin(\\alpha + \\beta)\\\\\\sin(\\alpha + \\beta)&\\cos(\\alpha + \\beta)\\end{pmatrix} = R(\\alpha + \\beta).\n\\end{aligned}\n\\] En particular \\(R(\\theta)^{-1} = R(-\\theta) = R(\\theta)'\\), como predice la parte 3 del Teorema 4.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Ortogonalidad y factorización QR"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-05.html#rotaciones-en-el-espacio",
+    "href": "algebra-matricial/clase-05.html#rotaciones-en-el-espacio",
+    "title": "Clase 5 · Ortogonalidad y factorización QR",
+    "section": "4.2 Rotaciones en el espacio",
+    "text": "4.2 Rotaciones en el espacio\nEn \\(\\mathbb{R}^3\\), las rotaciones en el ángulo \\(\\theta\\) alrededor de los ejes \\(x_3\\) y \\(x_1\\) son \\[\nR_3(\\theta) = \\begin{pmatrix}\\cos\\theta&-\\sin\\theta&0\\\\\\sin\\theta&\\cos\\theta&0\\\\0&0&1\\end{pmatrix},\\qquad R_1(\\theta) = \\begin{pmatrix}1&0&0\\\\0&\\cos\\theta&-\\sin\\theta\\\\0&\\sin\\theta&\\cos\\theta\\end{pmatrix}.\n\\] Cada una es una rotación del plano en dos coordenadas y deja fija la tercera (el eje). Son ortogonales con determinante \\(1\\) (expandiendo por la fila o columna del eje, queda \\(\\det R(\\theta) = 1\\)).\n\nEjemplo 4 (Las rotaciones del espacio no conmutan) Con \\(\\theta = 90°\\) (\\(\\cos = 0\\), \\(\\sin = 1\\)): \\[\nR_3 = \\begin{pmatrix}0&-1&0\\\\1&0&0\\\\0&0&1\\end{pmatrix},\\qquad R_1 = \\begin{pmatrix}1&0&0\\\\0&0&-1\\\\0&1&0\\end{pmatrix}.\n\\] Primero girar alrededor de \\(x_3\\) y después alrededor de \\(x_1\\) es la matriz \\(R_1R_3\\). Fila por columna: \\[\nR_1R_3 = \\begin{pmatrix}0&-1&0\\\\0&0&-1\\\\1&0&0\\end{pmatrix},\\qquad R_3R_1 = \\begin{pmatrix}0&0&1\\\\1&0&0\\\\0&1&0\\end{pmatrix}.\n\\] Por ejemplo, la fila 2 de \\(R_1R_3\\) es \\((0,0,-1)\\) por las columnas de \\(R_3\\): \\((0,0,-1)\\cdot(0,1,0) = 0\\), \\((0,0,-1)\\cdot(-1,0,0) = 0\\) y \\((0,0,-1)\\cdot(0,0,1) = -1\\). Los resultados son distintos: \\(R_1R_3\\) lleva \\(e_1\\) a \\(e_3\\) (primero \\(e_1\\to e_2\\) por \\(R_3\\), después \\(e_2\\to e_3\\) por \\(R_1\\)), mientras \\(R_3R_1\\) lleva \\(e_1\\) a \\(e_2\\) (primero \\(R_1\\) deja fijo \\(e_1\\), después \\(R_3\\) lo lleva a \\(e_2\\)). Las rotaciones del plano conmutan (\\(R(\\alpha)R(\\beta) = R(\\alpha + \\beta) = R(\\beta)R(\\alpha)\\)), las del espacio no.\n\nToda matriz ortogonal \\(3\\times3\\) con determinante \\(1\\) es una rotación alrededor de algún eje (teorema de Euler); la demostración usa valores propios y está en la Clase 7.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Ortogonalidad y factorización QR"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-05.html#proyección-sobre-un-plano",
+    "href": "algebra-matricial/clase-05.html#proyección-sobre-un-plano",
+    "title": "Clase 5 · Ortogonalidad y factorización QR",
+    "section": "4.3 Proyección sobre un plano",
+    "text": "4.3 Proyección sobre un plano\nLa proyección sobre un plano (o, en general, sobre un subespacio) es fácil cuando se conoce una base ortonormal del plano: se proyecta sobre cada vector de la base y se suma. La Clase 6 trata el caso de una base cualquiera.\n\nTeorema 5 (Proyección con una base ortonormal) Sea \\(V\\) el subespacio generado por los vectores ortonormales \\(q_1,\\dots,q_k\\) (las columnas de \\(Q\\), \\(n\\times k\\)). El punto de \\(V\\) más cercano a \\(b\\) es \\[\np = (q_1\\cdot b)\\,q_1 + \\dots + (q_k\\cdot b)\\,q_k = QQ'b,\n\\] y el error \\(e = b - p\\) es ortogonal a todo vector de \\(V\\).\n\n\nDemostración. Ortogonalidad. Para cada \\(j\\), usando \\(q_j\\cdot q_i = 0\\) si \\(i\\ne j\\) y \\(q_j\\cdot q_j = 1\\): \\[\nq_j\\cdot e = q_j\\cdot b - \\sum_{i = 1}^k(q_i\\cdot b)(q_j\\cdot q_i) = q_j\\cdot b - q_j\\cdot b = 0.\n\\] Todo \\(v\\in V\\) es \\(v = \\sum c_iq_i\\), y por linealidad \\(v\\cdot e = \\sum c_i\\,(q_i\\cdot e) = 0\\).\nMínima distancia. Si \\(v\\in V\\), entonces \\(b - v = e + (p - v)\\) con \\(p - v\\in V\\), que es ortogonal a \\(e\\). Por Pitágoras, \\(\\|b - v\\|^2 = \\|e\\|^2 + \\|p - v\\|^2\\ge\\|e\\|^2\\), con igualdad solo si \\(v = p\\).\nForma matricial. \\(Q'b\\) es el vector de los \\(q_i\\cdot b\\), y \\(Q(Q'b)\\) es la combinación de las columnas de \\(Q\\) con esos coeficientes.\n\n\nEjemplo 5 (Proyección sobre un plano del espacio) Proyectemos \\(b = (3,0,0)\\) sobre el plano generado por \\(q_1 = \\tfrac13(1,2,2)\\) y \\(q_2 = \\tfrac13(2,1,-2)\\) del Ejemplo 3 (Figura 3). Los coeficientes son \\(q_1\\cdot b = \\tfrac13\\cdot3 = 1\\) y \\(q_2\\cdot b = \\tfrac13\\cdot6 = 2\\): \\[\np = 1\\cdot\\tfrac13(1,2,2) + 2\\cdot\\tfrac13(2,1,-2) = \\tfrac13(5,4,-2),\n\\] \\[\ne = b - p = (3,0,0) - \\tfrac13(5,4,-2) = \\tfrac13(4,-4,2) = 2q_3.\n\\] El error es un múltiplo de \\(q_3\\), el vector perpendicular al plano, como debía. La distancia de \\(b\\) al plano es \\(\\|e\\| = 2\\), y Pitágoras se cumple: \\(\\|b\\|^2 = 9 = \\|p\\|^2 + \\|e\\|^2 = (1 + 4) + 4\\) (las normas de \\(p\\) y \\(e\\) se calculan en la base ortonormal: \\(\\|p\\|^2 = 1^2 + 2^2\\)).\n\n\n\n\n\n\n\nFigura 3: Proyección de \\(b = (3,0,0)\\) sobre el plano generado por \\(q_1\\) y \\(q_2\\). El error \\(e = 2q_3\\) es perpendicular al plano.",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Ortogonalidad y factorización QR"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-05.html#gramschmidt-modificado",
+    "href": "algebra-matricial/clase-05.html#gramschmidt-modificado",
+    "title": "Clase 5 · Ortogonalidad y factorización QR",
+    "section": "6.1 Gram–Schmidt modificado",
+    "text": "6.1 Gram–Schmidt modificado\nHay una variante que da exactamente los mismos resultados en aritmética exacta y mejores en el computador: en vez de calcular todos los \\(r_{ij}\\) con el \\(a_j\\) original, se va restando una proyección a la vez y cada coeficiente se calcula con el vector ya corregido.\n\n\n\n\n\n\nPrecauciónAlgoritmo: Gram–Schmidt modificado\n\n\n\nPara \\(j = 1,\\dots,n\\):\n\n\\(v\\leftarrow a_j\\).\nPara \\(i = 1,\\dots,j - 1\\): \\(r_{ij} = q_i\\cdot v\\) y luego \\(v\\leftarrow v - r_{ij}q_i\\).\n\\(r_{jj} = \\|v\\|\\) y \\(q_j = v/r_{jj}\\).\n\nCosto: el mismo, \\(\\approx2mn^2\\). Diferencia con el clásico: en el paso 2 se usa \\(v\\) (con las proyecciones anteriores ya restadas) en lugar de \\(a_j\\).\n\n\nEn aritmética exacta los coeficientes coinciden: después de restar \\(r_{1j}q_1,\\dots,r_{i-1,j}q_{i-1}\\), \\[\nq_i\\cdot\\Big(a_j - \\sum_{k&lt;i}r_{kj}q_k\\Big) = q_i\\cdot a_j - \\sum_{k&lt;i}r_{kj}\\,(q_i\\cdot q_k) = q_i\\cdot a_j,\n\\] porque \\(q_i\\cdot q_k = 0\\) para \\(k&lt;i\\). Pero en el computador los \\(q\\) calculados no son exactamente ortogonales, ese término no es exactamente cero, y la diferencia puede ser enorme (sección ★).",
+    "crumbs": [
+      "Inicio",
+      "Clase 5 · Ortogonalidad y factorización QR"
+    ]
   }
 ]
