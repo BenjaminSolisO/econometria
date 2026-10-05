@@ -1,0 +1,208 @@
+---
+title: "Clase 3 · Variables instrumentales con efectos heterogéneos"
+subtitle: "El efecto local promedio del tratamiento (LATE) de Imbens y Angrist"
+description: "Interpretación causal de VI cuando los efectos son heterogéneos: resultados potenciales del tratamiento, compliers, always-takers y never-takers, monotonía, el teorema de Imbens–Angrist (Wald = LATE), efecto de la intención de tratar, MC2E como promedio ponderado y efectos de tratamiento marginales."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-03.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando la selección es sobre no observables
+
+La Clase 2 resolvió la selección sobre **observables**: si controlamos por todo lo que afecta a la vez el tratamiento y el resultado, comparamos iguales con iguales. Pero muchas veces los confusores **no se observan** (la habilidad, la motivación, la información privada). En Econometría 1 (Clase 10) vimos la solución clásica: una **variable instrumental** $Z$ que mueve el tratamiento sin afectar directamente el resultado. Allí supusimos un modelo lineal con efecto **constante** $\beta$, y MC2E estimaba ese $\beta$.
+
+Esta clase pregunta qué mide VI cuando el efecto del tratamiento **varía entre personas**, lo que casi siempre ocurre. La respuesta, de Imbens y Angrist (1994), es una de las ideas más influyentes de la econometría aplicada de las últimas décadas: VI no estima el efecto para toda la población, sino el efecto para un subgrupo específico, los **cumplidores** (*compliers*): las personas cuyo tratamiento **cambia** cuando cambia el instrumento. El parámetro se llama **efecto local promedio del tratamiento** (LATE).[^angrist]
+
+[^angrist]: Joshua Angrist y Guido Imbens recibieron el Nobel de Economía de 2021 (junto con David Card) por sus contribuciones metodológicas al análisis de relaciones causales; el LATE es la más conocida. El ejemplo que motivó el trabajo fue la **lotería del servicio militar** de la guerra de Vietnam (Angrist, 1990): el número de lotería es un instrumento aleatorio para servir en el ejército, y el efecto estimado vale para quienes servirían **si les tocaba** un número bajo y no servirían si no, no para los voluntarios ni para los que se habrían librado de todas formas.
+
+# Resultados potenciales con instrumento
+
+Sea $Z_i\in\{0,1\}$ un instrumento binario (por ejemplo, haber sido **asignado** al azar a un programa, o haber recibido un incentivo), $D_i\in\{0,1\}$ el tratamiento **efectivamente recibido** e $Y_i$ el resultado. Ahora el **tratamiento también tiene resultados potenciales**: $D_i(z)$ es el tratamiento que la unidad $i$ recibiría si el instrumento valiera $z$. El tratamiento observado es $D_i = D_i(Z_i)$ y el resultado, $Y_i = Y_i(D_i)$.
+
+::: {.callout-caution title="Supuestos de Imbens–Angrist"}
+1. **Independencia (instrumento "como si" aleatorio):** $Z\perp\!\!\!\perp\big(Y(0),Y(1),D(0),D(1)\big)$.
+2. **Restricción de exclusión:** $Z$ afecta a $Y$ **solo** a través de $D$: $Y_i(d,z) = Y_i(d)$.
+3. **Relevancia:** $P\big(D(1)\ne D(0)\big)>0$, es decir, $\mathbb{E}[D\mid Z = 1]\ne\mathbb{E}[D\mid Z = 0]$.
+4. **Monotonía:** $D_i(1)\ge D_i(0)$ para toda unidad (el instrumento empuja en una sola dirección).
+:::
+
+La independencia se cumple por diseño si $Z$ se asigna al azar; con un instrumento "natural" (distancia a la universidad, trimestre de nacimiento) es un supuesto. La **exclusión** es el supuesto más delicado: dice que el instrumento no tiene otro canal hacia $Y$ (el número de lotería no afecta el salario más que por el servicio militar). La **monotonía** excluye a los **desafiantes** (*defiers*): personas que reciben el tratamiento cuando el instrumento es $0$ y no lo reciben cuando es $1$.
+
+## Los cuatro tipos de personas
+
+Dado que $D(0)$ y $D(1)$ son binarios, cada unidad cae en uno de cuatro **estratos principales**:
+
+| Tipo | $D(0)$ | $D(1)$ | Comportamiento |
+|---|---|---|---|
+| **Always-takers** (siempre toman) | 1 | 1 | reciben el tratamiento con o sin instrumento |
+| **Never-takers** (nunca toman) | 0 | 0 | no lo reciben con o sin instrumento |
+| **Compliers** (cumplidores) | 0 | 1 | lo reciben **solo si** $Z = 1$ |
+| **Defiers** (desafiantes) | 1 | 0 | lo reciben solo si $Z = 0$ |
+
+La monotonía elimina a los desafiantes. El estrato de cada persona **no se observa** (para cada una vemos solo un valor de $D(z)$), pero sus **proporciones** sí se identifican.
+
+::: {#prp-estratos}
+## Las proporciones de los estratos
+Bajo independencia y monotonía, con $\pi_a,\pi_n,\pi_c$ las proporciones de always-takers, never-takers y compliers,
+$$
+\pi_a = \mathbb{E}[D\mid Z = 0],\qquad\pi_n = 1 - \mathbb{E}[D\mid Z = 1],\qquad\pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0].
+$$
+:::
+
+::: {.proof}
+Con $Z = 0$, $D = D(0)$, que vale $1$ solo para los always-takers (y los defiers, que no existen): $\mathbb{E}[D\mid Z = 0] = P(D(0) = 1) = \pi_a$ por independencia. Con $Z = 1$, $D = D(1) = 1$ para always-takers y compliers: $\mathbb{E}[D\mid Z = 1] = \pi_a + \pi_c$, así que $\pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]$ y $\pi_n = 1 - \pi_a - \pi_c = 1 - \mathbb{E}[D\mid Z = 1]$.
+:::
+
+# El teorema de Imbens–Angrist
+
+El objeto que VI identifica es el efecto **sobre los cumplidores**:
+$$
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid D(1) > D(0)\big].
+$$
+Antes de ver por qué, conviene una definición intermedia: el **efecto de la intención de tratar** (ITT), que mide el efecto de **asignar** el instrumento (no de recibir el tratamiento): $\text{ITT} = \mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]$ (la "forma reducida" de Econometría 1) y el efecto de $Z$ sobre el tratamiento, $\mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]$ (la "primera etapa").
+
+::: {#thm-late}
+## Teorema de Imbens–Angrist
+Bajo independencia, exclusión, relevancia y monotonía,
+$$
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid D(1)>D(0)\big] = \frac{\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]}{\mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]}.
+$$
+El lado derecho es el **estimador de Wald**: la razón entre la forma reducida y la primera etapa, que coincide con el estimador de VI (MC2E) con un instrumento binario.
+:::
+
+::: {.callout-note title="Borrador"}
+La diferencia $\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]$ compara dos grupos que, por independencia, son iguales en todo salvo en el instrumento. Lo único que cambia es el tratamiento que reciben: algunos individuos lo reciben en $Z = 1$ y no en $Z = 0$. ¿Quiénes? Solo los **compliers** (por monotonía, no hay defiers que se muevan al revés), y para los always-takers y los never-takers el tratamiento **no cambia** entre los dos grupos y, por exclusión, su resultado tampoco. Entonces toda la diferencia de $Y$ viene de los compliers, y se divide por la proporción de compliers para obtener el efecto **por complier**.
+:::
+
+::: {.proof}
+Por exclusión, $Y = Y(0) + D\big(Y(1) - Y(0)\big)$ y, dado $Z = z$, $D = D(z)$. Entonces
+$$
+\mathbb{E}[Y\mid Z = z] = \mathbb{E}\big[Y(0) + D(z)(Y(1) - Y(0))\mid Z = z\big] = \mathbb{E}\big[Y(0) + D(z)(Y(1) - Y(0))\big],
+$$
+donde la última igualdad usa la **independencia** de $Z$ y los resultados potenciales. Restando para $z = 1$ y $z = 0$:
+$$
+\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0] = \mathbb{E}\big[\big(D(1) - D(0)\big)\big(Y(1) - Y(0)\big)\big].
+$$
+Por **monotonía**, $D(1) - D(0)\in\{0,1\}$ y vale $1$ exactamente para los compliers. Por lo tanto el valor esperado es $\mathbb{E}\big[Y(1) - Y(0)\mid D(1) > D(0)\big]\cdot P(D(1)>D(0))$. Y, por la @prp-estratos, $P(D(1)>D(0)) = \pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]$, que es el denominador del estimador de Wald (y es distinto de cero por relevancia). Dividiendo, el cociente es $\tau_{LATE}$.
+:::
+
+Algunas lecturas del resultado:
+
+1. **Descomposición**: $\text{ITT} = \tau_{LATE}\cdot\pi_c$. El efecto de **asignar** el instrumento sobre el resultado es el efecto del tratamiento por complier **multiplicado** por la fracción de compliers. Si solo el 40 % cumple, el ITT es el $40$ % del LATE (Ejercicio 3.1). Por eso el efecto de una invitación a un programa es, casi siempre, menor que el efecto del programa.
+2. **No se sabe quién es complier.** Para cada persona vemos solo $D(Z_i)$, no ambos. Sabemos *cuántos* son y el efecto *promedio* entre ellos, pero no se puede apuntar a un individuo. (Abadie (2003) permite describir **características** de los compliers con un ponderador, Ejercicio 3.6.)
+3. **El parámetro depende del instrumento.** Distintos instrumentos tienen distintos compliers, y por eso pueden estimar efectos distintos **aun cuando todos sean válidos**. Si MC2E con dos instrumentos da resultados diferentes, no hay necesariamente un error: puede haber **heterogeneidad del efecto entre los compliers de cada uno** (Ejercicio 3.5). Esto reinterpreta el test de sobreidentificación de Sargan (Clase 10 de Econometría 1): un rechazo puede significar heterogeneidad y no invalidez de un instrumento.
+
+## Dos casos especiales
+
+**Cumplimiento unilateral.** Si el control **no puede** acceder al tratamiento ($D(0) = 0$ para todos, por ejemplo un programa al que solo se entra si se es asignado), no hay always-takers: $\pi_a = 0$ y los compliers son **todos los que reciben el tratamiento**. Entonces $\tau_{LATE} = \mathbb{E}[Y(1) - Y(0)\mid D = 1] = \tau_{ATT}$: **LATE = ATT** (Bloom, 1984). El efecto sobre los tratados queda identificado: $\tau_{ATT} = \text{ITT}/\mathbb{E}[D\mid Z = 1]$ (Ejercicio 3.2).
+
+**Efecto homogéneo.** Si $Y_i(1) - Y_i(0) = \beta$ para todos, el efecto de los compliers es $\beta$, igual al de la población: LATE = ATE = ATT, y se recupera el modelo de Econometría 1.
+
+En general **LATE es distinto del ATE**: el efecto para los compliers puede ser mayor o menor que para los always-takers y los never-takers. Si los que se mueven con el instrumento son los que más ganan del tratamiento (o los que menos), el LATE sesga el ATE. Extrapolar del LATE al ATE exige más supuestos (o un instrumento muy fuerte, que mueva a casi todos, §★).
+
+# Violaciones de los supuestos
+
+**Exclusión.** Si $Z$ afecta a $Y$ directamente, $Y_i(d,z) = Y_i(d) + \gamma z$, entonces $\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0] = \tau_{LATE}\pi_c + \gamma$, y el estimador de Wald vale $\tau_{LATE} + \gamma/\pi_c$: el sesgo es el efecto directo **dividido por la fuerza de la primera etapa**. Con un instrumento débil ($\pi_c$ chico), un pequeño efecto directo se **amplifica** (Ejercicio 3.4). Es la misma lección de la Clase 10 de Econometría 1: un instrumento débil agrava la inconsistencia por una violación leve de exclusión.
+
+**Monotonía.** Si existen desafiantes, con proporción $\pi_d$ y efecto $\tau_d$, la diferencia en $Y$ es $\pi_c\tau_c - \pi_d\tau_d$ y la de $D$ es $\pi_c - \pi_d$, y el cociente de Wald $=(\pi_c\tau_c - \pi_d\tau_d)/(\pi_c - \pi_d)$ **no** es un promedio de efectos: puede quedar fuera del rango de los efectos individuales, o incluso invertir el signo (Ejercicio 3.3). La monotonía es testeable parcialmente (Kitagawa, 2015) y es plausible cuando el instrumento es un incentivo o una restricción que va en una sola dirección.
+
+**Relevancia débil.** Con $\pi_c$ cercano a cero, el denominador es casi cero y el estimador de Wald es muy inestable y sesgado hacia el de MCO en muestras finitas (Clase 10 de este curso, que desarrolla la inferencia con instrumentos débiles).
+
+# MC2E con más de un instrumento o con covariables
+
+Con un solo instrumento binario y sin covariables, MC2E es exactamente el estimador de Wald, y por lo tanto estima el LATE. Con **varios instrumentos**, MC2E combina las distintas "primeras etapas" y estima un **promedio ponderado** de los LATE de cada uno:
+
+::: {#prp-2sls-late}
+## MC2E como promedio ponderado de LATE
+Con instrumentos binarios mutuamente excluyentes $Z\in\{1,\dots,K\}$ (cada individuo tiene exactamente uno activo), el estimador de MC2E con las dummies de $Z$ como instrumentos converge a un promedio de los estimadores de Wald de cada instrumento contra la categoría de referencia, ponderados por la **fuerza de cada primera etapa** y la **frecuencia** de cada categoría. Bajo monotonía todos los pesos son no negativos.
+:::
+
+Es el resultado de Angrist e Imbens (1995), que se toma prestado (la demostración generaliza el cálculo del estimador de Wald con una suma sobre categorías). El ejemplo más simple: si dos instrumentos, utilizados en dos submuestras del mismo tamaño, dan Walds de $4$ (con primera etapa $0{,}3$) y $2$ (con primera etapa $0{,}1$), el Wald combinado es $(0{,}3\cdot4 + 0{,}1\cdot2)/(0{,}3 + 0{,}1) = 3{,}5$: un promedio donde pesa más el instrumento que **mueve a más gente** (Ejercicio 3.5). Con covariables, MC2E pondera también por la varianza condicional del instrumento, como la regresión de la Clase 2.
+
+# ★ Postgrado: efectos de tratamiento marginales
+
+::: {.callout-important title="★ Postgrado"}
+Heckman y Vytlacil (1999, 2005) unifican todos estos efectos en un solo objeto, el **efecto de tratamiento marginal** (MTE), que vincula LATE, ATE y ATT con un modelo de elección.
+:::
+
+Supongamos que el tratamiento obedece a un **modelo de umbral** $D = \mathbf{1}\{U_D\le p(Z)\}$, donde $p(z) = P(D = 1\mid Z = z)$ es el propensity score (creciente en $z$ por la monotonía) y $U_D\sim U[0,1]$ es una **resistencia no observada** al tratamiento, independiente de $Z$: quienes tienen $U_D$ bajo se tratan fácilmente. Vytlacil (2002) mostró que este modelo es **equivalente** a las condiciones de independencia y monotonía. El **MTE** es el efecto para quienes están **justo en el margen** de indiferencia con resistencia $u$:
+$$
+\text{MTE}(u) = \mathbb{E}\big[Y(1) - Y(0)\mid U_D = u\big].
+$$
+
+::: {#prp-mte}
+## LATE, ATE y ATT como promedios del MTE
+Con $p(0)<p(1)$,
+$$
+\tau_{LATE} = \frac1{p(1) - p(0)}\int_{p(0)}^{p(1)}\text{MTE}(u)\,du,\qquad\tau_{ATE} = \int_0^1\text{MTE}(u)\,du.
+$$
+:::
+
+::: {.proof}
+Con el modelo de umbral, un individuo es **complier** si $D(0) = 0$ y $D(1) = 1$, es decir si $p(0)<U_D\le p(1)$ (con $U_D$ independiente de $Z$). Entonces
+$$
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid p(0)<U_D\le p(1)\big] = \frac1{p(1) - p(0)}\int_{p(0)}^{p(1)}\mathbb{E}\big[Y(1) - Y(0)\mid U_D = u\big]du,
+$$
+porque $U_D$ es uniforme: condicionar en que cae en el intervalo $(p(0),p(1)]$ equivale a promediar el MTE sobre ese intervalo con densidad $1/(p(1) - p(0))$. El ATE es el mismo promedio sobre todo $[0,1]$, por ley de esperanzas iteradas.
+:::
+
+La proposición muestra qué hace el instrumento: **barre un tramo del MTE**, el que va de $p(0)$ a $p(1)$. Con un instrumento que mueve $p(z)$ entre $p(0)$ y $p(1)$ identificamos el MTE **solo en ese tramo**. Para identificar el ATE hace falta un instrumento con **soporte grande** ($p(z)$ que recorre de $0$ a $1$: "identificación en el infinito"), y para el ATT, uno que cubra los valores relevantes. Cuando el MTE es **decreciente** (quienes más fácilmente se tratan, $U_D$ bajo, ganan más: selección **sobre las ganancias**, el modelo de Roy), el LATE de un instrumento que mueve a los "reacios" ($U_D$ alto) es **menor** que el ATE. El MTE da la **estructura** que permite extrapolar el LATE a otros efectos y a políticas nuevas (efecto de una política que cambia $p(z)$ de una manera distinta, el PRTE), aunque a costa de supuestos paramétricos o de una cobertura del instrumento que pocas veces existe.
+
+# Resumen
+
+- Con efectos heterogéneos, **VI estima el efecto local promedio** (LATE): el efecto sobre los **compliers** (aquellos cuyo tratamiento cambia con el instrumento).
+- **Supuestos:** independencia, **exclusión**, relevancia y **monotonía** (sin desafiantes). Cuatro estratos: always-takers, never-takers, compliers, defiers; sus proporciones se identifican (@prp-estratos).
+- **Teorema** (@thm-late): $\tau_{LATE} = \text{ITT}/\text{primera etapa}$ (estimador de Wald); $\text{ITT} = \tau_{LATE}\cdot\pi_c$.
+- **Cumplimiento unilateral:** LATE = ATT. **Efecto homogéneo:** LATE = ATE. En general LATE $\ne$ ATE y depende del instrumento.
+- **Violaciones:** una violación de exclusión sesga por $\gamma/\pi_c$ (peor si el instrumento es débil); con desafiantes el Wald no es un promedio de efectos.
+- **MC2E** con varios instrumentos es un promedio ponderado de LATE (@prp-2sls-late); un rechazo de sobreidentificación puede reflejar heterogeneidad.
+- **MTE** (@prp-mte): LATE y ATE son promedios del efecto marginal sobre tramos de $U_D$.
+
+# Ejercicios
+
+**Ejercicio 3.1.** En un experimento con asignación aleatoria $Z$, $\mathbb{E}[Y\mid Z = 1] = 12$, $\mathbb{E}[Y\mid Z = 0] = 10$, $\mathbb{E}[D\mid Z = 1] = 0{,}7$ y $\mathbb{E}[D\mid Z = 0] = 0{,}3$. Calcula el ITT, la proporción de cada tipo y el LATE.
+
+::: {.callout-tip collapse="true" title="Solución 3.1"}
+$\text{ITT} = 12 - 10 = 2$. $\pi_a = 0{,}3$, $\pi_n = 1 - 0{,}7 = 0{,}3$, $\pi_c = 0{,}7 - 0{,}3 = 0{,}4$ (suman $1$). $\tau_{LATE} = 2/0{,}4 = 5$. Interpretación: el efecto de **recibir** el tratamiento para quienes lo reciben **gracias** a la asignación es $5$; el efecto de **ser asignado** es $2$ (porque solo el $40$ % cambia su conducta). Los always-takers (30 %) y los never-takers (30 %) no están afectados por la asignación y no entran en el LATE.
+:::
+
+**Ejercicio 3.2.** En un programa con cumplimiento unilateral (el control no puede participar), $\mathbb{E}[D\mid Z = 1] = 0{,}6$ y $\text{ITT} = 1{,}5$. Calcula el LATE y muestra que es igual al ATT.
+
+::: {.callout-tip collapse="true" title="Solución 3.2"}
+$\mathbb{E}[D\mid Z = 0] = 0$ (nadie en el control participa), de modo que $\pi_a = 0$ y $\pi_c = 0{,}6$. $\tau_{LATE} = 1{,}5/0{,}6 = 2{,}5$. Como los únicos que reciben el tratamiento son compliers asignados ($D = 1\iff Z = 1$ y complier), $\mathbb{E}[Y(1) - Y(0)\mid D = 1] = \mathbb{E}[Y(1) - Y(0)\mid\text{complier}] = \tau_{LATE} = 2{,}5 = \tau_{ATT}$. El efecto sobre los participantes se identifica **sin** aleatorizar a nadie dentro de los tratados: basta que la **asignación** sea aleatoria y el cumplimiento sea unilateral.
+:::
+
+**Ejercicio 3.3.** Hay defiers con proporción $\pi_d = 0{,}1$ y efecto $\tau_d = 3$; los compliers son $\pi_c = 0{,}4$ con efecto $\tau_c = 5$. Calcula el cociente de Wald y compáralo con $\tau_c$. ¿Qué pasaría si $\tau_d = 20$?
+
+::: {.callout-tip collapse="true" title="Solución 3.3"}
+Con defiers, $\text{ITT} = \pi_c\tau_c - \pi_d\tau_d = 2{,}0 - 0{,}3 = 1{,}7$ y la primera etapa es $\pi_c - \pi_d = 0{,}3$. Wald $=1{,}7/0{,}3 = 5{,}67\ne5 = \tau_c$. Con $\tau_d = 20$: $\text{ITT} = 2{,}0 - 2{,}0 = 0$, Wald $=0$: se concluiría que **no hay efecto** cuando los compliers ganan $5$ y los defiers $20$. Con $\tau_d>20$ el Wald sería **negativo**. Sin monotonía, el cociente mezcla efectos con pesos de signos distintos y pierde interpretación causal.
+:::
+
+**Ejercicio 3.4.** El instrumento tiene un efecto directo $\gamma = 0{,}5$ sobre $Y$ (viola exclusión) y $\pi_c = 0{,}4$. Calcula el sesgo del Wald. ¿Y si $\pi_c = 0{,}1$?
+
+::: {.callout-tip collapse="true" title="Solución 3.4"}
+El Wald converge a $\tau_{LATE} + \gamma/\pi_c$. Con $\pi_c = 0{,}4$: sesgo $=0{,}5/0{,}4 = 1{,}25$. Con $\pi_c = 0{,}1$: $0{,}5/0{,}1 = 5$. El mismo efecto directo de $0{,}5$ produce un sesgo **cuatro veces mayor** cuando la primera etapa es cuatro veces más débil. Es el motivo de que, ante la duda sobre la exclusión, convenga un instrumento **fuerte**; y de que un instrumento débil sea "doblemente peligroso" (inestable y muy sensible a violaciones menores).
+:::
+
+**Ejercicio 3.5.** Dos instrumentos, usados en submuestras del mismo tamaño, dan estimadores de Wald de $4$ (primera etapa $0{,}3$) y $2$ (primera etapa $0{,}1$). Calcula el Wald combinado y explica los pesos. ¿Por qué no tiene por qué haber un error si los dos Walds difieren?
+
+::: {.callout-tip collapse="true" title="Solución 3.5"}
+El ITT combinado es $(0{,}3\cdot4 + 0{,}1\cdot2)/2 = 0{,}7$ y la primera etapa combinada $(0{,}3 + 0{,}1)/2 = 0{,}2$: Wald combinado $=0{,}7/0{,}2 = 3{,}5 = (0{,}75)(4) + (0{,}25)(2)$, con pesos proporcionales a la primera etapa: el primer instrumento mueve a **tres veces más gente** y pesa tres veces más. Que los Walds sean distintos ($4$ y $2$) **no implica** que uno de los instrumentos sea inválido: si el efecto es heterogéneo, cada instrumento tiene **sus propios compliers** (poblaciones distintas) y estima su propio LATE. Un test de sobreidentificación que rechaza puede estar detectando esa heterogeneidad. Para diferenciarlo de una violación de exclusión hacen falta argumentos adicionales (por ejemplo, comparar las características de los compliers).
+:::
+
+**Ejercicio 3.6.** Los compliers, ¿se parecen al resto de la población? Con $\mathbb{E}[X\mid\text{always}] = 0{,}2$ (fracción de mujeres), $\mathbb{E}[X\mid\text{never}] = 0{,}8$ y $P(\text{always}) = 0{,}3$, $P(\text{never}) = 0{,}3$, $P(\text{complier}) = 0{,}4$, con $\mathbb{E}[X] = 0{,}5$ en la población, calcula la fracción de mujeres entre los compliers.
+
+::: {.callout-tip collapse="true" title="Solución 3.6"}
+Por la ley de esperanzas iteradas sobre los tres estratos: $\mathbb{E}[X] = \pi_a\mathbb{E}[X\mid a] + \pi_n\mathbb{E}[X\mid n] + \pi_c\mathbb{E}[X\mid c]$, es decir $0{,}5 = 0{,}3\cdot0{,}2 + 0{,}3\cdot0{,}8 + 0{,}4\,\mathbb{E}[X\mid c] = 0{,}06 + 0{,}24 + 0{,}4\,\mathbb{E}[X\mid c]$, luego $\mathbb{E}[X\mid c] = 0{,}2/0{,}4 = 0{,}5$. En este caso los compliers tienen la misma composición que la población. En general, $\mathbb{E}[X\mid c]$ se obtiene de las características de los never-takers (observables en $Z = 1$ con $D = 0$) y los always-takers (en $Z = 0$ con $D = 1$) y las proporciones: es la idea de Abadie (2003) y de la tabla de "características de los compliers" que aparece en los artículos aplicados.
+:::
+
+**Ejercicio 3.7 ★.** Sea $\text{MTE}(u) = 4 - 6u$ para $u\in[0,1]$ y un instrumento con $p(0) = 0{,}2$ y $p(1) = 0{,}6$. Calcula el LATE y el ATE, e interpreta el signo de la pendiente.
+
+::: {.callout-tip collapse="true" title="Solución 3.7 ★"}
+$\int(4 - 6u)\,du = 4u - 3u^2$. LATE: $\frac1{0{,}4}\big[4u - 3u^2\big]_{0{,}2}^{0{,}6} = \frac1{0{,}4}\big[(2{,}4 - 1{,}08) - (0{,}8 - 0{,}12)\big] = \frac{1{,}32 - 0{,}68}{0{,}4} = 1{,}6$. ATE: $\big[4u - 3u^2\big]_0^1 = 4 - 3 = 1$. El LATE ($1{,}6$) es **mayor** que el ATE ($1$) porque el instrumento mueve a personas con $U_D$ **bajo** (entre $0{,}2$ y $0{,}6$), que tienen ganancias más altas que las de $U_D$ cerca de $1$. La pendiente negativa del MTE significa que **quienes se tratan con más facilidad son los que más ganan** (selección sobre ganancias, modelo de Roy): con un instrumento que mueve a los más reacios ($U_D$ en $[0{,}8,1]$) se obtendría un LATE **negativo** ($\frac1{0{,}2}[4u - 3u^2]_{0{,}8}^1 = (1 - 1{,}28)/0{,}2 = -1{,}4$, con $4(0{,}8) - 3(0{,}64) = 3{,}2 - 1{,}92 = 1{,}28$). Distintos instrumentos barren distintos tramos y dan LATE muy distintos.
+:::

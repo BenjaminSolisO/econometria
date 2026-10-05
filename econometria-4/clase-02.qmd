@@ -1,0 +1,234 @@
+---
+title: "Clase 2 · Selección en observables"
+subtitle: "Propensity score, ponderación, matching y estimadores doblemente robustos"
+description: "Identificación del efecto causal cuando la asignación es aleatoria dado X: insesgamiento condicional y traslape, regresión como promedio ponderado, el teorema del propensity score, ponderación inversa, matching, el estimador AIPW con doble robustez y su eficiencia."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-02.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando no hay experimento
+
+La Clase 1 mostró que la aleatorización elimina el sesgo de selección. Pero la mayor parte de los datos económicos son **observacionales**: las personas eligen estudiar, las empresas eligen exportar, los países adoptan políticas. La diferencia entre tratados y no tratados mezcla el efecto con las diferencias previas entre ambos grupos. La estrategia más antigua y más usada para enfrentarlo es **comparar unidades que se parecen en lo observable**: si los tratados y los controles tienen las mismas características $X$, y el tratamiento dependiera de $X$ y de nada más, entonces dentro de cada valor de $X$ sería como si el tratamiento estuviera asignado al azar. Esta clase formaliza la idea y estudia los estimadores que la explotan.[^rosenbaum]
+
+[^rosenbaum]: Paul Rosenbaum y Donald Rubin (1983) publicaron "The central role of the propensity score in observational studies for causal effects", uno de los artículos más citados de la estadística. Su resultado central, que veremos aquí, es que basta condicionar en **un solo número** (la probabilidad de tratamiento) y no en todo el vector $X$, un alivio considerable cuando $X$ tiene decenas de variables.
+
+# Los supuestos
+
+::: {.callout-caution title="Supuestos de selección en observables"}
+- **Insesgamiento condicional** (*unconfoundedness*, ignorabilidad, independencia condicional): $\big(Y(0),Y(1)\big)\perp\!\!\!\perp D\mid X$. Dado $X$, la asignación del tratamiento es independiente de los resultados potenciales.
+- **Traslape** (*overlap*): $0<e(x) = P(D = 1\mid X = x)<1$ para todo $x$ en el soporte de $X$. La función $e(x)$ es el **propensity score**.
+:::
+
+El primer supuesto dice que $X$ contiene **todas** las variables que afectan a la vez el tratamiento y el resultado (todos los *confusores*). Es un supuesto **no testeable**: afirma algo sobre variables no observadas. Su plausibilidad depende de la información disponible: es más creíble cuando se observa mucha información previa al tratamiento (incluyendo el resultado rezagado) y cuando se conoce bien cómo se asigna el tratamiento. El segundo dice que, para toda combinación de características, hay **tanto tratados como controles**: sin él no hay con qué comparar. Se verifica con los datos (la distribución estimada de $\hat e(X)$ por grupo).
+
+## Identificación
+
+::: {#thm-id-cia}
+## Identificación bajo insesgamiento condicional y traslape
+Bajo ambos supuestos, definiendo $\mu_d(x) = \mathbb{E}[Y\mid D = d,X = x]$ (observable),
+$$
+\tau(x) = \mu_1(x) - \mu_0(x),\qquad\tau_{ATE} = \mathbb{E}[\mu_1(X) - \mu_0(X)],\qquad\tau_{ATT} = \mathbb{E}[\mu_1(X) - \mu_0(X)\mid D = 1].
+$$
+:::
+
+::: {.proof}
+Por insesgamiento condicional, $\mathbb{E}[Y(d)\mid X = x] = \mathbb{E}[Y(d)\mid D = d,X = x]$. Y por (la definición del resultado observado, Clase 1), $\mathbb{E}[Y(d)\mid D = d,X = x] = \mathbb{E}[Y\mid D = d,X = x] = \mu_d(x)$, que está definida para todo $x$ gracias al traslape ($P(D = d\mid X = x)>0$). Luego $\mathbb{E}[Y(1) - Y(0)\mid X = x] = \tau(x)$. Por la ley de esperanzas iteradas, $\tau_{ATE} = \mathbb{E}[\tau(X)]$ y $\tau_{ATT} = \mathbb{E}[\tau(X)\mid D = 1]$.
+:::
+
+El efecto causal es el **promedio, sobre la distribución de $X$, de las diferencias de medias dentro de cada celda** de $X$. La diferencia ingenua de la Clase 1 se reemplaza por una diferencia **condicional**. Sin traslape, $\mu_0(x)$ no está definida en las celdas donde todos son tratados, y hay que **extrapolar** con un modelo.
+
+# Regresión: un promedio con pesos equivocados
+
+La implementación más inmediata es una regresión de $Y$ sobre $D$ y $X$ (MCO). Si el modelo es lineal y el efecto **constante**, $Y = \alpha + \tau D + X'\beta + u$ con $\mathbb{E}[u\mid D,X] = 0$, el coeficiente de $D$ es consistente para $\tau$. Pero ¿qué estima cuando el efecto es **heterogéneo**?
+
+::: {#prp-ols-pesos}
+## MCO pondera por la varianza condicional del tratamiento
+Sea $X$ discreta y se regresa $Y$ sobre $D$ y un conjunto **completo** de dummies de $X$ (modelo saturado). Entonces el coeficiente de $D$ es
+$$
+\tau_{OLS} = \frac{\mathbb{E}\big[e(X)(1 - e(X))\,\tau(X)\big]}{\mathbb{E}\big[e(X)(1 - e(X))\big]}.
+$$
+:::
+
+::: {.proof}
+Por Frisch–Waugh–Lovell (Clase 3 de Econometría 1), el coeficiente de $D$ es $\mathbb{E}[\tilde DY]/\mathbb{E}[\tilde D^2]$ con $\tilde D = D - \mathbb{E}[D\mid X] = D - e(X)$ (en el modelo saturado, la proyección de $D$ sobre las dummies de $X$ es $e(X)$). Bajo insesgamiento condicional, $Y = \mu_0(X) + D\tau(X) + \nu$ con $\mathbb{E}[\nu\mid D,X] = 0$. Entonces $\mathbb{E}[\tilde DY] = \mathbb{E}[\tilde D\mu_0(X)] + \mathbb{E}[\tilde DD\tau(X)] = 0 + \mathbb{E}[\tau(X)\mathbb{E}[\tilde DD\mid X]]$, pues $\mathbb{E}[\tilde D\mid X] = 0$; y $\mathbb{E}[\tilde DD\mid X] = \mathbb{E}[D(D - e)\mid X] = e - e^2 = e(1 - e)$. Además $\mathbb{E}[\tilde D^2] = \mathbb{E}[\operatorname{Var}(D\mid X)] = \mathbb{E}[e(1 - e)]$.
+:::
+
+El peso $e(x)(1 - e(x)) = \operatorname{Var}(D\mid X = x)$ es máximo en $e = \tfrac12$ y tiende a cero en los extremos. **MCO estima un promedio de los efectos $\tau(x)$ ponderado por cuánta variación en el tratamiento hay dentro de cada celda**, y **no** el ATE (que pesa por la frecuencia de cada celda). Si el efecto no es heterogéneo, no importa; si lo es, MCO responde una pregunta distinta (Ejercicio 2.2). Es una advertencia importante: el coeficiente de $D$ en una regresión con controles **no** es, en general, el ATE ni el ATT.
+
+# El propensity score
+
+Condicionar en un vector $X$ de alta dimensión es difícil (muchas celdas casi vacías). Rosenbaum y Rubin (1983) mostraron que **basta condicionar en el propensity score**.
+
+::: {#thm-ps}
+## El teorema del propensity score
+(a) **Balance:** $D\perp\!\!\!\perp X\mid e(X)$. (b) Si $\big(Y(0),Y(1)\big)\perp\!\!\!\perp D\mid X$, entonces $\big(Y(0),Y(1)\big)\perp\!\!\!\perp D\mid e(X)$.
+:::
+
+::: {.proof}
+(a) Como $e(X)$ es función de $X$, $P(D = 1\mid X,e(X)) = P(D = 1\mid X) = e(X)$. Pero $P(D = 1\mid e(X)) = \mathbb{E}[P(D = 1\mid X)\mid e(X)] = \mathbb{E}[e(X)\mid e(X)] = e(X)$. Las dos coinciden: la probabilidad de $D$ dado $X$ y $e(X)$ **no depende de $X$** más allá de $e(X)$: $D\perp\!\!\!\perp X\mid e(X)$.
+
+(b) Sea $Y^* = (Y(0),Y(1))$. Por esperanzas iteradas e insesgamiento condicional, $P(D = 1\mid Y^*,e(X)) = \mathbb{E}\big[P(D = 1\mid Y^*,X)\mid Y^*,e(X)\big] = \mathbb{E}[e(X)\mid Y^*,e(X)] = e(X)$. Esto es igual a $P(D = 1\mid e(X))$ (parte (a)): $D\perp\!\!\!\perp Y^*\mid e(X)$.
+:::
+
+Dos consecuencias. **Balance:** dentro de un nivel del propensity score, la distribución de $X$ es la misma entre tratados y controles: es la propiedad que se **testea** en la práctica (si tras ajustar por $\hat e(X)$ quedan diferencias en las covariables, el modelo para $e$ está mal especificado). **Reducción de dimensión:** si el insesgamiento condicional vale dado $X$, también dado el escalar $e(X)$, de modo que $\tau_{ATE} = \mathbb{E}\big[\mathbb{E}[Y\mid D = 1,e(X)] - \mathbb{E}[Y\mid D = 0,e(X)]\big]$.
+
+## Ponderación inversa por probabilidad (IPW)
+
+La segunda forma de usar el propensity score es **reponderar** para que los tratados y los controles se parezcan a la población completa.
+
+::: {#prp-ipw}
+## Identificación por ponderación
+Bajo insesgamiento condicional y traslape,
+$$
+\mathbb{E}\Big[\frac{DY}{e(X)}\Big] = \mathbb{E}[Y(1)],\qquad\mathbb{E}\Big[\frac{(1 - D)Y}{1 - e(X)}\Big] = \mathbb{E}[Y(0)],\qquad\tau_{ATE} = \mathbb{E}\Big[\Big(\frac D{e(X)} - \frac{1 - D}{1 - e(X)}\Big)Y\Big].
+$$
+:::
+
+::: {.proof}
+Como $DY = DY(1)$, $\mathbb{E}\big[\tfrac{DY}{e(X)}\big] = \mathbb{E}\big[\tfrac{DY(1)}{e(X)}\big] = \mathbb{E}\Big[\mathbb{E}\big[\tfrac{DY(1)}{e(X)}\mid X,Y(1)\big]\Big] = \mathbb{E}\Big[\tfrac{Y(1)}{e(X)}\mathbb{E}[D\mid X,Y(1)]\Big]$. Por insesgamiento condicional, $\mathbb{E}[D\mid X,Y(1)] = \mathbb{E}[D\mid X] = e(X)$, de modo que queda $\mathbb{E}[Y(1)]$. El mismo argumento vale para $d = 0$ con $1 - D$ y $1 - e(X)$.
+:::
+
+La **intuición** es la de una encuesta con muestreo desigual: un tratado con $e(X) = 0{,}1$ es raro (hay pocos como él entre los tratados), así que se le asigna peso $1/0{,}1 = 10$ para que "represente" a los demás con sus características que no fueron tratados. El estimador es
+$$
+\hat\tau_{IPW} = \frac1n\sum_i\Big(\frac{D_i}{\hat e(X_i)} - \frac{1 - D_i}{1 - \hat e(X_i)}\Big)Y_i,
+$$
+con $\hat e$ estimado (logit, probit o más flexible). La versión de **Hájek** normaliza los pesos para que sumen uno en cada grupo, y es más estable. Para el ATT, $\mathbb{E}[Y(0)\mid D = 1] = \mathbb{E}\big[\tfrac{(1 - D)e(X)}{1 - e(X)}Y\big]/\pi$ (Ejercicio 2.5): los controles se reponderan para parecerse a los tratados.
+
+Los problemas son los de siempre con ponderaciones: si algunos $e(X_i)$ están **cerca de 0 o 1** (traslape débil), los pesos son enormes y el estimador tiene **varianza altísima** (una unidad con $e = 0{,}01$ pesa $100$). La respuesta práctica es **recortar** (*trimming*): descartar las unidades con $\hat e$ fuera de $[0{,}1,0{,}9]$ (Crump et al., 2009). Pero eso cambia el parámetro: se estima el efecto sobre la **subpoblación con buen traslape**, no el ATE de toda la población, un intercambio explícito entre validez interna y alcance. Un resultado contraintuitivo (Hirano, Imbens y Ridder, 2003): estimar $e$ de manera flexible da un estimador **más eficiente** que usar el $e$ verdadero, si se lo conociera.
+
+# Matching
+
+La tercera estrategia es **emparejar** cada unidad con una (o varias) de similares características del otro grupo: para cada tratado $i$, el control $j(i)$ con $X_j$ más cercano (**vecino más cercano**, en $X$ o en $\hat e(X)$). El efecto estimado es el promedio de $Y_i - Y_{j(i)}$. Es intuitivo y transparente, pero tiene un problema técnico que Abadie e Imbens (2006) precisaron: con $k$ covariables **continuas**, la distancia al vecino más cercano decrece a tasa $n^{-1/k}$, y el **sesgo** del emparejamiento es $O(n^{-1/k})$. Para $k\ge3$ ese sesgo **domina** al error estándar $O(n^{-1/2})$, y el estimador **no es $\sqrt n$-consistente**. Es la **maldición de la dimensionalidad** de la Clase 5, aplicada al matching. La solución es **corregir el sesgo** del emparejamiento con una regresión (Abadie–Imbens), o usar el propensity score (que es un escalar). El matching exacto en un $X$ discreto no tiene este problema.
+
+# Estimadores doblemente robustos
+
+Tenemos dos "modelos" disponibles: el de **resultado** ($\mu_d(x)$, base de la regresión) y el de **tratamiento** ($e(x)$, base de IPW). Cada uno falla si su modelo está mal especificado. La combinación más poderosa es **usar los dos a la vez**, de manera que baste con acertar uno.
+
+::: {#def-aipw}
+## El estimador AIPW
+El **estimador de ponderación inversa aumentado** (AIPW, Robins, Rotnitzky y Zhao, 1994) es
+$$
+\hat\tau_{DR} = \frac1n\sum_{i = 1}^n\Big[\hat\mu_1(X_i) - \hat\mu_0(X_i) + \frac{D_i\big(Y_i - \hat\mu_1(X_i)\big)}{\hat e(X_i)} - \frac{(1 - D_i)\big(Y_i - \hat\mu_0(X_i)\big)}{1 - \hat e(X_i)}\Big].
+$$
+:::
+
+Es el estimador de regresión $\hat\mu_1 - \hat\mu_0$ **más una corrección**: la media ponderada de los **residuos** de la regresión. Si el modelo de resultado es perfecto, los residuos tienen media cero y la corrección es inofensiva; si el modelo está mal, la corrección (ponderada por $1/\hat e$) lo arregla.
+
+::: {#thm-dr}
+## Doble robustez
+Sean $\tilde\mu_d$ y $\tilde e$ los límites de los estimadores $\hat\mu_d$ y $\hat e$. Bajo insesgamiento condicional y traslape, $\hat\tau_{DR}\to_p\tau_{ATE}$ si **al menos uno** de los dos modelos está bien especificado ($\tilde\mu_d = \mu_d$ para $d = 0,1$, **o** $\tilde e = e$). El sesgo en general es
+$$
+\mathbb{E}\Big[\frac{(\tilde\mu_1(X) - \mu_1(X))(\tilde e(X) - e(X))}{\tilde e(X)}\Big] - \mathbb{E}\Big[\frac{(\tilde\mu_0(X) - \mu_0(X))(e(X) - \tilde e(X))}{1 - \tilde e(X)}\Big],
+$$
+un **producto** de los dos errores.
+:::
+
+::: {.callout-note title="Borrador"}
+Calculo la esperanza de cada mitad del estimador con $(\tilde\mu,\tilde e)$ en lugar de los verdaderos. Para el brazo tratado, el término es $\tilde\mu_1(X) + D(Y - \tilde\mu_1(X))/\tilde e(X)$. Condicional en $X$ (e insesgamiento condicional), $\mathbb{E}[D(Y - \tilde\mu_1)\mid X] = e(X)(\mu_1(X) - \tilde\mu_1(X))$. Entonces la esperanza condicional es $\tilde\mu_1 + \frac{e}{\tilde e}(\mu_1 - \tilde\mu_1)$. Quiero compararla con $\mu_1(X)$. Con un poco de álgebra, la diferencia es el **producto** $(\tilde\mu_1 - \mu_1)(\tilde e - e)/\tilde e$. Cero si cualquiera de los dos factores es cero.
+:::
+
+::: {.proof}
+Condicional en $X$, usando $\mathbb{E}[DY\mid X] = e(X)\mu_1(X)$ (insesgamiento condicional),
+$$
+\mathbb{E}\Big[\tilde\mu_1(X) + \frac{D(Y - \tilde\mu_1(X))}{\tilde e(X)}\Big|X\Big] = \tilde\mu_1 + \frac{e}{\tilde e}(\mu_1 - \tilde\mu_1) = \mu_1 + (\tilde\mu_1 - \mu_1)\Big(1 - \frac e{\tilde e}\Big) = \mu_1 + \frac{(\tilde\mu_1 - \mu_1)(\tilde e - e)}{\tilde e}.
+$$
+(Se verifica expandiendo: $\tilde\mu_1 + \tfrac e{\tilde e}(\mu_1 - \tilde\mu_1) - \mu_1 = (\tilde\mu_1 - \mu_1) - \tfrac e{\tilde e}(\tilde\mu_1 - \mu_1) = (\tilde\mu_1 - \mu_1)\big(1 - \tfrac e{\tilde e}\big)$.) Tomando esperanza sobre $X$, el sesgo del brazo tratado es $\mathbb{E}\big[(\tilde\mu_1 - \mu_1)(\tilde e - e)/\tilde e\big]$. Para el brazo de control el cálculo es análogo con $1 - D$ y $1 - \tilde e$. Si $\tilde\mu_d = \mu_d$ o $\tilde e = e$, el producto se anula.
+:::
+
+Esa propiedad es **más fuerte** de lo que parece: el sesgo es de **segundo orden** (producto de errores), no de primer orden. Esto es lo que, en la Clase 8, hará que se pueda estimar $\mu_d$ y $e$ con **aprendizaje automático** (que converge lento) y aun así obtener inferencia válida para $\tau$: si ambos errores son $o(n^{-1/4})$, el producto es $o(n^{-1/2})$ y no afecta la distribución asintótica. El AIPW es la **puerta de entrada** a esa literatura.
+
+Un hecho adicional: cuando los dos modelos están bien especificados, el AIPW alcanza la **cota de eficiencia semiparamétrica** (Hahn, 1998), con varianza asintótica
+$$
+V_{\text{eff}} = \mathbb{E}\Big[\frac{\sigma_1^2(X)}{e(X)} + \frac{\sigma_0^2(X)}{1 - e(X)} + \big(\tau(X) - \tau_{ATE}\big)^2\Big],\qquad\sigma_d^2(x) = \operatorname{Var}(Y\mid D = d,X = x),
+$$
+(§★). Es el estimador que se recomienda por defecto en la práctica. Su varianza se estima con la **función de influencia**: $\hat V = n^{-1}\sum_i(\hat\psi_i - \hat\tau_{DR})^2$ con $\hat\psi_i$ el término $i$ de la suma, o con bootstrap (Clase 9).
+
+# Qué controlar y qué no
+
+Una advertencia que el marco hace explícita: $X$ debe estar **determinado antes del tratamiento**. Controlar por una variable **posterior** al tratamiento (un *mediador*, o un *colisionador*) puede crear sesgo. Si la educación $D$ eleva el ingreso $Y$ en parte porque lleva a mejores ocupaciones $M$, controlar por la ocupación **absorbe parte del efecto** que se quiere medir y, además, si la habilidad no observada afecta la ocupación, introduce sesgo de selección dentro de cada ocupación (**mal control**, Angrist y Pischke, 2009). La regla es que los controles sean variables **previas** que afectan la asignación y el resultado, pero no sean consecuencia del tratamiento.
+
+Tres prácticas útiles para evaluar la plausibilidad de la estrategia: (i) **gráficos de traslape** de $\hat e(X)$ por grupo; (ii) **tablas de balance** (diferencias estandarizadas de las covariables antes y después de ajustar); (iii) **análisis de sensibilidad** (cuán fuerte tendría que ser un confusor no observado para anular el resultado: cotas de Rosenbaum; Cinelli y Hazlett, 2020). Y, sobre todo, **conocimiento institucional**: ¿cómo se decidió quién recibió el tratamiento? El insesgamiento condicional es creíble si esa decisión se explica con $X$. Cuando la selección ocurre sobre **no observables** (la autoselección de la Clase 8 de Econometría 2), hacen falta otras estrategias: instrumentos (Clase 3), diferencias en diferencias (Clase 4), discontinuidades (Clase 6).
+
+# ★ Postgrado: la cota de eficiencia y la función de influencia del AIPW
+
+::: {.callout-important title="★ Postgrado"}
+Calculamos la varianza de la **función de influencia** del AIPW y mostramos que es exactamente la cota de Hahn. Que ningún estimador regular pueda hacerlo mejor es un resultado de la teoría semiparamétrica que se toma prestado.
+:::
+
+La función de influencia (evaluada en los verdaderos $\mu_d,e$) es
+$$
+\psi = \mu_1(X) - \mu_0(X) - \tau + \frac{D\big(Y - \mu_1(X)\big)}{e(X)} - \frac{(1 - D)\big(Y - \mu_0(X)\big)}{1 - e(X)},\qquad\sqrt n(\hat\tau_{DR} - \tau)\xrightarrow{d}N\big(0,\mathbb{E}[\psi^2]\big).
+$$
+
+::: {#prp-hahn}
+## La varianza de $\psi$ es la cota de Hahn
+$\mathbb{E}[\psi^2] = V_{\text{eff}}$.
+:::
+
+::: {.proof}
+Escribimos $\psi = A + B_1 - B_0$ con $A = \tau(X) - \tau$, $B_1 = D(Y - \mu_1)/e$ y $B_0 = (1 - D)(Y - \mu_0)/(1 - e)$. Los términos $B_1$ y $B_0$ tienen **esperanza condicional cero** dado $X$ ($\mathbb{E}[D(Y - \mu_1)\mid X] = e(\mu_1 - \mu_1) = 0$), de modo que son no correlacionados con $A$ (función de $X$). Además $B_1B_0 = 0$ porque $D(1 - D) = 0$. Luego $\mathbb{E}[\psi^2] = \mathbb{E}[A^2] + \mathbb{E}[B_1^2] + \mathbb{E}[B_0^2]$. Calculamos $\mathbb{E}[B_1^2\mid X] = \mathbb{E}\big[D(Y - \mu_1)^2\mid X\big]/e^2 = e\sigma_1^2/e^2 = \sigma_1^2/e$ (condicional en $D = 1$, $\mathbb{E}[(Y - \mu_1)^2\mid D = 1,X] = \sigma_1^2$), y análogamente $\mathbb{E}[B_0^2\mid X] = \sigma_0^2/(1 - e)$. Sumando,
+$$
+\mathbb{E}[\psi^2] = \mathbb{E}\big[(\tau(X) - \tau)^2\big] + \mathbb{E}\Big[\frac{\sigma_1^2(X)}{e(X)} + \frac{\sigma_0^2(X)}{1 - e(X)}\Big] = V_{\text{eff}}.
+$$
+:::
+
+Tres lecturas de $V_{\text{eff}}$. (i) El término $\mathbb{E}[(\tau(X) - \tau)^2]$ es la **heterogeneidad del efecto**: aun si se conociera todo lo demás, hay variabilidad por el hecho de que el ATE es un promedio sobre $X$. (ii) Los términos $\sigma_d^2/e$ y $\sigma_d^2/(1 - e)$ **explotan cuando $e\to0$ o $1$**: con traslape débil, la cota de eficiencia **crece sin límite**; ningún estimador regular puede hacer algo contra eso (es una dificultad del problema, no del método). (iii) Para $\sigma_d^2$ constante y $e = \tfrac12$ constante, $V_{\text{eff}} = 4\sigma^2 + \mathbb{E}[(\tau(X) - \tau)^2]$: con efecto constante e $\sigma = 1$, la varianza es $4$ y el error estándar con $n = 400$ es $0{,}1$ (Ejercicio 2.7).
+
+# Resumen
+
+- **Supuestos:** insesgamiento condicional $(Y(0),Y(1))\perp D\mid X$ (no testeable) y **traslape** $0<e(x)<1$. Entonces $\tau_{ATE} = \mathbb{E}[\mu_1(X) - \mu_0(X)]$ (@thm-id-cia).
+- **MCO con controles** pondera $\tau(x)$ por $e(x)(1 - e(x))$: no es el ATE (@prp-ols-pesos).
+- **Propensity score** (@thm-ps): balancea $X$ y reduce la dimensión a un escalar. **IPW** (@prp-ipw): $\tau = \mathbb{E}[(D/e - (1 - D)/(1 - e))Y]$; inestable con traslape débil (recortar cambia el parámetro).
+- **Matching** en $k\ge3$ covariables continuas tiene sesgo $O(n^{-1/k})$: maldición de la dimensionalidad.
+- **AIPW** (@thm-dr): doblemente robusto, con sesgo igual al **producto** de los errores de los dos modelos, y **eficiente** si ambos son correctos (@prp-hahn). Es la base de DML (Clase 8).
+- **Controles** previos al tratamiento; evitar mediadores y colisionadores.
+
+# Ejercicios
+
+**Ejercicio 2.1.** Sea $X\in\{0,1\}$ con $P(X = 1) = 0{,}5$, $e(0) = 0{,}2$, $e(1) = 0{,}8$, $\mu_0(0) = 10$, $\mu_0(1) = 20$, $\tau(0) = 2$ y $\tau(1) = 4$. Calcula el ATE, la diferencia ingenua y verifica la identidad de IPW.
+
+::: {.callout-tip collapse="true" title="Solución 2.1"}
+$\tau_{ATE} = 0{,}5\cdot2 + 0{,}5\cdot4 = 3$. Medias: $\mu_1(0) = 12$, $\mu_1(1) = 24$. $P(X = 1\mid D = 1) = 0{,}5\cdot0{,}8/(0{,}5\cdot0{,}2 + 0{,}5\cdot0{,}8) = 0{,}8$, así que $\mathbb{E}[Y\mid D = 1] = 0{,}2\cdot12 + 0{,}8\cdot24 = 21{,}6$. $P(X = 1\mid D = 0) = 0{,}5\cdot0{,}2/(0{,}5\cdot0{,}8 + 0{,}5\cdot0{,}2) = 0{,}2$ y $\mathbb{E}[Y\mid D = 0] = 0{,}8\cdot10 + 0{,}2\cdot20 = 12$. Diferencia ingenua $=9{,}6$: más de **tres veces** el ATE. IPW: $\mathbb{E}[DY/e] = \mathbb{E}[\mu_1(X)] = 0{,}5\cdot12 + 0{,}5\cdot24 = 18$ y $\mathbb{E}[(1 - D)Y/(1 - e)] = \mathbb{E}[\mu_0(X)] = 0{,}5\cdot10 + 0{,}5\cdot20 = 15$; la diferencia es $3$ ✓.
+:::
+
+**Ejercicio 2.2.** Con $P(X = 1) = 0{,}5$, $e(0) = 0{,}5$, $e(1) = 0{,}1$, $\tau(0) = 2$ y $\tau(1) = 4$, calcula el ATE y el coeficiente de $D$ en una regresión con dummies de $X$.
+
+::: {.callout-tip collapse="true" title="Solución 2.2"}
+ATE $=0{,}5\cdot2 + 0{,}5\cdot4 = 3$. Pesos de MCO: $e(0)(1 - e(0)) = 0{,}25$ y $e(1)(1 - e(1)) = 0{,}09$. $\tau_{OLS} = \dfrac{0{,}5\cdot0{,}25\cdot2 + 0{,}5\cdot0{,}09\cdot4}{0{,}5\cdot0{,}25 + 0{,}5\cdot0{,}09} = \dfrac{0{,}25 + 0{,}18}{0{,}17} = 2{,}53$. MCO sobreestima la importancia de la celda $X = 0$ (donde hay más variación en $D$, $e = 0{,}5$) y subestima la de $X = 1$ (donde casi todos son controles): $2{,}53\ne3$. Con $e(0) = 0{,}2$ y $e(1) = 0{,}8$ los pesos coinciden ($0{,}16$ y $0{,}16$) y MCO da $3$ por casualidad: lo importante es que **depende de $e(x)$**.
+:::
+
+**Ejercicio 2.3.** Sea $X\in\{0,1,2\}$ con $e(0) = e(1) = 0{,}3$ y $e(2) = 0{,}7$. Muestra que, condicional en $e(X) = 0{,}3$, $D$ es independiente de $X$ aunque $X$ tome dos valores distintos.
+
+::: {.callout-tip collapse="true" title="Solución 2.3"}
+Condicional en $e(X) = 0{,}3$, $X\in\{0,1\}$. $P(D = 1\mid X = 0) = 0{,}3$ y $P(D = 1\mid X = 1) = 0{,}3$: la probabilidad de $D = 1$ **es la misma** para ambos valores de $X$ dentro del grupo $e(X) = 0{,}3$, así que $P(D = 1\mid X,e(X) = 0{,}3) = 0{,}3 = P(D = 1\mid e(X) = 0{,}3)$: $D\perp X\mid e(X)$. En términos de balance: dentro del estrato $e = 0{,}3$ la distribución de $X$ entre tratados y controles es la misma (proporcional a $P(X = x)$). Hemos reducido tres valores de $X$ a dos valores de $e(X)$.
+:::
+
+**Ejercicio 2.4.** Calcula la contribución $\hat\psi_i$ del AIPW para una observación tratada con $Y = 10$, $\hat\mu_1 = 8$, $\hat\mu_0 = 5$, $\hat e = 0{,}5$, y para una de control con $Y = 4$ (mismos $\hat\mu,\hat e$). Luego calcula el sesgo de la doble robustez si $\tilde\mu_1 - \mu_1 = 2$, $\tilde e - e = 0{,}1$ y $\tilde e = 0{,}5$ (brazo tratado).
+
+::: {.callout-tip collapse="true" title="Solución 2.4"}
+Tratada: $\hat\psi = (8 - 5) + (10 - 8)/0{,}5 - 0 = 3 + 4 = 7$. Control: $\hat\psi = 3 + 0 - (4 - 5)/0{,}5 = 3 + 2 = 5$. Sesgo: $(\tilde\mu_1 - \mu_1)(\tilde e - e)/\tilde e = 2\cdot0{,}1/0{,}5 = 0{,}4$. Si **uno** de los dos errores fuera cero, el sesgo se anula: con $\tilde e = e$ (propensity score correcto) el error de $\tilde\mu_1$ **no importa**, y con $\tilde\mu_1 = \mu_1$ el error en $\tilde e$ **no importa**. Si **ambos** están mal, el sesgo es el producto: pequeño si ambos errores son pequeños.
+:::
+
+**Ejercicio 2.5.** Demuestra que $\mathbb{E}\big[\tfrac{(1 - D)e(X)}{1 - e(X)}Y\big] = \pi\,\mathbb{E}[Y(0)\mid D = 1]$ y úsalo para dar una fórmula del ATT por ponderación.
+
+::: {.callout-tip collapse="true" title="Solución 2.5"}
+Como $(1 - D)Y = (1 - D)Y(0)$ y por insesgamiento condicional $\mathbb{E}[1 - D\mid X,Y(0)] = 1 - e(X)$: $\mathbb{E}\big[\tfrac{(1 - D)e}{1 - e}Y(0)\big] = \mathbb{E}\big[\tfrac e{1 - e}Y(0)(1 - e)\big] = \mathbb{E}[e(X)Y(0)]$. Y $\mathbb{E}[e(X)Y(0)] = \mathbb{E}\big[\mathbb{E}[D\mid X,Y(0)]Y(0)\big] = \mathbb{E}[DY(0)] = \pi\mathbb{E}[Y(0)\mid D = 1]$. Luego $\mathbb{E}[Y(0)\mid D = 1] = \tfrac1\pi\mathbb{E}\big[\tfrac{(1 - D)e(X)}{1 - e(X)}Y\big]$ y $\tau_{ATT} = \tfrac1\pi\mathbb{E}\big[\big(D - \tfrac{(1 - D)e(X)}{1 - e(X)}\big)Y\big]$: los **tratados pesan 1** y los **controles** se reponderan con $e/(1 - e)$ (la razón de chances), para parecerse a los tratados.
+:::
+
+**Ejercicio 2.6.** Se estima el efecto de la educación universitaria ($D$) sobre el salario ($Y$) controlando por habilidad medida a los 15 años, el origen familiar y la **ocupación actual**. Explica qué problema tiene la última variable.
+
+::: {.callout-tip collapse="true" title="Solución 2.6"}
+La **ocupación actual** es una consecuencia de la educación (un **mediador**): parte del efecto de la universidad sobre el salario pasa por conseguir mejores ocupaciones. Controlar por ella (i) **absorbe** parte del efecto que se quiere estimar (se mide solo el efecto "directo" dentro de cada ocupación) y (ii) abre un camino de sesgo: dentro de una ocupación dada, quienes llegaron sin título tienen en promedio más habilidad no observada que quienes llegaron con él, por lo que la comparación vuelve a estar contaminada por la selección. Habilidad a los 15 y origen familiar son **previos** al tratamiento y son controles legítimos.
+:::
+
+**Ejercicio 2.7 ★.** Con $e = \tfrac12$ constante, $\sigma_1^2 = \sigma_0^2 = 1$ y efecto constante, calcula la cota de eficiencia y el error estándar con $n = 400$. Compara con el estimador IPW con $e$ conocido si $\mu_1 = 10$ y $\mu_0 = 8$.
+
+::: {.callout-tip collapse="true" title="Solución 2.7 ★"}
+$V_{\text{eff}} = \sigma_1^2/e + \sigma_0^2/(1 - e) + 0 = 2 + 2 = 4$ y $\operatorname{ee} = \sqrt{4/400} = 0{,}1$. IPW con $e$ conocido: la función de influencia es $\tfrac{DY}{e} - \tfrac{(1 - D)Y}{1 - e} - \tau$, y su varianza es $\mathbb{E}[Y(1)^2]/e + \mathbb{E}[Y(0)^2]/(1 - e) - \tau^2$ (los dos términos son ortogonales porque $D(1 - D) = 0$). Con $\mathbb{E}[Y(1)^2] = 10^2 + 1 = 101$ y $\mathbb{E}[Y(0)^2] = 8^2 + 1 = 65$: $202 + 130 - 4 = 328$; $\operatorname{ee} = \sqrt{328/400} = 0{,}905$. El IPW simple es **9 veces menos preciso** que el AIPW, porque **ignora** que $X$ (aquí la media del grupo) predice $Y$: la parte "regresión" del AIPW elimina esa variación. Es la razón por la que IPW por sí solo se usa poco: el aumento con regresión es una ganancia grande de precisión.
+:::

@@ -1,0 +1,210 @@
+---
+title: "Clase 4 · Diferencias en diferencias"
+subtitle: "Tendencias paralelas, efectos fijos bidireccionales y adopción escalonada"
+description: "Diferencias en diferencias: identificación del ATT con tendencias paralelas, equivalencia con regresión, estudios de eventos, inferencia con correlación serial, y la literatura reciente sobre adopción escalonada con la descomposición de pesos de los efectos fijos bidireccionales y los estimadores de Callaway–Sant'Anna."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Aprovechar el tiempo
+
+Las Clases 2 y 3 identificaron efectos causales con datos de **un solo momento**: o suponiendo que $X$ captura todos los confusores, o con un instrumento. Cuando se tienen datos **antes y después** de una intervención, para un grupo afectado y otro no, hay una tercera estrategia muy usada en evaluación de políticas: **diferencias en diferencias** (DiD). La idea es comparar el **cambio** del grupo tratado con el **cambio** del grupo de control. Así se elimina cualquier diferencia **fija** entre los grupos (que el estudio transversal no podría separar del efecto) y cualquier tendencia **común** en el tiempo (que el estudio antes–después no podría separar del efecto).
+
+El ejemplo canónico es el de Card y Krueger (1994): el estado de Nueva Jersey subió su salario mínimo en 1992 y el vecino Pensilvania no. Comparar el empleo de los restaurantes de comida rápida de Nueva Jersey antes y después da un cambio que mezcla el efecto del salario mínimo con la coyuntura; Pensilvania, que vivió la misma coyuntura, entrega esa tendencia común.[^card]
+
+[^card]: David Card recibió el Nobel de Economía de 2021 por sus aportes empíricos a la economía laboral, y el estudio del salario mínimo es uno de los más citados. Sus resultados (que el empleo no cayó, e incluso subió algo en Nueva Jersey) contradecían la predicción estándar y desataron un debate que duró décadas; lo que hoy es consenso es la **metodología**: comparar grupos afectados y no afectados antes y después, y ser explícito sobre qué supuesto hace comparable al control.
+
+# El caso canónico 2×2
+
+Hay dos grupos ($D_i = 1$ tratado, $D_i = 0$ control) y dos períodos ($t = 0$: antes, $t = 1$: después; el tratamiento ocurre entre ambos y solo para $D_i = 1$). Los resultados potenciales son $Y_{it}(0)$ (sin tratamiento) e $Y_{it}(1)$ (con tratamiento). Se observa $Y_{it} = Y_{it}(0)$ salvo para los tratados en $t = 1$, donde se observa $Y_{i1}(1)$. El parámetro es el **efecto promedio sobre los tratados** $\tau_{ATT} = \mathbb{E}[Y_{i1}(1) - Y_{i1}(0)\mid D_i = 1]$.
+
+::: {.callout-caution title="Supuestos de DiD"}
+1. **Tendencias paralelas:** $\mathbb{E}\big[Y_{i1}(0) - Y_{i0}(0)\mid D_i = 1\big] = \mathbb{E}\big[Y_{i1}(0) - Y_{i0}(0)\mid D_i = 0\big]$. En ausencia de tratamiento, los dos grupos habrían tenido **el mismo cambio promedio**.
+2. **Sin anticipación:** $Y_{i0}(1) = Y_{i0}(0)$ para los tratados: el tratamiento no afecta el resultado antes de ocurrir.
+:::
+
+Observa qué **no** se supone: que los dos grupos tengan el mismo *nivel* (pueden diferir mucho), ni que el tratamiento sea aleatorio, ni que no haya tendencias temporales. Solo se supone que **la tendencia que habría tenido el tratado** es igual a la observada en el control.
+
+::: {#thm-did}
+## Identificación de DiD
+Bajo tendencias paralelas y sin anticipación,
+$$
+\tau_{ATT} = \underbrace{\big(\mathbb{E}[Y\mid D = 1,t = 1] - \mathbb{E}[Y\mid D = 1,t = 0]\big)}_{\text{cambio del tratado}} - \underbrace{\big(\mathbb{E}[Y\mid D = 0,t = 1] - \mathbb{E}[Y\mid D = 0,t = 0]\big)}_{\text{cambio del control}}.
+$$
+:::
+
+::: {.proof}
+Para los tratados, $\mathbb{E}[Y_{i1}\mid D = 1] = \mathbb{E}[Y_{i1}(1)\mid D = 1]$ y, por no anticipación, $\mathbb{E}[Y_{i0}\mid D = 1] = \mathbb{E}[Y_{i0}(0)\mid D = 1]$. Sumamos y restamos el contrafactual no observable $\mathbb{E}[Y_{i1}(0)\mid D = 1]$:
+$$
+\mathbb{E}[Y_{i1} - Y_{i0}\mid D = 1] = \underbrace{\mathbb{E}[Y_{i1}(1) - Y_{i1}(0)\mid D = 1]}_{\tau_{ATT}} + \underbrace{\mathbb{E}[Y_{i1}(0) - Y_{i0}(0)\mid D = 1]}_{\text{cambio contrafactual del tratado}}.
+$$
+Para el control, $\mathbb{E}[Y_{i1} - Y_{i0}\mid D = 0] = \mathbb{E}[Y_{i1}(0) - Y_{i0}(0)\mid D = 0]$. Por **tendencias paralelas**, el último término de la primera ecuación es igual al cambio del control. Restando las dos ecuaciones queda $\tau_{ATT}$.
+:::
+
+::: {#exm-did}
+## Un ejemplo numérico
+Tratados: promedio $20$ antes y $24$ después. Control: $18$ antes y $19$ después. El cambio del tratado es $4$, el del control es $1$: $\hat\tau_{DiD} = 4 - 1 = 3$. Comparar con las alternativas: *antes–después* del tratado da $4$ (atribuye todo el cambio al tratamiento, incluida la tendencia común de $1$); *tratados contra controles después* da $24 - 19 = 5$ (incluye la diferencia previa de $20 - 18 = 2$ entre los grupos). DiD descuenta ambas: $5 - 2 = 3$.
+:::
+
+## Regresión y efectos fijos
+
+El estimador de DiD se calcula con una regresión. Con datos de $i = 1,\dots,N$ y $t\in\{0,1\}$,
+$$
+Y_{it} = \alpha + \beta D_i + \gamma\,\text{Post}_t + \delta\,(D_i\cdot\text{Post}_t) + \varepsilon_{it}.
+$$ {#eq-did-reg}
+Los cuatro parámetros reproducen **exactamente** las cuatro medias de las celdas (modelo saturado): $\alpha$ = media de control antes, $\alpha + \beta$ = tratado antes, $\alpha + \gamma$ = control después, $\alpha + \beta + \gamma + \delta$ = tratado después. Entonces $\delta = (\bar Y_{1,1} - \bar Y_{1,0}) - (\bar Y_{0,1} - \bar Y_{0,0})$ es el estimador de DiD (Clase 3 de Econometría 1: la regresión con dummies reproduce los promedios de cada celda). Con un panel se usa la versión con **efectos fijos de unidad y de tiempo** (*two-way fixed effects*, TWFE):
+$$
+Y_{it} = \alpha_i + \lambda_t + \delta D_{it} + \varepsilon_{it},\qquad D_{it} = D_i\cdot\text{Post}_t.
+$$ {#eq-twfe}
+Con $T = 2$ períodos, la regresión TWFE es equivalente a regresar la **diferencia** $\Delta Y_i = Y_{i1} - Y_{i0}$ sobre $D_i$ (se elimina $\alpha_i$ al diferenciar, Clase 9 de Econometría 2), cuyo coeficiente es la diferencia de medias de $\Delta Y$ entre tratados y controles: el estimador de DiD. Para incorporar **covariables** $X_i$ se puede imponer que las tendencias paralelas valgan *condicionando en $X_i$* (Abadie, 2005; Sant'Anna y Zhao, 2020), con métodos de ponderación o doblemente robustos análogos a los de la Clase 2.
+
+## Qué hay que mirar: la dependencia de la forma funcional
+
+Las tendencias paralelas **no son testeables** (involucran un contrafactual) pero sí se pueden **evaluar indirectamente**: si se tienen varios períodos **antes** del tratamiento, se pueden comparar las tendencias previas de los dos grupos (la *prueba de pre-tendencias*, o gráfico de **estudio de eventos**, abajo). Que las tendencias previas sean paralelas es **consistente con** el supuesto, pero no lo prueba: el grupo tratado podría haber cambiado de tendencia por razones no relacionadas.
+
+Una sutileza adicional: el supuesto **depende de la escala** en que se mide $Y$.
+
+::: {#exm-escala}
+## Paralelas en niveles pero no en logaritmos
+El control pasa de $10$ a $12$ (cambio $+2$) y el contrafactual del tratado, de $20$ a $22$ (también $+2$): **paralelas en niveles**. En logaritmos, el control crece $\ln(12/10) = 0{,}182$ y el tratado $\ln(22/20) = 0{,}095$: **no son paralelas**. Si el supuesto vale en niveles, falla en logaritmos (y viceversa), salvo que los dos grupos tengan el mismo nivel base. La elección de la escala es entonces **parte del supuesto**, y debe justificarse con argumentos económicos (¿el efecto del shock es aditivo o proporcional?) y con las pre-tendencias en esa escala.
+:::
+
+# Estudios de eventos
+
+Con varios períodos, se puede estimar el **efecto dinámico**: cómo evoluciona el efecto con el tiempo desde la intervención. Si el tratamiento ocurre en la fecha $E$ para los tratados,
+$$
+Y_{it} = \alpha_i + \lambda_t + \sum_{k\ne-1}\delta_k\,\mathbf{1}\{t - E = k\}D_i + \varepsilon_{it},
+$$
+con el período $k = -1$ (justo antes) como **referencia** (se normaliza a cero). Los coeficientes $\delta_k$ con $k\ge0$ son los **efectos dinámicos** (periodo $k$ después de la intervención); los $\delta_k$ con $k\le-2$ (los **adelantos**, *leads*) deberían ser **cero** si las tendencias previas son paralelas: son un *placebo*. Un gráfico de $\hat\delta_k$ con sus intervalos de confianza es la herramienta más común y más persuasiva en el trabajo aplicado. Un pre-patrón sistemático (por ejemplo, $\hat\delta_k$ creciente hacia el período $-1$) pone en duda las tendencias paralelas.
+
+# Inferencia: la correlación serial
+
+Un artículo de Bertrand, Duflo y Mullainathan (2004) mostró un problema que invalidaba muchos resultados publicados: los errores $\varepsilon_{it}$ de datos de panel (estado × año) están **serialmente correlacionados**, y los errores estándar usuales (que los suponen independientes) son **demasiado chicos**. Con tratamiento que varía **a nivel de grupo y de tiempo** ($D_{st}$), la variación efectiva es la del grupo (hay pocos grupos), no la de las miles de observaciones individuales, y un test "al 5 %" rechazaba una hipótesis nula verdadera hasta el $45$ % de las veces en sus simulaciones. La solución es **agrupar los errores estándar por unidad de tratamiento** (el estado, no el individuo), con la corrección HAC por cluster de Econometría 2 (Clase 9) y la Clase 10 de este curso. Con **pocos** grupos tratados (el caso Nueva Jersey–Pensilvania es extremo: **uno** tratado), la inferencia asintótica en el número de clusters falla y se usan métodos especiales (Conley y Taber, 2011; bootstrap salvaje, Clase 10; control sintético).
+
+# Adopción escalonada: lo que cambió desde 2018
+
+Muchas políticas se adoptan en **momentos distintos** en distintas unidades (leyes estatales, programas que se despliegan por etapas). Con **adopción escalonada**, la práctica estándar fue estimar la regresión TWFE @eq-twfe con $D_{it}$ = "la unidad $i$ ya está tratada en $t$" y leer $\hat\delta$ como el efecto. Una literatura reciente (Goodman-Bacon; de Chaisemartin y D'Haultfœuille; Callaway y Sant'Anna; Sun y Abraham; Borusyak, Jaravel y Spiess) mostró que, con **efectos heterogéneos** en el tiempo o entre unidades, $\hat\delta_{TWFE}$ **no** estima un promedio razonable de efectos.
+
+## Qué estima TWFE realmente
+
+Sea un panel **balanceado** con $D_{it}$ **absorbente** (una vez tratada, la unidad sigue tratada). Definimos el **residuo bidireccional** de $D_{it}$: $\tilde D_{it} = D_{it} - \bar D_{i\cdot} - \bar D_{\cdot t} + \bar D_{\cdot\cdot}$ (resta de la media de la unidad y de la del período, y suma de la media global).
+
+::: {#prp-twfe-pesos}
+## TWFE como promedio ponderado de los efectos
+Supón $Y_{it}(0) = \alpha_i + \lambda_t + \varepsilon_{it}$ con $\mathbb{E}[\varepsilon\mid D] = 0$ (tendencias paralelas) y efectos de tratamiento $\tau_{it}$ arbitrarios (heterogéneos entre unidades y en el tiempo). Entonces
+$$
+\mathbb{E}[\hat\delta_{TWFE}] = \sum_{(i,t):\,D_{it} = 1}w_{it}\,\tau_{it},\qquad w_{it} = \frac{\tilde D_{it}}{\sum_{j,s}\tilde D_{js}^2},\qquad\sum_{(i,t):\,D_{it} = 1}w_{it} = 1.
+$$
+Los pesos $w_{it}$ **pueden ser negativos**.
+:::
+
+::: {.proof}
+Por Frisch–Waugh–Lovell (Clase 3 de Econometría 1), $\hat\delta_{TWFE} = \sum\tilde D_{it}Y_{it}/\sum\tilde D_{it}^2$, donde $\tilde D_{it}$ es el residuo de $D_{it}$ en una regresión sobre las dummies de unidad y de tiempo. En un panel balanceado esa proyección es $\bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}$, de modo que el residuo es el de la definición (se verifica que $\sum_t\tilde D_{it} = 0$ para todo $i$ y $\sum_i\tilde D_{it} = 0$ para todo $t$, es decir, que es ortogonal a todas las dummies). Sustituyendo $Y_{it} = \alpha_i + \lambda_t + \tau_{it}D_{it} + \varepsilon_{it}$, los términos con $\alpha_i$ y $\lambda_t$ se anulan por esa ortogonalidad, y $\mathbb{E}[\tilde D_{it}\varepsilon_{it}] = 0$: queda $\sum\tilde D_{it}\tau_{it}D_{it}/\sum\tilde D_{it}^2$. Los pesos suman uno porque $\sum\tilde D_{it}D_{it} = \sum\tilde D_{it}(\tilde D_{it} + \bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}) = \sum\tilde D_{it}^2$ (el residuo es ortogonal a la parte ajustada).
+:::
+
+El peso de la celda $(i,t)$ tratada es **positivo** cuando $D_{it} = 1$ supera lo que se esperaría "por la media de la unidad y del período". Un peso **negativo** ocurre cuando una unidad tratada está **tratada casi todo el tiempo** ($\bar D_{i\cdot}$ alto) en un período en que **casi todas** las demás también ($\bar D_{\cdot t}$ alto): en términos de comparaciones, la unidad que adoptó **temprano** es usada como **control** de las que adoptan **tarde** (una "comparación prohibida", porque su resultado ya contiene el efecto del tratamiento).
+
+::: {#exm-pesos}
+## Tres unidades, cuatro períodos
+La unidad A adopta en $t = 2$, la B en $t = 4$ y la C nunca. Con $D_A = (0,1,1,1)$, $D_B = (0,0,0,1)$, $D_C = (0,0,0,0)$: $\bar D_{A\cdot} = 0{,}75$, $\bar D_{B\cdot} = 0{,}25$, $\bar D_{C\cdot} = 0$; $\bar D_{\cdot t} = (0,\tfrac13,\tfrac13,\tfrac23)$ y $\bar D_{\cdot\cdot} = \tfrac13$. Los residuos en las celdas tratadas son $\tilde D_{A2} = \tilde D_{A3} = 0{,}25$, $\tilde D_{A4} = -0{,}083$ y $\tilde D_{B4} = 0{,}417$, y $\sum\tilde D^2 = 0{,}833$. Los pesos son
+$$
+w_{A2} = 0{,}30,\qquad w_{A3} = 0{,}30,\qquad w_{A4} = -0{,}10,\qquad w_{B4} = 0{,}50.
+$$
+La celda $(A,4)$ tiene peso **negativo**: ahí A (tratada desde hace tres períodos) es una unidad "ya tratada" que sirve de control para B en $t = 4$. Si los efectos crecen con el tiempo, $\tau_{A,2:4} = (1,2,3)$ y $\tau_{B4} = 1$, entonces $\mathbb{E}[\hat\delta] = 0{,}3(1) + 0{,}3(2) - 0{,}1(3) + 0{,}5(1) = 1{,}1$, mientras que el promedio simple de los cuatro efectos es $1{,}75$. Y si $\tau_{A4}$ fuera muy grande (por ejemplo, $20$) con $\tau_{A2} = \tau_{A3} = \tau_{B4} = 1$, el estimador vale $0{,}3 + 0{,}3 - 2{,}0 + 0{,}5 = -0{,}9$: **negativo, aunque todos los efectos individuales son positivos** (Ejercicio 4.4).
+:::
+
+La descomposición de **Goodman-Bacon** (2021) formaliza esto desde otro ángulo: $\hat\delta_{TWFE}$ es un promedio ponderado de **todos los DiD de $2\times2$** posibles entre pares de grupos de adopción, incluyendo las **comparaciones prohibidas** (adoptantes tardíos contra tempranos ya tratados). Cuando los efectos son **constantes** (homogéneos y sin dinámica), todos los $2\times2$ estiman lo mismo y no hay problema. Cuando el efecto cambia con el tiempo desde la adopción (casi siempre), las comparaciones prohibidas **restan efectos acumulados** y el estimador queda contaminado.
+
+## Los estimadores modernos
+
+La solución común a los estimadores recientes es **no usar como controles a unidades ya tratadas**. Construyen **efectos por cohorte y período** y los agregan con pesos explícitos y no negativos.
+
+**Callaway y Sant'Anna (2021).** Sea $G_i$ el período de adopción de la unidad $i$ ($G_i = \infty$ si nunca). Para cada cohorte $g$ y período $t\ge g$, el **efecto por grupo y tiempo** es
+$$
+ATT(g,t) = \mathbb{E}\big[Y_{it} - Y_{i,g-1}\mid G_i = g\big] - \mathbb{E}\big[Y_{it} - Y_{i,g-1}\mid\text{control}\big],
+$$
+donde el control son las unidades **nunca tratadas** (o aún no tratadas en $t$). Bajo tendencias paralelas condicionales y no anticipación, se identifica por el mismo argumento del @thm-did: cada $ATT(g,t)$ es un DiD de $2\times2$ con un control **limpio**. Luego se agregan: el **efecto dinámico** a $k$ períodos de la adopción, el **efecto por cohorte**, o un promedio global con ponderaciones por tamaño de cohorte, todos con **pesos positivos** (Ejercicio 4.5).
+
+**Otros.** *Sun y Abraham (2021)* estiman el estudio de eventos con interacciones cohorte × tiempo relativo y reponderan. *Borusyak, Jaravel y Spiess (2024)* usan un estimador de **imputación**: estiman $\alpha_i$ y $\lambda_t$ **solo con las observaciones no tratadas**, **imputan** $Y_{it}(0)$ para las tratadas y promedian $Y_{it} - \hat Y_{it}(0)$. *de Chaisemartin y D'Haultfœuille* comparan cambios en unidades que **cambian** de estado con unidades que no. Las diferencias entre ellos son de eficiencia y de supuestos; coinciden en que **el estimador TWFE con efectos heterogéneos no debe usarse sin verificar la descomposición de pesos**.
+
+Cuando hay **una sola unidad tratada** y muchas de control, el **control sintético** (Abadie, Diamond y Hainmueller, 2010) construye un contrafactual como combinación ponderada de las unidades de control que reproduce la trayectoria previa del tratado: relaja el supuesto de tendencias paralelas a cambio de requerir buen ajuste previo.
+
+# ★ Postgrado: pesos negativos y el residuo bidireccional
+
+::: {.callout-important title="★ Postgrado"}
+Deducimos la forma del residuo bidireccional y la condición exacta para pesos negativos.
+:::
+
+La proyección de $D_{it}$ sobre las dummies de unidad y de tiempo en un panel **balanceado** es $\hat D_{it} = \bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}$. En efecto, el residuo $\tilde D_{it} = D_{it} - \hat D_{it}$ cumple $\sum_t\tilde D_{it} = \sum_tD_{it} - T\bar D_{i\cdot} - \sum_t\bar D_{\cdot t} + T\bar D_{\cdot\cdot} = T\bar D_{i\cdot} - T\bar D_{i\cdot} - T\bar D_{\cdot\cdot} + T\bar D_{\cdot\cdot} = 0$ (usando $\sum_t\bar D_{\cdot t} = T\bar D_{\cdot\cdot}$), y análogamente $\sum_i\tilde D_{it} = 0$: es ortogonal a todas las dummies de unidad y de tiempo, así que es el residuo de la proyección.
+
+::: {#prp-pesos-neg}
+## Condición de pesos negativos
+En un panel balanceado con adopción absorbente, la celda tratada $(i,t)$ tiene peso negativo si y solo si
+$$
+\bar D_{i\cdot} + \bar D_{\cdot t} > 1 + \bar D_{\cdot\cdot}.
+$$
+:::
+
+::: {.proof}
+Para una celda tratada, $D_{it} = 1$, así que $\tilde D_{it} = 1 - \bar D_{i\cdot} - \bar D_{\cdot t} + \bar D_{\cdot\cdot}$, que es negativo si y solo si $\bar D_{i\cdot} + \bar D_{\cdot t}>1 + \bar D_{\cdot\cdot}$. Los pesos tienen el signo de $\tilde D_{it}$ (el denominador $\sum\tilde D^2$ es positivo).
+:::
+
+En el @exm-pesos, $(A,4)$: $\bar D_{A\cdot} + \bar D_{\cdot4} = 0{,}75 + 0{,}667 = 1{,}417>1{,}333 = 1 + \bar D_{\cdot\cdot}$: peso negativo ✓. En cambio $(A,2)$: $0{,}75 + 0{,}333 = 1{,}083<1{,}333$: positivo. La condición dice que los pesos negativos aparecen en las **celdas de los adoptantes tempranos en los períodos tardíos**, cuando la mayor parte del panel ya está tratada: un diseño con **tratamiento prevalente** tiene, casi inevitablemente, algunos pesos negativos.
+
+# Resumen
+
+- **DiD 2×2:** $\tau_{ATT} = (\text{cambio del tratado}) - (\text{cambio del control})$ bajo **tendencias paralelas** y **sin anticipación** (@thm-did). No exige mismos niveles ni aleatorización. Es la regresión con la interacción $D\cdot\text{Post}$.
+- Las tendencias paralelas **dependen de la escala** (niveles frente a logaritmos) y no se testean, pero las **pre-tendencias** de un **estudio de eventos** son una evidencia indirecta.
+- **Inferencia:** agrupar errores por unidad de tratamiento (correlación serial); con pocos grupos, métodos especiales.
+- **Adopción escalonada:** $\hat\delta_{TWFE}$ es un promedio de efectos con pesos $\tilde D_{it}/\sum\tilde D^2$ que **pueden ser negativos** (@prp-twfe-pesos); equivale a un promedio de DiD de 2×2 que incluye **comparaciones prohibidas** (Goodman-Bacon).
+- **Estimadores modernos** (Callaway–Sant'Anna, Sun–Abraham, imputación): usan controles **limpios** (nunca o aún no tratados) y agregan $ATT(g,t)$ con pesos no negativos.
+
+# Ejercicios
+
+**Ejercicio 4.1.** Con los promedios del @exm-did, calcula el DiD, el estimador antes–después y la diferencia transversal posterior. Muestra que $\hat\delta = 3$ en la regresión @eq-did-reg e indica $\hat\alpha,\hat\beta,\hat\gamma$.
+
+::: {.callout-tip collapse="true" title="Solución 4.1"}
+DiD: $(24 - 20) - (19 - 18) = 3$. Antes–después del tratado: $24 - 20 = 4$. Diferencia transversal después: $24 - 19 = 5$. En la regresión saturada: $\hat\alpha = 18$ (control antes), $\hat\beta = 20 - 18 = 2$, $\hat\gamma = 19 - 18 = 1$ y $\hat\delta = 24 - 18 - 2 - 1 = 3$ (el tratado después es $\alpha + \beta + \gamma + \delta = 24$). El DiD descuenta la diferencia previa de $2$ ($\hat\beta$) y la tendencia común de $1$ ($\hat\gamma$) del cambio observado de $4$ del tratado.
+:::
+
+**Ejercicio 4.2.** Los tratados tenían en el período $-2$ un nivel de $20$, en $-1$ de $20$, y los controles de $18$ y $18$; después del tratamiento, los tratados suben a $24$ y los controles a $19$. ¿Qué puede decir un estudio de eventos con estos datos sobre las tendencias paralelas? ¿Qué pasaría si los tratados hubiesen ido en $-2$ a $18$?
+
+::: {.callout-tip collapse="true" title="Solución 4.2"}
+Con los datos de arriba, antes del tratamiento ninguno de los dos grupos cambia ($0$ y $0$): las tendencias previas son **paralelas** (ambas planas), el coeficiente del adelanto $\hat\delta_{-2}$ es $0$ y no hay señal en contra del supuesto. El DiD del período posterior es $(24 - 20) - (19 - 18) = 3$. Si los tratados hubieran venido de $18$ en $t = -2$ a $20$ en $t = -1$ (crecimiento previo de $+2$) mientras el control era plano, el adelanto $\hat\delta_{-2}$ sería $-2$ (el tratado crecía más rápido antes del tratamiento): las tendencias **no son paralelas**, y parte del "efecto" de $3$ podría ser la continuación de esa tendencia previa. Habría que usar un método que modele la pendiente previa o dudar del diseño.
+:::
+
+**Ejercicio 4.3.** Con un grupo de control que cambia de $10$ a $12$ y un tratado contrafactual de $20$ a $22$, muestra que las tendencias son paralelas en niveles pero no en logaritmos. ¿Qué escala debería usarse si el efecto del shock es **proporcional**?
+
+::: {.callout-tip collapse="true" title="Solución 4.3"}
+Niveles: $12 - 10 = 2$ y $22 - 20 = 2$: paralelas. Logaritmos: $\ln1{,}2 = 0{,}182$ y $\ln1{,}1 = 0{,}095$: no paralelas (el tratado, con base mayor, crece menos en proporción). Si el shock **contrafactual** es proporcional (ambos grupos crecen a la misma tasa porcentual), las tendencias son paralelas en **logaritmos**: el tratado pasaría de $20$ a $24$ ($+20$ %), no a $22$, y el DiD en niveles daría un efecto **falso** de $24 - 22 = 2$ aun sin tratamiento. La escala correcta es la que hace creíble que "en ausencia del tratamiento ambos grupos habrían evolucionado igual".
+:::
+
+**Ejercicio 4.4.** Con los pesos del @exm-pesos $(w_{A2},w_{A3},w_{A4},w_{B4}) = (0{,}30,0{,}30,-0{,}10,0{,}50)$, calcula $\mathbb{E}[\hat\delta_{TWFE}]$ si $\tau_{A,t} = (1,2,3)$ para $t = 2,3,4$ y $\tau_{B4} = 1$, y el promedio simple de los cuatro efectos. Luego calcula el estimador si $\tau_{A2} = \tau_{A3} = \tau_{B4} = 1$ y $\tau_{A4} = 20$.
+
+::: {.callout-tip collapse="true" title="Solución 4.4"}
+Primer caso: $0{,}3(1) + 0{,}3(2) - 0{,}1(3) + 0{,}5(1) = 0{,}3 + 0{,}6 - 0{,}3 + 0{,}5 = 1{,}1$; promedio simple: $(1 + 2 + 3 + 1)/4 = 1{,}75$. TWFE subestima en $37$ %. Segundo caso: $0{,}3 + 0{,}3 - 0{,}1(20) + 0{,}5 = 1{,}1 - 2{,}0 = -0{,}9$: negativo con todos los efectos positivos. Este es un **cambio de signo por pesos negativos**: un efecto grande en una celda con peso negativo "resta" al estimador. Es el escenario preocupante en políticas cuyos efectos crecen mucho con el tiempo y que se adoptan de forma escalonada.
+:::
+
+**Ejercicio 4.5.** Hay tres unidades: A (adopta en $t = 2$), B (adopta en $t = 4$) y C (nunca), con resultados no tratados $Y_{it}(0) = \alpha_i + \lambda_t$, $\alpha = (10,12,14)$, $\lambda = (0,1,2,3)$ y efectos $\tau_{A,t} = (2,3,4)$ para $t = 2,3,4$. Calcula $ATT(2,t)$ para $t = 2,3,4$ con C como control y verifica que coinciden con los efectos verdaderos.
+
+::: {.callout-tip collapse="true" title="Solución 4.5"}
+Resultados de A: $Y_A = (10,\ 10 + 1 + 2,\ 10 + 2 + 3,\ 10 + 3 + 4) = (10,13,15,17)$. Resultados de C: $(14,15,16,17)$. Referencia: $g - 1 = 1$. $ATT(2,2) = (13 - 10) - (15 - 14) = 3 - 1 = 2$ ✓ ($\tau_{A2}$). $ATT(2,3) = (15 - 10) - (16 - 14) = 5 - 2 = 3$ ✓. $ATT(2,4) = (17 - 10) - (17 - 14) = 7 - 3 = 4$ ✓. Cada $ATT(g,t)$ recupera exactamente el efecto verdadero porque C es un control **limpio** (nunca tratado) y las tendencias son paralelas por construcción. Se puede luego agregar: el efecto dinámico a $0,1,2$ períodos de la adopción es $(2,3,4)$ y el promedio simple de los tres es $3$. No hay pesos negativos.
+:::
+
+**Ejercicio 4.6.** En una regresión con panel estado × año ($50$ estados, $20$ años) con un tratamiento que varía por estado, un investigador estima un efecto con error estándar $0{,}05$ (calculado suponiendo errores independientes) y $t = 4$. Con errores agrupados por estado el error estándar es $0{,}12$. ¿Cambia la conclusión? ¿Por qué ocurre?
+
+::: {.callout-tip collapse="true" title="Solución 4.6"}
+Con $\operatorname{ee} = 0{,}05$ el efecto estimado es $0{,}2$ ($t = 4$). Con $\operatorname{ee}_{cluster} = 0{,}12$, $t = 0{,}2/0{,}12 = 1{,}67$: **no significativo** al 5 %. La razón: los errores del mismo estado en distintos años están **correlacionados** (choques persistentes), de modo que las $1\,000$ observaciones no aportan $1\,000$ piezas de información independiente: el tratamiento varía a nivel de estado y la información efectiva es la de ~$50$ clusters. El error estándar "ingenuo" subestima por un factor $0{,}12/0{,}05 = 2{,}4$: típico en paneles con tratamiento por grupo (Bertrand–Duflo–Mullainathan). Agrupar es la práctica estándar.
+:::
+
+**Ejercicio 4.7 ★.** Para la celda $(B,4)$ del @exm-pesos, calcula $\tilde D_{B4}$ con la fórmula del residuo bidireccional y verifica la condición de la @prp-pesos-neg para $(B,4)$ y para $(C,4)$ (que no está tratada).
+
+::: {.callout-tip collapse="true" title="Solución 4.7 ★"}
+$\bar D_{B\cdot} = 0{,}25$, $\bar D_{\cdot4} = 0{,}667$, $\bar D_{\cdot\cdot} = 0{,}333$. $\tilde D_{B4} = 1 - 0{,}25 - 0{,}667 + 0{,}333 = 0{,}417$: positivo; condición: $0{,}25 + 0{,}667 = 0{,}917<1 + 0{,}333 = 1{,}333$: **sin** peso negativo ✓. Para $(C,4)$, $D = 0$: $\tilde D_{C4} = 0 - 0 - 0{,}667 + 0{,}333 = -0{,}333$ (esta celda no entra en la suma de pesos de las celdas tratadas, porque $D_{it} = 0$; interviene en el denominador $\sum\tilde D^2$). La condición de la @prp-pesos-neg aplica solo a celdas **tratadas**. Las celdas no tratadas también tienen residuos $\tilde D$ de ambos signos (en el ejemplo, $\tilde D<0$ en $(A,1)$, $(B,2)$, $(B,3)$ y $(C,4)$), pero esas celdas no entran en la suma de pesos sobre efectos, solo en el denominador $\sum\tilde D^2$. La única celda **tratada** con peso negativo en este diseño es $(A,4)$.
+:::

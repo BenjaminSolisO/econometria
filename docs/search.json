@@ -1947,5 +1947,192 @@
       "Inicio",
       "Econometría 3"
     ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html",
+    "href": "econometria-4/clase-01.html",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html#parámetros-causales",
+    "href": "econometria-4/clase-01.html#parámetros-causales",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "2.1 Parámetros causales",
+    "text": "2.1 Parámetros causales\nComo \\(\\tau_i\\) no se observa, se estudian promedios de efectos:\n\nDefinición 2 (Efectos promedio)  \n\nEfecto promedio del tratamiento (ATE): \\(\\tau_{ATE} = \\mathbb{E}[Y(1) - Y(0)]\\).\nEfecto promedio sobre los tratados (ATT): \\(\\tau_{ATT} = \\mathbb{E}[Y(1) - Y(0)\\mid D = 1]\\).\nEfecto promedio sobre los no tratados (ATU): \\(\\tau_{ATU} = \\mathbb{E}[Y(1) - Y(0)\\mid D = 0]\\).\nEfecto condicional (CATE): \\(\\tau(x) = \\mathbb{E}[Y(1) - Y(0)\\mid X = x]\\).\n\n\nEl ATE responde “¿qué pasaría si toda la población fuera tratada frente a ninguna?” (relevante para una política universal); el ATT, “¿cuánto benefició el programa a quienes participaron?” (evaluación de un programa existente). Son distintos si el efecto es heterogéneo y los que se tratan son distintos de los que no. Con \\(\\pi = P(D = 1)\\), \\(\\tau_{ATE} = \\pi\\tau_{ATT} + (1 - \\pi)\\tau_{ATU}\\) (por la ley de esperanzas iteradas, Clase 2 de Econometría 1).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html#inferencia-de-neyman-en-una-población-finita",
+    "href": "econometria-4/clase-01.html#inferencia-de-neyman-en-una-población-finita",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "4.1 Inferencia de Neyman en una población finita",
+    "text": "4.1 Inferencia de Neyman en una población finita\nPara hacer inferencia con \\(\\hat\\tau\\) hay dos marcos. El de superpoblación (el de los cursos anteriores) supone que las unidades son una muestra aleatoria de una población grande. El de población finita (el de Neyman) trata los \\(n\\) resultados potenciales \\(\\{(Y_i(0),Y_i(1))\\}\\) como fijos, y la única fuente de aleatoriedad es la asignación del tratamiento. Es el más fiel al experimento, donde las unidades son las que son y solo se sortea quién recibe qué.\nSea aleatorización completa: se sortean al azar \\(n_1\\) unidades para el tratamiento (todas las asignaciones con \\(n_1\\) tratados son igualmente probables) y \\(n_0 = n - n_1\\) para el control. El parámetro es el efecto promedio de la muestra \\(\\tau_S = \\frac1n\\sum_i\\tau_i = \\bar Y(1) - \\bar Y(0)\\). Definimos las varianzas de la población finita (con divisor \\(n - 1\\)): \\(S_d^2 = \\frac1{n - 1}\\sum_i(Y_i(d) - \\bar Y(d))^2\\), \\(S_{10} = \\frac1{n - 1}\\sum_i(Y_i(1) - \\bar Y(1))(Y_i(0) - \\bar Y(0))\\) y \\(S_\\tau^2 = \\frac1{n - 1}\\sum_i(\\tau_i - \\tau_S)^2 = S_1^2 + S_0^2 - 2S_{10}\\).\n\nTeorema 2 (Insesgamiento y varianza de Neyman) Bajo aleatorización completa, \\(\\hat\\tau\\) es insesgado para \\(\\tau_S\\) y \\[\n\\operatorname{Var}(\\hat\\tau) = \\frac{S_1^2}{n_1} + \\frac{S_0^2}{n_0} - \\frac{S_\\tau^2}n.\n\\] El estimador \\(\\hat V = s_1^2/n_1 + s_0^2/n_0\\) (con \\(s_d^2\\) las varianzas muestrales dentro de cada grupo) tiene \\(\\mathbb{E}[\\hat V] = S_1^2/n_1 + S_0^2/n_0\\ge\\operatorname{Var}(\\hat\\tau)\\): es conservador, y exacto si el efecto es constante (\\(S_\\tau^2 = 0\\)).\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\n\\(\\bar Y_1\\) es el promedio de una muestra aleatoria simple sin reemplazo de tamaño \\(n_1\\) de la población finita \\(\\{Y_i(1)\\}_{i = 1}^n\\): los tratados son una selección al azar. Las fórmulas de muestreo en poblaciones finitas dan su media y varianza. Lo mismo vale para \\(\\bar Y_0\\) con los controles. La complicación es que \\(\\bar Y_1\\) y \\(\\bar Y_0\\) no son independientes (si una unidad cae en el tratamiento, no cae en el control), y hay que calcular su covarianza. Como cada unidad aporta \\(Y_i(1)\\) o \\(Y_i(0)\\) pero no ambos, el término \\(S_\\tau^2\\) de la varianza (que depende de la correlación entre \\(Y_i(1)\\) e \\(Y_i(0)\\)) no es estimable de los datos: nunca vemos ambos resultados de una misma unidad.\n\n\n\nDemostración. Sea \\(W_i = D_i\\) el indicador de tratamiento, con \\(\\mathbb{E}[W_i] = p = n_1/n\\), \\(\\operatorname{Var}(W_i) = p(1 - p)\\) y, para \\(i\\ne j\\), \\(\\operatorname{Cov}(W_i,W_j) = -p(1 - p)/(n - 1)\\) (sorteo sin reemplazo).\nInsesgamiento. \\(\\bar Y_1 = \\frac1{n_1}\\sum_iW_iY_i(1)\\), así que \\(\\mathbb{E}[\\bar Y_1] = \\frac1{n_1}\\sum_ipY_i(1) = \\bar Y(1)\\) porque \\(p/n_1 = 1/n\\). Análogamente \\(\\mathbb{E}[\\bar Y_0] = \\bar Y(0)\\) (con \\(1 - p\\) y \\(n_0\\)). Luego \\(\\mathbb{E}[\\hat\\tau] = \\tau_S\\).\nVarianza. \\(\\operatorname{Var}(\\bar Y_1) = \\big(1 - \\tfrac{n_1}n\\big)\\tfrac{S_1^2}{n_1} = \\tfrac{S_1^2}{n_1} - \\tfrac{S_1^2}n\\) (varianza de una media muestral sin reemplazo, con corrección por población finita), y \\(\\operatorname{Var}(\\bar Y_0) = \\tfrac{S_0^2}{n_0} - \\tfrac{S_0^2}n\\). Para la covarianza, \\(\\operatorname{Cov}(\\bar Y_1,\\bar Y_0) = \\frac1{n_1n_0}\\sum_{i,j}Y_i(1)Y_j(0)\\operatorname{Cov}(W_i,1 - W_j) = -\\frac1{n_1n_0}\\sum_{i,j}Y_i(1)Y_j(0)\\operatorname{Cov}(W_i,W_j)\\). Separando \\(i = j\\) (con \\(\\operatorname{Cov} = p(1 - p)\\)) e \\(i\\ne j\\), \\[\n\\operatorname{Cov}(\\bar Y_1,\\bar Y_0) = -\\frac{p(1 - p)}{n_1n_0}\\Big[\\sum_iY_i(1)Y_i(0) - \\frac1{n - 1}\\sum_{i\\ne j}Y_i(1)Y_j(0)\\Big] = -\\frac{p(1 - p)}{n_1n_0}\\cdot\\frac{n}{n - 1}\\Big[\\sum_iY_i(1)Y_i(0) - n\\bar Y(1)\\bar Y(0)\\Big],\n\\] y como \\(\\sum_iY_i(1)Y_i(0) - n\\bar Y(1)\\bar Y(0) = (n - 1)S_{10}\\) y \\(n_1n_0 = n^2p(1 - p)\\), queda \\(\\operatorname{Cov}(\\bar Y_1,\\bar Y_0) = -S_{10}/n\\). Entonces \\[\n\\operatorname{Var}(\\hat\\tau) = \\operatorname{Var}(\\bar Y_1) + \\operatorname{Var}(\\bar Y_0) - 2\\operatorname{Cov}(\\bar Y_1,\\bar Y_0) = \\frac{S_1^2}{n_1} + \\frac{S_0^2}{n_0} - \\frac{S_1^2 + S_0^2 - 2S_{10}}n.\n\\]\nEstimador. La varianza muestral \\(s_1^2\\) de una muestra aleatoria simple es insesgada para \\(S_1^2\\) (con divisor \\(n_1 - 1\\)), y lo mismo para \\(s_0^2\\). Entonces \\(\\mathbb{E}[\\hat V] = S_1^2/n_1 + S_0^2/n_0 = \\operatorname{Var}(\\hat\\tau) + S_\\tau^2/n\\ge\\operatorname{Var}(\\hat\\tau)\\).\n\nEn la práctica se usa \\(\\hat V\\) para intervalos y tests (con el TCL de poblaciones finitas, Hájek, que se toma prestado). Que sea conservador es tranquilizante: los intervalos tienen cobertura al menos nominal. Y la corrección \\(-S_\\tau^2/n\\) no se puede estimar, porque exigiría conocer la covarianza entre \\(Y(1)\\) e \\(Y(0)\\) de las mismas unidades (Ejercicio 1.2 muestra que la diferencia puede ser grande o despreciable).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html#estratificación",
+    "href": "econometria-4/clase-01.html#estratificación",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "5.1 Estratificación",
+    "text": "5.1 Estratificación\nCuando se conoce una covariable discreta \\(G\\) fuerte (región, sexo, línea base), se puede aleatorizar dentro de cada estrato: en el estrato \\(g\\) (\\(n_g\\) unidades) se sortea el tratamiento por separado. El estimador es \\(\\hat\\tau_{est} = \\sum_g(n_g/n)\\hat\\tau_g\\) con \\(\\hat\\tau_g\\) la diferencia de medias en el estrato. Elimina la variabilidad entre estratos y casi siempre baja la varianza respecto de la aleatorización completa. La estratificación no equivale a tratar a todos los estratos con la misma probabilidad si se quiere el ATE de la muestra: si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar a lo bruto tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html#potencia-y-tamaño-muestral",
+    "href": "econometria-4/clase-01.html#potencia-y-tamaño-muestral",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "5.2 Potencia y tamaño muestral",
+    "text": "5.2 Potencia y tamaño muestral\nPara diseñar un experimento hay que decidir cuántas unidades reclutar. Con grupos iguales (\\(n_1 = n_0 = m\\)), varianza \\(\\sigma^2\\) en cada grupo y un efecto mínimo detectable \\(\\delta\\), un test bilateral de nivel \\(\\alpha\\) con potencia \\(1 - \\beta\\) requiere \\[\nm\\approx\\frac{2(z_{1 - \\alpha/2} + z_{1 - \\beta})^2\\sigma^2}{\\delta^2}\\quad\\text{por grupo.}\n\\] Con \\(\\alpha = 0{,}05\\) y potencia de \\(80\\) % (\\(z = 1{,}96\\) y \\(0{,}84\\)): \\(m\\approx15{,}7\\,\\sigma^2/\\delta^2\\). Detectar \\(\\delta = 0{,}2\\sigma\\) exige \\(\\approx392\\) por grupo; \\(\\delta = 0{,}5\\sigma\\), \\(\\approx63\\). La relación \\(1/\\delta^2\\) es la clave: detectar un efecto la mitad de grande exige cuatro veces más datos.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-01.html#límites-de-los-experimentos",
+    "href": "econometria-4/clase-01.html#límites-de-los-experimentos",
+    "title": "Clase 1 · Resultados potenciales y experimentos",
+    "section": "5.3 Límites de los experimentos",
+    "text": "5.3 Límites de los experimentos\nUn experimento identifica el ATE de la población experimental, bajo SUTVA y con cumplimiento perfecto. Fallan en la práctica por: (i) incumplimiento (no todos los asignados al tratamiento lo reciben; la Clase 3 usa la asignación como instrumento); (ii) desgaste (se pierden datos de manera selectiva); (iii) validez externa (el efecto en la población del estudio puede no valer en otra); (iv) interferencia (violación de SUTVA); y (v) costo y ética: muchas preguntas (el efecto de la educación en el ingreso, de una crisis en la salud) no pueden estudiarse aleatorizando. De ahí el resto del curso.",
+    "crumbs": [
+      "Inicio",
+      "Clase 1 · Resultados potenciales y experimentos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-02.html",
+    "href": "econometria-4/clase-02.html",
+    "title": "Clase 2 · Selección en observables",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Selección en observables"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-02.html#identificación",
+    "href": "econometria-4/clase-02.html#identificación",
+    "title": "Clase 2 · Selección en observables",
+    "section": "2.1 Identificación",
+    "text": "2.1 Identificación\n\nTeorema 1 (Identificación bajo insesgamiento condicional y traslape) Bajo ambos supuestos, definiendo \\(\\mu_d(x) = \\mathbb{E}[Y\\mid D = d,X = x]\\) (observable), \\[\n\\tau(x) = \\mu_1(x) - \\mu_0(x),\\qquad\\tau_{ATE} = \\mathbb{E}[\\mu_1(X) - \\mu_0(X)],\\qquad\\tau_{ATT} = \\mathbb{E}[\\mu_1(X) - \\mu_0(X)\\mid D = 1].\n\\]\n\n\nDemostración. Por insesgamiento condicional, \\(\\mathbb{E}[Y(d)\\mid X = x] = \\mathbb{E}[Y(d)\\mid D = d,X = x]\\). Y por (la definición del resultado observado, Clase 1), \\(\\mathbb{E}[Y(d)\\mid D = d,X = x] = \\mathbb{E}[Y\\mid D = d,X = x] = \\mu_d(x)\\), que está definida para todo \\(x\\) gracias al traslape (\\(P(D = d\\mid X = x)&gt;0\\)). Luego \\(\\mathbb{E}[Y(1) - Y(0)\\mid X = x] = \\tau(x)\\). Por la ley de esperanzas iteradas, \\(\\tau_{ATE} = \\mathbb{E}[\\tau(X)]\\) y \\(\\tau_{ATT} = \\mathbb{E}[\\tau(X)\\mid D = 1]\\).\n\nEl efecto causal es el promedio, sobre la distribución de \\(X\\), de las diferencias de medias dentro de cada celda de \\(X\\). La diferencia ingenua de la Clase 1 se reemplaza por una diferencia condicional. Sin traslape, \\(\\mu_0(x)\\) no está definida en las celdas donde todos son tratados, y hay que extrapolar con un modelo.",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Selección en observables"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-02.html#ponderación-inversa-por-probabilidad-ipw",
+    "href": "econometria-4/clase-02.html#ponderación-inversa-por-probabilidad-ipw",
+    "title": "Clase 2 · Selección en observables",
+    "section": "4.1 Ponderación inversa por probabilidad (IPW)",
+    "text": "4.1 Ponderación inversa por probabilidad (IPW)\nLa segunda forma de usar el propensity score es reponderar para que los tratados y los controles se parezcan a la población completa.\n\nProposición 2 (Identificación por ponderación) Bajo insesgamiento condicional y traslape, \\[\n\\mathbb{E}\\Big[\\frac{DY}{e(X)}\\Big] = \\mathbb{E}[Y(1)],\\qquad\\mathbb{E}\\Big[\\frac{(1 - D)Y}{1 - e(X)}\\Big] = \\mathbb{E}[Y(0)],\\qquad\\tau_{ATE} = \\mathbb{E}\\Big[\\Big(\\frac D{e(X)} - \\frac{1 - D}{1 - e(X)}\\Big)Y\\Big].\n\\]\n\n\nDemostración. Como \\(DY = DY(1)\\), \\(\\mathbb{E}\\big[\\tfrac{DY}{e(X)}\\big] = \\mathbb{E}\\big[\\tfrac{DY(1)}{e(X)}\\big] = \\mathbb{E}\\Big[\\mathbb{E}\\big[\\tfrac{DY(1)}{e(X)}\\mid X,Y(1)\\big]\\Big] = \\mathbb{E}\\Big[\\tfrac{Y(1)}{e(X)}\\mathbb{E}[D\\mid X,Y(1)]\\Big]\\). Por insesgamiento condicional, \\(\\mathbb{E}[D\\mid X,Y(1)] = \\mathbb{E}[D\\mid X] = e(X)\\), de modo que queda \\(\\mathbb{E}[Y(1)]\\). El mismo argumento vale para \\(d = 0\\) con \\(1 - D\\) y \\(1 - e(X)\\).\n\nLa intuición es la de una encuesta con muestreo desigual: un tratado con \\(e(X) = 0{,}1\\) es raro (hay pocos como él entre los tratados), así que se le asigna peso \\(1/0{,}1 = 10\\) para que “represente” a los demás con sus características que no fueron tratados. El estimador es \\[\n\\hat\\tau_{IPW} = \\frac1n\\sum_i\\Big(\\frac{D_i}{\\hat e(X_i)} - \\frac{1 - D_i}{1 - \\hat e(X_i)}\\Big)Y_i,\n\\] con \\(\\hat e\\) estimado (logit, probit o más flexible). La versión de Hájek normaliza los pesos para que sumen uno en cada grupo, y es más estable. Para el ATT, \\(\\mathbb{E}[Y(0)\\mid D = 1] = \\mathbb{E}\\big[\\tfrac{(1 - D)e(X)}{1 - e(X)}Y\\big]/\\pi\\) (Ejercicio 2.5): los controles se reponderan para parecerse a los tratados.\nLos problemas son los de siempre con ponderaciones: si algunos \\(e(X_i)\\) están cerca de 0 o 1 (traslape débil), los pesos son enormes y el estimador tiene varianza altísima (una unidad con \\(e = 0{,}01\\) pesa \\(100\\)). La respuesta práctica es recortar (trimming): descartar las unidades con \\(\\hat e\\) fuera de \\([0{,}1,0{,}9]\\) (Crump et al., 2009). Pero eso cambia el parámetro: se estima el efecto sobre la subpoblación con buen traslape, no el ATE de toda la población, un intercambio explícito entre validez interna y alcance. Un resultado contraintuitivo (Hirano, Imbens y Ridder, 2003): estimar \\(e\\) de manera flexible da un estimador más eficiente que usar el \\(e\\) verdadero, si se lo conociera.",
+    "crumbs": [
+      "Inicio",
+      "Clase 2 · Selección en observables"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-03.html",
+    "href": "econometria-4/clase-03.html",
+    "title": "Clase 3 · Variables instrumentales con efectos heterogéneos",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Variables instrumentales con efectos heterogéneos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-03.html#los-cuatro-tipos-de-personas",
+    "href": "econometria-4/clase-03.html#los-cuatro-tipos-de-personas",
+    "title": "Clase 3 · Variables instrumentales con efectos heterogéneos",
+    "section": "2.1 Los cuatro tipos de personas",
+    "text": "2.1 Los cuatro tipos de personas\nDado que \\(D(0)\\) y \\(D(1)\\) son binarios, cada unidad cae en uno de cuatro estratos principales:\n\n\n\n\n\n\n\n\n\nTipo\n\\(D(0)\\)\n\\(D(1)\\)\nComportamiento\n\n\n\n\nAlways-takers (siempre toman)\n1\n1\nreciben el tratamiento con o sin instrumento\n\n\nNever-takers (nunca toman)\n0\n0\nno lo reciben con o sin instrumento\n\n\nCompliers (cumplidores)\n0\n1\nlo reciben solo si \\(Z = 1\\)\n\n\nDefiers (desafiantes)\n1\n0\nlo reciben solo si \\(Z = 0\\)\n\n\n\nLa monotonía elimina a los desafiantes. El estrato de cada persona no se observa (para cada una vemos solo un valor de \\(D(z)\\)), pero sus proporciones sí se identifican.\n\nProposición 1 (Las proporciones de los estratos) Bajo independencia y monotonía, con \\(\\pi_a,\\pi_n,\\pi_c\\) las proporciones de always-takers, never-takers y compliers, \\[\n\\pi_a = \\mathbb{E}[D\\mid Z = 0],\\qquad\\pi_n = 1 - \\mathbb{E}[D\\mid Z = 1],\\qquad\\pi_c = \\mathbb{E}[D\\mid Z = 1] - \\mathbb{E}[D\\mid Z = 0].\n\\]\n\n\nDemostración. Con \\(Z = 0\\), \\(D = D(0)\\), que vale \\(1\\) solo para los always-takers (y los defiers, que no existen): \\(\\mathbb{E}[D\\mid Z = 0] = P(D(0) = 1) = \\pi_a\\) por independencia. Con \\(Z = 1\\), \\(D = D(1) = 1\\) para always-takers y compliers: \\(\\mathbb{E}[D\\mid Z = 1] = \\pi_a + \\pi_c\\), así que \\(\\pi_c = \\mathbb{E}[D\\mid Z = 1] - \\mathbb{E}[D\\mid Z = 0]\\) y \\(\\pi_n = 1 - \\pi_a - \\pi_c = 1 - \\mathbb{E}[D\\mid Z = 1]\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Variables instrumentales con efectos heterogéneos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-03.html#dos-casos-especiales",
+    "href": "econometria-4/clase-03.html#dos-casos-especiales",
+    "title": "Clase 3 · Variables instrumentales con efectos heterogéneos",
+    "section": "3.1 Dos casos especiales",
+    "text": "3.1 Dos casos especiales\nCumplimiento unilateral. Si el control no puede acceder al tratamiento (\\(D(0) = 0\\) para todos, por ejemplo un programa al que solo se entra si se es asignado), no hay always-takers: \\(\\pi_a = 0\\) y los compliers son todos los que reciben el tratamiento. Entonces \\(\\tau_{LATE} = \\mathbb{E}[Y(1) - Y(0)\\mid D = 1] = \\tau_{ATT}\\): LATE = ATT (Bloom, 1984). El efecto sobre los tratados queda identificado: \\(\\tau_{ATT} = \\text{ITT}/\\mathbb{E}[D\\mid Z = 1]\\) (Ejercicio 3.2).\nEfecto homogéneo. Si \\(Y_i(1) - Y_i(0) = \\beta\\) para todos, el efecto de los compliers es \\(\\beta\\), igual al de la población: LATE = ATE = ATT, y se recupera el modelo de Econometría 1.\nEn general LATE es distinto del ATE: el efecto para los compliers puede ser mayor o menor que para los always-takers y los never-takers. Si los que se mueven con el instrumento son los que más ganan del tratamiento (o los que menos), el LATE sesga el ATE. Extrapolar del LATE al ATE exige más supuestos (o un instrumento muy fuerte, que mueva a casi todos, §★).",
+    "crumbs": [
+      "Inicio",
+      "Clase 3 · Variables instrumentales con efectos heterogéneos"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-04.html",
+    "href": "econometria-4/clase-04.html",
+    "title": "Clase 4 · Diferencias en diferencias",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Diferencias en diferencias"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-04.html#regresión-y-efectos-fijos",
+    "href": "econometria-4/clase-04.html#regresión-y-efectos-fijos",
+    "title": "Clase 4 · Diferencias en diferencias",
+    "section": "2.1 Regresión y efectos fijos",
+    "text": "2.1 Regresión y efectos fijos\nEl estimador de DiD se calcula con una regresión. Con datos de \\(i = 1,\\dots,N\\) y \\(t\\in\\{0,1\\}\\), \\[\nY_{it} = \\alpha + \\beta D_i + \\gamma\\,\\text{Post}_t + \\delta\\,(D_i\\cdot\\text{Post}_t) + \\varepsilon_{it}.\n\\tag{1}\\] Los cuatro parámetros reproducen exactamente las cuatro medias de las celdas (modelo saturado): \\(\\alpha\\) = media de control antes, \\(\\alpha + \\beta\\) = tratado antes, \\(\\alpha + \\gamma\\) = control después, \\(\\alpha + \\beta + \\gamma + \\delta\\) = tratado después. Entonces \\(\\delta = (\\bar Y_{1,1} - \\bar Y_{1,0}) - (\\bar Y_{0,1} - \\bar Y_{0,0})\\) es el estimador de DiD (Clase 3 de Econometría 1: la regresión con dummies reproduce los promedios de cada celda). Con un panel se usa la versión con efectos fijos de unidad y de tiempo (two-way fixed effects, TWFE): \\[\nY_{it} = \\alpha_i + \\lambda_t + \\delta D_{it} + \\varepsilon_{it},\\qquad D_{it} = D_i\\cdot\\text{Post}_t.\n\\tag{2}\\] Con \\(T = 2\\) períodos, la regresión TWFE es equivalente a regresar la diferencia \\(\\Delta Y_i = Y_{i1} - Y_{i0}\\) sobre \\(D_i\\) (se elimina \\(\\alpha_i\\) al diferenciar, Clase 9 de Econometría 2), cuyo coeficiente es la diferencia de medias de \\(\\Delta Y\\) entre tratados y controles: el estimador de DiD. Para incorporar covariables \\(X_i\\) se puede imponer que las tendencias paralelas valgan condicionando en \\(X_i\\) (Abadie, 2005; Sant’Anna y Zhao, 2020), con métodos de ponderación o doblemente robustos análogos a los de la Clase 2.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Diferencias en diferencias"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-04.html#qué-hay-que-mirar-la-dependencia-de-la-forma-funcional",
+    "href": "econometria-4/clase-04.html#qué-hay-que-mirar-la-dependencia-de-la-forma-funcional",
+    "title": "Clase 4 · Diferencias en diferencias",
+    "section": "2.2 Qué hay que mirar: la dependencia de la forma funcional",
+    "text": "2.2 Qué hay que mirar: la dependencia de la forma funcional\nLas tendencias paralelas no son testeables (involucran un contrafactual) pero sí se pueden evaluar indirectamente: si se tienen varios períodos antes del tratamiento, se pueden comparar las tendencias previas de los dos grupos (la prueba de pre-tendencias, o gráfico de estudio de eventos, abajo). Que las tendencias previas sean paralelas es consistente con el supuesto, pero no lo prueba: el grupo tratado podría haber cambiado de tendencia por razones no relacionadas.\nUna sutileza adicional: el supuesto depende de la escala en que se mide \\(Y\\).\n\nEjemplo 2 (Paralelas en niveles pero no en logaritmos) El control pasa de \\(10\\) a \\(12\\) (cambio \\(+2\\)) y el contrafactual del tratado, de \\(20\\) a \\(22\\) (también \\(+2\\)): paralelas en niveles. En logaritmos, el control crece \\(\\ln(12/10) = 0{,}182\\) y el tratado \\(\\ln(22/20) = 0{,}095\\): no son paralelas. Si el supuesto vale en niveles, falla en logaritmos (y viceversa), salvo que los dos grupos tengan el mismo nivel base. La elección de la escala es entonces parte del supuesto, y debe justificarse con argumentos económicos (¿el efecto del shock es aditivo o proporcional?) y con las pre-tendencias en esa escala.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Diferencias en diferencias"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-04.html#qué-estima-twfe-realmente",
+    "href": "econometria-4/clase-04.html#qué-estima-twfe-realmente",
+    "title": "Clase 4 · Diferencias en diferencias",
+    "section": "5.1 Qué estima TWFE realmente",
+    "text": "5.1 Qué estima TWFE realmente\nSea un panel balanceado con \\(D_{it}\\) absorbente (una vez tratada, la unidad sigue tratada). Definimos el residuo bidireccional de \\(D_{it}\\): \\(\\tilde D_{it} = D_{it} - \\bar D_{i\\cdot} - \\bar D_{\\cdot t} + \\bar D_{\\cdot\\cdot}\\) (resta de la media de la unidad y de la del período, y suma de la media global).\n\nProposición 1 (TWFE como promedio ponderado de los efectos) Supón \\(Y_{it}(0) = \\alpha_i + \\lambda_t + \\varepsilon_{it}\\) con \\(\\mathbb{E}[\\varepsilon\\mid D] = 0\\) (tendencias paralelas) y efectos de tratamiento \\(\\tau_{it}\\) arbitrarios (heterogéneos entre unidades y en el tiempo). Entonces \\[\n\\mathbb{E}[\\hat\\delta_{TWFE}] = \\sum_{(i,t):\\,D_{it} = 1}w_{it}\\,\\tau_{it},\\qquad w_{it} = \\frac{\\tilde D_{it}}{\\sum_{j,s}\\tilde D_{js}^2},\\qquad\\sum_{(i,t):\\,D_{it} = 1}w_{it} = 1.\n\\] Los pesos \\(w_{it}\\) pueden ser negativos.\n\n\nDemostración. Por Frisch–Waugh–Lovell (Clase 3 de Econometría 1), \\(\\hat\\delta_{TWFE} = \\sum\\tilde D_{it}Y_{it}/\\sum\\tilde D_{it}^2\\), donde \\(\\tilde D_{it}\\) es el residuo de \\(D_{it}\\) en una regresión sobre las dummies de unidad y de tiempo. En un panel balanceado esa proyección es \\(\\bar D_{i\\cdot} + \\bar D_{\\cdot t} - \\bar D_{\\cdot\\cdot}\\), de modo que el residuo es el de la definición (se verifica que \\(\\sum_t\\tilde D_{it} = 0\\) para todo \\(i\\) y \\(\\sum_i\\tilde D_{it} = 0\\) para todo \\(t\\), es decir, que es ortogonal a todas las dummies). Sustituyendo \\(Y_{it} = \\alpha_i + \\lambda_t + \\tau_{it}D_{it} + \\varepsilon_{it}\\), los términos con \\(\\alpha_i\\) y \\(\\lambda_t\\) se anulan por esa ortogonalidad, y \\(\\mathbb{E}[\\tilde D_{it}\\varepsilon_{it}] = 0\\): queda \\(\\sum\\tilde D_{it}\\tau_{it}D_{it}/\\sum\\tilde D_{it}^2\\). Los pesos suman uno porque \\(\\sum\\tilde D_{it}D_{it} = \\sum\\tilde D_{it}(\\tilde D_{it} + \\bar D_{i\\cdot} + \\bar D_{\\cdot t} - \\bar D_{\\cdot\\cdot}) = \\sum\\tilde D_{it}^2\\) (el residuo es ortogonal a la parte ajustada).\n\nEl peso de la celda \\((i,t)\\) tratada es positivo cuando \\(D_{it} = 1\\) supera lo que se esperaría “por la media de la unidad y del período”. Un peso negativo ocurre cuando una unidad tratada está tratada casi todo el tiempo (\\(\\bar D_{i\\cdot}\\) alto) en un período en que casi todas las demás también (\\(\\bar D_{\\cdot t}\\) alto): en términos de comparaciones, la unidad que adoptó temprano es usada como control de las que adoptan tarde (una “comparación prohibida”, porque su resultado ya contiene el efecto del tratamiento).\n\nEjemplo 3 (Tres unidades, cuatro períodos) La unidad A adopta en \\(t = 2\\), la B en \\(t = 4\\) y la C nunca. Con \\(D_A = (0,1,1,1)\\), \\(D_B = (0,0,0,1)\\), \\(D_C = (0,0,0,0)\\): \\(\\bar D_{A\\cdot} = 0{,}75\\), \\(\\bar D_{B\\cdot} = 0{,}25\\), \\(\\bar D_{C\\cdot} = 0\\); \\(\\bar D_{\\cdot t} = (0,\\tfrac13,\\tfrac13,\\tfrac23)\\) y \\(\\bar D_{\\cdot\\cdot} = \\tfrac13\\). Los residuos en las celdas tratadas son \\(\\tilde D_{A2} = \\tilde D_{A3} = 0{,}25\\), \\(\\tilde D_{A4} = -0{,}083\\) y \\(\\tilde D_{B4} = 0{,}417\\), y \\(\\sum\\tilde D^2 = 0{,}833\\). Los pesos son \\[\nw_{A2} = 0{,}30,\\qquad w_{A3} = 0{,}30,\\qquad w_{A4} = -0{,}10,\\qquad w_{B4} = 0{,}50.\n\\] La celda \\((A,4)\\) tiene peso negativo: ahí A (tratada desde hace tres períodos) es una unidad “ya tratada” que sirve de control para B en \\(t = 4\\). Si los efectos crecen con el tiempo, \\(\\tau_{A,2:4} = (1,2,3)\\) y \\(\\tau_{B4} = 1\\), entonces \\(\\mathbb{E}[\\hat\\delta] = 0{,}3(1) + 0{,}3(2) - 0{,}1(3) + 0{,}5(1) = 1{,}1\\), mientras que el promedio simple de los cuatro efectos es \\(1{,}75\\). Y si \\(\\tau_{A4}\\) fuera muy grande (por ejemplo, \\(20\\)) con \\(\\tau_{A2} = \\tau_{A3} = \\tau_{B4} = 1\\), el estimador vale \\(0{,}3 + 0{,}3 - 2{,}0 + 0{,}5 = -0{,}9\\): negativo, aunque todos los efectos individuales son positivos (Ejercicio 4.4).\n\nLa descomposición de Goodman-Bacon (2021) formaliza esto desde otro ángulo: \\(\\hat\\delta_{TWFE}\\) es un promedio ponderado de todos los DiD de \\(2\\times2\\) posibles entre pares de grupos de adopción, incluyendo las comparaciones prohibidas (adoptantes tardíos contra tempranos ya tratados). Cuando los efectos son constantes (homogéneos y sin dinámica), todos los \\(2\\times2\\) estiman lo mismo y no hay problema. Cuando el efecto cambia con el tiempo desde la adopción (casi siempre), las comparaciones prohibidas restan efectos acumulados y el estimador queda contaminado.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Diferencias en diferencias"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-04.html#los-estimadores-modernos",
+    "href": "econometria-4/clase-04.html#los-estimadores-modernos",
+    "title": "Clase 4 · Diferencias en diferencias",
+    "section": "5.2 Los estimadores modernos",
+    "text": "5.2 Los estimadores modernos\nLa solución común a los estimadores recientes es no usar como controles a unidades ya tratadas. Construyen efectos por cohorte y período y los agregan con pesos explícitos y no negativos.\nCallaway y Sant’Anna (2021). Sea \\(G_i\\) el período de adopción de la unidad \\(i\\) (\\(G_i = \\infty\\) si nunca). Para cada cohorte \\(g\\) y período \\(t\\ge g\\), el efecto por grupo y tiempo es \\[\nATT(g,t) = \\mathbb{E}\\big[Y_{it} - Y_{i,g-1}\\mid G_i = g\\big] - \\mathbb{E}\\big[Y_{it} - Y_{i,g-1}\\mid\\text{control}\\big],\n\\] donde el control son las unidades nunca tratadas (o aún no tratadas en \\(t\\)). Bajo tendencias paralelas condicionales y no anticipación, se identifica por el mismo argumento del Teorema 1: cada \\(ATT(g,t)\\) es un DiD de \\(2\\times2\\) con un control limpio. Luego se agregan: el efecto dinámico a \\(k\\) períodos de la adopción, el efecto por cohorte, o un promedio global con ponderaciones por tamaño de cohorte, todos con pesos positivos (Ejercicio 4.5).\nOtros. Sun y Abraham (2021) estiman el estudio de eventos con interacciones cohorte × tiempo relativo y reponderan. Borusyak, Jaravel y Spiess (2024) usan un estimador de imputación: estiman \\(\\alpha_i\\) y \\(\\lambda_t\\) solo con las observaciones no tratadas, imputan \\(Y_{it}(0)\\) para las tratadas y promedian \\(Y_{it} - \\hat Y_{it}(0)\\). de Chaisemartin y D’Haultfœuille comparan cambios en unidades que cambian de estado con unidades que no. Las diferencias entre ellos son de eficiencia y de supuestos; coinciden en que el estimador TWFE con efectos heterogéneos no debe usarse sin verificar la descomposición de pesos.\nCuando hay una sola unidad tratada y muchas de control, el control sintético (Abadie, Diamond y Hainmueller, 2010) construye un contrafactual como combinación ponderada de las unidades de control que reproduce la trayectoria previa del tratado: relaja el supuesto de tendencias paralelas a cambio de requerir buen ajuste previo.",
+    "crumbs": [
+      "Inicio",
+      "Clase 4 · Diferencias en diferencias"
+    ]
   }
 ]

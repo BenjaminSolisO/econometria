@@ -1,0 +1,10 @@
+---
+title: "Econometría 4"
+subtitle: "Inferencia causal, métodos no paramétricos y aprendizaje automático"
+description: "En preparación."
+format: html
+number-sections: false
+toc: false
+---
+
+Este curso está en preparación.

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Diferencias en diferencias: identificación del ATT con tendencias paralelas, equivalencia con regresión, estudios de eventos, inferencia con correlación serial, y la literatura reciente sobre adopción escalonada con la descomposición de pesos de los efectos fijos bidireccionales y los estimadores de Callaway–Sant’Anna.">
+
+<title>Clase 4 · Diferencias en diferencias – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-03.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-04.html">Clase 4 · Diferencias en diferencias</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#aprovechar-el-tiempo" id="toc-aprovechar-el-tiempo" class="nav-link active" data-scroll-target="#aprovechar-el-tiempo"><span class="header-section-number">1</span> Aprovechar el tiempo</a></li>
+  <li><a href="#el-caso-canónico-22" id="toc-el-caso-canónico-22" class="nav-link" data-scroll-target="#el-caso-canónico-22"><span class="header-section-number">2</span> El caso canónico 2×2</a>
+  <ul class="collapse">
+  <li><a href="#regresión-y-efectos-fijos" id="toc-regresión-y-efectos-fijos" class="nav-link" data-scroll-target="#regresión-y-efectos-fijos"><span class="header-section-number">2.1</span> Regresión y efectos fijos</a></li>
+  <li><a href="#qué-hay-que-mirar-la-dependencia-de-la-forma-funcional" id="toc-qué-hay-que-mirar-la-dependencia-de-la-forma-funcional" class="nav-link" data-scroll-target="#qué-hay-que-mirar-la-dependencia-de-la-forma-funcional"><span class="header-section-number">2.2</span> Qué hay que mirar: la dependencia de la forma funcional</a></li>
+  </ul></li>
+  <li><a href="#estudios-de-eventos" id="toc-estudios-de-eventos" class="nav-link" data-scroll-target="#estudios-de-eventos"><span class="header-section-number">3</span> Estudios de eventos</a></li>
+  <li><a href="#inferencia-la-correlación-serial" id="toc-inferencia-la-correlación-serial" class="nav-link" data-scroll-target="#inferencia-la-correlación-serial"><span class="header-section-number">4</span> Inferencia: la correlación serial</a></li>
+  <li><a href="#adopción-escalonada-lo-que-cambió-desde-2018" id="toc-adopción-escalonada-lo-que-cambió-desde-2018" class="nav-link" data-scroll-target="#adopción-escalonada-lo-que-cambió-desde-2018"><span class="header-section-number">5</span> Adopción escalonada: lo que cambió desde 2018</a>
+  <ul class="collapse">
+  <li><a href="#qué-estima-twfe-realmente" id="toc-qué-estima-twfe-realmente" class="nav-link" data-scroll-target="#qué-estima-twfe-realmente"><span class="header-section-number">5.1</span> Qué estima TWFE realmente</a></li>
+  <li><a href="#los-estimadores-modernos" id="toc-los-estimadores-modernos" class="nav-link" data-scroll-target="#los-estimadores-modernos"><span class="header-section-number">5.2</span> Los estimadores modernos</a></li>
+  </ul></li>
+  <li><a href="#postgrado-pesos-negativos-y-el-residuo-bidireccional" id="toc-postgrado-pesos-negativos-y-el-residuo-bidireccional" class="nav-link" data-scroll-target="#postgrado-pesos-negativos-y-el-residuo-bidireccional"><span class="header-section-number">6</span> ★ Postgrado: pesos negativos y el residuo bidireccional</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-04.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 4 · Diferencias en diferencias</h1>
+<p class="subtitle lead">Tendencias paralelas, efectos fijos bidireccionales y adopción escalonada</p>
+</div>
+
+<div>
+  <div class="description">
+    Diferencias en diferencias: identificación del ATT con tendencias paralelas, equivalencia con regresión, estudios de eventos, inferencia con correlación serial, y la literatura reciente sobre adopción escalonada con la descomposición de pesos de los efectos fijos bidireccionales y los estimadores de Callaway–Sant’Anna.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-04.pdf">Descargar esta clase en PDF</a></p>
+<section id="aprovechar-el-tiempo" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Aprovechar el tiempo</h1>
+<p>Las Clases 2 y 3 identificaron efectos causales con datos de <strong>un solo momento</strong>: o suponiendo que <span class="math inline">\(X\)</span> captura todos los confusores, o con un instrumento. Cuando se tienen datos <strong>antes y después</strong> de una intervención, para un grupo afectado y otro no, hay una tercera estrategia muy usada en evaluación de políticas: <strong>diferencias en diferencias</strong> (DiD). La idea es comparar el <strong>cambio</strong> del grupo tratado con el <strong>cambio</strong> del grupo de control. Así se elimina cualquier diferencia <strong>fija</strong> entre los grupos (que el estudio transversal no podría separar del efecto) y cualquier tendencia <strong>común</strong> en el tiempo (que el estudio antes–después no podría separar del efecto).</p>
+<p>El ejemplo canónico es el de Card y Krueger (1994): el estado de Nueva Jersey subió su salario mínimo en 1992 y el vecino Pensilvania no. Comparar el empleo de los restaurantes de comida rápida de Nueva Jersey antes y después da un cambio que mezcla el efecto del salario mínimo con la coyuntura; Pensilvania, que vivió la misma coyuntura, entrega esa tendencia común.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;David Card recibió el Nobel de Economía de 2021 por sus aportes empíricos a la economía laboral, y el estudio del salario mínimo es uno de los más citados. Sus resultados (que el empleo no cayó, e incluso subió algo en Nueva Jersey) contradecían la predicción estándar y desataron un debate que duró décadas; lo que hoy es consenso es la <strong>metodología</strong>: comparar grupos afectados y no afectados antes y después, y ser explícito sobre qué supuesto hace comparable al control.</p></div></div></section>
+<section id="el-caso-canónico-22" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El caso canónico 2×2</h1>
+<p>Hay dos grupos (<span class="math inline">\(D_i = 1\)</span> tratado, <span class="math inline">\(D_i = 0\)</span> control) y dos períodos (<span class="math inline">\(t = 0\)</span>: antes, <span class="math inline">\(t = 1\)</span>: después; el tratamiento ocurre entre ambos y solo para <span class="math inline">\(D_i = 1\)</span>). Los resultados potenciales son <span class="math inline">\(Y_{it}(0)\)</span> (sin tratamiento) e <span class="math inline">\(Y_{it}(1)\)</span> (con tratamiento). Se observa <span class="math inline">\(Y_{it} = Y_{it}(0)\)</span> salvo para los tratados en <span class="math inline">\(t = 1\)</span>, donde se observa <span class="math inline">\(Y_{i1}(1)\)</span>. El parámetro es el <strong>efecto promedio sobre los tratados</strong> <span class="math inline">\(\tau_{ATT} = \mathbb{E}[Y_{i1}(1) - Y_{i1}(0)\mid D_i = 1]\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de DiD">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de DiD
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Tendencias paralelas:</strong> <span class="math inline">\(\mathbb{E}\big[Y_{i1}(0) - Y_{i0}(0)\mid D_i = 1\big] = \mathbb{E}\big[Y_{i1}(0) - Y_{i0}(0)\mid D_i = 0\big]\)</span>. En ausencia de tratamiento, los dos grupos habrían tenido <strong>el mismo cambio promedio</strong>.</li>
+<li><strong>Sin anticipación:</strong> <span class="math inline">\(Y_{i0}(1) = Y_{i0}(0)\)</span> para los tratados: el tratamiento no afecta el resultado antes de ocurrir.</li>
+</ol>
+</div>
+</div>
+<p>Observa qué <strong>no</strong> se supone: que los dos grupos tengan el mismo <em>nivel</em> (pueden diferir mucho), ni que el tratamiento sea aleatorio, ni que no haya tendencias temporales. Solo se supone que <strong>la tendencia que habría tenido el tratado</strong> es igual a la observada en el control.</p>
+<div id="thm-did" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Identificación de DiD)</strong></span> Bajo tendencias paralelas y sin anticipación, <span class="math display">\[
+\tau_{ATT} = \underbrace{\big(\mathbb{E}[Y\mid D = 1,t = 1] - \mathbb{E}[Y\mid D = 1,t = 0]\big)}_{\text{cambio del tratado}} - \underbrace{\big(\mathbb{E}[Y\mid D = 0,t = 1] - \mathbb{E}[Y\mid D = 0,t = 0]\big)}_{\text{cambio del control}}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para los tratados, <span class="math inline">\(\mathbb{E}[Y_{i1}\mid D = 1] = \mathbb{E}[Y_{i1}(1)\mid D = 1]\)</span> y, por no anticipación, <span class="math inline">\(\mathbb{E}[Y_{i0}\mid D = 1] = \mathbb{E}[Y_{i0}(0)\mid D = 1]\)</span>. Sumamos y restamos el contrafactual no observable <span class="math inline">\(\mathbb{E}[Y_{i1}(0)\mid D = 1]\)</span>: <span class="math display">\[
+\mathbb{E}[Y_{i1} - Y_{i0}\mid D = 1] = \underbrace{\mathbb{E}[Y_{i1}(1) - Y_{i1}(0)\mid D = 1]}_{\tau_{ATT}} + \underbrace{\mathbb{E}[Y_{i1}(0) - Y_{i0}(0)\mid D = 1]}_{\text{cambio contrafactual del tratado}}.
+\]</span> Para el control, <span class="math inline">\(\mathbb{E}[Y_{i1} - Y_{i0}\mid D = 0] = \mathbb{E}[Y_{i1}(0) - Y_{i0}(0)\mid D = 0]\)</span>. Por <strong>tendencias paralelas</strong>, el último término de la primera ecuación es igual al cambio del control. Restando las dos ecuaciones queda <span class="math inline">\(\tau_{ATT}\)</span>.</p>
+</div>
+<div id="exm-did" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Un ejemplo numérico)</strong></span> Tratados: promedio <span class="math inline">\(20\)</span> antes y <span class="math inline">\(24\)</span> después. Control: <span class="math inline">\(18\)</span> antes y <span class="math inline">\(19\)</span> después. El cambio del tratado es <span class="math inline">\(4\)</span>, el del control es <span class="math inline">\(1\)</span>: <span class="math inline">\(\hat\tau_{DiD} = 4 - 1 = 3\)</span>. Comparar con las alternativas: <em>antes–después</em> del tratado da <span class="math inline">\(4\)</span> (atribuye todo el cambio al tratamiento, incluida la tendencia común de <span class="math inline">\(1\)</span>); <em>tratados contra controles después</em> da <span class="math inline">\(24 - 19 = 5\)</span> (incluye la diferencia previa de <span class="math inline">\(20 - 18 = 2\)</span> entre los grupos). DiD descuenta ambas: <span class="math inline">\(5 - 2 = 3\)</span>.</p>
+</div>
+<section id="regresión-y-efectos-fijos" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="regresión-y-efectos-fijos"><span class="header-section-number">2.1</span> Regresión y efectos fijos</h2>
+<p>El estimador de DiD se calcula con una regresión. Con datos de <span class="math inline">\(i = 1,\dots,N\)</span> y <span class="math inline">\(t\in\{0,1\}\)</span>, <span id="eq-did-reg"><span class="math display">\[
+Y_{it} = \alpha + \beta D_i + \gamma\,\text{Post}_t + \delta\,(D_i\cdot\text{Post}_t) + \varepsilon_{it}.
+\tag{1}\]</span></span> Los cuatro parámetros reproducen <strong>exactamente</strong> las cuatro medias de las celdas (modelo saturado): <span class="math inline">\(\alpha\)</span> = media de control antes, <span class="math inline">\(\alpha + \beta\)</span> = tratado antes, <span class="math inline">\(\alpha + \gamma\)</span> = control después, <span class="math inline">\(\alpha + \beta + \gamma + \delta\)</span> = tratado después. Entonces <span class="math inline">\(\delta = (\bar Y_{1,1} - \bar Y_{1,0}) - (\bar Y_{0,1} - \bar Y_{0,0})\)</span> es el estimador de DiD (Clase 3 de Econometría 1: la regresión con dummies reproduce los promedios de cada celda). Con un panel se usa la versión con <strong>efectos fijos de unidad y de tiempo</strong> (<em>two-way fixed effects</em>, TWFE): <span id="eq-twfe"><span class="math display">\[
+Y_{it} = \alpha_i + \lambda_t + \delta D_{it} + \varepsilon_{it},\qquad D_{it} = D_i\cdot\text{Post}_t.
+\tag{2}\]</span></span> Con <span class="math inline">\(T = 2\)</span> períodos, la regresión TWFE es equivalente a regresar la <strong>diferencia</strong> <span class="math inline">\(\Delta Y_i = Y_{i1} - Y_{i0}\)</span> sobre <span class="math inline">\(D_i\)</span> (se elimina <span class="math inline">\(\alpha_i\)</span> al diferenciar, Clase 9 de Econometría 2), cuyo coeficiente es la diferencia de medias de <span class="math inline">\(\Delta Y\)</span> entre tratados y controles: el estimador de DiD. Para incorporar <strong>covariables</strong> <span class="math inline">\(X_i\)</span> se puede imponer que las tendencias paralelas valgan <em>condicionando en <span class="math inline">\(X_i\)</span></em> (Abadie, 2005; Sant’Anna y Zhao, 2020), con métodos de ponderación o doblemente robustos análogos a los de la Clase 2.</p>
+</section>
+<section id="qué-hay-que-mirar-la-dependencia-de-la-forma-funcional" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="qué-hay-que-mirar-la-dependencia-de-la-forma-funcional"><span class="header-section-number">2.2</span> Qué hay que mirar: la dependencia de la forma funcional</h2>
+<p>Las tendencias paralelas <strong>no son testeables</strong> (involucran un contrafactual) pero sí se pueden <strong>evaluar indirectamente</strong>: si se tienen varios períodos <strong>antes</strong> del tratamiento, se pueden comparar las tendencias previas de los dos grupos (la <em>prueba de pre-tendencias</em>, o gráfico de <strong>estudio de eventos</strong>, abajo). Que las tendencias previas sean paralelas es <strong>consistente con</strong> el supuesto, pero no lo prueba: el grupo tratado podría haber cambiado de tendencia por razones no relacionadas.</p>
+<p>Una sutileza adicional: el supuesto <strong>depende de la escala</strong> en que se mide <span class="math inline">\(Y\)</span>.</p>
+<div id="exm-escala" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Paralelas en niveles pero no en logaritmos)</strong></span> El control pasa de <span class="math inline">\(10\)</span> a <span class="math inline">\(12\)</span> (cambio <span class="math inline">\(+2\)</span>) y el contrafactual del tratado, de <span class="math inline">\(20\)</span> a <span class="math inline">\(22\)</span> (también <span class="math inline">\(+2\)</span>): <strong>paralelas en niveles</strong>. En logaritmos, el control crece <span class="math inline">\(\ln(12/10) = 0{,}182\)</span> y el tratado <span class="math inline">\(\ln(22/20) = 0{,}095\)</span>: <strong>no son paralelas</strong>. Si el supuesto vale en niveles, falla en logaritmos (y viceversa), salvo que los dos grupos tengan el mismo nivel base. La elección de la escala es entonces <strong>parte del supuesto</strong>, y debe justificarse con argumentos económicos (¿el efecto del shock es aditivo o proporcional?) y con las pre-tendencias en esa escala.</p>
+</div>
+</section>
+</section>
+<section id="estudios-de-eventos" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estudios de eventos</h1>
+<p>Con varios períodos, se puede estimar el <strong>efecto dinámico</strong>: cómo evoluciona el efecto con el tiempo desde la intervención. Si el tratamiento ocurre en la fecha <span class="math inline">\(E\)</span> para los tratados, <span class="math display">\[
+Y_{it} = \alpha_i + \lambda_t + \sum_{k\ne-1}\delta_k\,\mathbf{1}\{t - E = k\}D_i + \varepsilon_{it},
+\]</span> con el período <span class="math inline">\(k = -1\)</span> (justo antes) como <strong>referencia</strong> (se normaliza a cero). Los coeficientes <span class="math inline">\(\delta_k\)</span> con <span class="math inline">\(k\ge0\)</span> son los <strong>efectos dinámicos</strong> (periodo <span class="math inline">\(k\)</span> después de la intervención); los <span class="math inline">\(\delta_k\)</span> con <span class="math inline">\(k\le-2\)</span> (los <strong>adelantos</strong>, <em>leads</em>) deberían ser <strong>cero</strong> si las tendencias previas son paralelas: son un <em>placebo</em>. Un gráfico de <span class="math inline">\(\hat\delta_k\)</span> con sus intervalos de confianza es la herramienta más común y más persuasiva en el trabajo aplicado. Un pre-patrón sistemático (por ejemplo, <span class="math inline">\(\hat\delta_k\)</span> creciente hacia el período <span class="math inline">\(-1\)</span>) pone en duda las tendencias paralelas.</p>
+</section>
+<section id="inferencia-la-correlación-serial" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Inferencia: la correlación serial</h1>
+<p>Un artículo de Bertrand, Duflo y Mullainathan (2004) mostró un problema que invalidaba muchos resultados publicados: los errores <span class="math inline">\(\varepsilon_{it}\)</span> de datos de panel (estado × año) están <strong>serialmente correlacionados</strong>, y los errores estándar usuales (que los suponen independientes) son <strong>demasiado chicos</strong>. Con tratamiento que varía <strong>a nivel de grupo y de tiempo</strong> (<span class="math inline">\(D_{st}\)</span>), la variación efectiva es la del grupo (hay pocos grupos), no la de las miles de observaciones individuales, y un test “al 5 %” rechazaba una hipótesis nula verdadera hasta el <span class="math inline">\(45\)</span> % de las veces en sus simulaciones. La solución es <strong>agrupar los errores estándar por unidad de tratamiento</strong> (el estado, no el individuo), con la corrección HAC por cluster de Econometría 2 (Clase 9) y la Clase 10 de este curso. Con <strong>pocos</strong> grupos tratados (el caso Nueva Jersey–Pensilvania es extremo: <strong>uno</strong> tratado), la inferencia asintótica en el número de clusters falla y se usan métodos especiales (Conley y Taber, 2011; bootstrap salvaje, Clase 10; control sintético).</p>
+</section>
+<section id="adopción-escalonada-lo-que-cambió-desde-2018" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Adopción escalonada: lo que cambió desde 2018</h1>
+<p>Muchas políticas se adoptan en <strong>momentos distintos</strong> en distintas unidades (leyes estatales, programas que se despliegan por etapas). Con <strong>adopción escalonada</strong>, la práctica estándar fue estimar la regresión TWFE <a href="#eq-twfe" class="quarto-xref">Ecuación&nbsp;2</a> con <span class="math inline">\(D_{it}\)</span> = “la unidad <span class="math inline">\(i\)</span> ya está tratada en <span class="math inline">\(t\)</span>” y leer <span class="math inline">\(\hat\delta\)</span> como el efecto. Una literatura reciente (Goodman-Bacon; de Chaisemartin y D’Haultfœuille; Callaway y Sant’Anna; Sun y Abraham; Borusyak, Jaravel y Spiess) mostró que, con <strong>efectos heterogéneos</strong> en el tiempo o entre unidades, <span class="math inline">\(\hat\delta_{TWFE}\)</span> <strong>no</strong> estima un promedio razonable de efectos.</p>
+<section id="qué-estima-twfe-realmente" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="qué-estima-twfe-realmente"><span class="header-section-number">5.1</span> Qué estima TWFE realmente</h2>
+<p>Sea un panel <strong>balanceado</strong> con <span class="math inline">\(D_{it}\)</span> <strong>absorbente</strong> (una vez tratada, la unidad sigue tratada). Definimos el <strong>residuo bidireccional</strong> de <span class="math inline">\(D_{it}\)</span>: <span class="math inline">\(\tilde D_{it} = D_{it} - \bar D_{i\cdot} - \bar D_{\cdot t} + \bar D_{\cdot\cdot}\)</span> (resta de la media de la unidad y de la del período, y suma de la media global).</p>
+<div id="prp-twfe-pesos" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (TWFE como promedio ponderado de los efectos)</strong></span> Supón <span class="math inline">\(Y_{it}(0) = \alpha_i + \lambda_t + \varepsilon_{it}\)</span> con <span class="math inline">\(\mathbb{E}[\varepsilon\mid D] = 0\)</span> (tendencias paralelas) y efectos de tratamiento <span class="math inline">\(\tau_{it}\)</span> arbitrarios (heterogéneos entre unidades y en el tiempo). Entonces <span class="math display">\[
+\mathbb{E}[\hat\delta_{TWFE}] = \sum_{(i,t):\,D_{it} = 1}w_{it}\,\tau_{it},\qquad w_{it} = \frac{\tilde D_{it}}{\sum_{j,s}\tilde D_{js}^2},\qquad\sum_{(i,t):\,D_{it} = 1}w_{it} = 1.
+\]</span> Los pesos <span class="math inline">\(w_{it}\)</span> <strong>pueden ser negativos</strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por Frisch–Waugh–Lovell (Clase 3 de Econometría 1), <span class="math inline">\(\hat\delta_{TWFE} = \sum\tilde D_{it}Y_{it}/\sum\tilde D_{it}^2\)</span>, donde <span class="math inline">\(\tilde D_{it}\)</span> es el residuo de <span class="math inline">\(D_{it}\)</span> en una regresión sobre las dummies de unidad y de tiempo. En un panel balanceado esa proyección es <span class="math inline">\(\bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}\)</span>, de modo que el residuo es el de la definición (se verifica que <span class="math inline">\(\sum_t\tilde D_{it} = 0\)</span> para todo <span class="math inline">\(i\)</span> y <span class="math inline">\(\sum_i\tilde D_{it} = 0\)</span> para todo <span class="math inline">\(t\)</span>, es decir, que es ortogonal a todas las dummies). Sustituyendo <span class="math inline">\(Y_{it} = \alpha_i + \lambda_t + \tau_{it}D_{it} + \varepsilon_{it}\)</span>, los términos con <span class="math inline">\(\alpha_i\)</span> y <span class="math inline">\(\lambda_t\)</span> se anulan por esa ortogonalidad, y <span class="math inline">\(\mathbb{E}[\tilde D_{it}\varepsilon_{it}] = 0\)</span>: queda <span class="math inline">\(\sum\tilde D_{it}\tau_{it}D_{it}/\sum\tilde D_{it}^2\)</span>. Los pesos suman uno porque <span class="math inline">\(\sum\tilde D_{it}D_{it} = \sum\tilde D_{it}(\tilde D_{it} + \bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}) = \sum\tilde D_{it}^2\)</span> (el residuo es ortogonal a la parte ajustada).</p>
+</div>
+<p>El peso de la celda <span class="math inline">\((i,t)\)</span> tratada es <strong>positivo</strong> cuando <span class="math inline">\(D_{it} = 1\)</span> supera lo que se esperaría “por la media de la unidad y del período”. Un peso <strong>negativo</strong> ocurre cuando una unidad tratada está <strong>tratada casi todo el tiempo</strong> (<span class="math inline">\(\bar D_{i\cdot}\)</span> alto) en un período en que <strong>casi todas</strong> las demás también (<span class="math inline">\(\bar D_{\cdot t}\)</span> alto): en términos de comparaciones, la unidad que adoptó <strong>temprano</strong> es usada como <strong>control</strong> de las que adoptan <strong>tarde</strong> (una “comparación prohibida”, porque su resultado ya contiene el efecto del tratamiento).</p>
+<div id="exm-pesos" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Tres unidades, cuatro períodos)</strong></span> La unidad A adopta en <span class="math inline">\(t = 2\)</span>, la B en <span class="math inline">\(t = 4\)</span> y la C nunca. Con <span class="math inline">\(D_A = (0,1,1,1)\)</span>, <span class="math inline">\(D_B = (0,0,0,1)\)</span>, <span class="math inline">\(D_C = (0,0,0,0)\)</span>: <span class="math inline">\(\bar D_{A\cdot} = 0{,}75\)</span>, <span class="math inline">\(\bar D_{B\cdot} = 0{,}25\)</span>, <span class="math inline">\(\bar D_{C\cdot} = 0\)</span>; <span class="math inline">\(\bar D_{\cdot t} = (0,\tfrac13,\tfrac13,\tfrac23)\)</span> y <span class="math inline">\(\bar D_{\cdot\cdot} = \tfrac13\)</span>. Los residuos en las celdas tratadas son <span class="math inline">\(\tilde D_{A2} = \tilde D_{A3} = 0{,}25\)</span>, <span class="math inline">\(\tilde D_{A4} = -0{,}083\)</span> y <span class="math inline">\(\tilde D_{B4} = 0{,}417\)</span>, y <span class="math inline">\(\sum\tilde D^2 = 0{,}833\)</span>. Los pesos son <span class="math display">\[
+w_{A2} = 0{,}30,\qquad w_{A3} = 0{,}30,\qquad w_{A4} = -0{,}10,\qquad w_{B4} = 0{,}50.
+\]</span> La celda <span class="math inline">\((A,4)\)</span> tiene peso <strong>negativo</strong>: ahí A (tratada desde hace tres períodos) es una unidad “ya tratada” que sirve de control para B en <span class="math inline">\(t = 4\)</span>. Si los efectos crecen con el tiempo, <span class="math inline">\(\tau_{A,2:4} = (1,2,3)\)</span> y <span class="math inline">\(\tau_{B4} = 1\)</span>, entonces <span class="math inline">\(\mathbb{E}[\hat\delta] = 0{,}3(1) + 0{,}3(2) - 0{,}1(3) + 0{,}5(1) = 1{,}1\)</span>, mientras que el promedio simple de los cuatro efectos es <span class="math inline">\(1{,}75\)</span>. Y si <span class="math inline">\(\tau_{A4}\)</span> fuera muy grande (por ejemplo, <span class="math inline">\(20\)</span>) con <span class="math inline">\(\tau_{A2} = \tau_{A3} = \tau_{B4} = 1\)</span>, el estimador vale <span class="math inline">\(0{,}3 + 0{,}3 - 2{,}0 + 0{,}5 = -0{,}9\)</span>: <strong>negativo, aunque todos los efectos individuales son positivos</strong> (Ejercicio 4.4).</p>
+</div>
+<p>La descomposición de <strong>Goodman-Bacon</strong> (2021) formaliza esto desde otro ángulo: <span class="math inline">\(\hat\delta_{TWFE}\)</span> es un promedio ponderado de <strong>todos los DiD de <span class="math inline">\(2\times2\)</span></strong> posibles entre pares de grupos de adopción, incluyendo las <strong>comparaciones prohibidas</strong> (adoptantes tardíos contra tempranos ya tratados). Cuando los efectos son <strong>constantes</strong> (homogéneos y sin dinámica), todos los <span class="math inline">\(2\times2\)</span> estiman lo mismo y no hay problema. Cuando el efecto cambia con el tiempo desde la adopción (casi siempre), las comparaciones prohibidas <strong>restan efectos acumulados</strong> y el estimador queda contaminado.</p>
+</section>
+<section id="los-estimadores-modernos" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="los-estimadores-modernos"><span class="header-section-number">5.2</span> Los estimadores modernos</h2>
+<p>La solución común a los estimadores recientes es <strong>no usar como controles a unidades ya tratadas</strong>. Construyen <strong>efectos por cohorte y período</strong> y los agregan con pesos explícitos y no negativos.</p>
+<p><strong>Callaway y Sant’Anna (2021).</strong> Sea <span class="math inline">\(G_i\)</span> el período de adopción de la unidad <span class="math inline">\(i\)</span> (<span class="math inline">\(G_i = \infty\)</span> si nunca). Para cada cohorte <span class="math inline">\(g\)</span> y período <span class="math inline">\(t\ge g\)</span>, el <strong>efecto por grupo y tiempo</strong> es <span class="math display">\[
+ATT(g,t) = \mathbb{E}\big[Y_{it} - Y_{i,g-1}\mid G_i = g\big] - \mathbb{E}\big[Y_{it} - Y_{i,g-1}\mid\text{control}\big],
+\]</span> donde el control son las unidades <strong>nunca tratadas</strong> (o aún no tratadas en <span class="math inline">\(t\)</span>). Bajo tendencias paralelas condicionales y no anticipación, se identifica por el mismo argumento del <a href="#thm-did" class="quarto-xref">Teorema&nbsp;1</a>: cada <span class="math inline">\(ATT(g,t)\)</span> es un DiD de <span class="math inline">\(2\times2\)</span> con un control <strong>limpio</strong>. Luego se agregan: el <strong>efecto dinámico</strong> a <span class="math inline">\(k\)</span> períodos de la adopción, el <strong>efecto por cohorte</strong>, o un promedio global con ponderaciones por tamaño de cohorte, todos con <strong>pesos positivos</strong> (Ejercicio 4.5).</p>
+<p><strong>Otros.</strong> <em>Sun y Abraham (2021)</em> estiman el estudio de eventos con interacciones cohorte × tiempo relativo y reponderan. <em>Borusyak, Jaravel y Spiess (2024)</em> usan un estimador de <strong>imputación</strong>: estiman <span class="math inline">\(\alpha_i\)</span> y <span class="math inline">\(\lambda_t\)</span> <strong>solo con las observaciones no tratadas</strong>, <strong>imputan</strong> <span class="math inline">\(Y_{it}(0)\)</span> para las tratadas y promedian <span class="math inline">\(Y_{it} - \hat Y_{it}(0)\)</span>. <em>de Chaisemartin y D’Haultfœuille</em> comparan cambios en unidades que <strong>cambian</strong> de estado con unidades que no. Las diferencias entre ellos son de eficiencia y de supuestos; coinciden en que <strong>el estimador TWFE con efectos heterogéneos no debe usarse sin verificar la descomposición de pesos</strong>.</p>
+<p>Cuando hay <strong>una sola unidad tratada</strong> y muchas de control, el <strong>control sintético</strong> (Abadie, Diamond y Hainmueller, 2010) construye un contrafactual como combinación ponderada de las unidades de control que reproduce la trayectoria previa del tratado: relaja el supuesto de tendencias paralelas a cambio de requerir buen ajuste previo.</p>
+</section>
+</section>
+<section id="postgrado-pesos-negativos-y-el-residuo-bidireccional" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: pesos negativos y el residuo bidireccional</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Deducimos la forma del residuo bidireccional y la condición exacta para pesos negativos.</p>
+</div>
+</div>
+<p>La proyección de <span class="math inline">\(D_{it}\)</span> sobre las dummies de unidad y de tiempo en un panel <strong>balanceado</strong> es <span class="math inline">\(\hat D_{it} = \bar D_{i\cdot} + \bar D_{\cdot t} - \bar D_{\cdot\cdot}\)</span>. En efecto, el residuo <span class="math inline">\(\tilde D_{it} = D_{it} - \hat D_{it}\)</span> cumple <span class="math inline">\(\sum_t\tilde D_{it} = \sum_tD_{it} - T\bar D_{i\cdot} - \sum_t\bar D_{\cdot t} + T\bar D_{\cdot\cdot} = T\bar D_{i\cdot} - T\bar D_{i\cdot} - T\bar D_{\cdot\cdot} + T\bar D_{\cdot\cdot} = 0\)</span> (usando <span class="math inline">\(\sum_t\bar D_{\cdot t} = T\bar D_{\cdot\cdot}\)</span>), y análogamente <span class="math inline">\(\sum_i\tilde D_{it} = 0\)</span>: es ortogonal a todas las dummies de unidad y de tiempo, así que es el residuo de la proyección.</p>
+<div id="prp-pesos-neg" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Condición de pesos negativos)</strong></span> En un panel balanceado con adopción absorbente, la celda tratada <span class="math inline">\((i,t)\)</span> tiene peso negativo si y solo si <span class="math display">\[
+\bar D_{i\cdot} + \bar D_{\cdot t} &gt; 1 + \bar D_{\cdot\cdot}.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Para una celda tratada, <span class="math inline">\(D_{it} = 1\)</span>, así que <span class="math inline">\(\tilde D_{it} = 1 - \bar D_{i\cdot} - \bar D_{\cdot t} + \bar D_{\cdot\cdot}\)</span>, que es negativo si y solo si <span class="math inline">\(\bar D_{i\cdot} + \bar D_{\cdot t}&gt;1 + \bar D_{\cdot\cdot}\)</span>. Los pesos tienen el signo de <span class="math inline">\(\tilde D_{it}\)</span> (el denominador <span class="math inline">\(\sum\tilde D^2\)</span> es positivo).</p>
+</div>
+<p>En el <a href="#exm-pesos" class="quarto-xref">Ejemplo&nbsp;3</a>, <span class="math inline">\((A,4)\)</span>: <span class="math inline">\(\bar D_{A\cdot} + \bar D_{\cdot4} = 0{,}75 + 0{,}667 = 1{,}417&gt;1{,}333 = 1 + \bar D_{\cdot\cdot}\)</span>: peso negativo ✓. En cambio <span class="math inline">\((A,2)\)</span>: <span class="math inline">\(0{,}75 + 0{,}333 = 1{,}083&lt;1{,}333\)</span>: positivo. La condición dice que los pesos negativos aparecen en las <strong>celdas de los adoptantes tempranos en los períodos tardíos</strong>, cuando la mayor parte del panel ya está tratada: un diseño con <strong>tratamiento prevalente</strong> tiene, casi inevitablemente, algunos pesos negativos.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li><strong>DiD 2×2:</strong> <span class="math inline">\(\tau_{ATT} = (\text{cambio del tratado}) - (\text{cambio del control})\)</span> bajo <strong>tendencias paralelas</strong> y <strong>sin anticipación</strong> (<a href="#thm-did" class="quarto-xref">Teorema&nbsp;1</a>). No exige mismos niveles ni aleatorización. Es la regresión con la interacción <span class="math inline">\(D\cdot\text{Post}\)</span>.</li>
+<li>Las tendencias paralelas <strong>dependen de la escala</strong> (niveles frente a logaritmos) y no se testean, pero las <strong>pre-tendencias</strong> de un <strong>estudio de eventos</strong> son una evidencia indirecta.</li>
+<li><strong>Inferencia:</strong> agrupar errores por unidad de tratamiento (correlación serial); con pocos grupos, métodos especiales.</li>
+<li><strong>Adopción escalonada:</strong> <span class="math inline">\(\hat\delta_{TWFE}\)</span> es un promedio de efectos con pesos <span class="math inline">\(\tilde D_{it}/\sum\tilde D^2\)</span> que <strong>pueden ser negativos</strong> (<a href="#prp-twfe-pesos" class="quarto-xref">Proposición&nbsp;1</a>); equivale a un promedio de DiD de 2×2 que incluye <strong>comparaciones prohibidas</strong> (Goodman-Bacon).</li>
+<li><strong>Estimadores modernos</strong> (Callaway–Sant’Anna, Sun–Abraham, imputación): usan controles <strong>limpios</strong> (nunca o aún no tratados) y agregan <span class="math inline">\(ATT(g,t)\)</span> con pesos no negativos.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 4.1.</strong> Con los promedios del <a href="#exm-did" class="quarto-xref">Ejemplo&nbsp;1</a>, calcula el DiD, el estimador antes–después y la diferencia transversal posterior. Muestra que <span class="math inline">\(\hat\delta = 3\)</span> en la regresión <a href="#eq-did-reg" class="quarto-xref">Ecuación&nbsp;1</a> e indica <span class="math inline">\(\hat\alpha,\hat\beta,\hat\gamma\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>DiD: <span class="math inline">\((24 - 20) - (19 - 18) = 3\)</span>. Antes–después del tratado: <span class="math inline">\(24 - 20 = 4\)</span>. Diferencia transversal después: <span class="math inline">\(24 - 19 = 5\)</span>. En la regresión saturada: <span class="math inline">\(\hat\alpha = 18\)</span> (control antes), <span class="math inline">\(\hat\beta = 20 - 18 = 2\)</span>, <span class="math inline">\(\hat\gamma = 19 - 18 = 1\)</span> y <span class="math inline">\(\hat\delta = 24 - 18 - 2 - 1 = 3\)</span> (el tratado después es <span class="math inline">\(\alpha + \beta + \gamma + \delta = 24\)</span>). El DiD descuenta la diferencia previa de <span class="math inline">\(2\)</span> (<span class="math inline">\(\hat\beta\)</span>) y la tendencia común de <span class="math inline">\(1\)</span> (<span class="math inline">\(\hat\gamma\)</span>) del cambio observado de <span class="math inline">\(4\)</span> del tratado.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.2.</strong> Los tratados tenían en el período <span class="math inline">\(-2\)</span> un nivel de <span class="math inline">\(20\)</span>, en <span class="math inline">\(-1\)</span> de <span class="math inline">\(20\)</span>, y los controles de <span class="math inline">\(18\)</span> y <span class="math inline">\(18\)</span>; después del tratamiento, los tratados suben a <span class="math inline">\(24\)</span> y los controles a <span class="math inline">\(19\)</span>. ¿Qué puede decir un estudio de eventos con estos datos sobre las tendencias paralelas? ¿Qué pasaría si los tratados hubiesen ido en <span class="math inline">\(-2\)</span> a <span class="math inline">\(18\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con los datos de arriba, antes del tratamiento ninguno de los dos grupos cambia (<span class="math inline">\(0\)</span> y <span class="math inline">\(0\)</span>): las tendencias previas son <strong>paralelas</strong> (ambas planas), el coeficiente del adelanto <span class="math inline">\(\hat\delta_{-2}\)</span> es <span class="math inline">\(0\)</span> y no hay señal en contra del supuesto. El DiD del período posterior es <span class="math inline">\((24 - 20) - (19 - 18) = 3\)</span>. Si los tratados hubieran venido de <span class="math inline">\(18\)</span> en <span class="math inline">\(t = -2\)</span> a <span class="math inline">\(20\)</span> en <span class="math inline">\(t = -1\)</span> (crecimiento previo de <span class="math inline">\(+2\)</span>) mientras el control era plano, el adelanto <span class="math inline">\(\hat\delta_{-2}\)</span> sería <span class="math inline">\(-2\)</span> (el tratado crecía más rápido antes del tratamiento): las tendencias <strong>no son paralelas</strong>, y parte del “efecto” de <span class="math inline">\(3\)</span> podría ser la continuación de esa tendencia previa. Habría que usar un método que modele la pendiente previa o dudar del diseño.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.3.</strong> Con un grupo de control que cambia de <span class="math inline">\(10\)</span> a <span class="math inline">\(12\)</span> y un tratado contrafactual de <span class="math inline">\(20\)</span> a <span class="math inline">\(22\)</span>, muestra que las tendencias son paralelas en niveles pero no en logaritmos. ¿Qué escala debería usarse si el efecto del shock es <strong>proporcional</strong>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Niveles: <span class="math inline">\(12 - 10 = 2\)</span> y <span class="math inline">\(22 - 20 = 2\)</span>: paralelas. Logaritmos: <span class="math inline">\(\ln1{,}2 = 0{,}182\)</span> y <span class="math inline">\(\ln1{,}1 = 0{,}095\)</span>: no paralelas (el tratado, con base mayor, crece menos en proporción). Si el shock <strong>contrafactual</strong> es proporcional (ambos grupos crecen a la misma tasa porcentual), las tendencias son paralelas en <strong>logaritmos</strong>: el tratado pasaría de <span class="math inline">\(20\)</span> a <span class="math inline">\(24\)</span> (<span class="math inline">\(+20\)</span> %), no a <span class="math inline">\(22\)</span>, y el DiD en niveles daría un efecto <strong>falso</strong> de <span class="math inline">\(24 - 22 = 2\)</span> aun sin tratamiento. La escala correcta es la que hace creíble que “en ausencia del tratamiento ambos grupos habrían evolucionado igual”.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.4.</strong> Con los pesos del <a href="#exm-pesos" class="quarto-xref">Ejemplo&nbsp;3</a> <span class="math inline">\((w_{A2},w_{A3},w_{A4},w_{B4}) = (0{,}30,0{,}30,-0{,}10,0{,}50)\)</span>, calcula <span class="math inline">\(\mathbb{E}[\hat\delta_{TWFE}]\)</span> si <span class="math inline">\(\tau_{A,t} = (1,2,3)\)</span> para <span class="math inline">\(t = 2,3,4\)</span> y <span class="math inline">\(\tau_{B4} = 1\)</span>, y el promedio simple de los cuatro efectos. Luego calcula el estimador si <span class="math inline">\(\tau_{A2} = \tau_{A3} = \tau_{B4} = 1\)</span> y <span class="math inline">\(\tau_{A4} = 20\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Primer caso: <span class="math inline">\(0{,}3(1) + 0{,}3(2) - 0{,}1(3) + 0{,}5(1) = 0{,}3 + 0{,}6 - 0{,}3 + 0{,}5 = 1{,}1\)</span>; promedio simple: <span class="math inline">\((1 + 2 + 3 + 1)/4 = 1{,}75\)</span>. TWFE subestima en <span class="math inline">\(37\)</span> %. Segundo caso: <span class="math inline">\(0{,}3 + 0{,}3 - 0{,}1(20) + 0{,}5 = 1{,}1 - 2{,}0 = -0{,}9\)</span>: negativo con todos los efectos positivos. Este es un <strong>cambio de signo por pesos negativos</strong>: un efecto grande en una celda con peso negativo “resta” al estimador. Es el escenario preocupante en políticas cuyos efectos crecen mucho con el tiempo y que se adoptan de forma escalonada.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.5.</strong> Hay tres unidades: A (adopta en <span class="math inline">\(t = 2\)</span>), B (adopta en <span class="math inline">\(t = 4\)</span>) y C (nunca), con resultados no tratados <span class="math inline">\(Y_{it}(0) = \alpha_i + \lambda_t\)</span>, <span class="math inline">\(\alpha = (10,12,14)\)</span>, <span class="math inline">\(\lambda = (0,1,2,3)\)</span> y efectos <span class="math inline">\(\tau_{A,t} = (2,3,4)\)</span> para <span class="math inline">\(t = 2,3,4\)</span>. Calcula <span class="math inline">\(ATT(2,t)\)</span> para <span class="math inline">\(t = 2,3,4\)</span> con C como control y verifica que coinciden con los efectos verdaderos.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Resultados de A: <span class="math inline">\(Y_A = (10,\ 10 + 1 + 2,\ 10 + 2 + 3,\ 10 + 3 + 4) = (10,13,15,17)\)</span>. Resultados de C: <span class="math inline">\((14,15,16,17)\)</span>. Referencia: <span class="math inline">\(g - 1 = 1\)</span>. <span class="math inline">\(ATT(2,2) = (13 - 10) - (15 - 14) = 3 - 1 = 2\)</span> ✓ (<span class="math inline">\(\tau_{A2}\)</span>). <span class="math inline">\(ATT(2,3) = (15 - 10) - (16 - 14) = 5 - 2 = 3\)</span> ✓. <span class="math inline">\(ATT(2,4) = (17 - 10) - (17 - 14) = 7 - 3 = 4\)</span> ✓. Cada <span class="math inline">\(ATT(g,t)\)</span> recupera exactamente el efecto verdadero porque C es un control <strong>limpio</strong> (nunca tratado) y las tendencias son paralelas por construcción. Se puede luego agregar: el efecto dinámico a <span class="math inline">\(0,1,2\)</span> períodos de la adopción es <span class="math inline">\((2,3,4)\)</span> y el promedio simple de los tres es <span class="math inline">\(3\)</span>. No hay pesos negativos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.6.</strong> En una regresión con panel estado × año (<span class="math inline">\(50\)</span> estados, <span class="math inline">\(20\)</span> años) con un tratamiento que varía por estado, un investigador estima un efecto con error estándar <span class="math inline">\(0{,}05\)</span> (calculado suponiendo errores independientes) y <span class="math inline">\(t = 4\)</span>. Con errores agrupados por estado el error estándar es <span class="math inline">\(0{,}12\)</span>. ¿Cambia la conclusión? ¿Por qué ocurre?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(\operatorname{ee} = 0{,}05\)</span> el efecto estimado es <span class="math inline">\(0{,}2\)</span> (<span class="math inline">\(t = 4\)</span>). Con <span class="math inline">\(\operatorname{ee}_{cluster} = 0{,}12\)</span>, <span class="math inline">\(t = 0{,}2/0{,}12 = 1{,}67\)</span>: <strong>no significativo</strong> al 5 %. La razón: los errores del mismo estado en distintos años están <strong>correlacionados</strong> (choques persistentes), de modo que las <span class="math inline">\(1\,000\)</span> observaciones no aportan <span class="math inline">\(1\,000\)</span> piezas de información independiente: el tratamiento varía a nivel de estado y la información efectiva es la de ~<span class="math inline">\(50\)</span> clusters. El error estándar “ingenuo” subestima por un factor <span class="math inline">\(0{,}12/0{,}05 = 2{,}4\)</span>: típico en paneles con tratamiento por grupo (Bertrand–Duflo–Mullainathan). Agrupar es la práctica estándar.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 4.7 ★.</strong> Para la celda <span class="math inline">\((B,4)\)</span> del <a href="#exm-pesos" class="quarto-xref">Ejemplo&nbsp;3</a>, calcula <span class="math inline">\(\tilde D_{B4}\)</span> con la fórmula del residuo bidireccional y verifica la condición de la <a href="#prp-pesos-neg" class="quarto-xref">Proposición&nbsp;2</a> para <span class="math inline">\((B,4)\)</span> y para <span class="math inline">\((C,4)\)</span> (que no está tratada).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 4.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 4.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\bar D_{B\cdot} = 0{,}25\)</span>, <span class="math inline">\(\bar D_{\cdot4} = 0{,}667\)</span>, <span class="math inline">\(\bar D_{\cdot\cdot} = 0{,}333\)</span>. <span class="math inline">\(\tilde D_{B4} = 1 - 0{,}25 - 0{,}667 + 0{,}333 = 0{,}417\)</span>: positivo; condición: <span class="math inline">\(0{,}25 + 0{,}667 = 0{,}917&lt;1 + 0{,}333 = 1{,}333\)</span>: <strong>sin</strong> peso negativo ✓. Para <span class="math inline">\((C,4)\)</span>, <span class="math inline">\(D = 0\)</span>: <span class="math inline">\(\tilde D_{C4} = 0 - 0 - 0{,}667 + 0{,}333 = -0{,}333\)</span> (esta celda no entra en la suma de pesos de las celdas tratadas, porque <span class="math inline">\(D_{it} = 0\)</span>; interviene en el denominador <span class="math inline">\(\sum\tilde D^2\)</span>). La condición de la <a href="#prp-pesos-neg" class="quarto-xref">Proposición&nbsp;2</a> aplica solo a celdas <strong>tratadas</strong>. Las celdas no tratadas también tienen residuos <span class="math inline">\(\tilde D\)</span> de ambos signos (en el ejemplo, <span class="math inline">\(\tilde D&lt;0\)</span> en <span class="math inline">\((A,1)\)</span>, <span class="math inline">\((B,2)\)</span>, <span class="math inline">\((B,3)\)</span> y <span class="math inline">\((C,4)\)</span>), pero esas celdas no entran en la suma de pesos sobre efectos, solo en el denominador <span class="math inline">\(\sum\tilde D^2\)</span>. La única celda <strong>tratada</strong> con peso negativo en este diseño es <span class="math inline">\((A,4)\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-03.html" class="pagination-link" aria-label="Clase 3 · Variables instrumentales con efectos heterogéneos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

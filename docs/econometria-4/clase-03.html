@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Interpretación causal de VI cuando los efectos son heterogéneos: resultados potenciales del tratamiento, compliers, always-takers y never-takers, monotonía, el teorema de Imbens–Angrist (Wald = LATE), efecto de la intención de tratar, MC2E como promedio ponderado y efectos de tratamiento marginales.">
+
+<title>Clase 3 · Variables instrumentales con efectos heterogéneos – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-02.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-03.html">Clase 3 · Variables instrumentales con efectos heterogéneos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-la-selección-es-sobre-no-observables" id="toc-cuando-la-selección-es-sobre-no-observables" class="nav-link active" data-scroll-target="#cuando-la-selección-es-sobre-no-observables"><span class="header-section-number">1</span> Cuando la selección es sobre no observables</a></li>
+  <li><a href="#resultados-potenciales-con-instrumento" id="toc-resultados-potenciales-con-instrumento" class="nav-link" data-scroll-target="#resultados-potenciales-con-instrumento"><span class="header-section-number">2</span> Resultados potenciales con instrumento</a>
+  <ul class="collapse">
+  <li><a href="#los-cuatro-tipos-de-personas" id="toc-los-cuatro-tipos-de-personas" class="nav-link" data-scroll-target="#los-cuatro-tipos-de-personas"><span class="header-section-number">2.1</span> Los cuatro tipos de personas</a></li>
+  </ul></li>
+  <li><a href="#el-teorema-de-imbensangrist" id="toc-el-teorema-de-imbensangrist" class="nav-link" data-scroll-target="#el-teorema-de-imbensangrist"><span class="header-section-number">3</span> El teorema de Imbens–Angrist</a>
+  <ul class="collapse">
+  <li><a href="#dos-casos-especiales" id="toc-dos-casos-especiales" class="nav-link" data-scroll-target="#dos-casos-especiales"><span class="header-section-number">3.1</span> Dos casos especiales</a></li>
+  </ul></li>
+  <li><a href="#violaciones-de-los-supuestos" id="toc-violaciones-de-los-supuestos" class="nav-link" data-scroll-target="#violaciones-de-los-supuestos"><span class="header-section-number">4</span> Violaciones de los supuestos</a></li>
+  <li><a href="#mc2e-con-más-de-un-instrumento-o-con-covariables" id="toc-mc2e-con-más-de-un-instrumento-o-con-covariables" class="nav-link" data-scroll-target="#mc2e-con-más-de-un-instrumento-o-con-covariables"><span class="header-section-number">5</span> MC2E con más de un instrumento o con covariables</a></li>
+  <li><a href="#postgrado-efectos-de-tratamiento-marginales" id="toc-postgrado-efectos-de-tratamiento-marginales" class="nav-link" data-scroll-target="#postgrado-efectos-de-tratamiento-marginales"><span class="header-section-number">6</span> ★ Postgrado: efectos de tratamiento marginales</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-03.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 3 · Variables instrumentales con efectos heterogéneos</h1>
+<p class="subtitle lead">El efecto local promedio del tratamiento (LATE) de Imbens y Angrist</p>
+</div>
+
+<div>
+  <div class="description">
+    Interpretación causal de VI cuando los efectos son heterogéneos: resultados potenciales del tratamiento, compliers, always-takers y never-takers, monotonía, el teorema de Imbens–Angrist (Wald = LATE), efecto de la intención de tratar, MC2E como promedio ponderado y efectos de tratamiento marginales.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-03.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-la-selección-es-sobre-no-observables" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando la selección es sobre no observables</h1>
+<p>La Clase 2 resolvió la selección sobre <strong>observables</strong>: si controlamos por todo lo que afecta a la vez el tratamiento y el resultado, comparamos iguales con iguales. Pero muchas veces los confusores <strong>no se observan</strong> (la habilidad, la motivación, la información privada). En Econometría 1 (Clase 10) vimos la solución clásica: una <strong>variable instrumental</strong> <span class="math inline">\(Z\)</span> que mueve el tratamiento sin afectar directamente el resultado. Allí supusimos un modelo lineal con efecto <strong>constante</strong> <span class="math inline">\(\beta\)</span>, y MC2E estimaba ese <span class="math inline">\(\beta\)</span>.</p>
+<p>Esta clase pregunta qué mide VI cuando el efecto del tratamiento <strong>varía entre personas</strong>, lo que casi siempre ocurre. La respuesta, de Imbens y Angrist (1994), es una de las ideas más influyentes de la econometría aplicada de las últimas décadas: VI no estima el efecto para toda la población, sino el efecto para un subgrupo específico, los <strong>cumplidores</strong> (<em>compliers</em>): las personas cuyo tratamiento <strong>cambia</strong> cuando cambia el instrumento. El parámetro se llama <strong>efecto local promedio del tratamiento</strong> (LATE).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Joshua Angrist y Guido Imbens recibieron el Nobel de Economía de 2021 (junto con David Card) por sus contribuciones metodológicas al análisis de relaciones causales; el LATE es la más conocida. El ejemplo que motivó el trabajo fue la <strong>lotería del servicio militar</strong> de la guerra de Vietnam (Angrist, 1990): el número de lotería es un instrumento aleatorio para servir en el ejército, y el efecto estimado vale para quienes servirían <strong>si les tocaba</strong> un número bajo y no servirían si no, no para los voluntarios ni para los que se habrían librado de todas formas.</p></div></div></section>
+<section id="resultados-potenciales-con-instrumento" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Resultados potenciales con instrumento</h1>
+<p>Sea <span class="math inline">\(Z_i\in\{0,1\}\)</span> un instrumento binario (por ejemplo, haber sido <strong>asignado</strong> al azar a un programa, o haber recibido un incentivo), <span class="math inline">\(D_i\in\{0,1\}\)</span> el tratamiento <strong>efectivamente recibido</strong> e <span class="math inline">\(Y_i\)</span> el resultado. Ahora el <strong>tratamiento también tiene resultados potenciales</strong>: <span class="math inline">\(D_i(z)\)</span> es el tratamiento que la unidad <span class="math inline">\(i\)</span> recibiría si el instrumento valiera <span class="math inline">\(z\)</span>. El tratamiento observado es <span class="math inline">\(D_i = D_i(Z_i)\)</span> y el resultado, <span class="math inline">\(Y_i = Y_i(D_i)\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de Imbens–Angrist">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de Imbens–Angrist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Independencia (instrumento “como si” aleatorio):</strong> <span class="math inline">\(Z\perp\!\!\!\perp\big(Y(0),Y(1),D(0),D(1)\big)\)</span>.</li>
+<li><strong>Restricción de exclusión:</strong> <span class="math inline">\(Z\)</span> afecta a <span class="math inline">\(Y\)</span> <strong>solo</strong> a través de <span class="math inline">\(D\)</span>: <span class="math inline">\(Y_i(d,z) = Y_i(d)\)</span>.</li>
+<li><strong>Relevancia:</strong> <span class="math inline">\(P\big(D(1)\ne D(0)\big)&gt;0\)</span>, es decir, <span class="math inline">\(\mathbb{E}[D\mid Z = 1]\ne\mathbb{E}[D\mid Z = 0]\)</span>.</li>
+<li><strong>Monotonía:</strong> <span class="math inline">\(D_i(1)\ge D_i(0)\)</span> para toda unidad (el instrumento empuja en una sola dirección).</li>
+</ol>
+</div>
+</div>
+<p>La independencia se cumple por diseño si <span class="math inline">\(Z\)</span> se asigna al azar; con un instrumento “natural” (distancia a la universidad, trimestre de nacimiento) es un supuesto. La <strong>exclusión</strong> es el supuesto más delicado: dice que el instrumento no tiene otro canal hacia <span class="math inline">\(Y\)</span> (el número de lotería no afecta el salario más que por el servicio militar). La <strong>monotonía</strong> excluye a los <strong>desafiantes</strong> (<em>defiers</em>): personas que reciben el tratamiento cuando el instrumento es <span class="math inline">\(0\)</span> y no lo reciben cuando es <span class="math inline">\(1\)</span>.</p>
+<section id="los-cuatro-tipos-de-personas" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="los-cuatro-tipos-de-personas"><span class="header-section-number">2.1</span> Los cuatro tipos de personas</h2>
+<p>Dado que <span class="math inline">\(D(0)\)</span> y <span class="math inline">\(D(1)\)</span> son binarios, cada unidad cae en uno de cuatro <strong>estratos principales</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tipo</th>
+<th><span class="math inline">\(D(0)\)</span></th>
+<th><span class="math inline">\(D(1)\)</span></th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Always-takers</strong> (siempre toman)</td>
+<td>1</td>
+<td>1</td>
+<td>reciben el tratamiento con o sin instrumento</td>
+</tr>
+<tr class="even">
+<td><strong>Never-takers</strong> (nunca toman)</td>
+<td>0</td>
+<td>0</td>
+<td>no lo reciben con o sin instrumento</td>
+</tr>
+<tr class="odd">
+<td><strong>Compliers</strong> (cumplidores)</td>
+<td>0</td>
+<td>1</td>
+<td>lo reciben <strong>solo si</strong> <span class="math inline">\(Z = 1\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Defiers</strong> (desafiantes)</td>
+<td>1</td>
+<td>0</td>
+<td>lo reciben solo si <span class="math inline">\(Z = 0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>La monotonía elimina a los desafiantes. El estrato de cada persona <strong>no se observa</strong> (para cada una vemos solo un valor de <span class="math inline">\(D(z)\)</span>), pero sus <strong>proporciones</strong> sí se identifican.</p>
+<div id="prp-estratos" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Las proporciones de los estratos)</strong></span> Bajo independencia y monotonía, con <span class="math inline">\(\pi_a,\pi_n,\pi_c\)</span> las proporciones de always-takers, never-takers y compliers, <span class="math display">\[
+\pi_a = \mathbb{E}[D\mid Z = 0],\qquad\pi_n = 1 - \mathbb{E}[D\mid Z = 1],\qquad\pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0].
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(Z = 0\)</span>, <span class="math inline">\(D = D(0)\)</span>, que vale <span class="math inline">\(1\)</span> solo para los always-takers (y los defiers, que no existen): <span class="math inline">\(\mathbb{E}[D\mid Z = 0] = P(D(0) = 1) = \pi_a\)</span> por independencia. Con <span class="math inline">\(Z = 1\)</span>, <span class="math inline">\(D = D(1) = 1\)</span> para always-takers y compliers: <span class="math inline">\(\mathbb{E}[D\mid Z = 1] = \pi_a + \pi_c\)</span>, así que <span class="math inline">\(\pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]\)</span> y <span class="math inline">\(\pi_n = 1 - \pi_a - \pi_c = 1 - \mathbb{E}[D\mid Z = 1]\)</span>.</p>
+</div>
+</section>
+</section>
+<section id="el-teorema-de-imbensangrist" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> El teorema de Imbens–Angrist</h1>
+<p>El objeto que VI identifica es el efecto <strong>sobre los cumplidores</strong>: <span class="math display">\[
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid D(1) &gt; D(0)\big].
+\]</span> Antes de ver por qué, conviene una definición intermedia: el <strong>efecto de la intención de tratar</strong> (ITT), que mide el efecto de <strong>asignar</strong> el instrumento (no de recibir el tratamiento): <span class="math inline">\(\text{ITT} = \mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]\)</span> (la “forma reducida” de Econometría 1) y el efecto de <span class="math inline">\(Z\)</span> sobre el tratamiento, <span class="math inline">\(\mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]\)</span> (la “primera etapa”).</p>
+<div id="thm-late" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Teorema de Imbens–Angrist)</strong></span> Bajo independencia, exclusión, relevancia y monotonía, <span class="math display">\[
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid D(1)&gt;D(0)\big] = \frac{\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]}{\mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]}.
+\]</span> El lado derecho es el <strong>estimador de Wald</strong>: la razón entre la forma reducida y la primera etapa, que coincide con el estimador de VI (MC2E) con un instrumento binario.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La diferencia <span class="math inline">\(\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0]\)</span> compara dos grupos que, por independencia, son iguales en todo salvo en el instrumento. Lo único que cambia es el tratamiento que reciben: algunos individuos lo reciben en <span class="math inline">\(Z = 1\)</span> y no en <span class="math inline">\(Z = 0\)</span>. ¿Quiénes? Solo los <strong>compliers</strong> (por monotonía, no hay defiers que se muevan al revés), y para los always-takers y los never-takers el tratamiento <strong>no cambia</strong> entre los dos grupos y, por exclusión, su resultado tampoco. Entonces toda la diferencia de <span class="math inline">\(Y\)</span> viene de los compliers, y se divide por la proporción de compliers para obtener el efecto <strong>por complier</strong>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por exclusión, <span class="math inline">\(Y = Y(0) + D\big(Y(1) - Y(0)\big)\)</span> y, dado <span class="math inline">\(Z = z\)</span>, <span class="math inline">\(D = D(z)\)</span>. Entonces <span class="math display">\[
+\mathbb{E}[Y\mid Z = z] = \mathbb{E}\big[Y(0) + D(z)(Y(1) - Y(0))\mid Z = z\big] = \mathbb{E}\big[Y(0) + D(z)(Y(1) - Y(0))\big],
+\]</span> donde la última igualdad usa la <strong>independencia</strong> de <span class="math inline">\(Z\)</span> y los resultados potenciales. Restando para <span class="math inline">\(z = 1\)</span> y <span class="math inline">\(z = 0\)</span>: <span class="math display">\[
+\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0] = \mathbb{E}\big[\big(D(1) - D(0)\big)\big(Y(1) - Y(0)\big)\big].
+\]</span> Por <strong>monotonía</strong>, <span class="math inline">\(D(1) - D(0)\in\{0,1\}\)</span> y vale <span class="math inline">\(1\)</span> exactamente para los compliers. Por lo tanto el valor esperado es <span class="math inline">\(\mathbb{E}\big[Y(1) - Y(0)\mid D(1) &gt; D(0)\big]\cdot P(D(1)&gt;D(0))\)</span>. Y, por la <a href="#prp-estratos" class="quarto-xref">Proposición&nbsp;1</a>, <span class="math inline">\(P(D(1)&gt;D(0)) = \pi_c = \mathbb{E}[D\mid Z = 1] - \mathbb{E}[D\mid Z = 0]\)</span>, que es el denominador del estimador de Wald (y es distinto de cero por relevancia). Dividiendo, el cociente es <span class="math inline">\(\tau_{LATE}\)</span>.</p>
+</div>
+<p>Algunas lecturas del resultado:</p>
+<ol type="1">
+<li><strong>Descomposición</strong>: <span class="math inline">\(\text{ITT} = \tau_{LATE}\cdot\pi_c\)</span>. El efecto de <strong>asignar</strong> el instrumento sobre el resultado es el efecto del tratamiento por complier <strong>multiplicado</strong> por la fracción de compliers. Si solo el 40 % cumple, el ITT es el <span class="math inline">\(40\)</span> % del LATE (Ejercicio 3.1). Por eso el efecto de una invitación a un programa es, casi siempre, menor que el efecto del programa.</li>
+<li><strong>No se sabe quién es complier.</strong> Para cada persona vemos solo <span class="math inline">\(D(Z_i)\)</span>, no ambos. Sabemos <em>cuántos</em> son y el efecto <em>promedio</em> entre ellos, pero no se puede apuntar a un individuo. (Abadie (2003) permite describir <strong>características</strong> de los compliers con un ponderador, Ejercicio 3.6.)</li>
+<li><strong>El parámetro depende del instrumento.</strong> Distintos instrumentos tienen distintos compliers, y por eso pueden estimar efectos distintos <strong>aun cuando todos sean válidos</strong>. Si MC2E con dos instrumentos da resultados diferentes, no hay necesariamente un error: puede haber <strong>heterogeneidad del efecto entre los compliers de cada uno</strong> (Ejercicio 3.5). Esto reinterpreta el test de sobreidentificación de Sargan (Clase 10 de Econometría 1): un rechazo puede significar heterogeneidad y no invalidez de un instrumento.</li>
+</ol>
+<section id="dos-casos-especiales" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="dos-casos-especiales"><span class="header-section-number">3.1</span> Dos casos especiales</h2>
+<p><strong>Cumplimiento unilateral.</strong> Si el control <strong>no puede</strong> acceder al tratamiento (<span class="math inline">\(D(0) = 0\)</span> para todos, por ejemplo un programa al que solo se entra si se es asignado), no hay always-takers: <span class="math inline">\(\pi_a = 0\)</span> y los compliers son <strong>todos los que reciben el tratamiento</strong>. Entonces <span class="math inline">\(\tau_{LATE} = \mathbb{E}[Y(1) - Y(0)\mid D = 1] = \tau_{ATT}\)</span>: <strong>LATE = ATT</strong> (Bloom, 1984). El efecto sobre los tratados queda identificado: <span class="math inline">\(\tau_{ATT} = \text{ITT}/\mathbb{E}[D\mid Z = 1]\)</span> (Ejercicio 3.2).</p>
+<p><strong>Efecto homogéneo.</strong> Si <span class="math inline">\(Y_i(1) - Y_i(0) = \beta\)</span> para todos, el efecto de los compliers es <span class="math inline">\(\beta\)</span>, igual al de la población: LATE = ATE = ATT, y se recupera el modelo de Econometría 1.</p>
+<p>En general <strong>LATE es distinto del ATE</strong>: el efecto para los compliers puede ser mayor o menor que para los always-takers y los never-takers. Si los que se mueven con el instrumento son los que más ganan del tratamiento (o los que menos), el LATE sesga el ATE. Extrapolar del LATE al ATE exige más supuestos (o un instrumento muy fuerte, que mueva a casi todos, §★).</p>
+</section>
+</section>
+<section id="violaciones-de-los-supuestos" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Violaciones de los supuestos</h1>
+<p><strong>Exclusión.</strong> Si <span class="math inline">\(Z\)</span> afecta a <span class="math inline">\(Y\)</span> directamente, <span class="math inline">\(Y_i(d,z) = Y_i(d) + \gamma z\)</span>, entonces <span class="math inline">\(\mathbb{E}[Y\mid Z = 1] - \mathbb{E}[Y\mid Z = 0] = \tau_{LATE}\pi_c + \gamma\)</span>, y el estimador de Wald vale <span class="math inline">\(\tau_{LATE} + \gamma/\pi_c\)</span>: el sesgo es el efecto directo <strong>dividido por la fuerza de la primera etapa</strong>. Con un instrumento débil (<span class="math inline">\(\pi_c\)</span> chico), un pequeño efecto directo se <strong>amplifica</strong> (Ejercicio 3.4). Es la misma lección de la Clase 10 de Econometría 1: un instrumento débil agrava la inconsistencia por una violación leve de exclusión.</p>
+<p><strong>Monotonía.</strong> Si existen desafiantes, con proporción <span class="math inline">\(\pi_d\)</span> y efecto <span class="math inline">\(\tau_d\)</span>, la diferencia en <span class="math inline">\(Y\)</span> es <span class="math inline">\(\pi_c\tau_c - \pi_d\tau_d\)</span> y la de <span class="math inline">\(D\)</span> es <span class="math inline">\(\pi_c - \pi_d\)</span>, y el cociente de Wald <span class="math inline">\(=(\pi_c\tau_c - \pi_d\tau_d)/(\pi_c - \pi_d)\)</span> <strong>no</strong> es un promedio de efectos: puede quedar fuera del rango de los efectos individuales, o incluso invertir el signo (Ejercicio 3.3). La monotonía es testeable parcialmente (Kitagawa, 2015) y es plausible cuando el instrumento es un incentivo o una restricción que va en una sola dirección.</p>
+<p><strong>Relevancia débil.</strong> Con <span class="math inline">\(\pi_c\)</span> cercano a cero, el denominador es casi cero y el estimador de Wald es muy inestable y sesgado hacia el de MCO en muestras finitas (Clase 10 de este curso, que desarrolla la inferencia con instrumentos débiles).</p>
+</section>
+<section id="mc2e-con-más-de-un-instrumento-o-con-covariables" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> MC2E con más de un instrumento o con covariables</h1>
+<p>Con un solo instrumento binario y sin covariables, MC2E es exactamente el estimador de Wald, y por lo tanto estima el LATE. Con <strong>varios instrumentos</strong>, MC2E combina las distintas “primeras etapas” y estima un <strong>promedio ponderado</strong> de los LATE de cada uno:</p>
+<div id="prp-2sls-late" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (MC2E como promedio ponderado de LATE)</strong></span> Con instrumentos binarios mutuamente excluyentes <span class="math inline">\(Z\in\{1,\dots,K\}\)</span> (cada individuo tiene exactamente uno activo), el estimador de MC2E con las dummies de <span class="math inline">\(Z\)</span> como instrumentos converge a un promedio de los estimadores de Wald de cada instrumento contra la categoría de referencia, ponderados por la <strong>fuerza de cada primera etapa</strong> y la <strong>frecuencia</strong> de cada categoría. Bajo monotonía todos los pesos son no negativos.</p>
+</div>
+<p>Es el resultado de Angrist e Imbens (1995), que se toma prestado (la demostración generaliza el cálculo del estimador de Wald con una suma sobre categorías). El ejemplo más simple: si dos instrumentos, utilizados en dos submuestras del mismo tamaño, dan Walds de <span class="math inline">\(4\)</span> (con primera etapa <span class="math inline">\(0{,}3\)</span>) y <span class="math inline">\(2\)</span> (con primera etapa <span class="math inline">\(0{,}1\)</span>), el Wald combinado es <span class="math inline">\((0{,}3\cdot4 + 0{,}1\cdot2)/(0{,}3 + 0{,}1) = 3{,}5\)</span>: un promedio donde pesa más el instrumento que <strong>mueve a más gente</strong> (Ejercicio 3.5). Con covariables, MC2E pondera también por la varianza condicional del instrumento, como la regresión de la Clase 2.</p>
+</section>
+<section id="postgrado-efectos-de-tratamiento-marginales" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: efectos de tratamiento marginales</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Heckman y Vytlacil (1999, 2005) unifican todos estos efectos en un solo objeto, el <strong>efecto de tratamiento marginal</strong> (MTE), que vincula LATE, ATE y ATT con un modelo de elección.</p>
+</div>
+</div>
+<p>Supongamos que el tratamiento obedece a un <strong>modelo de umbral</strong> <span class="math inline">\(D = \mathbf{1}\{U_D\le p(Z)\}\)</span>, donde <span class="math inline">\(p(z) = P(D = 1\mid Z = z)\)</span> es el propensity score (creciente en <span class="math inline">\(z\)</span> por la monotonía) y <span class="math inline">\(U_D\sim U[0,1]\)</span> es una <strong>resistencia no observada</strong> al tratamiento, independiente de <span class="math inline">\(Z\)</span>: quienes tienen <span class="math inline">\(U_D\)</span> bajo se tratan fácilmente. Vytlacil (2002) mostró que este modelo es <strong>equivalente</strong> a las condiciones de independencia y monotonía. El <strong>MTE</strong> es el efecto para quienes están <strong>justo en el margen</strong> de indiferencia con resistencia <span class="math inline">\(u\)</span>: <span class="math display">\[
+\text{MTE}(u) = \mathbb{E}\big[Y(1) - Y(0)\mid U_D = u\big].
+\]</span></p>
+<div id="prp-mte" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (LATE, ATE y ATT como promedios del MTE)</strong></span> Con <span class="math inline">\(p(0)&lt;p(1)\)</span>, <span class="math display">\[
+\tau_{LATE} = \frac1{p(1) - p(0)}\int_{p(0)}^{p(1)}\text{MTE}(u)\,du,\qquad\tau_{ATE} = \int_0^1\text{MTE}(u)\,du.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con el modelo de umbral, un individuo es <strong>complier</strong> si <span class="math inline">\(D(0) = 0\)</span> y <span class="math inline">\(D(1) = 1\)</span>, es decir si <span class="math inline">\(p(0)&lt;U_D\le p(1)\)</span> (con <span class="math inline">\(U_D\)</span> independiente de <span class="math inline">\(Z\)</span>). Entonces <span class="math display">\[
+\tau_{LATE} = \mathbb{E}\big[Y(1) - Y(0)\mid p(0)&lt;U_D\le p(1)\big] = \frac1{p(1) - p(0)}\int_{p(0)}^{p(1)}\mathbb{E}\big[Y(1) - Y(0)\mid U_D = u\big]du,
+\]</span> porque <span class="math inline">\(U_D\)</span> es uniforme: condicionar en que cae en el intervalo <span class="math inline">\((p(0),p(1)]\)</span> equivale a promediar el MTE sobre ese intervalo con densidad <span class="math inline">\(1/(p(1) - p(0))\)</span>. El ATE es el mismo promedio sobre todo <span class="math inline">\([0,1]\)</span>, por ley de esperanzas iteradas.</p>
+</div>
+<p>La proposición muestra qué hace el instrumento: <strong>barre un tramo del MTE</strong>, el que va de <span class="math inline">\(p(0)\)</span> a <span class="math inline">\(p(1)\)</span>. Con un instrumento que mueve <span class="math inline">\(p(z)\)</span> entre <span class="math inline">\(p(0)\)</span> y <span class="math inline">\(p(1)\)</span> identificamos el MTE <strong>solo en ese tramo</strong>. Para identificar el ATE hace falta un instrumento con <strong>soporte grande</strong> (<span class="math inline">\(p(z)\)</span> que recorre de <span class="math inline">\(0\)</span> a <span class="math inline">\(1\)</span>: “identificación en el infinito”), y para el ATT, uno que cubra los valores relevantes. Cuando el MTE es <strong>decreciente</strong> (quienes más fácilmente se tratan, <span class="math inline">\(U_D\)</span> bajo, ganan más: selección <strong>sobre las ganancias</strong>, el modelo de Roy), el LATE de un instrumento que mueve a los “reacios” (<span class="math inline">\(U_D\)</span> alto) es <strong>menor</strong> que el ATE. El MTE da la <strong>estructura</strong> que permite extrapolar el LATE a otros efectos y a políticas nuevas (efecto de una política que cambia <span class="math inline">\(p(z)\)</span> de una manera distinta, el PRTE), aunque a costa de supuestos paramétricos o de una cobertura del instrumento que pocas veces existe.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Con efectos heterogéneos, <strong>VI estima el efecto local promedio</strong> (LATE): el efecto sobre los <strong>compliers</strong> (aquellos cuyo tratamiento cambia con el instrumento).</li>
+<li><strong>Supuestos:</strong> independencia, <strong>exclusión</strong>, relevancia y <strong>monotonía</strong> (sin desafiantes). Cuatro estratos: always-takers, never-takers, compliers, defiers; sus proporciones se identifican (<a href="#prp-estratos" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li><strong>Teorema</strong> (<a href="#thm-late" class="quarto-xref">Teorema&nbsp;1</a>): <span class="math inline">\(\tau_{LATE} = \text{ITT}/\text{primera etapa}\)</span> (estimador de Wald); <span class="math inline">\(\text{ITT} = \tau_{LATE}\cdot\pi_c\)</span>.</li>
+<li><strong>Cumplimiento unilateral:</strong> LATE = ATT. <strong>Efecto homogéneo:</strong> LATE = ATE. En general LATE <span class="math inline">\(\ne\)</span> ATE y depende del instrumento.</li>
+<li><strong>Violaciones:</strong> una violación de exclusión sesga por <span class="math inline">\(\gamma/\pi_c\)</span> (peor si el instrumento es débil); con desafiantes el Wald no es un promedio de efectos.</li>
+<li><strong>MC2E</strong> con varios instrumentos es un promedio ponderado de LATE (<a href="#prp-2sls-late" class="quarto-xref">Proposición&nbsp;2</a>); un rechazo de sobreidentificación puede reflejar heterogeneidad.</li>
+<li><strong>MTE</strong> (<a href="#prp-mte" class="quarto-xref">Proposición&nbsp;3</a>): LATE y ATE son promedios del efecto marginal sobre tramos de <span class="math inline">\(U_D\)</span>.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 3.1.</strong> En un experimento con asignación aleatoria <span class="math inline">\(Z\)</span>, <span class="math inline">\(\mathbb{E}[Y\mid Z = 1] = 12\)</span>, <span class="math inline">\(\mathbb{E}[Y\mid Z = 0] = 10\)</span>, <span class="math inline">\(\mathbb{E}[D\mid Z = 1] = 0{,}7\)</span> y <span class="math inline">\(\mathbb{E}[D\mid Z = 0] = 0{,}3\)</span>. Calcula el ITT, la proporción de cada tipo y el LATE.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\text{ITT} = 12 - 10 = 2\)</span>. <span class="math inline">\(\pi_a = 0{,}3\)</span>, <span class="math inline">\(\pi_n = 1 - 0{,}7 = 0{,}3\)</span>, <span class="math inline">\(\pi_c = 0{,}7 - 0{,}3 = 0{,}4\)</span> (suman <span class="math inline">\(1\)</span>). <span class="math inline">\(\tau_{LATE} = 2/0{,}4 = 5\)</span>. Interpretación: el efecto de <strong>recibir</strong> el tratamiento para quienes lo reciben <strong>gracias</strong> a la asignación es <span class="math inline">\(5\)</span>; el efecto de <strong>ser asignado</strong> es <span class="math inline">\(2\)</span> (porque solo el <span class="math inline">\(40\)</span> % cambia su conducta). Los always-takers (30 %) y los never-takers (30 %) no están afectados por la asignación y no entran en el LATE.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.2.</strong> En un programa con cumplimiento unilateral (el control no puede participar), <span class="math inline">\(\mathbb{E}[D\mid Z = 1] = 0{,}6\)</span> y <span class="math inline">\(\text{ITT} = 1{,}5\)</span>. Calcula el LATE y muestra que es igual al ATT.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}[D\mid Z = 0] = 0\)</span> (nadie en el control participa), de modo que <span class="math inline">\(\pi_a = 0\)</span> y <span class="math inline">\(\pi_c = 0{,}6\)</span>. <span class="math inline">\(\tau_{LATE} = 1{,}5/0{,}6 = 2{,}5\)</span>. Como los únicos que reciben el tratamiento son compliers asignados (<span class="math inline">\(D = 1\iff Z = 1\)</span> y complier), <span class="math inline">\(\mathbb{E}[Y(1) - Y(0)\mid D = 1] = \mathbb{E}[Y(1) - Y(0)\mid\text{complier}] = \tau_{LATE} = 2{,}5 = \tau_{ATT}\)</span>. El efecto sobre los participantes se identifica <strong>sin</strong> aleatorizar a nadie dentro de los tratados: basta que la <strong>asignación</strong> sea aleatoria y el cumplimiento sea unilateral.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.3.</strong> Hay defiers con proporción <span class="math inline">\(\pi_d = 0{,}1\)</span> y efecto <span class="math inline">\(\tau_d = 3\)</span>; los compliers son <span class="math inline">\(\pi_c = 0{,}4\)</span> con efecto <span class="math inline">\(\tau_c = 5\)</span>. Calcula el cociente de Wald y compáralo con <span class="math inline">\(\tau_c\)</span>. ¿Qué pasaría si <span class="math inline">\(\tau_d = 20\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con defiers, <span class="math inline">\(\text{ITT} = \pi_c\tau_c - \pi_d\tau_d = 2{,}0 - 0{,}3 = 1{,}7\)</span> y la primera etapa es <span class="math inline">\(\pi_c - \pi_d = 0{,}3\)</span>. Wald <span class="math inline">\(=1{,}7/0{,}3 = 5{,}67\ne5 = \tau_c\)</span>. Con <span class="math inline">\(\tau_d = 20\)</span>: <span class="math inline">\(\text{ITT} = 2{,}0 - 2{,}0 = 0\)</span>, Wald <span class="math inline">\(=0\)</span>: se concluiría que <strong>no hay efecto</strong> cuando los compliers ganan <span class="math inline">\(5\)</span> y los defiers <span class="math inline">\(20\)</span>. Con <span class="math inline">\(\tau_d&gt;20\)</span> el Wald sería <strong>negativo</strong>. Sin monotonía, el cociente mezcla efectos con pesos de signos distintos y pierde interpretación causal.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.4.</strong> El instrumento tiene un efecto directo <span class="math inline">\(\gamma = 0{,}5\)</span> sobre <span class="math inline">\(Y\)</span> (viola exclusión) y <span class="math inline">\(\pi_c = 0{,}4\)</span>. Calcula el sesgo del Wald. ¿Y si <span class="math inline">\(\pi_c = 0{,}1\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El Wald converge a <span class="math inline">\(\tau_{LATE} + \gamma/\pi_c\)</span>. Con <span class="math inline">\(\pi_c = 0{,}4\)</span>: sesgo <span class="math inline">\(=0{,}5/0{,}4 = 1{,}25\)</span>. Con <span class="math inline">\(\pi_c = 0{,}1\)</span>: <span class="math inline">\(0{,}5/0{,}1 = 5\)</span>. El mismo efecto directo de <span class="math inline">\(0{,}5\)</span> produce un sesgo <strong>cuatro veces mayor</strong> cuando la primera etapa es cuatro veces más débil. Es el motivo de que, ante la duda sobre la exclusión, convenga un instrumento <strong>fuerte</strong>; y de que un instrumento débil sea “doblemente peligroso” (inestable y muy sensible a violaciones menores).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.5.</strong> Dos instrumentos, usados en submuestras del mismo tamaño, dan estimadores de Wald de <span class="math inline">\(4\)</span> (primera etapa <span class="math inline">\(0{,}3\)</span>) y <span class="math inline">\(2\)</span> (primera etapa <span class="math inline">\(0{,}1\)</span>). Calcula el Wald combinado y explica los pesos. ¿Por qué no tiene por qué haber un error si los dos Walds difieren?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>El ITT combinado es <span class="math inline">\((0{,}3\cdot4 + 0{,}1\cdot2)/2 = 0{,}7\)</span> y la primera etapa combinada <span class="math inline">\((0{,}3 + 0{,}1)/2 = 0{,}2\)</span>: Wald combinado <span class="math inline">\(=0{,}7/0{,}2 = 3{,}5 = (0{,}75)(4) + (0{,}25)(2)\)</span>, con pesos proporcionales a la primera etapa: el primer instrumento mueve a <strong>tres veces más gente</strong> y pesa tres veces más. Que los Walds sean distintos (<span class="math inline">\(4\)</span> y <span class="math inline">\(2\)</span>) <strong>no implica</strong> que uno de los instrumentos sea inválido: si el efecto es heterogéneo, cada instrumento tiene <strong>sus propios compliers</strong> (poblaciones distintas) y estima su propio LATE. Un test de sobreidentificación que rechaza puede estar detectando esa heterogeneidad. Para diferenciarlo de una violación de exclusión hacen falta argumentos adicionales (por ejemplo, comparar las características de los compliers).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.6.</strong> Los compliers, ¿se parecen al resto de la población? Con <span class="math inline">\(\mathbb{E}[X\mid\text{always}] = 0{,}2\)</span> (fracción de mujeres), <span class="math inline">\(\mathbb{E}[X\mid\text{never}] = 0{,}8\)</span> y <span class="math inline">\(P(\text{always}) = 0{,}3\)</span>, <span class="math inline">\(P(\text{never}) = 0{,}3\)</span>, <span class="math inline">\(P(\text{complier}) = 0{,}4\)</span>, con <span class="math inline">\(\mathbb{E}[X] = 0{,}5\)</span> en la población, calcula la fracción de mujeres entre los compliers.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por la ley de esperanzas iteradas sobre los tres estratos: <span class="math inline">\(\mathbb{E}[X] = \pi_a\mathbb{E}[X\mid a] + \pi_n\mathbb{E}[X\mid n] + \pi_c\mathbb{E}[X\mid c]\)</span>, es decir <span class="math inline">\(0{,}5 = 0{,}3\cdot0{,}2 + 0{,}3\cdot0{,}8 + 0{,}4\,\mathbb{E}[X\mid c] = 0{,}06 + 0{,}24 + 0{,}4\,\mathbb{E}[X\mid c]\)</span>, luego <span class="math inline">\(\mathbb{E}[X\mid c] = 0{,}2/0{,}4 = 0{,}5\)</span>. En este caso los compliers tienen la misma composición que la población. En general, <span class="math inline">\(\mathbb{E}[X\mid c]\)</span> se obtiene de las características de los never-takers (observables en <span class="math inline">\(Z = 1\)</span> con <span class="math inline">\(D = 0\)</span>) y los always-takers (en <span class="math inline">\(Z = 0\)</span> con <span class="math inline">\(D = 1\)</span>) y las proporciones: es la idea de Abadie (2003) y de la tabla de “características de los compliers” que aparece en los artículos aplicados.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 3.7 ★.</strong> Sea <span class="math inline">\(\text{MTE}(u) = 4 - 6u\)</span> para <span class="math inline">\(u\in[0,1]\)</span> y un instrumento con <span class="math inline">\(p(0) = 0{,}2\)</span> y <span class="math inline">\(p(1) = 0{,}6\)</span>. Calcula el LATE y el ATE, e interpreta el signo de la pendiente.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 3.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 3.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\int(4 - 6u)\,du = 4u - 3u^2\)</span>. LATE: <span class="math inline">\(\frac1{0{,}4}\big[4u - 3u^2\big]_{0{,}2}^{0{,}6} = \frac1{0{,}4}\big[(2{,}4 - 1{,}08) - (0{,}8 - 0{,}12)\big] = \frac{1{,}32 - 0{,}68}{0{,}4} = 1{,}6\)</span>. ATE: <span class="math inline">\(\big[4u - 3u^2\big]_0^1 = 4 - 3 = 1\)</span>. El LATE (<span class="math inline">\(1{,}6\)</span>) es <strong>mayor</strong> que el ATE (<span class="math inline">\(1\)</span>) porque el instrumento mueve a personas con <span class="math inline">\(U_D\)</span> <strong>bajo</strong> (entre <span class="math inline">\(0{,}2\)</span> y <span class="math inline">\(0{,}6\)</span>), que tienen ganancias más altas que las de <span class="math inline">\(U_D\)</span> cerca de <span class="math inline">\(1\)</span>. La pendiente negativa del MTE significa que <strong>quienes se tratan con más facilidad son los que más ganan</strong> (selección sobre ganancias, modelo de Roy): con un instrumento que mueve a los más reacios (<span class="math inline">\(U_D\)</span> en <span class="math inline">\([0{,}8,1]\)</span>) se obtendría un LATE <strong>negativo</strong> (<span class="math inline">\(\frac1{0{,}2}[4u - 3u^2]_{0{,}8}^1 = (1 - 1{,}28)/0{,}2 = -1{,}4\)</span>, con <span class="math inline">\(4(0{,}8) - 3(0{,}64) = 3{,}2 - 1{,}92 = 1{,}28\)</span>). Distintos instrumentos barren distintos tramos y dan LATE muy distintos.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-02.html" class="pagination-link" aria-label="Clase 2 · Selección en observables">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 2 · Selección en observables</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

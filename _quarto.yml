@@ -6,13 +6,14 @@ project:
     - econometria-1/*.qmd
     - econometria-2/*.qmd
     - econometria-3/*.qmd
+    - econometria-4/*.qmd
 
 lang: es
 
 website:
   title: "Econometría"
   site-url: "https://benjaminsoliso.github.io/econometria/"
-  description: "Cursos de Econometría 1, 2 y 3: teoría, demostraciones paso a paso y ejercicios resueltos."
+  description: "Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
   page-navigation: true
   navbar:
     left:
@@ -24,6 +25,8 @@ website:
         href: econometria-2/index.qmd
       - text: "Econometría 3"
         href: econometria-3/index.qmd
+      - text: "Econometría 4"
+        href: econometria-4/index.qmd
   sidebar:
     - id: eco1
       title: "Econometría 1"
@@ -76,6 +79,15 @@ website:
         - econometria-3/clase-11.qmd
         - econometria-3/clase-12.qmd
         - econometria-3/clase-13.qmd
+    - id: eco4
+      title: "Econometría 4"
+      style: floating
+      contents:
+        - econometria-4/index.qmd
+        - econometria-4/clase-01.qmd
+        - econometria-4/clase-02.qmd
+        - econometria-4/clase-03.qmd
+        - econometria-4/clase-04.qmd
   page-footer:
     left: "© 2026 Benjamín Solís · Econometría"
     right: "Hecho con [Quarto](https://quarto.org)"

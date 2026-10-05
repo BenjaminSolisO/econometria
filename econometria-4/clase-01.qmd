@@ -1,0 +1,254 @@
+---
+title: "Clase 1 · Resultados potenciales y experimentos"
+subtitle: "El modelo de Rubin, el problema fundamental de la inferencia causal y la aleatorización"
+description: "El marco de resultados potenciales: SUTVA, efectos promedio (ATE, ATT), descomposición de la diferencia ingenua en efecto más sesgo de selección, aleatorización, la varianza de Neyman, regresión en un experimento, estratificación, potencia y el test exacto de Fisher."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a>
+:::
+
+# De la correlación a la causa
+
+En los tres cursos anteriores aprendimos a estimar **relaciones**: la esperanza condicional de $y$ dado $x$, un coeficiente de proyección, un parámetro estructural de un modelo bien especificado. Pero la pregunta que motiva la mayor parte del trabajo aplicado es otra: **¿qué pasaría si cambiáramos $x$?** ¿Cuánto más ganaría una persona si estudiara un año más? ¿Reduce una vacuna las hospitalizaciones? ¿Cuánto sube la matrícula si el Estado entrega becas? Son preguntas **causales**, y una correlación, por sofisticada que sea su estimación, no las responde por sí sola: las personas con más educación pueden ganar más porque estudiaron, o porque son más hábiles, o porque sus familias tienen contactos.
+
+Esta clase introduce el lenguaje que la econometría moderna usa para plantear preguntas causales: el modelo de **resultados potenciales** (Neyman, 1923; Rubin, 1974). Su virtud es que **separa dos problemas** que suelen mezclarse: (1) *qué* efecto queremos conocer (la definición del parámetro causal) y (2) *bajo qué supuestos* los datos lo identifican. El experimento aleatorizado es el caso en que el segundo problema se resuelve por diseño. Las Clases 2 a 4 estudian qué hacer cuando no hay experimento.[^neyman]
+
+[^neyman]: Jerzy Neyman introdujo los resultados potenciales en 1923, en una tesis sobre experimentos agrícolas, y los usó para calcular la varianza de un estimador de efectos de tratamientos en parcelas. Donald Rubin los generalizó en los años setenta a estudios observacionales, y por eso el marco lleva a veces el nombre de **modelo causal de Rubin**. La idea de que "causa" significa comparar lo que ocurrió con lo que habría ocurrido, un mundo contrafactual, es mucho más antigua en filosofía, pero Neyman y Rubin la convirtieron en un marco estadístico con nombre y apellido.
+
+# El modelo de resultados potenciales
+
+Considera una población de unidades $i$ (personas, empresas, escuelas) y un **tratamiento binario** $D_i\in\{0,1\}$ ($1$ = recibe el tratamiento, $0$ = no). Cada unidad tiene **dos resultados potenciales**:
+
+- $Y_i(1)$: el resultado que la unidad $i$ tendría **si fuera tratada**;
+- $Y_i(0)$: el resultado que tendría **si no fuera tratada**.
+
+El **efecto causal individual** es $\tau_i = Y_i(1) - Y_i(0)$. El resultado que **observamos** es
+$$
+Y_i = D_iY_i(1) + (1 - D_i)Y_i(0).
+$$ {#eq-obs}
+Es decir, vemos $Y_i(1)$ si $D_i = 1$ y $Y_i(0)$ si $D_i = 0$, pero **nunca ambos**.
+
+::: {.callout-caution title="El problema fundamental de la inferencia causal (Holland, 1986)"}
+Para cada unidad, **solo uno** de los dos resultados potenciales se observa. El efecto individual $\tau_i$ es **inobservable**, no por un problema de datos o de tamaño de muestra, sino por la naturaleza del problema: el contrafactual no existe. Toda la inferencia causal consiste en **suplir ese dato faltante** con supuestos o con diseño.
+:::
+
+Este marco supone, de manera implícita, una condición que conviene hacer explícita.
+
+::: {#def-sutva}
+## SUTVA (*stable unit treatment value assumption*)
+(i) **No hay interferencia**: el resultado de la unidad $i$ depende solo de su propio tratamiento, no del de las demás. (ii) **No hay versiones ocultas del tratamiento**: "tratado" significa lo mismo para todos.
+:::
+
+Si SUTVA falla, los resultados potenciales no están bien definidos: $Y_i(1)$ ya no es un solo número, porque depende de quién más es tratado. Es lo que ocurre con **vacunas** (la protección de un individuo depende de cuánta gente alrededor está vacunada), con **programas de capacitación** que saturan el mercado laboral local, o con **efectos de pares** en una escuela. Se manejan redefiniendo la unidad (aleatorizar por escuela en vez de por alumno) o modelando explícitamente la interferencia. En lo que sigue, SUTVA se supone.
+
+## Parámetros causales
+
+Como $\tau_i$ no se observa, se estudian **promedios** de efectos:
+
+::: {#def-efectos}
+## Efectos promedio
+- **Efecto promedio del tratamiento (ATE):** $\tau_{ATE} = \mathbb{E}[Y(1) - Y(0)]$.
+- **Efecto promedio sobre los tratados (ATT):** $\tau_{ATT} = \mathbb{E}[Y(1) - Y(0)\mid D = 1]$.
+- **Efecto promedio sobre los no tratados (ATU):** $\tau_{ATU} = \mathbb{E}[Y(1) - Y(0)\mid D = 0]$.
+- **Efecto condicional (CATE):** $\tau(x) = \mathbb{E}[Y(1) - Y(0)\mid X = x]$.
+:::
+
+El ATE responde "¿qué pasaría si **toda** la población fuera tratada frente a ninguna?" (relevante para una política universal); el ATT, "¿cuánto benefició el programa a quienes participaron?" (evaluación de un programa existente). Son distintos si el efecto es **heterogéneo** y los que se tratan son distintos de los que no. Con $\pi = P(D = 1)$, $\tau_{ATE} = \pi\tau_{ATT} + (1 - \pi)\tau_{ATU}$ (por la ley de esperanzas iteradas, Clase 2 de Econometría 1).
+
+# La diferencia ingenua y el sesgo de selección
+
+La comparación más natural entre tratados y no tratados es la **diferencia de promedios observados**: $\mathbb{E}[Y\mid D = 1] - \mathbb{E}[Y\mid D = 0]$. ¿Qué mide?
+
+::: {#prp-sesgo}
+## Descomposición de la diferencia ingenua
+$$
+\underbrace{\mathbb{E}[Y\mid D = 1] - \mathbb{E}[Y\mid D = 0]}_{\text{diferencia observada}} = \underbrace{\tau_{ATT}}_{\text{efecto sobre tratados}} + \underbrace{\mathbb{E}[Y(0)\mid D = 1] - \mathbb{E}[Y(0)\mid D = 0]}_{\text{sesgo de selección}}.
+$$
+Equivalentemente, $=\tau_{ATE} + \text{sesgo de selección} + (1 - \pi)(\tau_{ATT} - \tau_{ATU})$, donde el último término es el **sesgo de heterogeneidad**.
+:::
+
+::: {.proof}
+Por (@eq-obs), $\mathbb{E}[Y\mid D = 1] = \mathbb{E}[Y(1)\mid D = 1]$ y $\mathbb{E}[Y\mid D = 0] = \mathbb{E}[Y(0)\mid D = 0]$. Sumamos y restamos el término contrafactual $\mathbb{E}[Y(0)\mid D = 1]$ (que **no** es observable: es lo que los tratados habrían tenido sin tratamiento):
+$$
+\mathbb{E}[Y(1)\mid D = 1] - \mathbb{E}[Y(0)\mid D = 0] = \big\{\mathbb{E}[Y(1)\mid D = 1] - \mathbb{E}[Y(0)\mid D = 1]\big\} + \big\{\mathbb{E}[Y(0)\mid D = 1] - \mathbb{E}[Y(0)\mid D = 0]\big\},
+$$
+y la primera llave es $\tau_{ATT}$. Para la segunda forma, de $\tau_{ATE} = \pi\tau_{ATT} + (1 - \pi)\tau_{ATU}$ se obtiene $\tau_{ATT} = \tau_{ATE} + (1 - \pi)(\tau_{ATT} - \tau_{ATU})$.
+:::
+
+El **sesgo de selección** compara lo que los tratados *habrían* obtenido sin tratamiento con lo que obtienen los no tratados: si las personas que **eligen** estudiar (o recibir una terapia, o un crédito) son distintas, ese término no es cero. Típicamente quienes se tratan tienen peor (o mejor) resultado base: los pacientes que van al hospital están más enfermos que los que no van, de modo que la diferencia observada **subestima** (o hasta invierte el signo de) el efecto del hospital.
+
+::: {#exm-descomp}
+## Un ejemplo numérico
+Con $\mathbb{E}[Y\mid D = 1] = 70$, $\mathbb{E}[Y\mid D = 0] = 60$ y $\mathbb{E}[Y(0)\mid D = 1] = 65$ (los tratados habrían tenido $65$ sin tratamiento): $\tau_{ATT} = 70 - 65 = 5$ y el sesgo de selección es $65 - 60 = 5$. La diferencia ingenua $10$ **duplica** el efecto verdadero sobre los tratados. Si además $\pi = 0{,}4$ y $\tau_{ATU} = 3$, entonces $\tau_{ATE} = 0{,}4\cdot5 + 0{,}6\cdot3 = 3{,}8$ y el sesgo de heterogeneidad es $0{,}6(5 - 3) = 1{,}2$: $3{,}8 + 5 + 1{,}2 = 10$ ✓.
+:::
+
+# Aleatorización
+
+La manera más limpia de eliminar el sesgo de selección es **asignar el tratamiento al azar**.
+
+::: {#thm-aleatorizacion}
+## Identificación en un experimento aleatorizado
+Si $D\perp\!\!\!\perp\big(Y(0),Y(1)\big)$ (el tratamiento se asigna independientemente de los resultados potenciales), entonces $\mathbb{E}[Y(d)\mid D = d] = \mathbb{E}[Y(d)]$ y el sesgo de selección es cero, de modo que
+$$
+\tau_{ATE} = \tau_{ATT} = \mathbb{E}[Y\mid D = 1] - \mathbb{E}[Y\mid D = 0].
+$$
+:::
+
+::: {.proof}
+Por independencia, $\mathbb{E}[Y(0)\mid D = 1] = \mathbb{E}[Y(0)\mid D = 0] = \mathbb{E}[Y(0)]$, así que el sesgo de selección en la @prp-sesgo es cero; análogamente $\mathbb{E}[Y(1)\mid D = 1] = \mathbb{E}[Y(1)]$. Luego $\mathbb{E}[Y\mid D = 1] - \mathbb{E}[Y\mid D = 0] = \mathbb{E}[Y(1)] - \mathbb{E}[Y(0)] = \tau_{ATE}$, y por la misma razón $\tau_{ATT} = \tau_{ATU} = \tau_{ATE}$.
+:::
+
+La aleatorización hace que **los grupos de tratamiento y control sean, en promedio, comparables en todo**: en lo observable y, sobre todo, en lo **no observable**. Es la razón por la que el experimento aleatorizado es el "patrón oro". Con una muestra, el estimador es
+$$
+\hat\tau = \bar Y_1 - \bar Y_0,\qquad\bar Y_d = \frac1{n_d}\sum_{i:\,D_i = d}Y_i.
+$$
+
+## Inferencia de Neyman en una población finita
+
+Para hacer inferencia con $\hat\tau$ hay dos marcos. El **de superpoblación** (el de los cursos anteriores) supone que las unidades son una muestra aleatoria de una población grande. El **de población finita** (el de Neyman) trata los $n$ resultados potenciales $\{(Y_i(0),Y_i(1))\}$ como **fijos**, y la **única fuente de aleatoriedad es la asignación del tratamiento**. Es el más fiel al experimento, donde las unidades son las que son y solo se sortea quién recibe qué.
+
+Sea **aleatorización completa**: se sortean al azar $n_1$ unidades para el tratamiento (todas las asignaciones con $n_1$ tratados son igualmente probables) y $n_0 = n - n_1$ para el control. El parámetro es el **efecto promedio de la muestra** $\tau_S = \frac1n\sum_i\tau_i = \bar Y(1) - \bar Y(0)$. Definimos las varianzas **de la población finita** (con divisor $n - 1$): $S_d^2 = \frac1{n - 1}\sum_i(Y_i(d) - \bar Y(d))^2$, $S_{10} = \frac1{n - 1}\sum_i(Y_i(1) - \bar Y(1))(Y_i(0) - \bar Y(0))$ y $S_\tau^2 = \frac1{n - 1}\sum_i(\tau_i - \tau_S)^2 = S_1^2 + S_0^2 - 2S_{10}$.
+
+::: {#thm-neyman}
+## Insesgamiento y varianza de Neyman
+Bajo aleatorización completa, $\hat\tau$ es **insesgado** para $\tau_S$ y
+$$
+\operatorname{Var}(\hat\tau) = \frac{S_1^2}{n_1} + \frac{S_0^2}{n_0} - \frac{S_\tau^2}n.
+$$
+El estimador $\hat V = s_1^2/n_1 + s_0^2/n_0$ (con $s_d^2$ las varianzas muestrales dentro de cada grupo) tiene $\mathbb{E}[\hat V] = S_1^2/n_1 + S_0^2/n_0\ge\operatorname{Var}(\hat\tau)$: es **conservador**, y exacto si el efecto es constante ($S_\tau^2 = 0$).
+:::
+
+::: {.callout-note title="Borrador"}
+$\bar Y_1$ es el promedio de una **muestra aleatoria simple sin reemplazo** de tamaño $n_1$ de la población finita $\{Y_i(1)\}_{i = 1}^n$: los tratados son una selección al azar. Las fórmulas de muestreo en poblaciones finitas dan su media y varianza. Lo mismo vale para $\bar Y_0$ con los controles. La complicación es que $\bar Y_1$ y $\bar Y_0$ **no son independientes** (si una unidad cae en el tratamiento, no cae en el control), y hay que calcular su covarianza. Como cada unidad aporta $Y_i(1)$ **o** $Y_i(0)$ pero no ambos, el término $S_\tau^2$ de la varianza (que depende de la correlación **entre** $Y_i(1)$ e $Y_i(0)$) **no es estimable** de los datos: nunca vemos ambos resultados de una misma unidad.
+:::
+
+::: {.proof}
+Sea $W_i = D_i$ el indicador de tratamiento, con $\mathbb{E}[W_i] = p = n_1/n$, $\operatorname{Var}(W_i) = p(1 - p)$ y, para $i\ne j$, $\operatorname{Cov}(W_i,W_j) = -p(1 - p)/(n - 1)$ (sorteo sin reemplazo).
+
+*Insesgamiento.* $\bar Y_1 = \frac1{n_1}\sum_iW_iY_i(1)$, así que $\mathbb{E}[\bar Y_1] = \frac1{n_1}\sum_ipY_i(1) = \bar Y(1)$ porque $p/n_1 = 1/n$. Análogamente $\mathbb{E}[\bar Y_0] = \bar Y(0)$ (con $1 - p$ y $n_0$). Luego $\mathbb{E}[\hat\tau] = \tau_S$.
+
+*Varianza.* $\operatorname{Var}(\bar Y_1) = \big(1 - \tfrac{n_1}n\big)\tfrac{S_1^2}{n_1} = \tfrac{S_1^2}{n_1} - \tfrac{S_1^2}n$ (varianza de una media muestral sin reemplazo, con corrección por población finita), y $\operatorname{Var}(\bar Y_0) = \tfrac{S_0^2}{n_0} - \tfrac{S_0^2}n$. Para la covarianza, $\operatorname{Cov}(\bar Y_1,\bar Y_0) = \frac1{n_1n_0}\sum_{i,j}Y_i(1)Y_j(0)\operatorname{Cov}(W_i,1 - W_j) = -\frac1{n_1n_0}\sum_{i,j}Y_i(1)Y_j(0)\operatorname{Cov}(W_i,W_j)$. Separando $i = j$ (con $\operatorname{Cov} = p(1 - p)$) e $i\ne j$,
+$$
+\operatorname{Cov}(\bar Y_1,\bar Y_0) = -\frac{p(1 - p)}{n_1n_0}\Big[\sum_iY_i(1)Y_i(0) - \frac1{n - 1}\sum_{i\ne j}Y_i(1)Y_j(0)\Big] = -\frac{p(1 - p)}{n_1n_0}\cdot\frac{n}{n - 1}\Big[\sum_iY_i(1)Y_i(0) - n\bar Y(1)\bar Y(0)\Big],
+$$
+y como $\sum_iY_i(1)Y_i(0) - n\bar Y(1)\bar Y(0) = (n - 1)S_{10}$ y $n_1n_0 = n^2p(1 - p)$, queda $\operatorname{Cov}(\bar Y_1,\bar Y_0) = -S_{10}/n$. Entonces
+$$
+\operatorname{Var}(\hat\tau) = \operatorname{Var}(\bar Y_1) + \operatorname{Var}(\bar Y_0) - 2\operatorname{Cov}(\bar Y_1,\bar Y_0) = \frac{S_1^2}{n_1} + \frac{S_0^2}{n_0} - \frac{S_1^2 + S_0^2 - 2S_{10}}n.
+$$
+
+*Estimador.* La varianza muestral $s_1^2$ de una muestra aleatoria simple es insesgada para $S_1^2$ (con divisor $n_1 - 1$), y lo mismo para $s_0^2$. Entonces $\mathbb{E}[\hat V] = S_1^2/n_1 + S_0^2/n_0 = \operatorname{Var}(\hat\tau) + S_\tau^2/n\ge\operatorname{Var}(\hat\tau)$.
+:::
+
+En la práctica se usa $\hat V$ para intervalos y tests (con el TCL de poblaciones finitas, Hájek, que se toma prestado). Que sea conservador es tranquilizante: los intervalos tienen **cobertura al menos nominal**. Y la corrección $-S_\tau^2/n$ no se puede estimar, porque exigiría conocer la covarianza entre $Y(1)$ e $Y(0)$ de las mismas unidades (Ejercicio 1.2 muestra que la diferencia puede ser grande o despreciable).
+
+# Regresión en un experimento
+
+Un resultado práctico conecta con Econometría 1: el estimador de Neyman es la regresión de MCO de $Y$ sobre una constante y $D$.
+
+::: {#prp-ols-dm}
+## La diferencia de medias es MCO
+En la regresión de $Y_i$ sobre una constante y $D_i$, el coeficiente de $D_i$ es exactamente $\bar Y_1 - \bar Y_0$ y la constante es $\bar Y_0$.
+:::
+
+::: {.proof}
+Con una dummy $D_i$ y una constante, el espacio generado por $(1,D)$ es el de las funciones constantes por grupo. La proyección de $Y$ sobre ese espacio asigna a cada observación el promedio de su grupo (Clase 3 de Econometría 1): ajustado $=\bar Y_0$ si $D = 0$ y $\bar Y_1$ si $D = 1$. Entonces la constante es $\bar Y_0$ y el coeficiente de $D$ es $\bar Y_1 - \bar Y_0$. (Ejemplo con $Y_{D = 1} = (3,5)$ e $Y_{D = 0} = (1,2,3)$: $\hat\tau = 4 - 2 = 2$, Ejercicio 1.4.)
+:::
+
+Con la regresión, el **error estándar robusto** (HC, Clase 7 de Econometría 1) da un estimador de varianza equivalente al de Neyman. Y la regresión permite incorporar **covariables previas al tratamiento** $X_i$ (edad, nivel inicial del resultado) para ganar **precisión**. Como el tratamiento es aleatorio, $X$ es independiente de $D$ y agregarla **no es necesaria para eliminar sesgo**, pero reduce la varianza residual: si $X$ explica una fracción $R^2$ de la varianza del resultado, la varianza del estimador baja aproximadamente en el factor $1 - R^2$. Una advertencia (Freedman, 2008): en muestras finitas, agregar $X$ linealmente puede incluso **sesgar** y empeorar la precisión cuando el efecto es heterogéneo. La recomendación de Lin (2013) es regresar $Y$ sobre $D$, $\tilde X$ (covariables **centradas**: $X - \bar X$) y las **interacciones** $D\cdot\tilde X$: el coeficiente de $D$ es consistente para el ATE y **asintóticamente nunca peor** que el estimador sin covariables (se toma prestado), con errores robustos.
+
+## Estratificación
+
+Cuando se conoce una covariable discreta $G$ fuerte (región, sexo, línea base), se puede **aleatorizar dentro de cada estrato**: en el estrato $g$ ($n_g$ unidades) se sortea el tratamiento por separado. El estimador es $\hat\tau_{est} = \sum_g(n_g/n)\hat\tau_g$ con $\hat\tau_g$ la diferencia de medias en el estrato. Elimina la variabilidad **entre** estratos y casi siempre baja la varianza respecto de la aleatorización completa. La estratificación **no** equivale a tratar a todos los estratos con la **misma** probabilidad si se quiere el ATE de la muestra: si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar *a lo bruto* tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).
+
+## Potencia y tamaño muestral
+
+Para diseñar un experimento hay que decidir cuántas unidades reclutar. Con grupos iguales ($n_1 = n_0 = m$), varianza $\sigma^2$ en cada grupo y un efecto mínimo detectable $\delta$, un test bilateral de nivel $\alpha$ con potencia $1 - \beta$ requiere
+$$
+m\approx\frac{2(z_{1 - \alpha/2} + z_{1 - \beta})^2\sigma^2}{\delta^2}\quad\text{por grupo.}
+$$
+Con $\alpha = 0{,}05$ y potencia de $80$ % ($z = 1{,}96$ y $0{,}84$): $m\approx15{,}7\,\sigma^2/\delta^2$. Detectar $\delta = 0{,}2\sigma$ exige $\approx392$ por grupo; $\delta = 0{,}5\sigma$, $\approx63$. La relación $1/\delta^2$ es la clave: **detectar un efecto la mitad de grande exige cuatro veces más datos**.
+
+## Límites de los experimentos
+
+Un experimento identifica el ATE **de la población experimental**, bajo SUTVA y con **cumplimiento perfecto**. Fallan en la práctica por: (i) **incumplimiento** (no todos los asignados al tratamiento lo reciben; la Clase 3 usa la asignación como instrumento); (ii) **desgaste** (se pierden datos de manera selectiva); (iii) **validez externa** (el efecto en la población del estudio puede no valer en otra); (iv) **interferencia** (violación de SUTVA); y (v) **costo y ética**: muchas preguntas (el efecto de la educación en el ingreso, de una crisis en la salud) no pueden estudiarse aleatorizando. De ahí el resto del curso.
+
+# ★ Postgrado: el test de aleatorización de Fisher
+
+::: {.callout-important title="★ Postgrado"}
+Fisher (1935) propuso un test que **no necesita supuestos de distribución ni TCL**: usa solo el mecanismo de asignación. Su validez es **exacta** en muestras finitas.
+:::
+
+La hipótesis nula es la **nula aguda** (*sharp*): $H_0:Y_i(1) = Y_i(0)$ para **todo** $i$ (el tratamiento no tiene efecto sobre ninguna unidad), más fuerte que $\tau_{ATE} = 0$. Bajo $H_0$ se conocen **ambos** resultados potenciales de cada unidad (el observado), así que **el resultado de cada unidad no depende de la asignación**. Podemos entonces **recalcular el estadístico** $T(w,Y)$ (por ejemplo $|\bar Y_1 - \bar Y_0|$) para **cada** asignación posible $w\in\mathcal{W}$ (el conjunto de las $\binom n{n_1}$ asignaciones), con los $Y$ fijos. El **$p$-valor** es la fracción de asignaciones con un estadístico al menos tan extremo como el observado:
+$$
+p = \frac1{|\mathcal{W}|}\sum_{w\in\mathcal{W}}\mathbf{1}\big\{T(w,Y)\ge T(W,Y)\big\},
+$$
+con $W$ la asignación realizada.
+
+::: {#prp-fisher}
+## Validez exacta del test de Fisher
+Bajo $H_0$ y aleatorización completa, $P(p\le\alpha)\le\alpha$ para todo $\alpha\in[0,1]$, en cualquier tamaño de muestra.
+:::
+
+::: {.proof}
+Bajo $H_0$, el vector $Y$ es **fijo** y la única aleatoriedad es $W$, uniforme sobre $\mathcal{W}$. Sea $t_w = T(w,Y)$ el valor del estadístico para cada asignación (números fijos). El estadístico observado es $t_W$ con $W$ uniforme: es un valor elegido **al azar** entre los $|\mathcal{W}|$ números $\{t_w\}$. Y $p = \#\{w:t_w\ge t_W\}/|\mathcal{W}|$ es la fracción de números de esa lista que son $\ge$ el elegido. Si ordenamos la lista de mayor a menor, $t_{(1)}\ge t_{(2)}\ge\dots$, elegir $W$ uniforme equivale a elegir una posición $k$ uniforme, y $p\ge k/|\mathcal{W}|$ (con igualdad si no hay empates). Luego $P(p\le\alpha)\le P\big(k/|\mathcal{W}|\le\alpha\big) = \lfloor\alpha|\mathcal{W}|\rfloor/|\mathcal{W}|\le\alpha$.
+:::
+
+El test de Fisher es **exacto** (el tamaño es a lo más $\alpha$ para cualquier $n$), robusto a colas gordas y outliers (puede usar estadísticos de rangos), y válido para experimentos pequeños. Su limitación es que contrasta una nula **más fuerte** que la de efecto promedio nulo: puede rechazar porque hay efectos heterogéneos que se cancelan en promedio. Para el ATE con efectos heterogéneos, el enfoque de Neyman (arriba) es el apropiado.
+
+# Resumen
+
+- **Resultados potenciales:** $Y_i(1)$ e $Y_i(0)$; solo se observa uno ($Y_i = D_iY_i(1) + (1 - D_i)Y_i(0)$). **SUTVA** (sin interferencia ni versiones ocultas). El efecto individual es inobservable; se estiman promedios: **ATE, ATT, ATU, CATE**.
+- **Diferencia ingenua** = ATT + **sesgo de selección** (@prp-sesgo) = ATE + sesgo de selección + sesgo de heterogeneidad.
+- **Aleatorización** ($D\perp(Y(0),Y(1))$) elimina el sesgo de selección: la diferencia de medias identifica el ATE (@thm-aleatorizacion). Coincide con **MCO** de $Y$ sobre $D$ (@prp-ols-dm).
+- **Neyman** (@thm-neyman): $\hat\tau$ es insesgado, $\operatorname{Var}(\hat\tau) = S_1^2/n_1 + S_0^2/n_0 - S_\tau^2/n$; el estimador $\hat V$ es **conservador**. Covariables (Lin) y estratificación mejoran la precisión.
+- **Potencia:** $m\approx2(z_{1 - \alpha/2} + z_{1 - \beta})^2\sigma^2/\delta^2$ por grupo.
+- **Fisher** (@prp-fisher): test exacto de la nula aguda, sin supuestos de distribución.
+
+# Ejercicios
+
+**Ejercicio 1.1.** Con $\mathbb{E}[Y\mid D = 1] = 70$, $\mathbb{E}[Y\mid D = 0] = 60$ y $\mathbb{E}[Y(0)\mid D = 1] = 65$, calcula $\tau_{ATT}$ y el sesgo de selección. Si $\pi = 0{,}4$ y $\tau_{ATU} = 3$, calcula $\tau_{ATE}$ y el sesgo de heterogeneidad, y verifica la segunda forma de la descomposición.
+
+::: {.callout-tip collapse="true" title="Solución 1.1"}
+$\tau_{ATT} = 70 - 65 = 5$; sesgo de selección $= 65 - 60 = 5$; diferencia observada $= 10$ ✓. $\tau_{ATE} = \pi\tau_{ATT} + (1 - \pi)\tau_{ATU} = 0{,}4(5) + 0{,}6(3) = 3{,}8$. Sesgo de heterogeneidad $= (1 - \pi)(\tau_{ATT} - \tau_{ATU}) = 0{,}6(5 - 3) = 1{,}2$. Suma: $\tau_{ATE} + \text{sesgo de selección} + \text{sesgo de heterogeneidad} = 3{,}8 + 5 + 1{,}2 = 10$ ✓. Moraleja: la diferencia observada es $2{,}6$ veces el ATE; ignorar la selección lleva a **sobrestimar** el efecto en más de un $160$ %.
+:::
+
+**Ejercicio 1.2.** En un experimento con $n = 100$ y $n_1 = n_0 = 50$, $s_1^2 = 25$, $s_0^2 = 16$ y $\hat\tau = 2{,}0$: calcula $\hat V$, el error estándar y un IC al 95 %. Luego, tomando $S_1 = 5$ y $S_0 = 4$, calcula la varianza **verdadera** si $\operatorname{Corr}(Y(1),Y(0)) = 1$ y si es $-1$.
+
+::: {.callout-tip collapse="true" title="Solución 1.2"}
+$\hat V = 25/50 + 16/50 = 0{,}82$; error estándar $=0{,}906$; IC: $2{,}0\pm1{,}96(0{,}906) = (0{,}22;\ 3{,}78)$. Varianza verdadera $=\hat V$ esperada $-S_\tau^2/n$ con $S_\tau^2 = S_1^2 + S_0^2 - 2S_{10}$. Si $\operatorname{Corr} = 1$: $S_{10} = 20$ y $S_\tau^2 = 25 + 16 - 40 = 1$, varianza $=0{,}82 - 0{,}01 = 0{,}81$: el estimador conservador casi no se equivoca. Si $\operatorname{Corr} = -1$: $S_{10} = -20$ y $S_\tau^2 = 25 + 16 + 40 = 81$, varianza $=0{,}82 - 0{,}81 = 0{,}01$: $\hat V$ **sobrestima 82 veces** la varianza verdadera. La correlación entre resultados potenciales no se puede estimar, de modo que el investigador no sabe en cuál de los dos casos está; por eso se usa el estimador conservador.
+:::
+
+**Ejercicio 1.3.** ¿Cuántas unidades por grupo hacen falta para detectar $\delta = 0{,}2\sigma$ y $\delta = 0{,}5\sigma$ con $\alpha = 0{,}05$ y potencia $80$ %? ¿Qué pasa si se quiere detectar $\delta = 0{,}1\sigma$?
+
+::: {.callout-tip collapse="true" title="Solución 1.3"}
+$m = 2(1{,}96 + 0{,}84)^2\sigma^2/\delta^2 = 15{,}68\,\sigma^2/\delta^2$. $\delta = 0{,}2\sigma$: $15{,}68/0{,}04 = 392$ por grupo. $\delta = 0{,}5\sigma$: $15{,}68/0{,}25 = 63$ por grupo. $\delta = 0{,}1\sigma$: $15{,}68/0{,}01 = 1\,568$ por grupo. Cada vez que el efecto mínimo detectable se **divide por 2**, el tamaño muestral se **multiplica por 4**. Por eso los experimentos con efectos pequeños (educación, salud pública) requieren miles de unidades.
+:::
+
+**Ejercicio 1.4.** Con tratados $Y = (3,5)$ y controles $Y = (1,2,3)$, calcula $\hat\tau$ y la regresión de $Y$ sobre una constante y $D$. Calcula también $\hat V$ de Neyman.
+
+::: {.callout-tip collapse="true" title="Solución 1.4"}
+$\bar Y_1 = 4$, $\bar Y_0 = 2$, $\hat\tau = 2$. En la regresión, constante $=\bar Y_0 = 2$ y coeficiente de $D$ $=2$ (@prp-ols-dm). Varianzas muestrales: $s_1^2 = [(3 - 4)^2 + (5 - 4)^2]/1 = 2$ y $s_0^2 = [(1 - 2)^2 + 0 + (3 - 2)^2]/2 = 1$. $\hat V = 2/2 + 1/3 = 1{,}333$ y el error estándar es $1{,}155$. Con $t = 2/1{,}155 = 1{,}73$ no se rechaza $H_0:\tau = 0$ (con tan pocos datos hay poca potencia).
+:::
+
+**Ejercicio 1.5.** (Estratos con distinta probabilidad de tratamiento.) Hay dos estratos: el 1 con $n = 60$ y media de control $10$, efecto $2$; el 2 con $n = 40$, media de control $20$, efecto $4$. Se trata a $12$ del estrato 1 y a $32$ del estrato 2. Calcula el ATE de la muestra, la diferencia ingenua entre tratados y controles, y el estimador estratificado.
+
+::: {.callout-tip collapse="true" title="Solución 1.5"}
+ATE $=0{,}6\cdot2 + 0{,}4\cdot4 = 2{,}8$. Medias: tratados del estrato 1 $=12$, del estrato 2 $=24$; controles del estrato 1 $=10$, del estrato 2 $=20$. Tratados: $12$ del estrato 1 y $32$ del 2: media $=(12\cdot12 + 32\cdot24)/44 = 912/44 = 20{,}73$. Controles: $48$ del estrato 1 y $8$ del 2: media $=(48\cdot10 + 8\cdot20)/56 = 640/56 = 11{,}43$. Diferencia ingenua $=9{,}30$, más de **tres veces** el ATE: el estrato 2 (de mayor nivel) está **sobrerrepresentado** entre los tratados. Estratificado: $\hat\tau_1 = 12 - 10 = 2$ y $\hat\tau_2 = 24 - 20 = 4$; $\hat\tau_{est} = 0{,}6\cdot2 + 0{,}4\cdot4 = 2{,}8$ ✓, el ATE. Es la lógica de la Clase 2: cuando la asignación depende de una covariable, hay que **condicionar** en ella.
+:::
+
+**Ejercicio 1.6.** Explica por qué en un estudio de vacunación en una población con **inmunidad de rebaño** SUTVA falla, y propón una solución de diseño.
+
+::: {.callout-tip collapse="true" title="Solución 1.6"}
+La probabilidad de que un individuo se contagie depende de **cuántos de sus contactos** están vacunados, no solo de si él lo está: $Y_i$ depende del vector completo de tratamientos $(D_1,\dots,D_n)$, y $Y_i(1)$ no es un solo número (hay muchos $Y_i(1;\text{resto})$). Además, un individuo no vacunado se beneficia indirectamente del tratamiento de otros: ese **efecto de derrame** contamina el grupo de control y subestima el efecto *directo* en una comparación individual. Solución de diseño: **aleatorizar por conglomerados** (comunidades, escuelas) en vez de por individuos, de modo que la interferencia ocurra *dentro* de cada conglomerado y el tratamiento se defina a nivel de conglomerado; así los resultados potenciales de cada conglomerado dependen solo de su propio tratamiento (si no hay interferencia entre conglomerados). El costo: menos unidades efectivas (la inferencia usa errores agrupados, Clase 10) y mayor varianza.
+:::
+
+**Ejercicio 1.7 ★.** (Test de Fisher.) Seis unidades, tres tratadas, con resultados tratados $(10,12,14)$ y controles $(6,8,9)$. Calcula el $p$-valor exacto, unilateral y bilateral, de la nula aguda con el estadístico $\bar Y_1 - \bar Y_0$.
+
+::: {.callout-tip collapse="true" title="Solución 1.7 ★"}
+Hay $\binom63 = 20$ asignaciones. Bajo la nula aguda los resultados son fijos: $\{6,8,9,10,12,14\}$, con suma $59$. Si la suma de los tratados es $S$, la diferencia es $(S - (59 - S))/3 = (2S - 59)/3$. Observado: $S = 36$, diferencia $=13/3 = 4{,}33$. La suma máxima posible de tres valores es $14 + 12 + 10 = 36$: **solo la asignación observada** llega a $S\ge36$, así que el $p$-valor unilateral es $1/20 = 0{,}05$. Bilateral: además cuenta la asignación con $S$ mínima, $6 + 8 + 9 = 23$, diferencia $(46 - 59)/3 = -4{,}33$ (igual en valor absoluto): $2/20 = 0{,}10$. Con seis unidades, ni siquiera el efecto más extremo posible permite $p<0{,}05$ en el test bilateral: es un ejemplo de que el test de Fisher es exacto pero **discreto**, y necesita suficientes asignaciones para tener poder.
+:::
