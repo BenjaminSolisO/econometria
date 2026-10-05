@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-02.html" rel="next">
 <link href="../econometria-4/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -180,6 +181,60 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
   </div>
 </li>
     </ul>
@@ -373,7 +428,7 @@ Y_i = D_iY_i(1) + (1 - D_i)Y_i(0).
 <p>Con la regresión, el <strong>error estándar robusto</strong> (HC, Clase 7 de Econometría 1) da un estimador de varianza equivalente al de Neyman. Y la regresión permite incorporar <strong>covariables previas al tratamiento</strong> <span class="math inline">\(X_i\)</span> (edad, nivel inicial del resultado) para ganar <strong>precisión</strong>. Como el tratamiento es aleatorio, <span class="math inline">\(X\)</span> es independiente de <span class="math inline">\(D\)</span> y agregarla <strong>no es necesaria para eliminar sesgo</strong>, pero reduce la varianza residual: si <span class="math inline">\(X\)</span> explica una fracción <span class="math inline">\(R^2\)</span> de la varianza del resultado, la varianza del estimador baja aproximadamente en el factor <span class="math inline">\(1 - R^2\)</span>. Una advertencia (Freedman, 2008): en muestras finitas, agregar <span class="math inline">\(X\)</span> linealmente puede incluso <strong>sesgar</strong> y empeorar la precisión cuando el efecto es heterogéneo. La recomendación de Lin (2013) es regresar <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(D\)</span>, <span class="math inline">\(\tilde X\)</span> (covariables <strong>centradas</strong>: <span class="math inline">\(X - \bar X\)</span>) y las <strong>interacciones</strong> <span class="math inline">\(D\cdot\tilde X\)</span>: el coeficiente de <span class="math inline">\(D\)</span> es consistente para el ATE y <strong>asintóticamente nunca peor</strong> que el estimador sin covariables (se toma prestado), con errores robustos.</p>
 <section id="estratificación" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="estratificación"><span class="header-section-number">5.1</span> Estratificación</h2>
-<p>Cuando se conoce una covariable discreta <span class="math inline">\(G\)</span> fuerte (región, sexo, línea base), se puede <strong>aleatorizar dentro de cada estrato</strong>: en el estrato <span class="math inline">\(g\)</span> (<span class="math inline">\(n_g\)</span> unidades) se sortea el tratamiento por separado. El estimador es <span class="math inline">\(\hat\tau_{est} = \sum_g(n_g/n)\hat\tau_g\)</span> con <span class="math inline">\(\hat\tau_g\)</span> la diferencia de medias en el estrato. Elimina la variabilidad <strong>entre</strong> estratos y casi siempre baja la varianza respecto de la aleatorización completa. La estratificación <strong>no</strong> equivale a tratar a todos los estratos con la <strong>misma</strong> probabilidad si se quiere el ATE de la muestra: si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar <em>a lo bruto</em> tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).</p>
+<p>Cuando se conoce una covariable discreta <span class="math inline">\(G\)</span> fuerte (región, sexo, línea base), se puede <strong>aleatorizar dentro de cada estrato</strong>: en el estrato <span class="math inline">\(g\)</span> (<span class="math inline">\(n_g\)</span> unidades) se sortea el tratamiento por separado. El estimador es <span class="math inline">\(\hat\tau_{est} = \sum_g(n_g/n)\hat\tau_g\)</span> con <span class="math inline">\(\hat\tau_g\)</span> la diferencia de medias en el estrato. Elimina la variabilidad <strong>entre</strong> estratos y casi siempre baja la varianza respecto de la aleatorización completa. Un cuidado: la probabilidad de tratamiento puede <strong>diferir</strong> entre estratos, y en ese caso hay que usar el estimador estratificado (que pondera cada <span class="math inline">\(\hat\tau_g\)</span> por el tamaño del estrato). Si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar <em>a lo bruto</em> tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).</p>
 </section>
 <section id="potencia-y-tamaño-muestral" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="potencia-y-tamaño-muestral"><span class="header-section-number">5.2</span> Potencia y tamaño muestral</h2>
@@ -962,6 +1017,9 @@ p = \frac1{|\mathcal{W}|}\sum_{w\in\mathcal{W}}\mathbf{1}\big\{T(w,Y)\ge T(W,Y)\
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-02.html" class="pagination-link" aria-label="Clase 2 · Selección en observables">
+        <span class="nav-page-text">Clase 2 · Selección en observables</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

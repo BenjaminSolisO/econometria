@@ -18,7 +18,7 @@ En Econometría 1 supusimos $k<n$ regresores. Hoy es común lo contrario: un inv
 
 La respuesta de la estadística moderna es **regularizar**: imponer una restricción o una penalización que contrarreste la libertad de ajustar ruido. Esta clase estudia la más influyente, el **LASSO** (Tibshirani, 1996), y hace dos preguntas centrales: (1) ¿cuándo el LASSO **predice bien** aunque $p\gg n$? (la respuesta es la *desigualdad oráculo*); (2) ¿cuándo se puede usar para **inferencia** sobre un parámetro (la pregunta causal)? (la respuesta es: no directamente, y por eso la Clase 8).[^tibshirani]
 
-[^tibshirani]: Robert Tibshirani propuso el LASSO (*least absolute shrinkage and selection operator*) en 1996, y el acrónimo es una pequeña broma: un lazo es lo que se usa para atrapar ganado, y el LASSO "atrapa" los coeficientes que valen cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre "estadística en alta dimensión". En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo **sin** destruir la inferencia.
+[^tibshirani]: Robert Tibshirani propuso el LASSO (*least absolute shrinkage and selection operator*) en 1996; el acrónimo evoca la imagen de un lazo que "atrapa" coeficientes y los lleva a cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre "estadística en alta dimensión". En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo **sin** destruir la inferencia.
 
 # El modelo disperso
 
@@ -94,7 +94,7 @@ $$
 En particular, el error de predicción es $O\big(\sigma^2s\log(p/\delta)/(n\phi^2)\big)$.
 :::
 
-Lo notable es la **forma**: el error es proporcional a $s$ (el número de variables relevantes, como el oráculo) y a $\log p$ (el **costo de no conocer cuáles son**), no a $p$. Con $p = e^{n/10}$ variables (¡exponencialmente más variables que datos!) el error de predicción sigue siendo pequeño si $s$ es chico. La demostración está en la sección ★.
+Lo notable es la **forma**: el error es proporcional a $s$ (el número de variables relevantes, como el oráculo) y a $\log p$ (el **costo de no conocer cuáles son**), no a $p$. Con $p = e^{\sqrt n}$ variables (¡exponencialmente más variables que datos!), $\log p/n = n^{-1/2}\to0$ y el error de predicción tiende a cero si $s$ está acotado. Lo que el LASSO no tolera es $\log p$ del orden de $n$: con $p = e^{n/10}$ el término $s\log p/n = s/10$ ya no se achica. La demostración está en la sección ★.
 
 Para **elegir $\lambda$** hay dos criterios. El **teórico** (el de arriba, o su versión robusta de Belloni, Chen, Chernozhukov y Hansen, 2012, con la desviación estándar estimada en cada variable) garantiza el evento $\|X'\varepsilon/n\|_\infty\le\lambda/2$ con alta probabilidad. El **práctico** más usado es la **validación cruzada** de $K$ pliegues (Clase 5): elegir el $\lambda$ que minimiza el error de predicción fuera de muestra. Esta tiende a elegir un $\lambda$ **menor** que el teórico, con **más variables** incluidas (buena para predecir; mala para la selección exacta).
 

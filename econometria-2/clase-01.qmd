@@ -152,7 +152,7 @@ La consistencia de $\hat A$ y $\hat B$ se demuestra igual que la de $\hat Q$ y $
 $$
 W = n\,h(\hat\theta)'\big[H(\hat\theta)\hat A^{-1}\hat B\hat A^{-1}H(\hat\theta)'\big]^{-1}h(\hat\theta)\xrightarrow{d}\chi^2_q
 $$
-(método delta de la Clase 6 más el lema de la $\chi^2$ con la inversa de la varianza, Clase 5 de Econometría 1).
+(método delta de la Clase 6 de Econometría 1, más el lema de la $\chi^2$ con la inversa de la varianza de la Clase 5).
 
 ::: {#exm-mco-sandwich}
 ## MCO es un caso particular
@@ -257,5 +257,5 @@ $h(\theta) = \theta_1/\theta_2 - 1$ y $H(\theta) = (1/\theta_2,\ -\theta_1/\thet
 **Ejercicio 1.7 ★.** Demuestra que si $m(w,\cdot)$ es cóncava para todo $w$ y $\theta_0$ es interior, se puede reemplazar C1 por que $\theta_0$ sea el único maximizador de $Q_0$ en $\Theta$ convexo y $\mathbb{E}|m(w,\theta)|<\infty$ para todo $\theta$. Da la idea: ¿por qué la concavidad compensa la falta de compacidad?
 
 ::: {.callout-tip collapse="true" title="Solución 1.7 ★"}
-Idea (Newey y McFadden, 1994, Teorema 2.7). Para cada $\theta$ fijo, la LGN da $\hat Q_n(\theta)\to_pQ_0(\theta)$ y $Q_0$ es cóncava y estrictamente máxima en $\theta_0$. Sea $N = \{\|\theta - \theta_0\|\le\delta\}$ y $\theta$ un punto fuera de $N$. Si $\hat\theta$ estuviera fuera de $N$, el segmento de $\theta_0$ a $\hat\theta$ cruza la frontera de $N$ en un punto $\theta_\delta$. Por concavidad de $\hat Q_n$ y por $\hat Q_n(\hat\theta)\ge\hat Q_n(\theta_0)$, se cumple $\hat Q_n(\theta_\delta)\ge\hat Q_n(\theta_0)$. Pero la frontera de $N$ es compacta, y la convergencia puntual de funciones cóncavas implica convergencia **uniforme sobre compactos** (resultado clásico de análisis convexo). Con eso, $\hat Q_n(\theta_\delta)<\hat Q_n(\theta_0)$ con probabilidad que tiende a uno, contradicción. La concavidad "controla" lo que ocurre lejos usando solo lo que ocurre en la frontera de una vecindad compacta. Es por esto que probit, logit y MCO tienen consistencia sin pedir $\Theta$ compacto.
+Idea (Newey y McFadden, 1994, Teorema 2.7). Para cada $\theta$ fijo, la LGN da $\hat Q_n(\theta)\to_pQ_0(\theta)$ y $Q_0$ es cóncava y estrictamente máxima en $\theta_0$. Sea $N = \{\|\theta - \theta_0\|\le\delta\}$. Si $\hat\theta$ estuviera fuera de $N$, el segmento de $\theta_0$ a $\hat\theta$ cruza la frontera de $N$ en un punto $\theta_\delta$. Por concavidad de $\hat Q_n$ y por $\hat Q_n(\hat\theta)\ge\hat Q_n(\theta_0)$, se cumple $\hat Q_n(\theta_\delta)\ge\hat Q_n(\theta_0)$. Pero la frontera de $N$ es compacta, y la convergencia puntual de funciones cóncavas implica convergencia **uniforme sobre compactos** (resultado clásico de análisis convexo). Con eso, $\hat Q_n(\theta_\delta)<\hat Q_n(\theta_0)$ con probabilidad que tiende a uno, contradicción. La concavidad "controla" lo que ocurre lejos usando solo lo que ocurre en la frontera de una vecindad compacta. Es por esto que probit, logit y MCO tienen consistencia sin pedir $\Theta$ compacto.
 :::

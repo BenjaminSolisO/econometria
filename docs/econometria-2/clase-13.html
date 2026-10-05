@@ -143,6 +143,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -475,7 +479,7 @@ P_{ij}(\theta) = \int\frac{e^{x_{ij}'\beta}}{\sum_ke^{x_{ik}'\beta}}\,dF(\beta;\
 </div>
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\operatorname{Var}(\hat P) = P(1-P)/S = 0{,}16/S\)</span>. Sesgo de <span class="math inline">\(\log\hat P\approx-\dfrac{\operatorname{Var}(\hat P)}{2P^2} = -\dfrac{0{,}16/S}{2(0{,}04)} = -\dfrac{2}{S}\)</span>. <span class="math inline">\(S = 100\)</span>: <span class="math inline">\(-0{,}02\)</span> (un sesgo de <span class="math inline">\(-0{,}02\)</span> en logaritmos por observación, es decir, una subestimación de <span class="math inline">\(\log P\)</span> de unos 2 puntos porcentuales). <span class="math inline">\(S = 10\)</span>: <span class="math inline">\(-0{,}20\)</span>, enorme. <span class="math inline">\(S = 1000\)</span>: <span class="math inline">\(-0{,}002\)</span>. Con <span class="math inline">\(n = 5000\)</span> observaciones, el sesgo acumulado en la verosimilitud es <span class="math inline">\(5000\times0{,}02 = 100\)</span> puntos de log-verosimilitud con <span class="math inline">\(S = 100\)</span>; el sesgo del score que importa para <span class="math inline">\(\sqrt n\cdot\text{sesgo}\)</span> es <span class="math inline">\(\sqrt{5000}\times0{,}02\approx1{,}4\)</span>: no despreciable. Con <span class="math inline">\(S = 100\)</span> y <span class="math inline">\(n = 5000\)</span>, <span class="math inline">\(\sqrt n/S = 0{,}7\)</span>: lejos de <span class="math inline">\(0\)</span>.</p>
+<p><span class="math inline">\(\operatorname{Var}(\hat P) = P(1-P)/S = 0{,}16/S\)</span>. Sesgo de <span class="math inline">\(\log\hat P\approx-\dfrac{\operatorname{Var}(\hat P)}{2P^2} = -\dfrac{0{,}16/S}{2(0{,}04)} = -\dfrac{2}{S}\)</span>. <span class="math inline">\(S = 100\)</span>: <span class="math inline">\(-0{,}02\)</span> por observación (en logaritmos, es decir, como si <span class="math inline">\(P\)</span> estuviera subestimada en torno a un 2 % relativo). <span class="math inline">\(S = 10\)</span>: <span class="math inline">\(-0{,}20\)</span>, enorme. <span class="math inline">\(S = 1000\)</span>: <span class="math inline">\(-0{,}002\)</span>. Con <span class="math inline">\(n = 5000\)</span> observaciones y <span class="math inline">\(S = 100\)</span>, el sesgo acumulado en la log-verosimilitud es <span class="math inline">\(5000\times0{,}02 = 100\)</span> puntos. Lo que importa para la distribución asintótica de <span class="math inline">\(\hat\theta\)</span> es el cociente <span class="math inline">\(\sqrt n/S\)</span> de la <a href="#prp-sml-sesgo" class="quarto-xref">Proposición&nbsp;1</a>: aquí <span class="math inline">\(\sqrt{5000}/100\approx0{,}7\)</span>, lejos de <span class="math inline">\(0\)</span>, así que el sesgo de simulación es del mismo orden que el error estándar y no se puede ignorar.</p>
 </div>
 </div>
 </div>

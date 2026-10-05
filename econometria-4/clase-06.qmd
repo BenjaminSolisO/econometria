@@ -49,7 +49,7 @@ Dos lecturas importantes. **(1) El parámetro es local**: es el efecto para quie
 
 # Estimación: regresión local lineal en cada lado
 
-El problema de estimación es el de la Clase 5: estimar el valor de una función en un **punto de frontera** (el umbral es el borde del soporte de cada lado). Por lo visto, **Nadaraya–Watson** tiene sesgo de orden $h$ en la frontera, de modo que se usa **regresión local lineal** (sesgo $O(h^2)$): se ajusta una recta ponderada con kernel **a cada lado** y se toma la diferencia de los interceptos en $c$.
+El problema de estimación es el de la Clase 5: estimar el valor de una función en un **punto de frontera** (el umbral es el borde del soporte de cada lado). Como vimos allí, **Nadaraya–Watson** tiene sesgo de orden $h$ en la frontera, de modo que se usa **regresión local lineal** (sesgo $O(h^2)$): se ajusta una recta ponderada con kernel **a cada lado** y se toma la diferencia de los interceptos en $c$.
 
 ::: {#def-rd-est}
 ## Estimador RD local lineal
@@ -59,7 +59,7 @@ $$
 $$
 :::
 
-Es una regresión ponderada con **pendientes distintas a cada lado**. Equivale a regresar $Y_i$ sobre $D_i$, $(X_i - c)$ y $D_i(X_i - c)$, con pesos $K((X_i - c)/h)$, usando solo las observaciones con $|X_i - c|\le h$: el coeficiente de $D_i$ es $\hat\tau$. El bias y la varianza son los de la regresión local lineal en la frontera.
+Es una regresión ponderada con **pendientes distintas a cada lado**. Equivale a regresar $Y_i$ sobre $D_i$, $(X_i - c)$ y $D_i(X_i - c)$, con pesos $K((X_i - c)/h)$, usando solo las observaciones con $|X_i - c|\le h$: el coeficiente de $D_i$ es $\hat\tau$. El sesgo y la varianza son los de la regresión local lineal en la frontera.
 
 ::: {#prp-rd-asint}
 ## Sesgo y varianza de $\hat\tau$
@@ -182,7 +182,7 @@ El resultado **depende de la forma funcional global**, una señal de que el "sal
 **Ejercicio 6.6.** Las estimaciones puntuales de $\tau$ (error estándar) con anchos $h = 0{,}5,\,1{,}0,\,2{,}0$ son $2{,}4\ (0{,}9)$, $2{,}1\ (0{,}6)$ y $1{,}2\ (0{,}4)$. ¿Qué sugiere el patrón?
 
 ::: {.callout-tip collapse="true" title="Solución 6.6"}
-Las estimaciones **caen** al aumentar $h$ ($2{,}4\to2{,}1\to1{,}2$) mientras los errores estándar caen (más datos): con anchos grandes entra más observaciones **lejanas**, y si la función tiene curvatura el **sesgo** aumenta. Los dos anchos pequeños dan resultados similares ($2{,}4$ y $2{,}1$) pero el tercero se aparta bastante: el sesgo domina a $h = 2$. Se elegiría el ancho **MSE-óptimo** (cercano a $h = 0{,}5$ a $1$) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para $h = 1$ sería algo mayor que $2{,}1\pm1{,}96(0{,}6)$.
+Las estimaciones **caen** al aumentar $h$ ($2{,}4\to2{,}1\to1{,}2$) mientras los errores estándar caen (más datos): con anchos grandes entran más observaciones **lejanas**, y si la función tiene curvatura el **sesgo** aumenta. Los dos anchos pequeños dan resultados similares ($2{,}4$ y $2{,}1$) pero el tercero se aparta bastante: el sesgo domina a $h = 2$. Se elegiría el ancho **MSE-óptimo** (cercano a $h = 0{,}5$ a $1$) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para $h = 1$ sería algo mayor que $2{,}1\pm1{,}96(0{,}6)$.
 :::
 
 **Ejercicio 6.7 ★.** Calcula $\tilde\kappa_0,\dots,\tilde\kappa_3$ y $C_K$ para el kernel de Epanechnikov $K(u) = \tfrac34(1 - u^2)$ en $[0,1]$ (lado derecho). Verifica el caso uniforme.

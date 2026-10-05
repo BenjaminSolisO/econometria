@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-11.html" rel="next">
 <link href="../econometria-3/clase-09.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -230,6 +235,24 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -381,7 +404,7 @@ B = \Psi(1)^{-1}\Theta(1).
 <h1 data-number="7"><span class="header-section-number">7</span> Proyecciones locales</h1>
 <p>Jordà (2005) propuso una alternativa que <strong>no</strong> estima un VAR: estimar cada IRF <strong>directamente</strong> con una regresión distinta para cada horizonte, <span class="math display">\[
 y_{t + h} = \alpha_h + \theta_h\,s_t + \gamma_h'w_t + \xi_{t + h}^{(h)},\qquad h = 0,1,\dots,H,
-\]</span> donde <span class="math inline">\(s_t\)</span> es una medida del <strong>shock identificado</strong> (un instrumento externo, o el residuo identificado de otra regresión) y <span class="math inline">\(w_t\)</span> controles (rezagos). El coeficiente <span class="math inline">\(\hat\theta_h\)</span> es el estimador de la IRF a <span class="math inline">\(h\)</span> períodos. Ventajas: <strong>robustez</strong> a mala especificación de la dinámica (no se impone la estructura de un VAR) y simplicidad (MCO por horizonte, con errores HAC porque <span class="math inline">\(\xi^{(h)}_{t + h}\)</span> es un MA(<span class="math inline">\(h\)</span>)). Desventajas: <strong>menor eficiencia</strong> (la IRF suave del VAR se reemplaza por <span class="math inline">\(H\)</span> estimaciones independientes, y el error crece con <span class="math inline">\(h\)</span>) y curvas irregulares. Plagborg-Nielsen y Montiel Olea (2021) muestran que ambos métodos estiman <strong>el mismo objeto poblacional</strong> y difieren en su balance <strong>sesgo–varianza</strong>: VAR tiene menor varianza y más sesgo (si la dinámica está mal especificada), LP lo contrario.</p>
+\]</span> donde <span class="math inline">\(s_t\)</span> es una medida del <strong>shock identificado</strong> (un instrumento externo, o el residuo identificado de otra regresión) y <span class="math inline">\(w_t\)</span> controles (rezagos). El coeficiente <span class="math inline">\(\hat\theta_h\)</span> es el estimador de la IRF a <span class="math inline">\(h\)</span> períodos. Ventajas: <strong>robustez</strong> a mala especificación de la dinámica (no se impone la estructura de un VAR) y simplicidad (MCO por horizonte, con errores HAC porque <span class="math inline">\(\xi^{(h)}_{t + h}\)</span> es un MA(<span class="math inline">\(h\)</span>)). Desventajas: <strong>menor eficiencia</strong> (la IRF suave del VAR se reemplaza por <span class="math inline">\(H\)</span> estimaciones independientes, y el error crece con <span class="math inline">\(h\)</span>) y curvas irregulares. Plagborg-Møller y Wolf (2021) muestran que ambos métodos estiman <strong>el mismo objeto poblacional</strong>, y Li, Plagborg-Møller y Wolf (2024) documentan que difieren en su balance <strong>sesgo–varianza</strong>: VAR tiene menor varianza y más sesgo (si la dinámica está mal especificada), LP lo contrario.</p>
 </section>
 <section id="postgrado-identidad-poblacional-entre-var-y-proyecciones-locales" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> ★ Postgrado: identidad poblacional entre VAR y proyecciones locales</h1>
@@ -402,7 +425,7 @@ y_{t + h} = \alpha_h + \theta_h\,s_t + \gamma_h'w_t + \xi_{t + h}^{(h)},\qquad h
 <p><span class="theorem-title"><strong>Proposición 2 (La proyección local identifica la IRF)</strong></span> En un VAR estacionario con shocks estructurales <span class="math inline">\(\varepsilon_t\)</span> ortonormales y observables, el coeficiente poblacional de la regresión de <span class="math inline">\(y_{i,t + h}\)</span> sobre <span class="math inline">\(\varepsilon_{jt}\)</span> (y controles que son funciones del pasado de <span class="math inline">\(\varepsilon\)</span> hasta <span class="math inline">\(t - 1\)</span>) es <span class="math inline">\(\theta_{ij,h} = [\Psi_hB]_{ij}\)</span>.</p>
 </div>
 <div class="proof">
-<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(y_{i,t + h} = \mu_i + \sum_{k\ge0}\sum_l\theta_{il,k}\varepsilon_{l,t + h - k}\)</span> (de la representación MA estructural). El término con <span class="math inline">\(k = h\)</span> y <span class="math inline">\(l = j\)</span> es <span class="math inline">\(\theta_{ij,h}\varepsilon_{jt}\)</span>. Los demás términos involucran <span class="math inline">\(\varepsilon_{l,t + h - k}\)</span> con <span class="math inline">\((l,k)\ne(j,h)\)</span>: los de <span class="math inline">\(k&lt;h\)</span> son shocks <strong>futuros</strong> <span class="math inline">\(\varepsilon_{l,t + m}\)</span>, <span class="math inline">\(m\ge1\)</span>, no correlacionados con <span class="math inline">\(\varepsilon_{jt}\)</span>; los de <span class="math inline">\(k&gt;h\)</span> y <span class="math inline">\(l\ne j\)</span> son shocks <strong>pasados</strong> o contemporáneos de otras variables, también no correlacionados con <span class="math inline">\(\varepsilon_{jt}\)</span> (ortogonalidad contemporánea y serial). Luego <span class="math inline">\(\operatorname{Cov}(y_{i,t + h},\varepsilon_{jt}) = \theta_{ij,h}\operatorname{Var}(\varepsilon_{jt}) = \theta_{ij,h}\)</span>, y el coeficiente de regresión es <span class="math inline">\(\theta_{ij,h}\)</span> (los controles, funciones del pasado, no alteran el resultado por ortogonalidad). <span class="math inline">\(\square\)</span></p>
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(y_{i,t + h} = \mu_i + \sum_{k\ge0}\sum_l\theta_{il,k}\varepsilon_{l,t + h - k}\)</span> (de la representación MA estructural). El término con <span class="math inline">\(k = h\)</span> y <span class="math inline">\(l = j\)</span> es <span class="math inline">\(\theta_{ij,h}\varepsilon_{jt}\)</span>. Los demás términos involucran <span class="math inline">\(\varepsilon_{l,t + h - k}\)</span> con <span class="math inline">\((l,k)\ne(j,h)\)</span>: los de <span class="math inline">\(k&lt;h\)</span> son shocks <strong>futuros</strong> <span class="math inline">\(\varepsilon_{l,t + m}\)</span>, <span class="math inline">\(m\ge1\)</span>, no correlacionados con <span class="math inline">\(\varepsilon_{jt}\)</span>; los de <span class="math inline">\(k&gt;h\)</span> (cualquier <span class="math inline">\(l\)</span>) son shocks <strong>pasados</strong>, y los de <span class="math inline">\(k = h\)</span> con <span class="math inline">\(l\ne j\)</span> son shocks <strong>contemporáneos</strong> de otro tipo; todos son no correlacionados con <span class="math inline">\(\varepsilon_{jt}\)</span> (ortogonalidad serial y contemporánea). Luego <span class="math inline">\(\operatorname{Cov}(y_{i,t + h},\varepsilon_{jt}) = \theta_{ij,h}\operatorname{Var}(\varepsilon_{jt}) = \theta_{ij,h}\)</span>, y el coeficiente de regresión es <span class="math inline">\(\theta_{ij,h}\)</span> (los controles, funciones del pasado, no alteran el resultado por ortogonalidad). <span class="math inline">\(\square\)</span></p>
 </div>
 <p>La diferencia entre los métodos es <strong>qué se estima y cómo</strong>: el VAR estima <span class="math inline">\(\Psi_h\)</span> de <span class="math inline">\(A_1,\dots,A_p\)</span> (parsimonioso: <span class="math inline">\(\Psi_h\)</span> viene de potencias de <span class="math inline">\(F\)</span>, y un error en <span class="math inline">\(\hat F\)</span> se amplifica con <span class="math inline">\(h\)</span>), y la LP estima <span class="math inline">\(\theta_h\)</span> directamente con un coeficiente por horizonte (sin estructura, pero sin sesgo de especificación). Con un VAR bien especificado, el VAR gana; con dinámica compleja, la LP.</p>
 </section>
@@ -955,6 +978,9 @@ y_{t + h} = \alpha_h + \theta_h\,s_t + \gamma_h'w_t + \xi_{t + h}^{(h)},\qquad h
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-11.html" class="pagination-link" aria-label="Clase 11 · VECM y el método de Johansen">
+        <span class="nav-page-text">Clase 11 · VECM y el método de Johansen</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -210,7 +210,7 @@ La probabilidad conjunta es $\prod_te^{-\lambda_{it}}\lambda_{it}^{y_{it}}/y_{it
 **Ejercicio 11.5.** En un probit con efectos correlacionados, con $\sigma_a^2 = 3$, el coeficiente reescalado es $\hat\beta_a = 0{,}30$ y el promedio de $\phi(\cdot)$ en la muestra es $0{,}32$. Calcula el AME y el coeficiente "estructural" $\beta$ implícito.
 
 ::: {.callout-tip collapse="true" title="Solución 11.5"}
-$\text{AME} = \beta_a\cdot\overline{\phi} = 0{,}30\times0{,}32 = 0{,}096$: casi 10 puntos porcentuales por unidad de $x$. Como $\beta_a = \beta/\sqrt{1 + \sigma_a^2}$ y $\sqrt{1 + 3} = 2$, $\beta = 2\times0{,}30 = 0{,}60$. Pero **no necesitamos $\beta$ para obtener el AME**: los coeficientes reescalados ya producen directamente el efecto promedio. El efecto marginal en una persona *específica* con un $c_i$ dado (por ejemplo $c_i = 0$) usaría $\beta = 0{,}60$ y daría un valor distinto (más alto), pero no se identifica porque no conocemos $c_i$ de nadie.
+$\text{AME} = \beta_a\cdot\overline{\phi} = 0{,}30\times0{,}32 = 0{,}096$: casi 10 puntos porcentuales por unidad de $x$. Como $\beta_a = \beta/\sqrt{1 + \sigma_a^2}$ y $\sqrt{1 + 3} = 2$, $\beta = 2\times0{,}30 = 0{,}60$. Pero **no necesitamos $\beta$ para obtener el AME**: los coeficientes reescalados ya producen directamente el efecto promedio. El efecto marginal en una persona *específica* con un $c_i$ dado (por ejemplo $c_i = 0$) usaría $\beta = 0{,}60$ y daría en general un valor distinto, pero no se identifica porque no conocemos $c_i$ de nadie.
 :::
 
 **Ejercicio 11.6.** Explica por qué un investigador que estima un logit con efectos fijos condicional **no** puede decir "un año más de educación aumenta en 5 puntos porcentuales la probabilidad de empleo".

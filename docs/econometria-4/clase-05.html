@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-06.html" rel="next">
 <link href="../econometria-4/clase-04.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -206,6 +207,36 @@ window.Quarto = {
  <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -355,7 +386,7 @@ h^*\propto n^{-1/(4 + d)},\qquad\text{MSE}^*\propto n^{-4/(4 + d)},\qquad\text{t
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>(Esquema.) El estimador es un <strong>suavizador lineal</strong>: <span class="math inline">\(\hat m_{LL}(x) = \sum_i\ell_i(x)Y_i\)</span> con pesos <span class="math inline">\(\ell_i(x)\)</span> que, por las ecuaciones normales de <a href="#eq-ll" class="quarto-xref">Ecuación&nbsp;4</a>, satisfacen <span class="math display">\[
 \sum_i\ell_i(x) = 1,\qquad\sum_i\ell_i(x)(X_i - x) = 0.
-\]</span> (Los pesos reproducen la constante y la función lineal.) Entonces, si <span class="math inline">\(m\)</span> es <strong>lineal</strong>, <span class="math inline">\(\hat m_{LL}(x) = \sum\ell_im(X_i) = m(x)\sum\ell_i + m'(x)\sum\ell_i(X_i - x) = m(x)\)</span>: sin sesgo. Para <span class="math inline">\(m\)</span> general, la expansión de Taylor <span class="math inline">\(m(X_i) = m(x) + m'(x)(X_i - x) + \tfrac12m''(x)(X_i - x)^2 + \dots\)</span> da, por las dos identidades, <span class="math inline">\(\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12m''(x)\sum_i\ell_i(x)(X_i - x)^2\approx\tfrac12m''(x)h^2\kappa_2\)</span>: <strong>solo</strong> la curvatura de <span class="math inline">\(m\)</span> importa, y no el término de la densidad. La demostración detallada del sesgo y de la frontera usa una aproximación de <span class="math inline">\(\sum\ell_i(X_i - x)^2\)</span> con los momentos del kernel (§ de la Clase 6).</p>
+\]</span> (Los pesos reproducen la constante y la función lineal.) Entonces, si <span class="math inline">\(m\)</span> es <strong>lineal</strong>, <span class="math inline">\(\hat m_{LL}(x) = \sum\ell_im(X_i) = m(x)\sum\ell_i + m'(x)\sum\ell_i(X_i - x) = m(x)\)</span>: sin sesgo. Para <span class="math inline">\(m\)</span> general, la expansión de Taylor <span class="math inline">\(m(X_i) = m(x) + m'(x)(X_i - x) + \tfrac12m''(x)(X_i - x)^2 + \dots\)</span> da, por las dos identidades, <span class="math inline">\(\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12m''(x)\sum_i\ell_i(x)(X_i - x)^2\approx\tfrac12m''(x)h^2\kappa_2\)</span>: <strong>solo</strong> la curvatura de <span class="math inline">\(m\)</span> importa, y no el término de la densidad. La demostración detallada del sesgo y de la frontera usa una aproximación de <span class="math inline">\(\sum\ell_i(X_i - x)^2\)</span> con los momentos del kernel (sección ★ de la Clase 6).</p>
 </div>
 <p>Por estas razones, <strong>la regresión local lineal es la opción por defecto</strong> en la práctica (y en regresión discontinua, Clase 6, donde el punto de interés está en la frontera de cada lado del umbral). Un polinomio de grado más alto reduce el sesgo para funciones más suaves.</p>
 </section>
@@ -413,7 +444,9 @@ Y - \mathbb{E}[Y\mid Z] = \big(X - \mathbb{E}[X\mid Z]\big)'\beta + u.
 <p><span class="theorem-title"><strong>Proposición 3 (Cota de Le Cam de dos puntos)</strong></span> Para cualquier estimador <span class="math inline">\(\hat\theta\)</span>, <span class="math inline">\(\displaystyle\max_{j = 0,1}\mathbb{E}_{m_j}\big(\hat\theta - \theta_j\big)^2\ \ge\ \frac{(\theta_1 - \theta_0)^2}8\big(1 - \operatorname{TV}(P_0,P_1)\big)\)</span>, donde <span class="math inline">\(\operatorname{TV}\)</span> es la distancia en variación total entre las distribuciones de los datos bajo <span class="math inline">\(m_0\)</span> y <span class="math inline">\(m_1\)</span>.</p>
 </div>
 <div class="proof">
-<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\Delta = \theta_1 - \theta_0\)</span>. Para toda realización, <span class="math inline">\(|\hat\theta - \theta_0| + |\hat\theta - \theta_1|\ge\Delta\)</span>, de modo que <span class="math inline">\(\max_j(\hat\theta - \theta_j)^2\ge\Delta^2/4\)</span> en el evento en que <span class="math inline">\(\hat\theta\)</span> está más cerca del valor equivocado. Por el lema de Le Cam, la suma de las probabilidades de error de los dos “tests” inducidos es al menos <span class="math inline">\(1 - \operatorname{TV}(P_0,P_1)\)</span>, y <span class="math inline">\(\max_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ge\tfrac12\sum_j\mathbb{E}_j(\cdot)^2\ge\tfrac12\cdot\tfrac{\Delta^2}4\big(1 - \operatorname{TV}\big)\)</span>.</p>
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\Delta = \theta_1 - \theta_0\)</span> y sea <span class="math inline">\(\psi\in\{0,1\}\)</span> el “test” que elige el <span class="math inline">\(\theta_j\)</span> más cercano a <span class="math inline">\(\hat\theta\)</span>. Como <span class="math inline">\(|\hat\theta - \theta_0| + |\hat\theta - \theta_1|\ge\Delta\)</span>, si <span class="math inline">\(\psi\ne j\)</span> entonces <span class="math inline">\(|\hat\theta - \theta_j|\ge\Delta/2\)</span>; luego <span class="math inline">\(\mathbb{E}_j(\hat\theta - \theta_j)^2\ge\tfrac{\Delta^2}4P_j(\psi\ne j)\)</span>. Por el lema de Le Cam, para cualquier test, <span class="math inline">\(P_0(\psi\ne0) + P_1(\psi\ne1)\ge1 - \operatorname{TV}(P_0,P_1)\)</span>. Entonces <span class="math display">\[
+\max_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ \ge\ \tfrac12\sum_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ \ge\ \tfrac12\cdot\tfrac{\Delta^2}4\big(1 - \operatorname{TV}\big) = \tfrac{\Delta^2}8\big(1 - \operatorname{TV}\big).
+\]</span></p>
 </div>
 <p>Falta controlar la variación total. Por la desigualdad de Pinsker, <span class="math inline">\(\operatorname{TV}\le\sqrt{\text{KL}/2}\)</span>, y para ruido gaussiano la divergencia de Kullback–Leibler entre los dos modelos es <span class="math inline">\(\text{KL}(P_0\Vert P_1) = \frac1{2\sigma^2}\sum_im_1(x_i)^2\approx\frac n{2\sigma^2}\int m_1^2 = \frac n{2\sigma^2}L^2h^2\cdot h\int\Lambda^2 = \frac{n L^2h^3}{2\sigma^2}\cdot\frac23\)</span> (con diseño uniforme en <span class="math inline">\([0,1]\)</span> y <span class="math inline">\(\int\Lambda^2 = 2/3\)</span>). Si elegimos <span class="math inline">\(h = c\,n^{-1/3}\)</span>, la divergencia queda <strong>acotada por una constante</strong> (<span class="math inline">\(\text{KL}\approx\frac{L^2c^3}{3\sigma^2}\)</span>), y entonces <span class="math inline">\(\operatorname{TV}\)</span> queda acotada por debajo de uno: <strong>no hay manera de distinguir</strong> las dos funciones con <span class="math inline">\(n\)</span> datos. Por la <a href="#prp-lecam" class="quarto-xref">Proposición&nbsp;3</a>, el riesgo máximo es al menos una constante por <span class="math inline">\((Lh)^2 = L^2c^2n^{-2/3}\)</span>: <span class="math display">\[
 \inf_{\hat\theta}\sup_{m\in\text{Lip}(L)}\mathbb{E}\big(\hat\theta - m(x_0)\big)^2\ \ge\ C\,n^{-2/3} = C\,n^{-2s/(2s + d)}\ \ (s = 1,\ d = 1).
@@ -970,6 +1003,9 @@ Y - \mathbb{E}[Y\mid Z] = \big(X - \mathbb{E}[X\mid Z]\big)'\beta + u.
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-06.html" class="pagination-link" aria-label="Clase 6 · Regresión discontinua">
+        <span class="nav-page-text">Clase 6 · Regresión discontinua</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -156,7 +156,7 @@ En $y_t = Z$ para todo $t$ (@exm-procesos, 5), el proceso es estrictamente estac
 Dos hechos prácticos, que se toman prestados:
 
 - **Condición suficiente:** un proceso estacionario que es **mezclante** (*mixing*: la dependencia entre $y_t$ e $y_{t+h}$ se desvanece cuando $h\to\infty$) es ergódico. Los procesos ARMA estacionarios con innovaciones i.i.d. lo son (Clase 2).
-- **En el caso gaussiano**, un proceso estacionario es ergódico si y solo si $\gamma(h)\to0$ (en promedio de Cesàro). Es decir, para gaussianos, la condición del @thm-lgn-ms es **necesaria y suficiente**.
+- **En el caso gaussiano** hay caracterizaciones exactas: un proceso estacionario es mezclante si y solo si $\gamma(h)\to0$, y es ergódico si y solo si $\frac1T\sum_{h = 1}^T\gamma(h)^2\to0$ (su distribución espectral no tiene átomos). En particular, para gaussianos la condición $\gamma(h)\to0$ del @thm-lgn-ms ya **garantiza** ergodicidad.
 
 ::: {.callout-caution title="Por qué esto importa para todo el curso"}
 La **teoría de M-estimadores de Econometría 2 (Clase 1) se extiende a procesos estacionarios y ergódicos** reemplazando "i.i.d." por "estacionario y ergódico" en la ley de los grandes números (incluida la versión uniforme). La consistencia de MCO, MV y GMM sigue funcionando. Lo que **no** se extiende directamente es la **normalidad asintótica**: el TCL para sumas de variables dependientes necesita condiciones adicionales y cambia la varianza (de $\gamma(0)$ a $\sigma^2_{LR}$). Eso es la Clase 5.
@@ -240,7 +240,7 @@ El **teorema de Herglotz** (que se toma prestado) completa el cuadro: una funci�
 **Ejercicio 1.1.** Determina si cada proceso es débilmente estacionario y calcula $\gamma(h)$ cuando corresponda. (a) $y_t = \varepsilon_t + \varepsilon_{t-1}$, $\varepsilon_t\sim WN(0,1)$. (b) $y_t = (-1)^tZ$ con $Z$ de media cero y varianza $1$. (c) $y_t = t\,\varepsilon_t$.
 
 ::: {.callout-tip collapse="true" title="Solución 1.1"}
-(a) MA(1) con $\theta = 1$, $\sigma^2 = 1$: estacionario, $\gamma(0) = 2$, $\gamma(\pm1) = 1$, $\gamma(h) = 0$ si $|h|\ge2$; $\rho(1) = 0{,}5$ (el máximo posible). (b) $\mathbb{E}[y_t] = 0$ y $\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h$: depende solo de $h$, estacionario, con $\gamma(h) = (-1)^h$ (oscila entre $+1$ y $-1$; no es ergódico, pues $\gamma(h)\not\to0$). (c) $\operatorname{Var}(y_t) = t^2$ depende de $t$: no estacionario (heterocedasticidad creciente).
+(a) MA(1) con $\theta = 1$, $\sigma^2 = 1$: estacionario, $\gamma(0) = 2$, $\gamma(\pm1) = 1$, $\gamma(h) = 0$ si $|h|\ge2$; $\rho(1) = 0{,}5$ (el máximo posible). (b) $\mathbb{E}[y_t] = 0$ y $\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h$: depende solo de $h$, estacionario, con $\gamma(h) = (-1)^h$ (oscila entre $+1$ y $-1$). Curiosamente $\bar y_T = Z\cdot\frac1T\sum_t(-1)^t\to0 = \mu$, pero el proceso **no** es ergódico: el promedio temporal de $y_t^2$ es $Z^2$ para todo $T$, no $\mathbb{E}[y_t^2] = 1$. (c) $\operatorname{Var}(y_t) = t^2$ depende de $t$: no estacionario (heterocedasticidad creciente).
 :::
 
 **Ejercicio 1.2.** Calcula $\rho(1)$ de un MA(1) con $\theta = 0{,}5$ y con $\theta = 2$. ¿Qué observas? ¿Por qué no se puede distinguir un caso del otro con la ACF?

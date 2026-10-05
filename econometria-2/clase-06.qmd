@@ -104,7 +104,7 @@ y **no depende de las demás alternativas**. Es la **independencia de alternativ
 Un viajero elige entre auto y bus rojo, con utilidades sistemáticas iguales: $P = \tfrac12$ cada uno. Ahora se agrega un bus azul idéntico al rojo en todo salvo el color. Con el logit, las tres utilidades son iguales y cada alternativa tiene $\tfrac13$: la probabilidad de usar auto **cae de $\tfrac12$ a $\tfrac13$**. Pero cualquiera esperaría que el auto conserve su $\tfrac12$, y que los dos buses se repartan el otro medio. El modelo no entiende que dos alternativas son casi la misma.[^debreu]
 :::
 
-[^debreu]: El ejemplo es de Gerard Debreu (1960) en una reseña de la teoría de elección de Luce, y McFadden lo popularizó en los años setenta. Hay quien dice que el bus rojo/azul es el mejor argumento a favor de los modelos que *no* son logit, y también el mejor argumento para no confiar en nadie que prediga con logit una demanda tras la entrada de un competidor muy parecido a otro.
+[^debreu]: La objeción es de Gerard Debreu (1960), en una reseña del libro de Luce sobre teoría de la elección, con un ejemplo de dos grabaciones casi idénticas de la misma obra musical. La versión con buses se hizo estándar después, en la literatura de demanda de transporte.
 
 La IIA tiene una consecuencia testeable y una de política económica.
 
@@ -135,7 +135,7 @@ P(B) = \frac{\exp(\lambda_BI_B)}{\sum_{C}\exp(\lambda_CI_C)},
 $$
 con el **valor inclusivo** $I_B = \log\sum_{k\in B}\exp(V_k/\lambda_B)$ y el **parámetro de disimilitud** $\lambda_B\in(0,1]$.
 
-El parámetro $\lambda_B$ mide qué tan *independientes* son las alternativas dentro del nido: $1 - \lambda_B$ es aproximadamente la correlación de los errores. Si $\lambda_B = 1$ para todo nido, el modelo se reduce al logit multinomial. Para $\lambda_B\in(0,1)$ las alternativas del mismo nido son más sustitutas entre sí que con las de fuera, lo que **rompe la IIA entre nidos** (aunque la mantiene dentro de cada nido). Es consistente con maximización de utilidad aleatoria si y solo si $\lambda_B\in(0,1]$ (McFadden, 1978).
+El parámetro $\lambda_B$ mide qué tan *independientes* son las alternativas dentro del nido: la correlación entre los errores de dos alternativas del mismo nido es $1 - \lambda_B^2$. Si $\lambda_B = 1$ para todo nido, el modelo se reduce al logit multinomial. Para $\lambda_B\in(0,1)$ las alternativas del mismo nido son más sustitutas entre sí que con las de fuera, lo que **rompe la IIA entre nidos** (aunque la mantiene dentro de cada nido). Con $\lambda_B\in(0,1]$ el modelo es consistente con maximización de utilidad aleatoria para cualquier valor de las variables (McFadden, 1978); un $\lambda_B$ estimado mayor que uno es señal de que los nidos están mal elegidos.
 
 ::: {#exm-bus-anidado}
 ## El bus azul con logit anidado

@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-12.html" rel="next">
 <link href="../econometria-2/clase-10.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -236,6 +241,18 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -575,7 +592,7 @@ P(y_{it} = 1\mid x_i) = \Phi\big(x_{it}'\beta_a + \psi_a + \bar x_i'\xi_a\big),
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\text{AME} = \beta_a\cdot\overline{\phi} = 0{,}30\times0{,}32 = 0{,}096\)</span>: casi 10 puntos porcentuales por unidad de <span class="math inline">\(x\)</span>. Como <span class="math inline">\(\beta_a = \beta/\sqrt{1 + \sigma_a^2}\)</span> y <span class="math inline">\(\sqrt{1 + 3} = 2\)</span>, <span class="math inline">\(\beta = 2\times0{,}30 = 0{,}60\)</span>. Pero <strong>no necesitamos <span class="math inline">\(\beta\)</span> para obtener el AME</strong>: los coeficientes reescalados ya producen directamente el efecto promedio. El efecto marginal en una persona <em>específica</em> con un <span class="math inline">\(c_i\)</span> dado (por ejemplo <span class="math inline">\(c_i = 0\)</span>) usaría <span class="math inline">\(\beta = 0{,}60\)</span> y daría un valor distinto (más alto), pero no se identifica porque no conocemos <span class="math inline">\(c_i\)</span> de nadie.</p>
+<p><span class="math inline">\(\text{AME} = \beta_a\cdot\overline{\phi} = 0{,}30\times0{,}32 = 0{,}096\)</span>: casi 10 puntos porcentuales por unidad de <span class="math inline">\(x\)</span>. Como <span class="math inline">\(\beta_a = \beta/\sqrt{1 + \sigma_a^2}\)</span> y <span class="math inline">\(\sqrt{1 + 3} = 2\)</span>, <span class="math inline">\(\beta = 2\times0{,}30 = 0{,}60\)</span>. Pero <strong>no necesitamos <span class="math inline">\(\beta\)</span> para obtener el AME</strong>: los coeficientes reescalados ya producen directamente el efecto promedio. El efecto marginal en una persona <em>específica</em> con un <span class="math inline">\(c_i\)</span> dado (por ejemplo <span class="math inline">\(c_i = 0\)</span>) usaría <span class="math inline">\(\beta = 0{,}60\)</span> y daría en general un valor distinto, pero no se identifica porque no conocemos <span class="math inline">\(c_i\)</span> de nadie.</p>
 </div>
 </div>
 </div>
@@ -1030,6 +1047,9 @@ P(y_{it} = 1\mid x_i) = \Phi\big(x_{it}'\beta_a + \psi_a + \bar x_i'\xi_a\big),
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-12.html" class="pagination-link" aria-label="Clase 12 · Regresión cuantílica">
+        <span class="nav-page-text">Clase 12 · Regresión cuantílica</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -43,7 +43,7 @@ usando la simetría de $F$. Dos elecciones de $F$ dan los dos modelos clásicos:
 
 Ambas son curvas en S: crecientes, simétricas, con límites 0 y 1. Se parecen tanto que en la práctica es difícil distinguirlas con datos; la logística tiene colas algo más gordas.[^probit]
 
-[^probit]: "Probit" viene de *probability unit*, acuñado por Chester Bliss (1934) para analizar la mortalidad de insectos expuestos a pesticidas en distintas dosis. Dudamos que los insectos hayan sido consultados. "Logit" lo acuñó Joseph Berkson (1944) por analogía; Berkson defendió toda su vida que el logit era mejor que el probit, y la profesión se dividió durante años en dos bandos con la intensidad de los hinchas de fútbol, hasta que ambos descubrieron que daban casi lo mismo.
+[^probit]: "Probit" viene de *probability unit*, acuñado por Chester Bliss (1934) para analizar la mortalidad de insectos expuestos a pesticidas en distintas dosis. Dudamos que los insectos hayan sido consultados. "Logit" lo acuñó Joseph Berkson (1944) por analogía. Berkson defendió el logit frente al probit durante décadas, aunque en la práctica los dos dan casi lo mismo.
 
 ## La escala no está identificada
 
@@ -201,7 +201,7 @@ Si $\log F$ y $\log(1 - F)$ son funciones cóncavas de $\eta$, entonces $\ell_n(
 $\ell_n(\beta) = \sum_i\big[y_i\log F(x_i'\beta) + (1 - y_i)\log(1 - F(x_i'\beta))\big]$ es una suma de funciones de la forma $\psi_i(x_i'\beta)$, con $\psi_i = \log F$ o $\log(1-F)$ según $y_i$. La composición de una función cóncava con una función lineal (afín) es cóncava, y una suma de cóncavas es cóncava. Si cada $\psi_i$ es estrictamente cóncava y $Xa\ne0$ para $a\ne0$, la suma lo es estrictamente.
 :::
 
-Para el probit: $\log\Phi$ es cóncava, pues $(\log\Phi)'' = \lambda'(\eta)$ con $\lambda = \phi/\Phi$ la razón inversa de Mills, que cumple $\lambda'(\eta) = -\lambda(\eta)\big(\eta + \lambda(\eta)\big)<0$ (se sigue de $\Phi(\eta)>-\phi(\eta)/\eta$ para $\eta<0$, la desigualdad de Mills). Como $1 - \Phi(\eta) = \Phi(-\eta)$, $\log(1 - \Phi)$ también es cóncava. En el logit, $(\log\Lambda)'' = -\Lambda(1-\Lambda)<0$ y $(\log(1 - \Lambda))'' = -\Lambda(1-\Lambda)<0$, lo que reproduce el @thm-concavidad-logit.
+Para el probit: $\log\Phi$ es cóncava, pues $(\log\Phi)'' = \lambda'(\eta)$ con $\lambda = \phi/\Phi$ la razón inversa de Mills, que cumple $\lambda'(\eta) = -\lambda(\eta)\big(\eta + \lambda(\eta)\big)<0$ (se sigue de $\Phi(\eta)<-\phi(\eta)/\eta$ para $\eta<0$, la desigualdad de Mills; Ejercicio 5.7). Como $1 - \Phi(\eta) = \Phi(-\eta)$, $\log(1 - \Phi)$ también es cóncava. En el logit, $(\log\Lambda)'' = -\Lambda(1-\Lambda)<0$ y $(\log(1 - \Lambda))'' = -\Lambda(1-\Lambda)<0$, lo que reproduce el @thm-concavidad-logit.
 
 # Resumen
 

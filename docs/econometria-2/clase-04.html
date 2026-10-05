@@ -144,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -201,6 +205,54 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -433,7 +485,7 @@ J = n\,\bar g_n(\hat\theta)'\,\hat\Omega^{-1}\,\bar g_n(\hat\theta)\xrightarrow{
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\bar g_n(\theta) = \frac1nZ'(y - X\theta)\)</span>, así que el criterio es <span class="math inline">\(\frac1{n^2}(y - X\theta)'Z(Z'Z/n)^{-1}Z'(y - X\theta) = \frac1n(y - X\theta)'P_Z(y - X\theta)\)</span>. Minimizar esto en <span class="math inline">\(\theta\)</span> es una regresión MCO de <span class="math inline">\(P_Zy\)</span> sobre <span class="math inline">\(P_ZX\)</span>, cuya solución es <span class="math inline">\((X'P_ZX)^{-1}X'P_Zy\)</span> (usando <span class="math inline">\(P_Z'P_Z = P_Z\)</span>).</p>
 </div>
-<p>¿Es óptimo? La varianza óptima requiere <span class="math inline">\(W\propto\Omega^{-1}\)</span> con <span class="math inline">\(\Omega = \mathbb{E}[u^2zz']\)</span>. Si hay <strong>homocedasticidad condicional</strong> (<span class="math inline">\(\mathbb{E}[u^2\mid z] = \sigma^2\)</span>), entonces <span class="math inline">\(\Omega = \sigma^2\mathbb{E}[zz']\)</span> y <span class="math inline">\(\Omega^{-1}\propto\mathbb{E}[zz']^{-1}\)</span>: <strong>MC2E es GMM eficiente</strong>. Pero con heterocedasticidad, <span class="math inline">\(W^*\ne(Z'Z/n)^{-1}\)</span> y GMM de dos pasos (con <span class="math inline">\(\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'\)</span>) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J <strong>es</strong> el test de Sargan robusto (el Sargan clásico es el J bajo homocedasticidad).</p>
+<p>¿Es óptimo? La varianza óptima requiere <span class="math inline">\(W\propto\Omega^{-1}\)</span> con <span class="math inline">\(\Omega = \mathbb{E}[u^2zz']\)</span>. Si hay <strong>homocedasticidad condicional</strong> (<span class="math inline">\(\mathbb{E}[u^2\mid z] = \sigma^2\)</span>), entonces <span class="math inline">\(\Omega = \sigma^2\mathbb{E}[zz']\)</span> y <span class="math inline">\(\Omega^{-1}\propto\mathbb{E}[zz']^{-1}\)</span>: <strong>MC2E es GMM eficiente</strong>. Pero con heterocedasticidad, <span class="math inline">\(W^*\ne(Z'Z/n)^{-1}\)</span> y GMM de dos pasos (con <span class="math inline">\(\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'\)</span>) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J de Hansen es la versión robusta del test de sobreidentificación de Sargan (el Sargan clásico es el J calculado con <span class="math inline">\(\hat\Omega = \hat\sigma^2Z'Z/n\)</span>, válido solo bajo homocedasticidad).</p>
 </section>
 <section id="postgrado-por-qué-no-importa-el-primer-paso" class="level1" data-number="7">
 <h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: ¿por qué no importa el primer paso?</h1>
@@ -450,7 +502,7 @@ J = n\,\bar g_n(\hat\theta)'\,\hat\Omega^{-1}\,\bar g_n(\hat\theta)\xrightarrow{
 <p>El <a href="#thm-gmm-normal" class="quarto-xref">Teorema&nbsp;2</a> muestra que la distribución asintótica de <span class="math inline">\(\hat\theta\)</span> depende de <span class="math inline">\(\hat W\)</span> <strong>solo a través de su límite</strong> <span class="math inline">\(W\)</span>. Esto implica que el primer paso (que fija <span class="math inline">\(\hat\Omega\)</span>) no afecta la distribución asintótica del segundo, pero no dice nada sobre el <em>tamaño de la muestra</em> necesaria para que eso sea una buena aproximación.</p>
 </div>
 </div>
-<p>La razón es un hecho general: <span class="math inline">\(\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|\)</span>, y <span class="math inline">\(\|\hat W - W\| = o_p(1)\)</span>. Entonces la diferencia entre los dos estimadores es <span class="math inline">\(o_p(n^{-1/2})\)</span> y desaparece al escalar por <span class="math inline">\(\sqrt n\)</span>. Pero a segundo orden, la variabilidad de <span class="math inline">\(\hat\Omega\)</span> aparece. En términos de la expansión de Nagar (el equivalente de la aproximación de segundo orden), el sesgo de GMM de dos pasos crece con el cociente <span class="math inline">\((r - p)/n\)</span>. La teoría de muestras finitas de GMM es el origen del interés por <em>instrumentos débiles</em> y por <em>muchos instrumentos</em>, que cubrimos parcialmente en la Clase 10 de Econometría 1.</p>
+<p>La razón es un hecho general: <span class="math inline">\(\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|\)</span>, y <span class="math inline">\(\|\hat W - W\| = o_p(1)\)</span>. Entonces la diferencia entre los dos estimadores es <span class="math inline">\(o_p(n^{-1/2})\)</span> y desaparece al escalar por <span class="math inline">\(\sqrt n\)</span>. Pero a segundo orden, la variabilidad de <span class="math inline">\(\hat\Omega\)</span> aparece. Las expansiones de segundo orden (Nagar para MC2E; Newey y Smith, 2004, para GMM) muestran que el sesgo de GMM de dos pasos crece con el número de momentos <span class="math inline">\(r\)</span> en relación con <span class="math inline">\(n\)</span>, y que una parte de ese sesgo viene precisamente de estimar <span class="math inline">\(\Omega\)</span> con los mismos datos. La teoría de muestras finitas de GMM es el origen del interés por <em>instrumentos débiles</em> y por <em>muchos instrumentos</em>, que cubrimos parcialmente en la Clase 10 de Econometría 1.</p>
 </section>
 <section id="resumen" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>

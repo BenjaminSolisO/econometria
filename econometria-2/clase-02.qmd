@@ -84,7 +84,7 @@ $$
 Luego $\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]$.
 :::
 
-Dos lecturas útiles. La parte (1) es el lema de la Clase 1 sin esfuerzo: el score tiene media cero porque $\theta_0$ maximiza $Q_0$. La parte (2) dice que la **curvatura** de la log-verosimilitud ($-A$) y su **ruido** ($B$) son la misma matriz: $B = -A = \mathcal{I}(\theta_0)$. Se cumple *solo* si el modelo está bien especificado.
+Dos lecturas útiles. La parte (1) recupera el lema de la Clase 1 por otra vía: allí el score tenía media cero porque $\theta_0$ maximiza $Q_0$; aquí basta con que $f$ integre a uno. La parte (2) dice que la **curvatura** de la log-verosimilitud ($-A$) y su **ruido** ($B$) son la misma matriz: $B = -A = \mathcal{I}(\theta_0)$. Se cumple *solo* si el modelo está bien especificado.
 
 # Normalidad asintótica y eficiencia
 
@@ -156,7 +156,7 @@ s_\beta = \frac{xu}{\sigma^2},\qquad s_{\sigma^2} = -\frac1{2\sigma^2} + \frac{u
 $$
 Maximizar en $\beta$ equivale a minimizar $\sum(y_i - x_i'\beta)^2$, así que **$\hat\beta_{MV} = \hat\beta_{MCO}$**. En $\sigma^2$: $\hat\sigma^2 = \frac1n\sum\hat u_i^2$, que es el MCO sin corregir por grados de libertad: sesgado, pero consistente (y asintóticamente equivalente a $s^2$).
 
-La información es **diagonal por bloques**: $\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2$, $\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)$ y $\mathcal{I}_{\beta\sigma^2} = 0$ (usando $\mathbb{E}[u\mid x] = 0$, $\mathbb{E}[u^2\mid x] = \sigma^2$ y $\mathbb{E}[u^4\mid x] = 3\sigma^4$). Así, $\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}$: la fórmula de MCO.
+La información es **diagonal por bloques**: $\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2$, $\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)$ y $\mathcal{I}_{\beta\sigma^2} = 0$ (usando $\mathbb{E}[u\mid x] = \mathbb{E}[u^3\mid x] = 0$, $\mathbb{E}[u^2\mid x] = \sigma^2$ y $\mathbb{E}[u^4\mid x] = 3\sigma^4$). Así, $\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}$: la fórmula de MCO.
 
 Consecuencia notable: **bajo normalidad, MCO alcanza la cota de Cramér–Rao** (asintóticamente). En Econometría 1 (Clase 4) vimos Gauss–Markov, que lo hacía mejor que cualquier estimador *lineal insesgado*. Con normalidad es mejor que *cualquier* estimador regular, lineal o no.
 :::
@@ -174,7 +174,7 @@ $$
 \sqrt n(\hat\theta - \theta^*)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}_g[\nabla^2\log f(w;\theta^*)],\quad B = \mathbb{E}_g[ss'].
 $$
 
-[^white]: Halbert White (1982) demostró esto en "Maximum likelihood estimation of misspecified models", el artículo que popularizó el sándwich y el término *pseudo-verdadero*. White es más conocido por sus errores estándar robustos (1980), y por el test de especificación que lleva su nombre: dos de los artículos más citados de la econometría.
+[^white]: Halbert White (1982) demostró esto en "Maximum likelihood estimation of misspecified models", el artículo que popularizó el sándwich y el término *pseudo-verdadero*. White es más conocido por sus errores estándar robustos y su test de heterocedasticidad, ambos en un artículo de 1980 que está entre los más citados de la econometría.
 
 Hay dos situaciones prácticas. Si $\theta^*$ **tiene el significado que te interesa** (por ejemplo, es la media condicional correcta aunque la distribución esté mal), entonces la QMV da inferencia válida usando el sándwich: esto ocurre, por ejemplo, para el **Poisson** con la media condicional bien especificada (Clase 7) o para MCO bajo no normalidad. Si $\theta^*$ **no** tiene ese significado (por ejemplo, un probit con heterocedasticidad en el error latente, Clase 5), $\hat\theta$ converge a algo que no te interesa y ni el sándwich lo salva.
 

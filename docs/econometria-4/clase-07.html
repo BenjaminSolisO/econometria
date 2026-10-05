@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-08.html" rel="next">
 <link href="../econometria-4/clase-06.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -218,6 +219,24 @@ window.Quarto = {
  <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -282,7 +301,7 @@ window.Quarto = {
 <h1 data-number="1"><span class="header-section-number">1</span> Cuando hay más variables que observaciones</h1>
 <p>En Econometría 1 supusimos <span class="math inline">\(k&lt;n\)</span> regresores. Hoy es común lo contrario: un investigador dispone de cientos o miles de variables candidatas (características de empresas, expresiones génicas, palabras de un texto, interacciones y términos polinómicos de unas pocas variables básicas) para <span class="math inline">\(n\)</span> observaciones. Si <span class="math inline">\(p\ge n\)</span>, <span class="math inline">\(X'X\)</span> es <strong>singular</strong> y MCO ni siquiera está definido (Clase 1 de Econometría 1); y aun con <span class="math inline">\(p&lt;n\)</span> pero <span class="math inline">\(p\)</span> comparable a <span class="math inline">\(n\)</span>, MCO <strong>sobreajusta</strong>: el ajuste dentro de muestra es excelente y el pronóstico fuera de muestra, desastroso.</p>
 <p>La respuesta de la estadística moderna es <strong>regularizar</strong>: imponer una restricción o una penalización que contrarreste la libertad de ajustar ruido. Esta clase estudia la más influyente, el <strong>LASSO</strong> (Tibshirani, 1996), y hace dos preguntas centrales: (1) ¿cuándo el LASSO <strong>predice bien</strong> aunque <span class="math inline">\(p\gg n\)</span>? (la respuesta es la <em>desigualdad oráculo</em>); (2) ¿cuándo se puede usar para <strong>inferencia</strong> sobre un parámetro (la pregunta causal)? (la respuesta es: no directamente, y por eso la Clase 8).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Robert Tibshirani propuso el LASSO (<em>least absolute shrinkage and selection operator</em>) en 1996, y el acrónimo es una pequeña broma: un lazo es lo que se usa para atrapar ganado, y el LASSO “atrapa” los coeficientes que valen cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre “estadística en alta dimensión”. En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo <strong>sin</strong> destruir la inferencia.</p></div></div></section>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Robert Tibshirani propuso el LASSO (<em>least absolute shrinkage and selection operator</em>) en 1996; el acrónimo evoca la imagen de un lazo que “atrapa” coeficientes y los lleva a cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre “estadística en alta dimensión”. En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo <strong>sin</strong> destruir la inferencia.</p></div></div></section>
 <section id="el-modelo-disperso" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> El modelo disperso</h1>
 <p>Sea <span class="math inline">\(Y = X\beta_0 + \varepsilon\)</span> con <span class="math inline">\(X\)</span> de <span class="math inline">\(n\times p\)</span>, <span class="math inline">\(p\)</span> posiblemente mucho mayor que <span class="math inline">\(n\)</span>. La hipótesis estructural que hace posible el problema es la <strong>dispersión</strong> (<em>sparsity</em>): solo <strong><span class="math inline">\(s\)</span> coeficientes son distintos de cero</strong>, con <span class="math inline">\(s\ll n\)</span>. Sea <span class="math inline">\(S = \{j:\beta_{0j}\ne0\}\)</span> el soporte, <span class="math inline">\(|S| = s\)</span>. No sabemos cuál es <span class="math inline">\(S\)</span>: esa es la dificultad. Si lo supiéramos, bastaría una regresión de MCO sobre las <span class="math inline">\(s\)</span> variables (el <strong>oráculo</strong>), con error de predicción <span class="math inline">\(\approx\sigma^2s/n\)</span>. La pregunta es cuánto se pierde por <strong>no conocer</strong> <span class="math inline">\(S\)</span>.</p>
@@ -349,7 +368,7 @@ window.Quarto = {
 \frac1n\|X(\hat\beta^L - \beta_0)\|_2^2\le\frac{9\lambda^2s}{\phi^2},\qquad\|\hat\beta^L - \beta_0\|_1\le\frac{12\lambda s}{\phi^2}.
 \]</span> En particular, el error de predicción es <span class="math inline">\(O\big(\sigma^2s\log(p/\delta)/(n\phi^2)\big)\)</span>.</p>
 </div>
-<p>Lo notable es la <strong>forma</strong>: el error es proporcional a <span class="math inline">\(s\)</span> (el número de variables relevantes, como el oráculo) y a <span class="math inline">\(\log p\)</span> (el <strong>costo de no conocer cuáles son</strong>), no a <span class="math inline">\(p\)</span>. Con <span class="math inline">\(p = e^{n/10}\)</span> variables (¡exponencialmente más variables que datos!) el error de predicción sigue siendo pequeño si <span class="math inline">\(s\)</span> es chico. La demostración está en la sección ★.</p>
+<p>Lo notable es la <strong>forma</strong>: el error es proporcional a <span class="math inline">\(s\)</span> (el número de variables relevantes, como el oráculo) y a <span class="math inline">\(\log p\)</span> (el <strong>costo de no conocer cuáles son</strong>), no a <span class="math inline">\(p\)</span>. Con <span class="math inline">\(p = e^{\sqrt n}\)</span> variables (¡exponencialmente más variables que datos!), <span class="math inline">\(\log p/n = n^{-1/2}\to0\)</span> y el error de predicción tiende a cero si <span class="math inline">\(s\)</span> está acotado. Lo que el LASSO no tolera es <span class="math inline">\(\log p\)</span> del orden de <span class="math inline">\(n\)</span>: con <span class="math inline">\(p = e^{n/10}\)</span> el término <span class="math inline">\(s\log p/n = s/10\)</span> ya no se achica. La demostración está en la sección ★.</p>
 <p>Para <strong>elegir <span class="math inline">\(\lambda\)</span></strong> hay dos criterios. El <strong>teórico</strong> (el de arriba, o su versión robusta de Belloni, Chen, Chernozhukov y Hansen, 2012, con la desviación estándar estimada en cada variable) garantiza el evento <span class="math inline">\(\|X'\varepsilon/n\|_\infty\le\lambda/2\)</span> con alta probabilidad. El <strong>práctico</strong> más usado es la <strong>validación cruzada</strong> de <span class="math inline">\(K\)</span> pliegues (Clase 5): elegir el <span class="math inline">\(\lambda\)</span> que minimiza el error de predicción fuera de muestra. Esta tiende a elegir un <span class="math inline">\(\lambda\)</span> <strong>menor</strong> que el teórico, con <strong>más variables</strong> incluidas (buena para predecir; mala para la selección exacta).</p>
 <section id="selección-de-variables" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="selección-de-variables"><span class="header-section-number">4.1</span> Selección de variables</h2>
@@ -954,6 +973,9 @@ window.Quarto = {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-08.html" class="pagination-link" aria-label="Clase 8 · Aprendizaje automático para inferencia causal">
+        <span class="nav-page-text">Clase 8 · Aprendizaje automático para inferencia causal</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

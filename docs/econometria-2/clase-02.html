@@ -144,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -195,6 +199,60 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -335,7 +393,7 @@ window.Quarto = {
 \]</span> Luego <span class="math inline">\(\mathbb{E}[ss'] = -\mathbb{E}[\nabla s]\)</span>.</p></li>
 </ol>
 </div>
-<p>Dos lecturas útiles. La parte (1) es el lema de la Clase 1 sin esfuerzo: el score tiene media cero porque <span class="math inline">\(\theta_0\)</span> maximiza <span class="math inline">\(Q_0\)</span>. La parte (2) dice que la <strong>curvatura</strong> de la log-verosimilitud (<span class="math inline">\(-A\)</span>) y su <strong>ruido</strong> (<span class="math inline">\(B\)</span>) son la misma matriz: <span class="math inline">\(B = -A = \mathcal{I}(\theta_0)\)</span>. Se cumple <em>solo</em> si el modelo está bien especificado.</p>
+<p>Dos lecturas útiles. La parte (1) recupera el lema de la Clase 1 por otra vía: allí el score tenía media cero porque <span class="math inline">\(\theta_0\)</span> maximiza <span class="math inline">\(Q_0\)</span>; aquí basta con que <span class="math inline">\(f\)</span> integre a uno. La parte (2) dice que la <strong>curvatura</strong> de la log-verosimilitud (<span class="math inline">\(-A\)</span>) y su <strong>ruido</strong> (<span class="math inline">\(B\)</span>) son la misma matriz: <span class="math inline">\(B = -A = \mathcal{I}(\theta_0)\)</span>. Se cumple <em>solo</em> si el modelo está bien especificado.</p>
 </section>
 <section id="normalidad-asintótica-y-eficiencia" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Normalidad asintótica y eficiencia</h1>
@@ -417,7 +475,7 @@ I_p = \int T\,\nabla'f_n\,dw_{1:n} = \int T\,S_n'\,f_n\,dw_{1:n} = \mathbb{E}[T\
 <p><span class="theorem-title"><strong>Ejemplo 1 (El modelo lineal normal)</strong></span> <span class="math inline">\(y\mid x\sim N(x'\beta,\sigma^2)\)</span>, con <span class="math inline">\(\theta = (\beta',\sigma^2)'\)</span>. La log-verosimilitud de una observación es <span class="math inline">\(-\tfrac12\log(2\pi\sigma^2) - (y - x'\beta)^2/(2\sigma^2)\)</span>, con score <span class="math display">\[
 s_\beta = \frac{xu}{\sigma^2},\qquad s_{\sigma^2} = -\frac1{2\sigma^2} + \frac{u^2}{2\sigma^4},\qquad u = y - x'\beta.
 \]</span> Maximizar en <span class="math inline">\(\beta\)</span> equivale a minimizar <span class="math inline">\(\sum(y_i - x_i'\beta)^2\)</span>, así que <strong><span class="math inline">\(\hat\beta_{MV} = \hat\beta_{MCO}\)</span></strong>. En <span class="math inline">\(\sigma^2\)</span>: <span class="math inline">\(\hat\sigma^2 = \frac1n\sum\hat u_i^2\)</span>, que es el MCO sin corregir por grados de libertad: sesgado, pero consistente (y asintóticamente equivalente a <span class="math inline">\(s^2\)</span>).</p>
-<p>La información es <strong>diagonal por bloques</strong>: <span class="math inline">\(\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2\)</span>, <span class="math inline">\(\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)\)</span> y <span class="math inline">\(\mathcal{I}_{\beta\sigma^2} = 0\)</span> (usando <span class="math inline">\(\mathbb{E}[u\mid x] = 0\)</span>, <span class="math inline">\(\mathbb{E}[u^2\mid x] = \sigma^2\)</span> y <span class="math inline">\(\mathbb{E}[u^4\mid x] = 3\sigma^4\)</span>). Así, <span class="math inline">\(\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}\)</span>: la fórmula de MCO.</p>
+<p>La información es <strong>diagonal por bloques</strong>: <span class="math inline">\(\mathcal{I}_{\beta\beta} = \mathbb{E}[xx']/\sigma^2\)</span>, <span class="math inline">\(\mathcal{I}_{\sigma^2\sigma^2} = 1/(2\sigma^4)\)</span> y <span class="math inline">\(\mathcal{I}_{\beta\sigma^2} = 0\)</span> (usando <span class="math inline">\(\mathbb{E}[u\mid x] = \mathbb{E}[u^3\mid x] = 0\)</span>, <span class="math inline">\(\mathbb{E}[u^2\mid x] = \sigma^2\)</span> y <span class="math inline">\(\mathbb{E}[u^4\mid x] = 3\sigma^4\)</span>). Así, <span class="math inline">\(\operatorname{Avar}(\hat\beta) = \sigma^2\mathbb{E}[xx']^{-1}\)</span>: la fórmula de MCO.</p>
 <p>Consecuencia notable: <strong>bajo normalidad, MCO alcanza la cota de Cramér–Rao</strong> (asintóticamente). En Econometría 1 (Clase 4) vimos Gauss–Markov, que lo hacía mejor que cualquier estimador <em>lineal insesgado</em>. Con normalidad es mejor que <em>cualquier</em> estimador regular, lineal o no.</p>
 </div>
 </section>
@@ -431,7 +489,7 @@ s_\beta = \frac{xu}{\sigma^2},\qquad s_{\sigma^2} = -\frac1{2\sigma^2} + \frac{u
 <p>El <strong>valor pseudo-verdadero</strong> <span class="math inline">\(\theta^*\)</span> es la mejor aproximación de <span class="math inline">\(g\)</span> dentro de la familia, en el sentido de KL.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Lo notable es que la varianza ya <strong>no</strong> es <span class="math inline">\(\mathcal{I}^{-1}\)</span>: <span class="math inline">\(B\ne-A\)</span>, y la distribución es la del sándwich de la Clase 1, <span class="math display">\[
 \sqrt n(\hat\theta - \theta^*)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}_g[\nabla^2\log f(w;\theta^*)],\quad B = \mathbb{E}_g[ss'].
 \]</span></p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Halbert White (1982) demostró esto en “Maximum likelihood estimation of misspecified models”, el artículo que popularizó el sándwich y el término <em>pseudo-verdadero</em>. White es más conocido por sus errores estándar robustos (1980), y por el test de especificación que lleva su nombre: dos de los artículos más citados de la econometría.</p></div></div><p>Hay dos situaciones prácticas. Si <span class="math inline">\(\theta^*\)</span> <strong>tiene el significado que te interesa</strong> (por ejemplo, es la media condicional correcta aunque la distribución esté mal), entonces la QMV da inferencia válida usando el sándwich: esto ocurre, por ejemplo, para el <strong>Poisson</strong> con la media condicional bien especificada (Clase 7) o para MCO bajo no normalidad. Si <span class="math inline">\(\theta^*\)</span> <strong>no</strong> tiene ese significado (por ejemplo, un probit con heterocedasticidad en el error latente, Clase 5), <span class="math inline">\(\hat\theta\)</span> converge a algo que no te interesa y ni el sándwich lo salva.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Halbert White (1982) demostró esto en “Maximum likelihood estimation of misspecified models”, el artículo que popularizó el sándwich y el término <em>pseudo-verdadero</em>. White es más conocido por sus errores estándar robustos y su test de heterocedasticidad, ambos en un artículo de 1980 que está entre los más citados de la econometría.</p></div></div><p>Hay dos situaciones prácticas. Si <span class="math inline">\(\theta^*\)</span> <strong>tiene el significado que te interesa</strong> (por ejemplo, es la media condicional correcta aunque la distribución esté mal), entonces la QMV da inferencia válida usando el sándwich: esto ocurre, por ejemplo, para el <strong>Poisson</strong> con la media condicional bien especificada (Clase 7) o para MCO bajo no normalidad. Si <span class="math inline">\(\theta^*\)</span> <strong>no</strong> tiene ese significado (por ejemplo, un probit con heterocedasticidad en el error latente, Clase 5), <span class="math inline">\(\hat\theta\)</span> converge a algo que no te interesa y ni el sándwich lo salva.</p>
 <p>La <strong>prueba de la igualdad de la información</strong> de White se basa en esto: bajo especificación correcta, <span class="math inline">\(A = -B\)</span>; la prueba chequea si <span class="math inline">\(\hat A + \hat B\)</span> es cero. Que no se cumpla es síntoma de mala especificación.</p>
 </section>
 <section id="postgrado-la-superioridad-de-hodges-y-la-eficiencia-regular" class="level1" data-number="6">

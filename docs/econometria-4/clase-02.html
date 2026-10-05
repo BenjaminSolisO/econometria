@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-03.html" rel="next">
 <link href="../econometria-4/clase-01.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -186,6 +187,54 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
   </div>
 </li>
     </ul>
@@ -531,7 +580,7 @@ V_{\text{eff}} = \mathbb{E}\Big[\frac{\sigma_1^2(X)}{e(X)} + \frac{\sigma_0^2(X)
 </div>
 <div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(V_{\text{eff}} = \sigma_1^2/e + \sigma_0^2/(1 - e) + 0 = 2 + 2 = 4\)</span> y <span class="math inline">\(\operatorname{ee} = \sqrt{4/400} = 0{,}1\)</span>. IPW con <span class="math inline">\(e\)</span> conocido: la función de influencia es <span class="math inline">\(\tfrac{DY}{e} - \tfrac{(1 - D)Y}{1 - e} - \tau\)</span>, y su varianza es <span class="math inline">\(\mathbb{E}[Y(1)^2]/e + \mathbb{E}[Y(0)^2]/(1 - e) - \tau^2\)</span> (los dos términos son ortogonales porque <span class="math inline">\(D(1 - D) = 0\)</span>). Con <span class="math inline">\(\mathbb{E}[Y(1)^2] = 10^2 + 1 = 101\)</span> y <span class="math inline">\(\mathbb{E}[Y(0)^2] = 8^2 + 1 = 65\)</span>: <span class="math inline">\(202 + 130 - 4 = 328\)</span>; <span class="math inline">\(\operatorname{ee} = \sqrt{328/400} = 0{,}905\)</span>. El IPW simple es <strong>9 veces menos preciso</strong> que el AIPW, porque <strong>ignora</strong> que <span class="math inline">\(X\)</span> (aquí la media del grupo) predice <span class="math inline">\(Y\)</span>: la parte “regresión” del AIPW elimina esa variación. Es la razón por la que IPW por sí solo se usa poco: el aumento con regresión es una ganancia grande de precisión.</p>
+<p><span class="math inline">\(V_{\text{eff}} = \sigma_1^2/e + \sigma_0^2/(1 - e) + 0 = 2 + 2 = 4\)</span> y <span class="math inline">\(\operatorname{ee} = \sqrt{4/400} = 0{,}1\)</span>. IPW con <span class="math inline">\(e\)</span> conocido: la función de influencia es <span class="math inline">\(\tfrac{DY}{e} - \tfrac{(1 - D)Y}{1 - e} - \tau\)</span>, y su varianza es <span class="math inline">\(\mathbb{E}[Y(1)^2]/e + \mathbb{E}[Y(0)^2]/(1 - e) - \tau^2\)</span> (los dos términos son ortogonales porque <span class="math inline">\(D(1 - D) = 0\)</span>). Con <span class="math inline">\(\mathbb{E}[Y(1)^2] = 10^2 + 1 = 101\)</span> y <span class="math inline">\(\mathbb{E}[Y(0)^2] = 8^2 + 1 = 65\)</span>: <span class="math inline">\(202 + 130 - 4 = 328\)</span>; <span class="math inline">\(\operatorname{ee} = \sqrt{328/400} = 0{,}905\)</span>. El IPW simple es <strong>9 veces menos preciso</strong> que el AIPW, porque pondera los <strong>niveles</strong> de <span class="math inline">\(Y\)</span> (con media <span class="math inline">\(10\)</span> u <span class="math inline">\(8\)</span>), mientras que el AIPW pondera solo los <strong>residuos</strong> <span class="math inline">\(Y - \mu_d\)</span>, de varianza <span class="math inline">\(1\)</span>: la parte “regresión” del AIPW elimina la variación predecible antes de ponderar. Es la razón por la que IPW por sí solo se usa poco: el aumento con regresión es una ganancia grande de precisión.</p>
 </div>
 </div>
 </div>
@@ -953,6 +1002,9 @@ V_{\text{eff}} = \mathbb{E}\Big[\frac{\sigma_1^2(X)}{e(X)} + \frac{\sigma_0^2(X)
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-03.html" class="pagination-link" aria-label="Clase 3 · Variables instrumentales con efectos heterogéneos">
+        <span class="nav-page-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

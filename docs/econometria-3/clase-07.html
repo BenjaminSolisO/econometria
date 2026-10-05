@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-08.html" rel="next">
 <link href="../econometria-3/clase-06.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -212,6 +217,42 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -473,7 +514,7 @@ y_t = \xi t + r_t + e_t,\qquad r_t = r_{t-1} + u_t,\quad u_t\sim\text{i.i.d.}(0,
 t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\Big(\int J_c^2\Big)^{1/2}.
 \]</span></p>
 </div>
-<p>El primer sumando es de tipo Dickey–Fuller y el segundo es un <strong>desplazamiento negativo</strong> que crece con <span class="math inline">\(|c|\)</span> y es el que genera potencia. Con <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -5\)</span>, un desplazamiento moderado: el test rechaza la nula en bastante menos de la mitad de las muestras. Con <span class="math inline">\(\phi = 0{,}9\)</span> (<span class="math inline">\(c = -10\)</span>) mejora, pero aun así queda lejos de una potencia alta. Dos consecuencias importantes:</p>
+<p>El primer sumando es de tipo Dickey–Fuller y el segundo es un <strong>desplazamiento negativo</strong> que crece con <span class="math inline">\(|c|\)</span> y es el que genera potencia. Con <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -5\)</span>, un desplazamiento moderado: en una simulación del test DF con constante al 5 %, rechaza la nula en apenas un 13 % de las muestras. Con <span class="math inline">\(\phi = 0{,}9\)</span> (<span class="math inline">\(c = -10\)</span>) mejora a un 36 %, aún lejos de una potencia alta; recién con <span class="math inline">\(\phi = 0{,}8\)</span> (<span class="math inline">\(c = -20\)</span>) llega a un 89 %. Dos consecuencias importantes:</p>
 <ol type="1">
 <li><strong>“No rechazar” no es evidencia a favor de la raíz unitaria.</strong> Es compatible con alternativas estacionarias persistentes, y la teoría económica (de la cual depende qué se debe suponer) suele tener más que decir que el test.</li>
 <li><strong>No hay forma de distinguir estadísticamente entre persistencia total y casi total</strong> en muestras típicas (Cochrane, 1991): importa para la interpretación de si los shocks son “permanentes”, una pregunta que los datos pueden <strong>no</strong> responder.</li>
@@ -512,7 +553,7 @@ t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\B
 <p>La función de potencia del test DF a lo largo de la secuencia local se obtiene de la <a href="#prp-local" class="quarto-xref">Proposición&nbsp;4</a>. Mostramos por qué el desplazamiento <span class="math inline">\(c\sqrt{\int J_c^2}\)</span> crece con <span class="math inline">\(|c|\)</span> <strong>pero</strong> el término estocástico crece también, lo que explica la potencia baja y la forma de la curva.</p>
 </div>
 </div>
-<p>Para <span class="math inline">\(c\)</span> grande en valor absoluto, <span class="math inline">\(J_c\)</span> es un proceso estacionario en el límite: <span class="math inline">\(J_c(r)\approx\)</span> normal con varianza <span class="math inline">\(1/(2|c|)\)</span> (la varianza estacionaria del Ornstein–Uhlenbeck <span class="math inline">\(dJ = cJ\,dr + dW\)</span> es <span class="math inline">\(1/(2|c|)\)</span>). Entonces <span class="math inline">\(\int J_c^2\approx1/(2|c|)\)</span> y el desplazamiento es <span class="math inline">\(c\sqrt{1/(2|c|)} = -\sqrt{|c|/2}\)</span>. El primer sumando, <span class="math inline">\(\int J_c\,dW/(\int J_c^2)^{1/2}\)</span>, tiende a una <span class="math inline">\(N(0,1)\)</span> para <span class="math inline">\(|c|\)</span> grande (es una martingala normalizada). Por lo tanto, para <span class="math inline">\(|c|\)</span> grande, <span class="math inline">\(t_{\hat\phi}\approx N(-\sqrt{|c|/2},1)\)</span>, y la potencia al nivel <span class="math inline">\(5\)</span> % es aproximadamente <span class="math inline">\(P(N(-\sqrt{|c|/2},1)&lt;-2{,}86)\)</span> (con constante). Con <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-1{,}58\)</span>, probabilidad <span class="math inline">\(\Phi(-2{,}86 + 1{,}58) = \Phi(-1{,}28) = 0{,}10\)</span>, es decir, poder del 10 % (la aproximación para <span class="math inline">\(|c|\)</span> chico no es buena, pero sugiere el orden de magnitud). Con <span class="math inline">\(c = -20\)</span> (<span class="math inline">\(\phi = 0{,}8\)</span> y <span class="math inline">\(T = 100\)</span>): desplazamiento <span class="math inline">\(-3{,}16\)</span> y <span class="math inline">\(\Phi(0{,}30) = 0{,}62\)</span> (la aproximación es burda y tiende a subestimar la potencia en valores intermedios de <span class="math inline">\(|c|\)</span>, donde las simulaciones dan potencias bastante mayores). La conclusión cualitativa es robusta: la potencia <strong>crece muy lento</strong> con <span class="math inline">\(|c|\)</span> y es baja mientras <span class="math inline">\(\phi\)</span> esté cerca de uno (con <span class="math inline">\(T = 100\)</span>, por encima de aproximadamente <span class="math inline">\(0{,}9\)</span>). Los tests de raíz unitaria no pueden decidir en la región donde más importa.</p>
+<p>Para <span class="math inline">\(c\)</span> grande en valor absoluto, <span class="math inline">\(J_c\)</span> es un proceso estacionario en el límite: <span class="math inline">\(J_c(r)\approx\)</span> normal con varianza <span class="math inline">\(1/(2|c|)\)</span> (la varianza estacionaria del Ornstein–Uhlenbeck <span class="math inline">\(dJ = cJ\,dr + dW\)</span> es <span class="math inline">\(1/(2|c|)\)</span>). Entonces <span class="math inline">\(\int J_c^2\approx1/(2|c|)\)</span> y el desplazamiento es <span class="math inline">\(c\sqrt{1/(2|c|)} = -\sqrt{|c|/2}\)</span>. El primer sumando, <span class="math inline">\(\int J_c\,dW/(\int J_c^2)^{1/2}\)</span>, tiende a una <span class="math inline">\(N(0,1)\)</span> para <span class="math inline">\(|c|\)</span> grande (es una martingala normalizada). Por lo tanto, para <span class="math inline">\(|c|\)</span> grande, <span class="math inline">\(t_{\hat\phi}\approx N(-\sqrt{|c|/2},1)\)</span>, y la potencia al nivel <span class="math inline">\(5\)</span> % es aproximadamente <span class="math inline">\(P(N(-\sqrt{|c|/2},1)&lt;-2{,}86)\)</span> (con constante). Con <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-1{,}58\)</span>, probabilidad <span class="math inline">\(\Phi(-2{,}86 + 1{,}58) = \Phi(-1{,}28) = 0{,}10\)</span>, es decir, poder del 10 % (la aproximación para <span class="math inline">\(|c|\)</span> chico no es buena, pero sugiere el orden de magnitud). Con <span class="math inline">\(c = -20\)</span> (<span class="math inline">\(\phi = 0{,}8\)</span> y <span class="math inline">\(T = 100\)</span>): desplazamiento <span class="math inline">\(-3{,}16\)</span> y <span class="math inline">\(\Phi(0{,}30) = 0{,}62\)</span> (la aproximación es burda y subestima la potencia en valores intermedios de <span class="math inline">\(|c|\)</span>: las simulaciones dan 13 % para <span class="math inline">\(c = -5\)</span> y 89 % para <span class="math inline">\(c = -20\)</span>). La conclusión cualitativa es robusta: la potencia <strong>crece muy lento</strong> con <span class="math inline">\(|c|\)</span> y es baja mientras <span class="math inline">\(\phi\)</span> esté cerca de uno (con <span class="math inline">\(T = 100\)</span>, por encima de aproximadamente <span class="math inline">\(0{,}9\)</span>). Los tests de raíz unitaria no pueden decidir en la región donde más importa.</p>
 </section>
 <section id="resumen" class="level1" data-number="10">
 <h1 data-number="10"><span class="header-section-number">10</span> Resumen</h1>
@@ -644,7 +685,7 @@ t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\B
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Aproximación: <span class="math inline">\(t\approx N(-\sqrt{|c|/2},1)\)</span> y crítico <span class="math inline">\(-2{,}86\)</span>. <span class="math inline">\(c = -20\)</span>: desplazamiento <span class="math inline">\(-\sqrt{10} = -3{,}16\)</span>; potencia <span class="math inline">\(= P(N(-3{,}16,1)&lt;-2{,}86) = \Phi(0{,}30) = 0{,}62\)</span>. <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-\sqrt{2{,}5} = -1{,}58\)</span>; potencia <span class="math inline">\(= \Phi(-1{,}28) = 0{,}10\)</span>. Es solo una aproximación burda (válida para <span class="math inline">\(|c|\)</span> grande, y subestima la potencia en valores intermedios), pero cualitativamente correcta: <strong>con <span class="math inline">\(\phi = 0{,}95\)</span> el test casi no distingue</strong> la serie de una raíz unitaria (potencia muy baja, de unos pocos puntos sobre el tamaño nominal de 5 %). Con <span class="math inline">\(T = 400\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -20\)</span>, el mismo valor que <span class="math inline">\(\phi = 0{,}8\)</span> con <span class="math inline">\(T = 100\)</span>: lo que cuenta es el <strong>tiempo calendario</strong> observado (<span class="math inline">\(T(1 - \phi)\)</span>), no solo el número de observaciones.</p>
+<p>Aproximación: <span class="math inline">\(t\approx N(-\sqrt{|c|/2},1)\)</span> y crítico <span class="math inline">\(-2{,}86\)</span>. <span class="math inline">\(c = -20\)</span>: desplazamiento <span class="math inline">\(-\sqrt{10} = -3{,}16\)</span>; potencia <span class="math inline">\(= P(N(-3{,}16,1)&lt;-2{,}86) = \Phi(0{,}30) = 0{,}62\)</span>. <span class="math inline">\(c = -5\)</span>: desplazamiento <span class="math inline">\(-\sqrt{2{,}5} = -1{,}58\)</span>; potencia <span class="math inline">\(= \Phi(-1{,}28) = 0{,}10\)</span>. Es solo una aproximación burda (válida para <span class="math inline">\(|c|\)</span> grande, y subestima la potencia en valores intermedios), pero cualitativamente correcta: <strong>con <span class="math inline">\(\phi = 0{,}95\)</span> el test casi no distingue</strong> la serie de una raíz unitaria (en simulación, la potencia es de un 13 %, frente al 5 % de tamaño nominal; con <span class="math inline">\(\phi = 0{,}8\)</span> es de un 89 %, más que lo que sugiere la aproximación). Con <span class="math inline">\(T = 400\)</span>, <span class="math inline">\(\phi = 0{,}95\)</span> corresponde a <span class="math inline">\(c = -20\)</span>, el mismo valor que <span class="math inline">\(\phi = 0{,}8\)</span> con <span class="math inline">\(T = 100\)</span>: lo que cuenta es el <strong>tiempo calendario</strong> observado (<span class="math inline">\(T(1 - \phi)\)</span>), no solo el número de observaciones.</p>
 </div>
 </div>
 </div>
@@ -1065,6 +1106,9 @@ t_{\hat\phi}\ \Rightarrow\ \frac{\int J_c\,dW}{\big(\int J_c^2\big)^{1/2}} + c\B
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-08.html" class="pagination-link" aria-label="Clase 8 · Cointegración">
+        <span class="nav-page-text">Clase 8 · Cointegración</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-12.html" rel="next">
 <link href="../econometria-3/clase-10.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -236,6 +241,18 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -386,12 +403,12 @@ LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\B
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(W\)</span> escalar, <span class="math inline">\(\operatorname{tr}\big\{\int(dW)W\cdot(\int W^2)^{-1}\cdot\int W(dW)\big\} = \big(\int W\,dW\big)^2/\int W^2\)</span> (los tres factores son escalares). Y el límite del <span class="math inline">\(t\)</span> de DF sin constante es <span class="math inline">\(\int W\,dW/(\int W^2)^{1/2}\)</span> (teorema de la distribución de Dickey–Fuller, Clase 6): su cuadrado es el enunciado.</p>
 </div>
-<p>Es un buen chequeo: el crítico al 5 % del <span class="math inline">\(t\)</span> de DF es <span class="math inline">\(-1{,}94\)</span>, y <span class="math inline">\((-1{,}94)^2 = 3{,}76\)</span>, que es <strong>exactamente</strong> el crítico de traza para <span class="math inline">\(n - r_0 = 1\)</span> sin determinísticos. El test de Johansen <strong>contiene</strong> al test de raíz unitaria univariado como caso particular (<span class="math inline">\(n = 1\)</span>, <span class="math inline">\(r_0 = 0\)</span>).</p>
+<p>El test de Johansen <strong>contiene</strong> así al test de raíz unitaria univariado como caso particular (<span class="math inline">\(n = 1\)</span>, <span class="math inline">\(r_0 = 0\)</span>). Hay una diferencia sutil en los críticos: el test de traza rechaza cuando <span class="math inline">\(t^2\)</span> es grande, sea <span class="math inline">\(t\)</span> muy negativo <strong>o muy positivo</strong>, mientras que DF solo mira la cola izquierda. Por eso el crítico de traza al 5 % sin determinísticos (<span class="math inline">\(4{,}13\)</span>; MacKinnon, Haug y Michelis, 1999) es algo mayor que <span class="math inline">\((-1{,}94)^2 = 3{,}76\)</span>: la cola derecha del DF aporta alrededor de un punto porcentual de probabilidad. (El valor <span class="math inline">\(3{,}76\)</span> que aparece en las tablas de Osterwald-Lenum es el crítico de otro caso, con constante libre, donde el límite para <span class="math inline">\(n - r_0 = 1\)</span> es aproximadamente <span class="math inline">\(\chi^2_1\)</span>; la cercanía numérica con <span class="math inline">\(1{,}94^2\)</span> es una coincidencia.)</p>
 <section id="procedimiento-secuencial" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="procedimiento-secuencial"><span class="header-section-number">4.1</span> Procedimiento secuencial</h2>
 <p>Se contrasta en orden creciente de <span class="math inline">\(r_0\)</span>: se testea <span class="math inline">\(H_0:r = 0\)</span>; si <strong>se rechaza</strong>, se testea <span class="math inline">\(H_0:r\le1\)</span>; y así hasta el primer <span class="math inline">\(r_0\)</span> en que <strong>no se rechaza</strong>: <span class="math inline">\(\hat r = r_0\)</span>. (Cada nivel usa el crítico correspondiente a <span class="math inline">\(n - r_0\)</span>.)</p>
 <div id="exm-traza" class="theorem example">
-<p><span class="theorem-title"><strong>Ejemplo 2 (Tres variables)</strong></span> Con <span class="math inline">\(n = 3\)</span>, <span class="math inline">\(T = 100\)</span> y <span class="math inline">\(\hat\lambda = (0{,}30,\ 0{,}12,\ 0{,}03)\)</span>: <span class="math inline">\(LR_{\text{traza}}(0) = -100[\log0{,}70 + \log0{,}88 + \log0{,}97] = 51{,}5\)</span>; <span class="math inline">\(LR_{\text{traza}}(1) = -100[\log0{,}88 + \log0{,}97] = 15{,}8\)</span>; <span class="math inline">\(LR_{\text{traza}}(2) = -100\log0{,}97 = 3{,}05\)</span>. Con críticos al 5 % de <span class="math inline">\(29{,}68\)</span>, <span class="math inline">\(15{,}41\)</span> y <span class="math inline">\(3{,}76\)</span>: se rechaza <span class="math inline">\(r = 0\)</span> (<span class="math inline">\(51{,}5&gt;29{,}68\)</span>), se rechaza <span class="math inline">\(r\le1\)</span> (<span class="math inline">\(15{,}8&gt;15{,}41\)</span>, <strong>por poco</strong>), y no se rechaza <span class="math inline">\(r\le2\)</span> (<span class="math inline">\(3{,}05&lt;3{,}76\)</span>): <span class="math inline">\(\hat r = 2\)</span>. Los estadísticos de valor propio máximo son <span class="math inline">\(35{,}7\)</span>, <span class="math inline">\(12{,}8\)</span> y <span class="math inline">\(3{,}05\)</span>.</p>
+<p><span class="theorem-title"><strong>Ejemplo 2 (Tres variables)</strong></span> Con <span class="math inline">\(n = 3\)</span>, <span class="math inline">\(T = 100\)</span> y <span class="math inline">\(\hat\lambda = (0{,}30,\ 0{,}12,\ 0{,}03)\)</span>: <span class="math inline">\(LR_{\text{traza}}(0) = -100[\log0{,}70 + \log0{,}88 + \log0{,}97] = 51{,}5\)</span>; <span class="math inline">\(LR_{\text{traza}}(1) = -100[\log0{,}88 + \log0{,}97] = 15{,}8\)</span>; <span class="math inline">\(LR_{\text{traza}}(2) = -100\log0{,}97 = 3{,}05\)</span>. Con críticos al 5 % de <span class="math inline">\(29{,}68\)</span>, <span class="math inline">\(15{,}41\)</span> y <span class="math inline">\(3{,}76\)</span> (caso con constante libre, Osterwald-Lenum): se rechaza <span class="math inline">\(r = 0\)</span> (<span class="math inline">\(51{,}5&gt;29{,}68\)</span>), se rechaza <span class="math inline">\(r\le1\)</span> (<span class="math inline">\(15{,}8&gt;15{,}41\)</span>, <strong>por poco</strong>), y no se rechaza <span class="math inline">\(r\le2\)</span> (<span class="math inline">\(3{,}05&lt;3{,}76\)</span>): <span class="math inline">\(\hat r = 2\)</span>. Los estadísticos de valor propio máximo son <span class="math inline">\(35{,}7\)</span>, <span class="math inline">\(12{,}8\)</span> y <span class="math inline">\(3{,}05\)</span>.</p>
 </div>
 <p>Los resultados dependen de dos decisiones que deben justificarse: el <strong>número de rezagos</strong> <span class="math inline">\(p\)</span> (que debe blanquear los residuos del VAR en niveles) y los <strong>términos determinísticos</strong>. Johansen distingue cinco casos: sin determinísticos; constante <strong>restringida</strong> al espacio de cointegración (las relaciones de equilibrio tienen un intercepto; las series no tienen deriva); constante <strong>libre</strong> (las series tienen deriva lineal: el caso habitual para series con crecimiento); tendencia restringida; y tendencia libre (tendencias cuadráticas, raro). Elegir mal el caso cambia las distribuciones límite y las conclusiones; la regla práctica es mirar los gráficos y elegir la especificación coherente con el comportamiento de las series (¿tienen deriva?, ¿los desequilibrios tienen media cero?).</p>
 </section>
@@ -521,7 +538,7 @@ LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\B
 </div>
 </div>
 </div>
-<p><strong>Ejercicio 11.3.</strong> Con <span class="math inline">\(n = 1\)</span> (<span class="math inline">\(r_0 = 0\)</span>, sin determinísticos), un test de Johansen da <span class="math inline">\(LR_{\text{traza}} = 4{,}41\)</span>. ¿A qué estadístico <span class="math inline">\(t\)</span> de Dickey–Fuller corresponde y qué concluyes con el crítico <span class="math inline">\(3{,}76\)</span>?</p>
+<p><strong>Ejercicio 11.3.</strong> Con <span class="math inline">\(n = 1\)</span> (<span class="math inline">\(r_0 = 0\)</span>, sin determinísticos), un test de Johansen da <span class="math inline">\(LR_{\text{traza}} = 4{,}41\)</span>. ¿A qué estadístico <span class="math inline">\(t\)</span> de Dickey–Fuller corresponde y qué concluyes con el crítico de traza <span class="math inline">\(4{,}13\)</span>? ¿Por qué ese crítico no es <span class="math inline">\(1{,}94^2 = 3{,}76\)</span>?</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 11.3">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -534,7 +551,7 @@ LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\B
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(t^2 = 4{,}41\Rightarrow|t| = 2{,}1\)</span> (con signo negativo, <span class="math inline">\(t = -2{,}1\)</span>, porque el DF se rechaza con valores negativos). El crítico <span class="math inline">\(3{,}76 = (-1{,}94)^2\)</span>. Como <span class="math inline">\(4{,}41&gt;3{,}76\)</span> se <strong>rechaza</strong> la raíz unitaria al 5 %. Cuidado: el test de traza es de dos colas en el sentido de que el cuadrado no distingue el signo: un <span class="math inline">\(t = +2{,}1\)</span> (explosivo) daría el mismo estadístico, pero en el marco de Johansen se supone que no hay raíces explosivas.</p>
+<p><span class="math inline">\(t^2 = 4{,}41\Rightarrow|t| = 2{,}1\)</span> (con signo negativo, <span class="math inline">\(t = -2{,}1\)</span>, si la serie es persistente pero no explosiva). Como <span class="math inline">\(4{,}41&gt;4{,}13\)</span> se <strong>rechaza</strong> la raíz unitaria al 5 %; el DF con <span class="math inline">\(t = -2{,}1&lt;-1{,}94\)</span> llega a la misma conclusión. El crítico de traza es mayor que <span class="math inline">\(1{,}94^2\)</span> porque el cuadrado no distingue el signo: un <span class="math inline">\(t = +2{,}1\)</span> (raíz explosiva) daría el mismo estadístico, y la probabilidad de esa cola derecha bajo la nula (cerca de 1 %) se suma a la de la izquierda. Para que el total sea 5 %, el crítico de <span class="math inline">\(t^2\)</span> tiene que subir hasta <span class="math inline">\(4{,}13\)</span>. (En el marco de Johansen se supone que no hay raíces explosivas, así que en la práctica un <span class="math inline">\(t^2\)</span> grande se lee como evidencia de estacionariedad.)</p>
 </div>
 </div>
 </div>
@@ -1023,6 +1040,9 @@ LR_{\text{traza}}(r_0)\ \xrightarrow{d}\ \operatorname{tr}\Big\{\int_0^1(dW)W'\B
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-12.html" class="pagination-link" aria-label="Clase 12 · Volatilidad condicional: ARCH y GARCH">
+        <span class="nav-page-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

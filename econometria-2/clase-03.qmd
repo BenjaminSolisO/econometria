@@ -22,7 +22,7 @@ Queremos testear una hipótesis $H_0: h(\theta_0) = 0$ con $q$ restricciones sob
 
 Los tres son la misma pregunta en tres lenguajes (distancia, altura y pendiente) y la teoría dice que, bajo $H_0$ y para $n$ grande, dan **lo mismo**. Por eso se llaman la *trinidad*.[^trinidad]
 
-[^trinidad]: Wald (1943), Wilks (1938) y Rao (1948) los propusieron por separado, y Silvey (1959) descubrió que el test de Rao es en realidad el multiplicador de Lagrange del problema restringido. Un *trio* de resultados independientes que resultan ser uno solo: es lo más parecido que tiene la estadística a una doctrina religiosa. (Y como en toda trinidad, el misterio consiste en que son tres y son uno.)
+[^trinidad]: Wald (1943), Wilks (1938) y Rao (1948) los propusieron por separado, y Silvey (1959) descubrió que el test de Rao es en realidad el multiplicador de Lagrange del problema restringido. Un *trío* de resultados independientes que resultan ser uno solo: es lo más parecido que tiene la estadística a una doctrina religiosa. (Y como en toda trinidad, el misterio consiste en que son tres y son uno.)
 
 ::: {.callout-caution title="Notación"}
 Trabajamos con el modelo bien especificado de la Clase 2. $\hat\theta$ es el MV sin restringir, $\tilde\theta$ el MV sujeto a $h(\theta) = 0$, $\mathcal{I} = \mathcal{I}(\theta_0)$, $H(\theta) = \partial h/\partial\theta'$ ($q\times p$, rango $q$) y $\hat{\mathcal{I}}$, $\tilde{\mathcal{I}}$ son estimadores consistentes de $\mathcal{I}$ evaluados en $\hat\theta$ y $\tilde\theta$. El **score total** es $S(\theta) = \nabla\ell_n(\theta) = \sum_is(w_i;\theta)$.
@@ -167,7 +167,7 @@ Además, relacionando con el estadístico $F$ de Econometría 1: $W = \dfrac{nq}
 
 # El test LM como $nR^2$
 
-El LM suele calcularse con una **regresión auxiliar**, lo que explica por qué es tan popular en tests de especificación (Breusch–Pagan de la Clase 9 de Econometría 1, Durbin–Watson generalizado, y cientos más).
+El LM suele calcularse con una **regresión auxiliar**, lo que explica por qué es tan popular en tests de especificación (Breusch–Pagan de la Clase 9 de Econometría 1, Breusch–Godfrey para autocorrelación, y muchos más).
 
 ::: {#prp-lm-r2}
 ## LM como $nR^2_u$
@@ -205,7 +205,7 @@ Sea $H_0:\theta = \theta_0$ y la secuencia de alternativas $\theta_n = \theta_0 
 $$
 \mathcal{S}_n = n^{-1/2}S(\theta_0)\xrightarrow{d}N(\mathcal{I}h,\ \mathcal{I}),
 $$
-por lo que $LM = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p(\delta)$, una $\chi^2$ **no central** con parámetro de no centralidad $\delta = h'\mathcal{I}h$. La idea del cálculo: bajo $\theta_n$, $\mathbb{E}[\mathcal{S}_n]= \sqrt n\,\mathbb{E}_{\theta_n}[s(w;\theta_0)]$, y la función $\theta\mapsto\mathbb{E}_\theta[s(w;\theta_0)] = \int s(w;\theta_0)f(w;\theta)\,dw$ vale cero en $\theta_0$ y tiene derivada $\int s\,s'f = \mathcal{I}$ ahí. Luego $\mathbb{E}_{\theta_n}[s(w;\theta_0)]\approx\mathcal{I}h/\sqrt n$ y $\mathbb{E}[\mathcal{S}_n]\to\mathcal{I}h$. Como $W$ y $LR$ difieren de $LM$ en $o_p(1)$ también bajo la secuencia local (contigüidad), los tres tienen la misma $\chi^2_p(\delta)$. **Los tres tests son localmente igual de potentes**, y a la vez el más potente posible entre los que tienen tamaño $\alpha$ (lema de Neyman–Pearson en el límite). Las diferencias entre ellos son de orden superior, y es el terreno de la teoría de Edgeworth.
+por lo que $LM = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p(\delta)$, una $\chi^2$ **no central** con parámetro de no centralidad $\delta = h'\mathcal{I}h$. La idea del cálculo: bajo $\theta_n$, $\mathbb{E}[\mathcal{S}_n]= \sqrt n\,\mathbb{E}_{\theta_n}[s(w;\theta_0)]$, y la función $\theta\mapsto\mathbb{E}_\theta[s(w;\theta_0)] = \int s(w;\theta_0)f(w;\theta)\,dw$ vale cero en $\theta_0$ y tiene derivada $\int s\,s'f = \mathcal{I}$ ahí. Luego $\mathbb{E}_{\theta_n}[s(w;\theta_0)]\approx\mathcal{I}h/\sqrt n$ y $\mathbb{E}[\mathcal{S}_n]\to\mathcal{I}h$. Como $W$ y $LR$ difieren de $LM$ en $o_p(1)$ también bajo la secuencia local (contigüidad), los tres tienen la misma $\chi^2_p(\delta)$. **Los tres tests son localmente igual de potentes.** ¿Son además los mejores? Con $p = 1$ y alternativa bilateral, sí: en el experimento límite gaussiano son el test más potente entre los insesgados (Neyman–Pearson). Con $p>1$ no existe un test uniformemente más potente contra todas las direcciones $h$, y la optimalidad de la trinidad es más modesta: es la más potente entre los tests cuya potencia depende de $h$ solo a través de $h'\mathcal{I}h$. Las diferencias entre ellos son de orden superior, y es el terreno de la teoría de Edgeworth.
 
 # Resumen
 
@@ -246,7 +246,7 @@ Del Ejercicio 1.2: $\hat\theta = 1/\bar w$ y $\operatorname{Avar}(\hat\theta) = 
 **Ejercicio 3.4.** Para el modelo lineal normal con $H_0:\beta_2 = 0$, demuestra que el LM (con información esperada) es igual a $n\cdot R^2$ de regresar los **residuos restringidos** $\tilde u$ sobre todos los regresores $X$.
 
 ::: {.callout-tip collapse="true" title="Solución 3.4"}
-Del @thm-ordenamiento: $LM = \tilde u'P_X\tilde u/\tilde\sigma^2$ con $\tilde\sigma^2 = \tilde u'\tilde u/n$. Entonces $LM = n\,\dfrac{\tilde u'P_X\tilde u}{\tilde u'\tilde u}$, que es la suma explicada sobre la suma total (no centrada) de la regresión de $\tilde u$ sobre $X$: $LM = nR^2_u$. Si el modelo incluye constante, $\tilde u$ tiene media cero y el $R^2_u$ coincide con el $R^2$ usual. Este es el test de Breusch–Godfrey (autocorrelación) y, con $\tilde u^2$ como variable dependiente, el de Breusch–Pagan (Clase 9 de Econometría 1).
+Del @thm-ordenamiento: $LM = \tilde u'P_X\tilde u/\tilde\sigma^2$ con $\tilde\sigma^2 = \tilde u'\tilde u/n$. Entonces $LM = n\,\dfrac{\tilde u'P_X\tilde u}{\tilde u'\tilde u}$, que es la suma explicada sobre la suma total (no centrada) de la regresión de $\tilde u$ sobre $X$: $LM = nR^2_u$. Si el modelo incluye constante, $\tilde u$ tiene media cero y el $R^2_u$ coincide con el $R^2$ usual. La misma receta "$n R^2$ de una regresión auxiliar" da el test de Breusch–Godfrey (agregando rezagos de $\tilde u$ como regresores) y, con $\tilde u^2$ como variable dependiente, el de Breusch–Pagan (Clase 9 de Econometría 1).
 :::
 
 **Ejercicio 3.5.** Muestra que si $\ell_n$ es exactamente cuadrática en $\theta$ (modelo lineal normal con $\sigma^2$ **conocida**) y la restricción es lineal, entonces $W = LR = LM$ **exactamente**, en cualquier $n$.

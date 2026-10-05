@@ -163,7 +163,7 @@ Con la regresión, el **error estándar robusto** (HC, Clase 7 de Econometría 1
 
 ## Estratificación
 
-Cuando se conoce una covariable discreta $G$ fuerte (región, sexo, línea base), se puede **aleatorizar dentro de cada estrato**: en el estrato $g$ ($n_g$ unidades) se sortea el tratamiento por separado. El estimador es $\hat\tau_{est} = \sum_g(n_g/n)\hat\tau_g$ con $\hat\tau_g$ la diferencia de medias en el estrato. Elimina la variabilidad **entre** estratos y casi siempre baja la varianza respecto de la aleatorización completa. La estratificación **no** equivale a tratar a todos los estratos con la **misma** probabilidad si se quiere el ATE de la muestra: si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar *a lo bruto* tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).
+Cuando se conoce una covariable discreta $G$ fuerte (región, sexo, línea base), se puede **aleatorizar dentro de cada estrato**: en el estrato $g$ ($n_g$ unidades) se sortea el tratamiento por separado. El estimador es $\hat\tau_{est} = \sum_g(n_g/n)\hat\tau_g$ con $\hat\tau_g$ la diferencia de medias en el estrato. Elimina la variabilidad **entre** estratos y casi siempre baja la varianza respecto de la aleatorización completa. Un cuidado: la probabilidad de tratamiento puede **diferir** entre estratos, y en ese caso hay que usar el estimador estratificado (que pondera cada $\hat\tau_g$ por el tamaño del estrato). Si en el estrato 1 se trata al 20 % y en el 2 al 80 %, comparar *a lo bruto* tratados y controles mezcla estratos y reintroduce el sesgo (Ejercicio 1.5).
 
 ## Potencia y tamaño muestral
 

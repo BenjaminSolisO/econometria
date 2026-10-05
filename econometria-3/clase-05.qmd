@@ -148,7 +148,7 @@ La **varianza** de $\hat\sigma^2_{HAC}$ crece con $m$: bajo condiciones de cuart
 $$
 m^*\propto T^{1/3}.
 $$
-Con esa tasa, $\hat\sigma^2_{HAC}\to\sigma^2_{LR}$ en probabilidad, a velocidad $T^{-1/3}$ (más lenta que la $T^{-1/2}$ habitual: es un problema **no paramétrico**, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es $m = \lfloor4(T/100)^{2/9}\rfloor$: da $m = 4$ para $T = 100$, $5$ para $T = 500$ y $6$ para $T = 1000$. (La potencia $2/9$ y no $1/3$ viene de un método basado en los datos para estimar las constantes $c_1,c_2$.)
+Con esa tasa, $\hat\sigma^2_{HAC}\to\sigma^2_{LR}$ en probabilidad, a velocidad $T^{-1/3}$ (más lenta que la $T^{-1/2}$ habitual: es un problema **no paramétrico**, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es $m = \lfloor4(T/100)^{2/9}\rfloor$: da $m = 4$ para $T = 100$, $5$ para $T = 500$ y $6$ para $T = 1000$. (La potencia $2/9$ viene del paso *piloto* del método automático de Newey y West: ese es el número de rezagos que usan para estimar las constantes $c_1,c_2$, y el ancho de banda final que proponen es proporcional a $T^{1/3}$. Usada como regla fija, es una aproximación razonable para persistencia moderada.)
 
 ## Alternativas
 
@@ -169,7 +169,7 @@ Es la fórmula de White (Clase 7 de Econometría 1) con autocovarianzas. Cuando 
 
 ::: {#exm-sobrerrechazo}
 ## El costo de ignorar la dependencia
-Sea $y_t = \beta x_t + u_t$ con $x_t$ y $u_t$ **independientes**, ambos AR(1) con coeficientes $\rho_x = \rho_u = 0{,}8$ (y $\beta = 0$). Entonces $\xi_t = x_tu_t$ tiene autocovarianza $\gamma_\xi(h) = \gamma_x(h)\gamma_u(h) = \sigma_x^2\sigma_u^2(\rho_x\rho_u)^{|h|}$, y su varianza de largo plazo es $\sigma_x^2\sigma_u^2\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$. Como $Q = \sigma_x^2$, la varianza asintótica real de $\hat\beta$ es $\dfrac{\sigma_u^2}{\sigma_x^2}\cdot\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$, mientras que la fórmula de MCO "clásica" da $\sigma_u^2/(T\sigma_x^2)$ (ignorando la dependencia). Con $\rho_x\rho_u = 0{,}64$ el factor es $1{,}64/0{,}36 = 4{,}56$: **los errores estándar clásicos son $\sqrt{4{,}56} = 2{,}13$ veces demasiado chicos**. Un test al 5 % con $t = \hat\beta/\text{ee}_{clásico}$ rechaza $H_0:\beta = 0$ con probabilidad $2(1 - \Phi(1{,}96/2{,}13)) = 36$ % **aunque $x$ y $y$ no tengan relación alguna**. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.
+Sea $y_t = \beta x_t + u_t$ con $x_t$ y $u_t$ **independientes**, ambos AR(1) con coeficientes $\rho_x = \rho_u = 0{,}8$ (y $\beta = 0$). Entonces $\xi_t = x_tu_t$ tiene autocovarianza $\gamma_\xi(h) = \gamma_x(h)\gamma_u(h) = \sigma_x^2\sigma_u^2(\rho_x\rho_u)^{|h|}$, y su varianza de largo plazo es $\sigma_x^2\sigma_u^2\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$. Como $Q = \sigma_x^2$, la varianza asintótica real de $\hat\beta$ es $\dfrac{\sigma_u^2}{\sigma_x^2}\cdot\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}$, mientras que la fórmula de MCO "clásica" da $\sigma_u^2/\sigma_x^2$ (ignorando la dependencia). Con $\rho_x\rho_u = 0{,}64$ el factor es $1{,}64/0{,}36 = 4{,}56$: **los errores estándar clásicos son $\sqrt{4{,}56} = 2{,}13$ veces demasiado chicos**. Un test al 5 % con $t = \hat\beta/\text{ee}_{clásico}$ rechaza $H_0:\beta = 0$ con probabilidad $2(1 - \Phi(1{,}96/2{,}13)) = 36$ % **aunque $x$ y $y$ no tengan relación alguna**. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.
 :::
 
 ## GMM, pronósticos y otros
@@ -239,7 +239,7 @@ $\hat\gamma(0) = 4/4 = 1$ y $\hat\gamma(1) = [(-1) + (-1) + (-1)]/4 = -0{,}75$. 
 **Ejercicio 5.6.** Calcula $m = \lfloor4(T/100)^{2/9}\rfloor$ para $T = 50,100,500,2000$. ¿Por qué crece tan despacio?
 
 ::: {.callout-tip collapse="true" title="Solución 5.6"}
-$T = 50$: $4(0{,}5)^{0{,}222} = 4(0{,}857) = 3{,}43\to3$. $T = 100$: $4$. $T = 500$: $4(5)^{0{,}222} = 4(1{,}43) = 5{,}7\to5$. $T = 2000$: $4(20)^{0{,}222} = 4(1{,}945) = 7{,}8\to7$. Crece como $T^{2/9}$, **más despacio** que el óptimo teórico $T^{1/3}$, porque la constante se escala con las propias autocorrelaciones (más baja cuando la persistencia es moderada) y porque las ganancias son pequeñas: con $T = 2000$ un $m$ de $7$ ya captura casi todo salvo series muy persistentes. Es el costo de la tasa no paramétrica $T^{-1/3}$ en la precisión de $\hat\sigma^2_{HAC}$.
+$T = 50$: $4(0{,}5)^{0{,}222} = 4(0{,}857) = 3{,}43\to3$. $T = 100$: $4$. $T = 500$: $4(5)^{0{,}222} = 4(1{,}43) = 5{,}7\to5$. $T = 2000$: $4(20)^{0{,}222} = 4(1{,}945) = 7{,}8\to7$. Crece como $T^{2/9}$, **más despacio** que la tasa óptima $T^{1/3}$. La razón es que la fórmula es, en su origen, el número de rezagos del paso *piloto* del método de Newey y West (1994), que después elige un ancho proporcional a $T^{1/3}$ con constantes estimadas de los datos. Como regla fija funciona bien con persistencia moderada, pero con series muy persistentes queda corta (Ejercicio 5.2): ahí conviene el método automático completo o el preblanqueo.
 :::
 
 **Ejercicio 5.7 ★.** Aplica la descomposición de Beveridge–Nelson a un MA(1), $\psi(L) = 1 + 0{,}5L$: calcula $\psi(1)$, los $\tilde\psi_j$, verifica $\psi(L) = \psi(1) + (L - 1)\tilde\psi(L)$ y escribe $\sum_{t = 1}^Ty_t$ en términos de $\varepsilon$.

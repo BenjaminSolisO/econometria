@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-02.html" rel="next">
 <link href="../econometria-3/index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -176,6 +181,78 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-01.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 1 · Procesos estocásticos y estacionariedad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -360,7 +437,7 @@ T\operatorname{Var}(\bar y_T)\ \longrightarrow\ \sigma^2_{LR} = \sum_{h = -\inft
 <p>Dos hechos prácticos, que se toman prestados:</p>
 <ul>
 <li><strong>Condición suficiente:</strong> un proceso estacionario que es <strong>mezclante</strong> (<em>mixing</em>: la dependencia entre <span class="math inline">\(y_t\)</span> e <span class="math inline">\(y_{t+h}\)</span> se desvanece cuando <span class="math inline">\(h\to\infty\)</span>) es ergódico. Los procesos ARMA estacionarios con innovaciones i.i.d. lo son (Clase 2).</li>
-<li><strong>En el caso gaussiano</strong>, un proceso estacionario es ergódico si y solo si <span class="math inline">\(\gamma(h)\to0\)</span> (en promedio de Cesàro). Es decir, para gaussianos, la condición del <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a> es <strong>necesaria y suficiente</strong>.</li>
+<li><strong>En el caso gaussiano</strong> hay caracterizaciones exactas: un proceso estacionario es mezclante si y solo si <span class="math inline">\(\gamma(h)\to0\)</span>, y es ergódico si y solo si <span class="math inline">\(\frac1T\sum_{h = 1}^T\gamma(h)^2\to0\)</span> (su distribución espectral no tiene átomos). En particular, para gaussianos la condición <span class="math inline">\(\gamma(h)\to0\)</span> del <a href="#thm-lgn-ms" class="quarto-xref">Teorema&nbsp;1</a> ya <strong>garantiza</strong> ergodicidad.</li>
 </ul>
 <div class="callout callout-style-default callout-caution callout-titled" title="Por qué esto importa para todo el curso">
 <div class="callout-header d-flex align-content-center">
@@ -458,7 +535,7 @@ f(\lambda) = \frac1{2\pi}\sum_{h = -\infty}^\infty\gamma(h)e^{-ih\lambda},\qquad
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
-<li>MA(1) con <span class="math inline">\(\theta = 1\)</span>, <span class="math inline">\(\sigma^2 = 1\)</span>: estacionario, <span class="math inline">\(\gamma(0) = 2\)</span>, <span class="math inline">\(\gamma(\pm1) = 1\)</span>, <span class="math inline">\(\gamma(h) = 0\)</span> si <span class="math inline">\(|h|\ge2\)</span>; <span class="math inline">\(\rho(1) = 0{,}5\)</span> (el máximo posible). (b) <span class="math inline">\(\mathbb{E}[y_t] = 0\)</span> y <span class="math inline">\(\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h\)</span>: depende solo de <span class="math inline">\(h\)</span>, estacionario, con <span class="math inline">\(\gamma(h) = (-1)^h\)</span> (oscila entre <span class="math inline">\(+1\)</span> y <span class="math inline">\(-1\)</span>; no es ergódico, pues <span class="math inline">\(\gamma(h)\not\to0\)</span>). (c) <span class="math inline">\(\operatorname{Var}(y_t) = t^2\)</span> depende de <span class="math inline">\(t\)</span>: no estacionario (heterocedasticidad creciente).</li>
+<li>MA(1) con <span class="math inline">\(\theta = 1\)</span>, <span class="math inline">\(\sigma^2 = 1\)</span>: estacionario, <span class="math inline">\(\gamma(0) = 2\)</span>, <span class="math inline">\(\gamma(\pm1) = 1\)</span>, <span class="math inline">\(\gamma(h) = 0\)</span> si <span class="math inline">\(|h|\ge2\)</span>; <span class="math inline">\(\rho(1) = 0{,}5\)</span> (el máximo posible). (b) <span class="math inline">\(\mathbb{E}[y_t] = 0\)</span> y <span class="math inline">\(\operatorname{Cov}(y_t,y_{t + h}) = (-1)^{2t + h}\operatorname{Var}(Z) = (-1)^h\)</span>: depende solo de <span class="math inline">\(h\)</span>, estacionario, con <span class="math inline">\(\gamma(h) = (-1)^h\)</span> (oscila entre <span class="math inline">\(+1\)</span> y <span class="math inline">\(-1\)</span>). Curiosamente <span class="math inline">\(\bar y_T = Z\cdot\frac1T\sum_t(-1)^t\to0 = \mu\)</span>, pero el proceso <strong>no</strong> es ergódico: el promedio temporal de <span class="math inline">\(y_t^2\)</span> es <span class="math inline">\(Z^2\)</span> para todo <span class="math inline">\(T\)</span>, no <span class="math inline">\(\mathbb{E}[y_t^2] = 1\)</span>. (c) <span class="math inline">\(\operatorname{Var}(y_t) = t^2\)</span> depende de <span class="math inline">\(t\)</span>: no estacionario (heterocedasticidad creciente).</li>
 </ol>
 </div>
 </div>
@@ -985,6 +1062,9 @@ f(\lambda) = \frac1{2\pi}\sum_{h = -\infty}^\infty\gamma(h)e^{-ih\lambda},\qquad
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-02.html" class="pagination-link" aria-label="Clase 2 · Procesos lineales: MA, AR y ARMA">
+        <span class="nav-page-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

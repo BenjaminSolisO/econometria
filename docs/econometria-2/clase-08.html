@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-09.html" rel="next">
 <link href="../econometria-2/clase-07.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -218,6 +223,36 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -406,9 +441,9 @@ y = x'\beta + u\ \ (\text{observado solo si }s = 1),\qquad s = \mathbf{1}\{z'\ga
 </ol>
 </div>
 </div>
-<p>Por la <a href="#prp-heckman" class="quarto-xref">Proposición&nbsp;2</a>, el paso 2 es una regresión con la variable omitida incluida: <span class="math inline">\(y_i = x_i'\beta + \theta\lambda(z_i'\gamma) + e_i\)</span> con <span class="math inline">\(\mathbb{E}[e_i\mid x_i,z_i,s_i = 1] = 0\)</span>. Sustituir <span class="math inline">\(\hat\lambda\)</span> por <span class="math inline">\(\lambda\)</span> introduce un <strong>error de estimación</strong> del primer paso, así que <span class="math inline">\(\hat\beta\)</span> es consistente. El <strong>test de selección</strong> es <span class="math inline">\(H_0:\theta = 0\)</span> (equivalentemente <span class="math inline">\(\rho = 0\)</span>): el <span class="math inline">\(t\)</span> del coeficiente de <span class="math inline">\(\hat\lambda\)</span>.</p>
+<p>Por la <a href="#prp-heckman" class="quarto-xref">Proposición&nbsp;2</a>, el paso 2 es una regresión con la variable omitida incluida: <span class="math inline">\(y_i = x_i'\beta + \theta\lambda(z_i'\gamma) + e_i\)</span> con <span class="math inline">\(\mathbb{E}[e_i\mid x_i,z_i,s_i = 1] = 0\)</span>. Sustituir <span class="math inline">\(\lambda\)</span> por <span class="math inline">\(\hat\lambda\)</span> introduce un <strong>error de estimación</strong> del primer paso, pero ese error desaparece asintóticamente porque <span class="math inline">\(\hat\gamma\to_p\gamma\)</span>; por eso <span class="math inline">\(\hat\beta\)</span> es consistente. El <strong>test de selección</strong> es <span class="math inline">\(H_0:\theta = 0\)</span> (equivalentemente <span class="math inline">\(\rho = 0\)</span>): el <span class="math inline">\(t\)</span> del coeficiente de <span class="math inline">\(\hat\lambda\)</span>.</p>
 <p><strong>Los errores estándar de MCO del paso 2 son incorrectos</strong> por dos razones: (i) <span class="math inline">\(\hat\lambda_i\)</span> es un <strong>regresor generado</strong>, con error de estimación que se propaga, y (ii) el error <span class="math inline">\(e_i\)</span> es heterocedástico: <span class="math inline">\(\operatorname{Var}(y_i\mid x_i,z_i,s_i = 1) = \sigma^2\big[1 - \rho^2\delta_i\big]\)</span> con <span class="math inline">\(\delta_i = \lambda_i(\lambda_i + z_i'\gamma)\)</span>. La corrección es un caso de <strong>M-estimación en dos pasos</strong>: se expande el momento del segundo paso alrededor del verdadero <span class="math inline">\(\gamma_0\)</span>, <span class="math display">\[
-\sqrt n\,\bar g_2(\hat\beta_0,\hat\gamma) = \sqrt n\,\bar g_2(\beta_0,\gamma_0) + G_\gamma\sqrt n(\hat\gamma - \gamma_0) + o_p(1),
+\sqrt n\,\bar g_2(\beta_0,\hat\gamma) = \sqrt n\,\bar g_2(\beta_0,\gamma_0) + G_\gamma\sqrt n(\hat\gamma - \gamma_0) + o_p(1),
 \]</span> y el segundo término es una suma i.i.d. (función de influencia del probit) que se suma a la del primero; la varianza resultante se estima por sándwich (Newey y McFadden, 1994). En la práctica se usa el <em>bootstrap</em> o la corrección analítica que traen los programas.</p>
 </section>
 <section id="la-restricción-de-exclusión" class="level2" data-number="3.2">
@@ -995,6 +1030,9 @@ y = x'\beta + u\ \ (\text{observado solo si }s = 1),\qquad s = \mathbf{1}\{z'\ga
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-09.html" class="pagination-link" aria-label="Clase 9 · Datos de panel I">
+        <span class="nav-page-text">Clase 9 · Datos de panel I</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

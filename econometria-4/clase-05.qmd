@@ -119,7 +119,7 @@ $$
 $$
 \sum_i\ell_i(x) = 1,\qquad\sum_i\ell_i(x)(X_i - x) = 0.
 $$
-(Los pesos reproducen la constante y la función lineal.) Entonces, si $m$ es **lineal**, $\hat m_{LL}(x) = \sum\ell_im(X_i) = m(x)\sum\ell_i + m'(x)\sum\ell_i(X_i - x) = m(x)$: sin sesgo. Para $m$ general, la expansión de Taylor $m(X_i) = m(x) + m'(x)(X_i - x) + \tfrac12m''(x)(X_i - x)^2 + \dots$ da, por las dos identidades, $\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12m''(x)\sum_i\ell_i(x)(X_i - x)^2\approx\tfrac12m''(x)h^2\kappa_2$: **solo** la curvatura de $m$ importa, y no el término de la densidad. La demostración detallada del sesgo y de la frontera usa una aproximación de $\sum\ell_i(X_i - x)^2$ con los momentos del kernel (§ de la Clase 6).
+(Los pesos reproducen la constante y la función lineal.) Entonces, si $m$ es **lineal**, $\hat m_{LL}(x) = \sum\ell_im(X_i) = m(x)\sum\ell_i + m'(x)\sum\ell_i(X_i - x) = m(x)$: sin sesgo. Para $m$ general, la expansión de Taylor $m(X_i) = m(x) + m'(x)(X_i - x) + \tfrac12m''(x)(X_i - x)^2 + \dots$ da, por las dos identidades, $\mathbb{E}\hat m_{LL}(x) - m(x)\approx\tfrac12m''(x)\sum_i\ell_i(x)(X_i - x)^2\approx\tfrac12m''(x)h^2\kappa_2$: **solo** la curvatura de $m$ importa, y no el término de la densidad. La demostración detallada del sesgo y de la frontera usa una aproximación de $\sum\ell_i(X_i - x)^2$ con los momentos del kernel (sección ★ de la Clase 6).
 :::
 
 Por estas razones, **la regresión local lineal es la opción por defecto** en la práctica (y en regresión discontinua, Clase 6, donde el punto de interés está en la frontera de cada lado del umbral). Un polinomio de grado más alto reduce el sesgo para funciones más suaves.
@@ -189,7 +189,10 @@ Para cualquier estimador $\hat\theta$, $\displaystyle\max_{j = 0,1}\mathbb{E}_{m
 :::
 
 ::: {.proof}
-Sea $\Delta = \theta_1 - \theta_0$. Para toda realización, $|\hat\theta - \theta_0| + |\hat\theta - \theta_1|\ge\Delta$, de modo que $\max_j(\hat\theta - \theta_j)^2\ge\Delta^2/4$ en el evento en que $\hat\theta$ está más cerca del valor equivocado. Por el lema de Le Cam, la suma de las probabilidades de error de los dos "tests" inducidos es al menos $1 - \operatorname{TV}(P_0,P_1)$, y $\max_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ge\tfrac12\sum_j\mathbb{E}_j(\cdot)^2\ge\tfrac12\cdot\tfrac{\Delta^2}4\big(1 - \operatorname{TV}\big)$.
+Sea $\Delta = \theta_1 - \theta_0$ y sea $\psi\in\{0,1\}$ el "test" que elige el $\theta_j$ más cercano a $\hat\theta$. Como $|\hat\theta - \theta_0| + |\hat\theta - \theta_1|\ge\Delta$, si $\psi\ne j$ entonces $|\hat\theta - \theta_j|\ge\Delta/2$; luego $\mathbb{E}_j(\hat\theta - \theta_j)^2\ge\tfrac{\Delta^2}4P_j(\psi\ne j)$. Por el lema de Le Cam, para cualquier test, $P_0(\psi\ne0) + P_1(\psi\ne1)\ge1 - \operatorname{TV}(P_0,P_1)$. Entonces
+$$
+\max_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ \ge\ \tfrac12\sum_j\mathbb{E}_j(\hat\theta - \theta_j)^2\ \ge\ \tfrac12\cdot\tfrac{\Delta^2}4\big(1 - \operatorname{TV}\big) = \tfrac{\Delta^2}8\big(1 - \operatorname{TV}\big).
+$$
 :::
 
 Falta controlar la variación total. Por la desigualdad de Pinsker, $\operatorname{TV}\le\sqrt{\text{KL}/2}$, y para ruido gaussiano la divergencia de Kullback–Leibler entre los dos modelos es $\text{KL}(P_0\Vert P_1) = \frac1{2\sigma^2}\sum_im_1(x_i)^2\approx\frac n{2\sigma^2}\int m_1^2 = \frac n{2\sigma^2}L^2h^2\cdot h\int\Lambda^2 = \frac{n L^2h^3}{2\sigma^2}\cdot\frac23$ (con diseño uniforme en $[0,1]$ y $\int\Lambda^2 = 2/3$). Si elegimos $h = c\,n^{-1/3}$, la divergencia queda **acotada por una constante** ($\text{KL}\approx\frac{L^2c^3}{3\sigma^2}$), y entonces $\operatorname{TV}$ queda acotada por debajo de uno: **no hay manera de distinguir** las dos funciones con $n$ datos. Por la @prp-lecam, el riesgo máximo es al menos una constante por $(Lh)^2 = L^2c^2n^{-2/3}$:

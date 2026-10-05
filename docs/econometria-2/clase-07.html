@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-08.html" rel="next">
 <link href="../econometria-2/clase-06.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -212,6 +217,42 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -537,7 +578,7 @@ S_p(\beta) = \sum_{j=1}^J\Big[x_{(j)} - \sum_{l\in R_j}w_{jl}(\beta)\,x_l\Big],\
 </div>
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\ell(\lambda) = d\log\lambda - \lambda\sum t_i\)</span> con <span class="math inline">\(d = 5\)</span>, <span class="math inline">\(\sum t_i = 50\)</span>. CPO: <span class="math inline">\(d/\lambda = \sum t_i\Rightarrow\hat\lambda = 5/50 = 0{,}10\)</span> eventos por año-persona. Segunda derivada: <span class="math inline">\(-d/\lambda^2\)</span>; información observada <span class="math inline">\(= d/\hat\lambda^2\)</span>; <span class="math inline">\(\operatorname{Avar} = \hat\lambda^2/d = 0{,}01/5 = 0{,}002\)</span> y el error estándar es <span class="math inline">\(0{,}0447\)</span>. Nótese que el error estándar depende de <span class="math inline">\(d\)</span> (el número de <strong>eventos</strong>), no de <span class="math inline">\(n\)</span>: las observaciones censuradas contribuyen solo a través del tiempo total. Una IC de 95 % aproximado: <span class="math inline">\(0{,}10\pm1{,}96\cdot0{,}0447 = (0{,}012;\,0{,}188)\)</span>, muy ancho con apenas 5 eventos.</p>
+<p><span class="math inline">\(\ell(\lambda) = d\log\lambda - \lambda\sum t_i\)</span> con <span class="math inline">\(d = 5\)</span>, <span class="math inline">\(\sum t_i = 50\)</span>. CPO: <span class="math inline">\(d/\lambda = \sum t_i\Rightarrow\hat\lambda = 5/50 = 0{,}10\)</span> eventos por año-persona. Segunda derivada: <span class="math inline">\(-d/\lambda^2\)</span>; información observada <span class="math inline">\(= d/\hat\lambda^2\)</span>; <span class="math inline">\(\operatorname{Avar} = \hat\lambda^2/d = 0{,}01/5 = 0{,}002\)</span> y el error estándar es <span class="math inline">\(0{,}0447\)</span>. Nótese que el error estándar depende de <span class="math inline">\(d\)</span> (el número de <strong>eventos</strong>), no de <span class="math inline">\(n\)</span>: las observaciones censuradas contribuyen solo a través del tiempo total. Un IC de 95 % aproximado: <span class="math inline">\(0{,}10\pm1{,}96\cdot0{,}0447 = (0{,}012;\,0{,}188)\)</span>, muy ancho con apenas 5 eventos.</p>
 </div>
 </div>
 </div>
@@ -993,6 +1034,9 @@ S_p(\beta) = \sum_{j=1}^J\Big[x_{(j)} - \sum_{l\in R_j}w_{jl}(\beta)\,x_l\Big],\
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-08.html" class="pagination-link" aria-label="Clase 8 · Datos censurados y selección">
+        <span class="nav-page-text">Clase 8 · Datos censurados y selección</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

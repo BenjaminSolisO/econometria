@@ -144,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -195,6 +199,60 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -260,7 +318,7 @@ window.Quarto = {
 <li><strong>Multiplicador de Lagrange (LM, o test de score):</strong> estima <strong>solo el restringido</strong> y mira si el gradiente de <span class="math inline">\(\ell_n\)</span> ahí es cercano a cero. Pregunta: <em>¿cuánto quisiera moverse el estimador restringido si lo dejáramos?</em></li>
 </ul>
 <p>Los tres son la misma pregunta en tres lenguajes (distancia, altura y pendiente) y la teoría dice que, bajo <span class="math inline">\(H_0\)</span> y para <span class="math inline">\(n\)</span> grande, dan <strong>lo mismo</strong>. Por eso se llaman la <em>trinidad</em>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Wald (1943), Wilks (1938) y Rao (1948) los propusieron por separado, y Silvey (1959) descubrió que el test de Rao es en realidad el multiplicador de Lagrange del problema restringido. Un <em>trio</em> de resultados independientes que resultan ser uno solo: es lo más parecido que tiene la estadística a una doctrina religiosa. (Y como en toda trinidad, el misterio consiste en que son tres y son uno.)</p></div></div><div class="callout callout-style-default callout-caution callout-titled" title="Notación">
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Wald (1943), Wilks (1938) y Rao (1948) los propusieron por separado, y Silvey (1959) descubrió que el test de Rao es en realidad el multiplicador de Lagrange del problema restringido. Un <em>trío</em> de resultados independientes que resultan ser uno solo: es lo más parecido que tiene la estadística a una doctrina religiosa. (Y como en toda trinidad, el misterio consiste en que son tres y son uno.)</p></div></div><div class="callout callout-style-default callout-caution callout-titled" title="Notación">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -396,7 +454,7 @@ W = \frac{(R\hat\beta - r)'[R(X'X)^{-1}R']^{-1}(R\hat\beta - r)}{\hat\sigma^2_{N
 </section>
 <section id="el-test-lm-como-nr2" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> El test LM como <span class="math inline">\(nR^2\)</span></h1>
-<p>El LM suele calcularse con una <strong>regresión auxiliar</strong>, lo que explica por qué es tan popular en tests de especificación (Breusch–Pagan de la Clase 9 de Econometría 1, Durbin–Watson generalizado, y cientos más).</p>
+<p>El LM suele calcularse con una <strong>regresión auxiliar</strong>, lo que explica por qué es tan popular en tests de especificación (Breusch–Pagan de la Clase 9 de Econometría 1, Breusch–Godfrey para autocorrelación, y muchos más).</p>
 <div id="prp-lm-r2" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposición 1 (LM como <span class="math inline">\(nR^2_u\)</span>)</strong></span> Sea <span class="math inline">\(\tilde s_i = s(w_i;\tilde\theta)\)</span> el score de la observación <span class="math inline">\(i\)</span> en el estimador restringido, e <span class="math inline">\(\iota\)</span> el vector de unos. Si usamos el estimador OPG de la información, <span class="math inline">\(\tilde{\mathcal{I}} = \frac1n\sum_i\tilde s_i\tilde s_i'\)</span>, entonces <span class="math display">\[
 LM = \iota'\tilde S\,(\tilde S'\tilde S)^{-1}\tilde S'\iota = n\cdot R^2_u,
@@ -470,7 +528,7 @@ LM = \iota'\tilde S\,(\tilde S'\tilde S)^{-1}\tilde S'\iota = n\cdot R^2_u,
 </div>
 <p>Sea <span class="math inline">\(H_0:\theta = \theta_0\)</span> y la secuencia de alternativas <span class="math inline">\(\theta_n = \theta_0 + h/\sqrt n\)</span>. Bajo <span class="math inline">\(\theta_n\)</span> el score en <span class="math inline">\(\theta_0\)</span> <strong>ya no</strong> tiene media cero. Con un TCL para arreglos triangulares (o el tercer lema de Le Cam) se obtiene <span class="math display">\[
 \mathcal{S}_n = n^{-1/2}S(\theta_0)\xrightarrow{d}N(\mathcal{I}h,\ \mathcal{I}),
-\]</span> por lo que <span class="math inline">\(LM = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p(\delta)\)</span>, una <span class="math inline">\(\chi^2\)</span> <strong>no central</strong> con parámetro de no centralidad <span class="math inline">\(\delta = h'\mathcal{I}h\)</span>. La idea del cálculo: bajo <span class="math inline">\(\theta_n\)</span>, <span class="math inline">\(\mathbb{E}[\mathcal{S}_n]= \sqrt n\,\mathbb{E}_{\theta_n}[s(w;\theta_0)]\)</span>, y la función <span class="math inline">\(\theta\mapsto\mathbb{E}_\theta[s(w;\theta_0)] = \int s(w;\theta_0)f(w;\theta)\,dw\)</span> vale cero en <span class="math inline">\(\theta_0\)</span> y tiene derivada <span class="math inline">\(\int s\,s'f = \mathcal{I}\)</span> ahí. Luego <span class="math inline">\(\mathbb{E}_{\theta_n}[s(w;\theta_0)]\approx\mathcal{I}h/\sqrt n\)</span> y <span class="math inline">\(\mathbb{E}[\mathcal{S}_n]\to\mathcal{I}h\)</span>. Como <span class="math inline">\(W\)</span> y <span class="math inline">\(LR\)</span> difieren de <span class="math inline">\(LM\)</span> en <span class="math inline">\(o_p(1)\)</span> también bajo la secuencia local (contigüidad), los tres tienen la misma <span class="math inline">\(\chi^2_p(\delta)\)</span>. <strong>Los tres tests son localmente igual de potentes</strong>, y a la vez el más potente posible entre los que tienen tamaño <span class="math inline">\(\alpha\)</span> (lema de Neyman–Pearson en el límite). Las diferencias entre ellos son de orden superior, y es el terreno de la teoría de Edgeworth.</p>
+\]</span> por lo que <span class="math inline">\(LM = \mathcal{S}_n'\mathcal{I}^{-1}\mathcal{S}_n\to_d\chi^2_p(\delta)\)</span>, una <span class="math inline">\(\chi^2\)</span> <strong>no central</strong> con parámetro de no centralidad <span class="math inline">\(\delta = h'\mathcal{I}h\)</span>. La idea del cálculo: bajo <span class="math inline">\(\theta_n\)</span>, <span class="math inline">\(\mathbb{E}[\mathcal{S}_n]= \sqrt n\,\mathbb{E}_{\theta_n}[s(w;\theta_0)]\)</span>, y la función <span class="math inline">\(\theta\mapsto\mathbb{E}_\theta[s(w;\theta_0)] = \int s(w;\theta_0)f(w;\theta)\,dw\)</span> vale cero en <span class="math inline">\(\theta_0\)</span> y tiene derivada <span class="math inline">\(\int s\,s'f = \mathcal{I}\)</span> ahí. Luego <span class="math inline">\(\mathbb{E}_{\theta_n}[s(w;\theta_0)]\approx\mathcal{I}h/\sqrt n\)</span> y <span class="math inline">\(\mathbb{E}[\mathcal{S}_n]\to\mathcal{I}h\)</span>. Como <span class="math inline">\(W\)</span> y <span class="math inline">\(LR\)</span> difieren de <span class="math inline">\(LM\)</span> en <span class="math inline">\(o_p(1)\)</span> también bajo la secuencia local (contigüidad), los tres tienen la misma <span class="math inline">\(\chi^2_p(\delta)\)</span>. <strong>Los tres tests son localmente igual de potentes.</strong> ¿Son además los mejores? Con <span class="math inline">\(p = 1\)</span> y alternativa bilateral, sí: en el experimento límite gaussiano son el test más potente entre los insesgados (Neyman–Pearson). Con <span class="math inline">\(p&gt;1\)</span> no existe un test uniformemente más potente contra todas las direcciones <span class="math inline">\(h\)</span>, y la optimalidad de la trinidad es más modesta: es la más potente entre los tests cuya potencia depende de <span class="math inline">\(h\)</span> solo a través de <span class="math inline">\(h'\mathcal{I}h\)</span>. Las diferencias entre ellos son de orden superior, y es el terreno de la teoría de Edgeworth.</p>
 </section>
 <section id="resumen" class="level1" data-number="7">
 <h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
@@ -552,7 +610,7 @@ LM = \iota'\tilde S\,(\tilde S'\tilde S)^{-1}\tilde S'\iota = n\cdot R^2_u,
 </div>
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Del <a href="#thm-ordenamiento" class="quarto-xref">Teorema&nbsp;2</a>: <span class="math inline">\(LM = \tilde u'P_X\tilde u/\tilde\sigma^2\)</span> con <span class="math inline">\(\tilde\sigma^2 = \tilde u'\tilde u/n\)</span>. Entonces <span class="math inline">\(LM = n\,\dfrac{\tilde u'P_X\tilde u}{\tilde u'\tilde u}\)</span>, que es la suma explicada sobre la suma total (no centrada) de la regresión de <span class="math inline">\(\tilde u\)</span> sobre <span class="math inline">\(X\)</span>: <span class="math inline">\(LM = nR^2_u\)</span>. Si el modelo incluye constante, <span class="math inline">\(\tilde u\)</span> tiene media cero y el <span class="math inline">\(R^2_u\)</span> coincide con el <span class="math inline">\(R^2\)</span> usual. Este es el test de Breusch–Godfrey (autocorrelación) y, con <span class="math inline">\(\tilde u^2\)</span> como variable dependiente, el de Breusch–Pagan (Clase 9 de Econometría 1).</p>
+<p>Del <a href="#thm-ordenamiento" class="quarto-xref">Teorema&nbsp;2</a>: <span class="math inline">\(LM = \tilde u'P_X\tilde u/\tilde\sigma^2\)</span> con <span class="math inline">\(\tilde\sigma^2 = \tilde u'\tilde u/n\)</span>. Entonces <span class="math inline">\(LM = n\,\dfrac{\tilde u'P_X\tilde u}{\tilde u'\tilde u}\)</span>, que es la suma explicada sobre la suma total (no centrada) de la regresión de <span class="math inline">\(\tilde u\)</span> sobre <span class="math inline">\(X\)</span>: <span class="math inline">\(LM = nR^2_u\)</span>. Si el modelo incluye constante, <span class="math inline">\(\tilde u\)</span> tiene media cero y el <span class="math inline">\(R^2_u\)</span> coincide con el <span class="math inline">\(R^2\)</span> usual. La misma receta “<span class="math inline">\(n R^2\)</span> de una regresión auxiliar” da el test de Breusch–Godfrey (agregando rezagos de <span class="math inline">\(\tilde u\)</span> como regresores) y, con <span class="math inline">\(\tilde u^2\)</span> como variable dependiente, el de Breusch–Pagan (Clase 9 de Econometría 1).</p>
 </div>
 </div>
 </div>

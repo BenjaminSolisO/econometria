@@ -211,7 +211,7 @@ La varianza existe ($\alpha<1$): $\omega/0{,}4$. El cuarto momento exige $3\alph
 **Ejercicio 12.3.** Un GARCH(1,1) tiene $\omega = 0{,}05$, $\alpha = 0{,}1$, $\beta = 0{,}85$ y $\sigma_{T + 1}^2 = 1{,}8$. Calcula la varianza incondicional, la persistencia, la vida media, los pronósticos de varianza para $h = 1,2,5,20$ y la varianza acumulada a 5 días.
 
 ::: {.callout-tip collapse="true" title="Solución 12.3"}
-$\bar\sigma^2 = 0{,}05/0{,}05 = 1$. Persistencia $\alpha + \beta = 0{,}95$. Vida media: $\log0{,}5/\log0{,}95 = 13{,}5$ días. $\mathbb{E}[\sigma^2_{T + h}] = 1 + 0{,}95^{h-1}\cdot0{,}8$: $h = 1$: $1{,}8$; $h = 2$: $1{,}76$; $h = 5$: $1 + 0{,}8145\cdot0{,}8 = 1{,}652$; $h = 20$: $1 + 0{,}3774\cdot0{,}8 = 1{,}302$. Acumulada a 5 días: $1{,}8 + 1{,}76 + 1{,}722 + 1{,}686 + 1{,}652 = 8{,}82$ (desviación estándar $2{,}97$), frente a $5\bar\sigma^2 = 5$ ($2{,}24$) si se usara la varianza incondicional: **ignorar el estado actual de la volatilidad subestima la varianza a 5 días en 43 % ($1 - 5/8{,}82$) y la desviación estándar en 25 %** tras un shock.
+$\bar\sigma^2 = 0{,}05/0{,}05 = 1$. Persistencia $\alpha + \beta = 0{,}95$. Vida media: $\log0{,}5/\log0{,}95 = 13{,}5$ días. $\mathbb{E}[\sigma^2_{T + h}] = 1 + 0{,}95^{h-1}\cdot0{,}8$: $h = 1$: $1{,}8$; $h = 2$: $1{,}76$; $h = 5$: $1 + 0{,}8145\cdot0{,}8 = 1{,}652$; $h = 20$: $1 + 0{,}3774\cdot0{,}8 = 1{,}302$. Acumulada a 5 días: $1{,}8 + 1{,}76 + 1{,}722 + 1{,}686 + 1{,}652 = 8{,}62$ (desviación estándar $2{,}94$), frente a $5\bar\sigma^2 = 5$ ($2{,}24$) si se usara la varianza incondicional: **ignorar el estado actual de la volatilidad subestima la varianza a 5 días en 42 % ($1 - 5/8{,}62$) y la desviación estándar en 24 %** tras un shock.
 :::
 
 **Ejercicio 12.4.** Con $\kappa_z = 6$ (colas gordas), ¿en qué factor se subestiman los errores estándar del QMLE si se usa la fórmula gaussiana? ¿Y con $\kappa_z = 3$?
@@ -223,7 +223,7 @@ La varianza verdadera es $(\kappa_z - 1)J_*^{-1}$ y la gaussiana $2J_*^{-1}$. El
 **Ejercicio 12.5.** En una serie de $T = 1000$ residuos se regresa $\hat\varepsilon_t^2$ sobre 5 rezagos y se obtiene $R^2 = 0{,}02$. Calcula el test ARCH-LM y decide al 5 % (crítico $\chi^2_5 = 11{,}07$).
 
 ::: {.callout-tip collapse="true" title="Solución 12.5"}
-$LM = T R^2 = 1000\cdot0{,}02 = 20{,}0>11{,}07$: **se rechaza** la hipótesis de ausencia de ARCH. Aunque el $R^2$ sea solo $0{,}02$ (2 %;la volatilidad pasada explica poco de la variabilidad de $\varepsilon_t^2$, que es muy ruidosa), con $T = 1000$ la evidencia es clara. Hay efectos ARCH: la media de cada residuo cuadrático depende del pasado.
+$LM = T R^2 = 1000\cdot0{,}02 = 20{,}0>11{,}07$: **se rechaza** la hipótesis de ausencia de ARCH. Aunque el $R^2$ sea solo $0{,}02$ (2 %: la volatilidad pasada explica poco de la variabilidad de $\varepsilon_t^2$, que es muy ruidosa), con $T = 1000$ la evidencia es clara. Hay efectos ARCH: la media de cada residuo cuadrático depende del pasado.
 :::
 
 **Ejercicio 12.6.** Un GJR-GARCH tiene $\omega = 0{,}01$, $\alpha = 0{,}05$, $\gamma = 0{,}10$, $\beta = 0{,}90$. Con $\sigma_{t-1}^2 = 1$, calcula $\sigma_t^2$ después de un shock de $-1$ y de uno de $+1$. ¿Cuál es la persistencia?

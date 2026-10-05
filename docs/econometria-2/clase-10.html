@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-11.html" rel="next">
 <link href="../econometria-2/clase-09.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -230,6 +235,24 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -388,7 +411,7 @@ y_{i1} &amp; &amp; &amp; \\
 <section id="instrumentos-débiles-y-gmm-sistema" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="instrumentos-débiles-y-gmm-sistema"><span class="header-section-number">3.4</span> Instrumentos débiles y GMM sistema</h2>
 <p>El método tiene dos fragilidades conocidas.</p>
-<p><strong>(1) Persistencia alta.</strong> Cuando <span class="math inline">\(\rho\)</span> se acerca a 1, los niveles rezagados son <strong>instrumentos débiles</strong> para las diferencias. En el modelo AR(1), <span class="math inline">\(\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}\)</span> (de <a href="#eq-dinamico" class="quarto-xref">Ecuación&nbsp;1</a>), y la regresión de primera etapa de <span class="math inline">\(\Delta y_{i,t-1}\)</span> sobre <span class="math inline">\(y_{i,t-2}\)</span> (limpiada de <span class="math inline">\(c_i\)</span>) tiene coeficiente <span class="math inline">\(\rho - 1\to0\)</span>. Si <span class="math inline">\(\rho = 1\)</span> (caminata aleatoria), <span class="math inline">\(\Delta y_{i,t-1} = u_{i,t-1}\)</span> es <strong>independiente</strong> de todos los niveles rezagados: el instrumento es <strong>irrelevante</strong> (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.</p>
+<p><strong>(1) Persistencia alta.</strong> Cuando <span class="math inline">\(\rho\)</span> se acerca a 1, los niveles rezagados son <strong>instrumentos débiles</strong> para las diferencias. En el modelo AR(1), <span class="math inline">\(\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}\)</span> (de <a href="#eq-dinamico" class="quarto-xref">Ecuación&nbsp;1</a>), y la regresión de primera etapa de <span class="math inline">\(\Delta y_{i,t-1}\)</span> sobre <span class="math inline">\(y_{i,t-2}\)</span> (limpiada de <span class="math inline">\(c_i\)</span>) tiene coeficiente <span class="math inline">\(\rho - 1\to0\)</span>. Si <span class="math inline">\(\rho = 1\)</span> y no hay efecto individual (caminata aleatoria pura), <span class="math inline">\(\Delta y_{i,t-1} = u_{i,t-1}\)</span> es <strong>independiente</strong> de todos los niveles rezagados: el instrumento es <strong>irrelevante</strong> (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.</p>
 <p><strong>(2) Demasiados instrumentos.</strong> Con <span class="math inline">\(T\)</span> grande el número de momentos crece como <span class="math inline">\(T^2\)</span>, y con <span class="math inline">\(N\)</span> moderado el GMM de dos pasos sobreajusta y el test <span class="math inline">\(J\)</span> <strong>pierde potencia</strong> (da <span class="math inline">\(p\)</span>-valores cercanos a 1 que no significan nada). La práctica recomendada: limitar los rezagos usados o “colapsar” la matriz <span class="math inline">\(Z_i\)</span> (una columna por rezago, no una por cada par <span class="math inline">\((t,s)\)</span>).</p>
 <p>El estimador de <strong>GMM sistema</strong> de Blundell y Bond (1998) agrega a las ecuaciones en diferencias las ecuaciones <strong>en niveles</strong>, instrumentadas con <strong>diferencias rezagadas</strong>: <span class="math inline">\(\mathbb{E}[\Delta y_{i,t-1}(c_i + u_{it})] = 0\)</span>. Esto es válido si <span class="math inline">\(\Delta y_{i,t-1}\)</span> no está correlacionado con <span class="math inline">\(c_i\)</span>, lo cual exige una condición sobre la <strong>condición inicial</strong> (que el proceso parta de su media estacionaria; Ejercicio 10.7). Cuando se cumple, hay mucha más información y el problema de instrumentos débiles se alivia; pero la condición adicional es un supuesto fuerte, y se testea con la diferencia de dos tests <span class="math inline">\(J\)</span> (el test de Hansen del conjunto adicional).</p>
 <p><strong>Errores estándar.</strong> Los de dos pasos son <em>muy</em> sesgados hacia abajo en muestras finitas; la <strong>corrección de Windmeijer</strong> (2005) es estándar y hay que usarla: capta la variabilidad adicional que introduce estimar la ponderación <span class="math inline">\(\hat W\)</span> con los residuos del primer paso.</p>
@@ -972,6 +995,9 @@ y_{i1} &amp; &amp; &amp; \\
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-11.html" class="pagination-link" aria-label="Clase 11 · Paneles no lineales">
+        <span class="nav-page-text">Clase 11 · Paneles no lineales</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

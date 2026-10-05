@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-07.html" rel="next">
 <link href="../econometria-3/clase-05.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -206,6 +211,48 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -386,7 +433,7 @@ t_{\hat\phi} = \frac{\hat\phi - 1}{\operatorname{ee}(\hat\phi)}\ \xrightarrow{d}
 </section>
 <section id="errores-serialmente-correlacionados-el-origen-del-test-aumentado" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="errores-serialmente-correlacionados-el-origen-del-test-aumentado"><span class="header-section-number">3.3</span> Errores serialmente correlacionados: el origen del test aumentado</h2>
-<p>Si <span class="math inline">\(\Delta y_t = u_t\)</span> es un proceso estacionario general (no ruido blanco) con <span class="math inline">\(\gamma_u(0) = \mathbb{E}[u_t^2]\)</span> y varianza de largo plazo <span class="math inline">\(\lambda^2 = \sigma_u^2\psi(1)^2 = \sum_h\gamma_u(h)\)</span> (Clase 5), el <strong>principio de invarianza</strong> vale con <span class="math inline">\(\lambda\)</span> en lugar de <span class="math inline">\(\sigma\)</span>: <span class="math inline">\(T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)\)</span> (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: <span class="math inline">\(\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)\)</span>, pero ahora <span class="math display">\[
+<p>Si <span class="math inline">\(\Delta y_t = u_t\)</span> es un proceso estacionario general (no ruido blanco) con <span class="math inline">\(\gamma_u(0) = \mathbb{E}[u_t^2]\)</span> y varianza de largo plazo <span class="math inline">\(\lambda^2 = \sum_h\gamma_u(h) = \sigma^2\psi(1)^2\)</span> (Clase 5; aquí <span class="math inline">\(u_t = \psi(L)\varepsilon_t\)</span> y <span class="math inline">\(\sigma^2\)</span> es la varianza de las innovaciones <span class="math inline">\(\varepsilon_t\)</span>, no la de <span class="math inline">\(u_t\)</span>), el <strong>principio de invarianza</strong> vale con <span class="math inline">\(\lambda\)</span> en lugar de <span class="math inline">\(\sigma\)</span>: <span class="math inline">\(T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)\)</span> (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: <span class="math inline">\(\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)\)</span>, pero ahora <span class="math display">\[
 \frac1T\sum_{t = 1}^Ty_{t-1}u_t\ \xrightarrow{d}\ \frac12\big[\lambda^2W(1)^2 - \gamma_u(0)\big],\qquad
 T(\hat\phi - 1)\ \Rightarrow\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int W^2} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2}.
 \]</span> Aparece un <strong>parámetro de perturbación</strong>, <span class="math inline">\(\lambda^2 - \gamma_u(0) = 2\sum_{h\ge1}\gamma_u(h)\)</span> (la autocorrelación de largo plazo): la distribución ya <strong>no es</strong> la de Dickey–Fuller. Hay dos formas de corregirlo: <strong>paramétrica</strong> (agregar rezagos de <span class="math inline">\(\Delta y_t\)</span> para blanquear los errores: <strong>Dickey–Fuller aumentado</strong>) o <strong>no paramétrica</strong> (estimar <span class="math inline">\(\lambda^2\)</span> y <span class="math inline">\(\gamma_u(0)\)</span> con HAC y restar el término: <strong>Phillips–Perron</strong>). Ambas son el tema de la Clase 7.</p>
@@ -976,6 +1023,9 @@ T(\hat\phi - 1)\ \Rightarrow\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int W^2} + \f
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-07.html" class="pagination-link" aria-label="Clase 7 · Raíces unitarias II">
+        <span class="nav-page-text">Clase 7 · Raíces unitarias II</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

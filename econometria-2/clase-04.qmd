@@ -184,7 +184,7 @@ $$
 $\bar g_n(\theta) = \frac1nZ'(y - X\theta)$, así que el criterio es $\frac1{n^2}(y - X\theta)'Z(Z'Z/n)^{-1}Z'(y - X\theta) = \frac1n(y - X\theta)'P_Z(y - X\theta)$. Minimizar esto en $\theta$ es una regresión MCO de $P_Zy$ sobre $P_ZX$, cuya solución es $(X'P_ZX)^{-1}X'P_Zy$ (usando $P_Z'P_Z = P_Z$).
 :::
 
-¿Es óptimo? La varianza óptima requiere $W\propto\Omega^{-1}$ con $\Omega = \mathbb{E}[u^2zz']$. Si hay **homocedasticidad condicional** ($\mathbb{E}[u^2\mid z] = \sigma^2$), entonces $\Omega = \sigma^2\mathbb{E}[zz']$ y $\Omega^{-1}\propto\mathbb{E}[zz']^{-1}$: **MC2E es GMM eficiente**. Pero con heterocedasticidad, $W^*\ne(Z'Z/n)^{-1}$ y GMM de dos pasos (con $\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'$) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J **es** el test de Sargan robusto (el Sargan clásico es el J bajo homocedasticidad).
+¿Es óptimo? La varianza óptima requiere $W\propto\Omega^{-1}$ con $\Omega = \mathbb{E}[u^2zz']$. Si hay **homocedasticidad condicional** ($\mathbb{E}[u^2\mid z] = \sigma^2$), entonces $\Omega = \sigma^2\mathbb{E}[zz']$ y $\Omega^{-1}\propto\mathbb{E}[zz']^{-1}$: **MC2E es GMM eficiente**. Pero con heterocedasticidad, $W^*\ne(Z'Z/n)^{-1}$ y GMM de dos pasos (con $\hat\Omega = \frac1n\sum\hat u_i^2z_iz_i'$) es estrictamente más eficiente que MC2E. En ese caso, además, el estadístico J de Hansen es la versión robusta del test de sobreidentificación de Sargan (el Sargan clásico es el J calculado con $\hat\Omega = \hat\sigma^2Z'Z/n$, válido solo bajo homocedasticidad).
 
 # ★ Postgrado: ¿por qué no importa el primer paso?
 
@@ -192,7 +192,7 @@ $\bar g_n(\theta) = \frac1nZ'(y - X\theta)$, así que el criterio es $\frac1{n^2
 El @thm-gmm-normal muestra que la distribución asintótica de $\hat\theta$ depende de $\hat W$ **solo a través de su límite** $W$. Esto implica que el primer paso (que fija $\hat\Omega$) no afecta la distribución asintótica del segundo, pero no dice nada sobre el *tamaño de la muestra* necesaria para que eso sea una buena aproximación.
 :::
 
-La razón es un hecho general: $\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|$, y $\|\hat W - W\| = o_p(1)$. Entonces la diferencia entre los dos estimadores es $o_p(n^{-1/2})$ y desaparece al escalar por $\sqrt n$. Pero a segundo orden, la variabilidad de $\hat\Omega$ aparece. En términos de la expansión de Nagar (el equivalente de la aproximación de segundo orden), el sesgo de GMM de dos pasos crece con el cociente $(r - p)/n$. La teoría de muestras finitas de GMM es el origen del interés por *instrumentos débiles* y por *muchos instrumentos*, que cubrimos parcialmente en la Clase 10 de Econometría 1.
+La razón es un hecho general: $\hat\theta(\hat W) - \hat\theta(W) = O_p(n^{-1/2})\cdot\|\hat W - W\|$, y $\|\hat W - W\| = o_p(1)$. Entonces la diferencia entre los dos estimadores es $o_p(n^{-1/2})$ y desaparece al escalar por $\sqrt n$. Pero a segundo orden, la variabilidad de $\hat\Omega$ aparece. Las expansiones de segundo orden (Nagar para MC2E; Newey y Smith, 2004, para GMM) muestran que el sesgo de GMM de dos pasos crece con el número de momentos $r$ en relación con $n$, y que una parte de ese sesgo viene precisamente de estimar $\Omega$ con los mismos datos. La teoría de muestras finitas de GMM es el origen del interés por *instrumentos débiles* y por *muchos instrumentos*, que cubrimos parcialmente en la Clase 10 de Econometría 1.
 
 # Resumen
 

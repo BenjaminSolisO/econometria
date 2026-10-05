@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-04.html" rel="next">
 <link href="../econometria-3/clase-02.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -188,6 +193,66 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -289,7 +354,7 @@ window.Quarto = {
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\tilde y_{n+1} = \sum_{k = 1}^p\phi_ky_{n + 1 - k}\)</span>. El error es <span class="math inline">\(y_{n+1} - \tilde y_{n+1} = \varepsilon_{n+1}\)</span>, que por causalidad es <strong>no correlacionado</strong> con <span class="math inline">\(y_s\)</span> para todo <span class="math inline">\(s\le n\)</span>, o sea con el pasado entero. Cumple las condiciones de ortogonalidad del <a href="#thm-blp" class="quarto-xref">Teorema&nbsp;1</a>, y como la solución a las ecuaciones normales es única, es el BLP. Sus coeficientes son <span class="math inline">\((\phi_1,\dots,\phi_p,0,\dots,0)\)</span>, de modo que <span class="math inline">\(\phi_{n,n} = 0\)</span> para <span class="math inline">\(n&gt;p\)</span>, y <span class="math inline">\(\phi_{p,p} = \phi_p\)</span>. El ECM es <span class="math inline">\(\mathbb{E}[\varepsilon_{n+1}^2] = \sigma^2\)</span>.</p>
 </div>
-<p>Observa que <strong>el pronóstico a un paso de un AR(<span class="math inline">\(p\)</span>) es exacto con <span class="math inline">\(p\)</span> rezagos</strong>: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los <span class="math inline">\(\varepsilon\)</span> pasados se “recuperan” mediante invertibilidad y esa recuperación mejora con más datos).</p>
+<p>Observa que <strong>el pronóstico a un paso de un AR(<span class="math inline">\(p\)</span>) ya es óptimo con <span class="math inline">\(p\)</span> rezagos</strong>: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los <span class="math inline">\(\varepsilon\)</span> pasados se “recuperan” mediante invertibilidad y esa recuperación mejora con más datos).</p>
 </section>
 </section>
 <section id="las-innovaciones-y-el-pronóstico-con-pasado-infinito" class="level1" data-number="3">
@@ -930,6 +995,9 @@ y_t = \sum_{j = 0}^{n - 1}\psi_j\varepsilon_{t-j} + P_{H_{t-n}}y_t,\qquad\psi_j 
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-04.html" class="pagination-link" aria-label="Clase 4 · Estimación e inferencia en modelos ARMA">
+        <span class="nav-page-text">Clase 4 · Estimación e inferencia en modelos ARMA</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-13.html" rel="next">
 <link href="../econometria-3/clase-11.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -242,6 +247,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -506,7 +517,7 @@ B = \mathbb{E}\big[s_ts_t'\big] = \tfrac14\mathbb{E}\big[(z_t^2 - 1)^2\big]J_* =
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\bar\sigma^2 = 0{,}05/0{,}05 = 1\)</span>. Persistencia <span class="math inline">\(\alpha + \beta = 0{,}95\)</span>. Vida media: <span class="math inline">\(\log0{,}5/\log0{,}95 = 13{,}5\)</span> días. <span class="math inline">\(\mathbb{E}[\sigma^2_{T + h}] = 1 + 0{,}95^{h-1}\cdot0{,}8\)</span>: <span class="math inline">\(h = 1\)</span>: <span class="math inline">\(1{,}8\)</span>; <span class="math inline">\(h = 2\)</span>: <span class="math inline">\(1{,}76\)</span>; <span class="math inline">\(h = 5\)</span>: <span class="math inline">\(1 + 0{,}8145\cdot0{,}8 = 1{,}652\)</span>; <span class="math inline">\(h = 20\)</span>: <span class="math inline">\(1 + 0{,}3774\cdot0{,}8 = 1{,}302\)</span>. Acumulada a 5 días: <span class="math inline">\(1{,}8 + 1{,}76 + 1{,}722 + 1{,}686 + 1{,}652 = 8{,}82\)</span> (desviación estándar <span class="math inline">\(2{,}97\)</span>), frente a <span class="math inline">\(5\bar\sigma^2 = 5\)</span> (<span class="math inline">\(2{,}24\)</span>) si se usara la varianza incondicional: <strong>ignorar el estado actual de la volatilidad subestima la varianza a 5 días en 43 % (<span class="math inline">\(1 - 5/8{,}82\)</span>) y la desviación estándar en 25 %</strong> tras un shock.</p>
+<p><span class="math inline">\(\bar\sigma^2 = 0{,}05/0{,}05 = 1\)</span>. Persistencia <span class="math inline">\(\alpha + \beta = 0{,}95\)</span>. Vida media: <span class="math inline">\(\log0{,}5/\log0{,}95 = 13{,}5\)</span> días. <span class="math inline">\(\mathbb{E}[\sigma^2_{T + h}] = 1 + 0{,}95^{h-1}\cdot0{,}8\)</span>: <span class="math inline">\(h = 1\)</span>: <span class="math inline">\(1{,}8\)</span>; <span class="math inline">\(h = 2\)</span>: <span class="math inline">\(1{,}76\)</span>; <span class="math inline">\(h = 5\)</span>: <span class="math inline">\(1 + 0{,}8145\cdot0{,}8 = 1{,}652\)</span>; <span class="math inline">\(h = 20\)</span>: <span class="math inline">\(1 + 0{,}3774\cdot0{,}8 = 1{,}302\)</span>. Acumulada a 5 días: <span class="math inline">\(1{,}8 + 1{,}76 + 1{,}722 + 1{,}686 + 1{,}652 = 8{,}62\)</span> (desviación estándar <span class="math inline">\(2{,}94\)</span>), frente a <span class="math inline">\(5\bar\sigma^2 = 5\)</span> (<span class="math inline">\(2{,}24\)</span>) si se usara la varianza incondicional: <strong>ignorar el estado actual de la volatilidad subestima la varianza a 5 días en 42 % (<span class="math inline">\(1 - 5/8{,}62\)</span>) y la desviación estándar en 24 %</strong> tras un shock.</p>
 </div>
 </div>
 </div>
@@ -540,7 +551,7 @@ B = \mathbb{E}\big[s_ts_t'\big] = \tfrac14\mathbb{E}\big[(z_t^2 - 1)^2\big]J_* =
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(LM = T R^2 = 1000\cdot0{,}02 = 20{,}0&gt;11{,}07\)</span>: <strong>se rechaza</strong> la hipótesis de ausencia de ARCH. Aunque el <span class="math inline">\(R^2\)</span> sea solo <span class="math inline">\(0{,}02\)</span> (2 %;la volatilidad pasada explica poco de la variabilidad de <span class="math inline">\(\varepsilon_t^2\)</span>, que es muy ruidosa), con <span class="math inline">\(T = 1000\)</span> la evidencia es clara. Hay efectos ARCH: la media de cada residuo cuadrático depende del pasado.</p>
+<p><span class="math inline">\(LM = T R^2 = 1000\cdot0{,}02 = 20{,}0&gt;11{,}07\)</span>: <strong>se rechaza</strong> la hipótesis de ausencia de ARCH. Aunque el <span class="math inline">\(R^2\)</span> sea solo <span class="math inline">\(0{,}02\)</span> (2 %: la volatilidad pasada explica poco de la variabilidad de <span class="math inline">\(\varepsilon_t^2\)</span>, que es muy ruidosa), con <span class="math inline">\(T = 1000\)</span> la evidencia es clara. Hay efectos ARCH: la media de cada residuo cuadrático depende del pasado.</p>
 </div>
 </div>
 </div>
@@ -1012,6 +1023,9 @@ B = \mathbb{E}\big[s_ts_t'\big] = \tfrac14\mathbb{E}\big[(z_t^2 - 1)^2\big]J_* =
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-13.html" class="pagination-link" aria-label="Clase 13 · Espacio de estados y filtro de Kalman">
+        <span class="nav-page-text">Clase 13 · Espacio de estados y filtro de Kalman</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

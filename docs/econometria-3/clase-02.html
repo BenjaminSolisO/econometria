@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-03.html" rel="next">
 <link href="../econometria-3/clase-01.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -182,6 +187,72 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-02.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 2 · Procesos lineales: MA, AR y ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Pronóstico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Estimación e inferencia en modelos ARMA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -548,7 +619,7 @@ g(z) = \sigma^2\sum_{j,k}\psi_j\psi_kz^{k - j} = \sigma^2\psi(z)\psi(z^{-1}),\qq
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(\lambda^2 - 1{,}2\lambda + 0{,}5 = 0\)</span> da <span class="math inline">\(\lambda = 0{,}6\pm0{,}4i\)</span> (raíces complejas conjugadas). <span class="math inline">\(|\lambda| = \sqrt{0{,}36 + 0{,}16} = 0{,}721&lt;1\)</span>: estacionario (en general, para raíces complejas <span class="math inline">\(|\lambda|^2 = -\phi_2&lt;1\)</span>). El argumento es <span class="math inline">\(\arctan(0{,}4/0{,}6) = 0{,}588\)</span> rad, y el período del ciclo estocástico es <span class="math inline">\(2\pi/0{,}588\approx10{,}7\)</span> períodos. La ACF oscila amortiguada con ese período. Las condiciones generales de estacionariedad del AR(2) (el “triángulo”) son <span class="math inline">\(\phi_1 + \phi_2&lt;1\)</span>, <span class="math inline">\(\phi_2 - \phi_1&lt;1\)</span> y <span class="math inline">\(|\phi_2|&lt;1\)</span>; aquí <span class="math inline">\(0{,}7&lt;1\)</span>, <span class="math inline">\(-1{,}7&lt;1\)</span> y <span class="math inline">\(0{,}5&lt;1\)</span> se cumplen.</p>
+<p><span class="math inline">\(\lambda^2 - 1{,}2\lambda + 0{,}5 = 0\)</span> da <span class="math inline">\(\lambda = 0{,}6\pm\tfrac12\sqrt{1{,}44 - 2}\,i = 0{,}6\pm0{,}374i\)</span> (raíces complejas conjugadas). <span class="math inline">\(|\lambda| = \sqrt{0{,}36 + 0{,}14} = \sqrt{0{,}5} = 0{,}707&lt;1\)</span>: estacionario (en general, para raíces complejas <span class="math inline">\(|\lambda|^2 = -\phi_2&lt;1\)</span>). El argumento es <span class="math inline">\(\arctan(0{,}374/0{,}6) = 0{,}558\)</span> rad, y el período del ciclo estocástico es <span class="math inline">\(2\pi/0{,}558\approx11{,}3\)</span> períodos. La ACF oscila amortiguada con ese período. Las condiciones generales de estacionariedad del AR(2) (el “triángulo”) son <span class="math inline">\(\phi_1 + \phi_2&lt;1\)</span>, <span class="math inline">\(\phi_2 - \phi_1&lt;1\)</span> y <span class="math inline">\(|\phi_2|&lt;1\)</span>; aquí <span class="math inline">\(0{,}7&lt;1\)</span>, <span class="math inline">\(-1{,}7&lt;1\)</span> y <span class="math inline">\(0{,}5&lt;1\)</span> se cumplen.</p>
 </div>
 </div>
 </div>
@@ -1003,6 +1074,9 @@ g(z) = \sigma^2\sum_{j,k}\psi_j\psi_kz^{k - j} = \sigma^2\psi(z)\psi(z^{-1}),\qq
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-03.html" class="pagination-link" aria-label="Clase 3 · Pronóstico">
+        <span class="nav-page-text">Clase 3 · Pronóstico</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

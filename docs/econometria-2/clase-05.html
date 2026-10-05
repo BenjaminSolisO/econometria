@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-06.html" rel="next">
 <link href="../econometria-2/clase-04.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -200,6 +205,54 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
   </div>
 </li>
     </ul>
@@ -310,7 +363,7 @@ P(y = 1\mid x) = P(\varepsilon&gt;-x'\beta\mid x) = 1 - F(-x'\beta) = F(x'\beta)
 </tbody>
 </table>
 <p>Ambas son curvas en S: crecientes, simétricas, con límites 0 y 1. Se parecen tanto que en la práctica es difícil distinguirlas con datos; la logística tiene colas algo más gordas.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;“Probit” viene de <em>probability unit</em>, acuñado por Chester Bliss (1934) para analizar la mortalidad de insectos expuestos a pesticidas en distintas dosis. Dudamos que los insectos hayan sido consultados. “Logit” lo acuñó Joseph Berkson (1944) por analogía; Berkson defendió toda su vida que el logit era mejor que el probit, y la profesión se dividió durante años en dos bandos con la intensidad de los hinchas de fútbol, hasta que ambos descubrieron que daban casi lo mismo.</p></div></div><section id="la-escala-no-está-identificada" class="level2" data-number="2.1">
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;“Probit” viene de <em>probability unit</em>, acuñado por Chester Bliss (1934) para analizar la mortalidad de insectos expuestos a pesticidas en distintas dosis. Dudamos que los insectos hayan sido consultados. “Logit” lo acuñó Joseph Berkson (1944) por analogía. Berkson defendió el logit frente al probit durante décadas, aunque en la práctica los dos dan casi lo mismo.</p></div></div><section id="la-escala-no-está-identificada" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="la-escala-no-está-identificada"><span class="header-section-number">2.1</span> La escala no está identificada</h2>
 <p>Hay una sutileza que no existe en MCO. Si <span class="math inline">\(\varepsilon\sim N(0,\sigma^2)\)</span> en lugar de <span class="math inline">\(N(0,1)\)</span>, entonces <span class="math inline">\(P(y = 1\mid x) = P(\varepsilon/\sigma&gt;-x'\beta/\sigma) = \Phi(x'\beta/\sigma)\)</span>. Los datos solo dependen de <span class="math inline">\(\beta/\sigma\)</span>.</p>
 <div id="prp-escala" class="theorem proposition">
@@ -445,7 +498,7 @@ a'\nabla^2\ell_n(\beta)a = -\sum_i\Lambda_i(1 - \Lambda_i)(x_i'a)^2&lt;0
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\ell_n(\beta) = \sum_i\big[y_i\log F(x_i'\beta) + (1 - y_i)\log(1 - F(x_i'\beta))\big]\)</span> es una suma de funciones de la forma <span class="math inline">\(\psi_i(x_i'\beta)\)</span>, con <span class="math inline">\(\psi_i = \log F\)</span> o <span class="math inline">\(\log(1-F)\)</span> según <span class="math inline">\(y_i\)</span>. La composición de una función cóncava con una función lineal (afín) es cóncava, y una suma de cóncavas es cóncava. Si cada <span class="math inline">\(\psi_i\)</span> es estrictamente cóncava y <span class="math inline">\(Xa\ne0\)</span> para <span class="math inline">\(a\ne0\)</span>, la suma lo es estrictamente.</p>
 </div>
-<p>Para el probit: <span class="math inline">\(\log\Phi\)</span> es cóncava, pues <span class="math inline">\((\log\Phi)'' = \lambda'(\eta)\)</span> con <span class="math inline">\(\lambda = \phi/\Phi\)</span> la razón inversa de Mills, que cumple <span class="math inline">\(\lambda'(\eta) = -\lambda(\eta)\big(\eta + \lambda(\eta)\big)&lt;0\)</span> (se sigue de <span class="math inline">\(\Phi(\eta)&gt;-\phi(\eta)/\eta\)</span> para <span class="math inline">\(\eta&lt;0\)</span>, la desigualdad de Mills). Como <span class="math inline">\(1 - \Phi(\eta) = \Phi(-\eta)\)</span>, <span class="math inline">\(\log(1 - \Phi)\)</span> también es cóncava. En el logit, <span class="math inline">\((\log\Lambda)'' = -\Lambda(1-\Lambda)&lt;0\)</span> y <span class="math inline">\((\log(1 - \Lambda))'' = -\Lambda(1-\Lambda)&lt;0\)</span>, lo que reproduce el <a href="#thm-concavidad-logit" class="quarto-xref">Teorema&nbsp;1</a>.</p>
+<p>Para el probit: <span class="math inline">\(\log\Phi\)</span> es cóncava, pues <span class="math inline">\((\log\Phi)'' = \lambda'(\eta)\)</span> con <span class="math inline">\(\lambda = \phi/\Phi\)</span> la razón inversa de Mills, que cumple <span class="math inline">\(\lambda'(\eta) = -\lambda(\eta)\big(\eta + \lambda(\eta)\big)&lt;0\)</span> (se sigue de <span class="math inline">\(\Phi(\eta)&lt;-\phi(\eta)/\eta\)</span> para <span class="math inline">\(\eta&lt;0\)</span>, la desigualdad de Mills; Ejercicio 5.7). Como <span class="math inline">\(1 - \Phi(\eta) = \Phi(-\eta)\)</span>, <span class="math inline">\(\log(1 - \Phi)\)</span> también es cóncava. En el logit, <span class="math inline">\((\log\Lambda)'' = -\Lambda(1-\Lambda)&lt;0\)</span> y <span class="math inline">\((\log(1 - \Lambda))'' = -\Lambda(1-\Lambda)&lt;0\)</span>, lo que reproduce el <a href="#thm-concavidad-logit" class="quarto-xref">Teorema&nbsp;1</a>.</p>
 </section>
 <section id="resumen" class="level1" data-number="9">
 <h1 data-number="9"><span class="header-section-number">9</span> Resumen</h1>
@@ -997,6 +1050,9 @@ a'\nabla^2\ell_n(\beta)a = -\sum_i\Lambda_i(1 - \Lambda_i)(x_i'a)^2&lt;0
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-06.html" class="pagination-link" aria-label="Clase 6 · Elección discreta II">
+        <span class="nav-page-text">Clase 6 · Elección discreta II</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

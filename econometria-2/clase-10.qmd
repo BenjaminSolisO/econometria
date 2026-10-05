@@ -118,7 +118,7 @@ Dos tests acompañan siempre a Arellano–Bond:
 
 El método tiene dos fragilidades conocidas.
 
-**(1) Persistencia alta.** Cuando $\rho$ se acerca a 1, los niveles rezagados son **instrumentos débiles** para las diferencias. En el modelo AR(1), $\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}$ (de @eq-dinamico), y la regresión de primera etapa de $\Delta y_{i,t-1}$ sobre $y_{i,t-2}$ (limpiada de $c_i$) tiene coeficiente $\rho - 1\to0$. Si $\rho = 1$ (caminata aleatoria), $\Delta y_{i,t-1} = u_{i,t-1}$ es **independiente** de todos los niveles rezagados: el instrumento es **irrelevante** (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.
+**(1) Persistencia alta.** Cuando $\rho$ se acerca a 1, los niveles rezagados son **instrumentos débiles** para las diferencias. En el modelo AR(1), $\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}$ (de @eq-dinamico), y la regresión de primera etapa de $\Delta y_{i,t-1}$ sobre $y_{i,t-2}$ (limpiada de $c_i$) tiene coeficiente $\rho - 1\to0$. Si $\rho = 1$ y no hay efecto individual (caminata aleatoria pura), $\Delta y_{i,t-1} = u_{i,t-1}$ es **independiente** de todos los niveles rezagados: el instrumento es **irrelevante** (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.
 
 **(2) Demasiados instrumentos.** Con $T$ grande el número de momentos crece como $T^2$, y con $N$ moderado el GMM de dos pasos sobreajusta y el test $J$ **pierde potencia** (da $p$-valores cercanos a 1 que no significan nada). La práctica recomendada: limitar los rezagos usados o "colapsar" la matriz $Z_i$ (una columna por rezago, no una por cada par $(t,s)$).
 

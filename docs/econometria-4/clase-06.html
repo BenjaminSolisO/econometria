@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-07.html" rel="next">
 <link href="../econometria-4/clase-05.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -212,6 +213,30 @@ window.Quarto = {
  <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -291,13 +316,13 @@ window.Quarto = {
 </section>
 <section id="estimación-regresión-local-lineal-en-cada-lado" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Estimación: regresión local lineal en cada lado</h1>
-<p>El problema de estimación es el de la Clase 5: estimar el valor de una función en un <strong>punto de frontera</strong> (el umbral es el borde del soporte de cada lado). Por lo visto, <strong>Nadaraya–Watson</strong> tiene sesgo de orden <span class="math inline">\(h\)</span> en la frontera, de modo que se usa <strong>regresión local lineal</strong> (sesgo <span class="math inline">\(O(h^2)\)</span>): se ajusta una recta ponderada con kernel <strong>a cada lado</strong> y se toma la diferencia de los interceptos en <span class="math inline">\(c\)</span>.</p>
+<p>El problema de estimación es el de la Clase 5: estimar el valor de una función en un <strong>punto de frontera</strong> (el umbral es el borde del soporte de cada lado). Como vimos allí, <strong>Nadaraya–Watson</strong> tiene sesgo de orden <span class="math inline">\(h\)</span> en la frontera, de modo que se usa <strong>regresión local lineal</strong> (sesgo <span class="math inline">\(O(h^2)\)</span>): se ajusta una recta ponderada con kernel <strong>a cada lado</strong> y se toma la diferencia de los interceptos en <span class="math inline">\(c\)</span>.</p>
 <div id="def-rd-est" class="theorem definition">
 <p><span class="theorem-title"><strong>Definición 1 (Estimador RD local lineal)</strong></span> Con kernel <span class="math inline">\(K\)</span> y ancho de banda <span class="math inline">\(h\)</span>, <span class="math display">\[
 \hat\tau = \hat a_+ - \hat a_-,\qquad(\hat a_\pm,\hat b_\pm) = \arg\min_{a,b}\sum_{i:\,\pm(X_i - c)\ge0}\big(Y_i - a - b(X_i - c)\big)^2K\Big(\frac{X_i - c}h\Big).
 \]</span></p>
 </div>
-<p>Es una regresión ponderada con <strong>pendientes distintas a cada lado</strong>. Equivale a regresar <span class="math inline">\(Y_i\)</span> sobre <span class="math inline">\(D_i\)</span>, <span class="math inline">\((X_i - c)\)</span> y <span class="math inline">\(D_i(X_i - c)\)</span>, con pesos <span class="math inline">\(K((X_i - c)/h)\)</span>, usando solo las observaciones con <span class="math inline">\(|X_i - c|\le h\)</span>: el coeficiente de <span class="math inline">\(D_i\)</span> es <span class="math inline">\(\hat\tau\)</span>. El bias y la varianza son los de la regresión local lineal en la frontera.</p>
+<p>Es una regresión ponderada con <strong>pendientes distintas a cada lado</strong>. Equivale a regresar <span class="math inline">\(Y_i\)</span> sobre <span class="math inline">\(D_i\)</span>, <span class="math inline">\((X_i - c)\)</span> y <span class="math inline">\(D_i(X_i - c)\)</span>, con pesos <span class="math inline">\(K((X_i - c)/h)\)</span>, usando solo las observaciones con <span class="math inline">\(|X_i - c|\le h\)</span>: el coeficiente de <span class="math inline">\(D_i\)</span> es <span class="math inline">\(\hat\tau\)</span>. El sesgo y la varianza son los de la regresión local lineal en la frontera.</p>
 <div id="prp-rd-asint" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposición 1 (Sesgo y varianza de <span class="math inline">\(\hat\tau\)</span>)</strong></span> Sea <span class="math inline">\(\tilde\kappa_j = \int_0^\infty u^jK(u)\,du\)</span> y <span class="math inline">\(\tilde\rho_j = \int_0^\infty u^jK(u)^2\,du\)</span>. Bajo continuidad y suavidad de <span class="math inline">\(m_\pm\)</span>, con <span class="math inline">\(h\to0\)</span> y <span class="math inline">\(nh\to\infty\)</span>, <span class="math display">\[
 \mathbb{E}\hat\tau - \tau\approx\tfrac12h^2C_K\big(m_+''(c) - m_-''(c)\big),\qquad C_K = \frac{\tilde\kappa_2^2 - \tilde\kappa_1\tilde\kappa_3}{\tilde\kappa_0\tilde\kappa_2 - \tilde\kappa_1^2},\qquad\operatorname{Var}(\hat\tau)\approx\frac{V_K}{nhf(c)}\big(\sigma_+^2(c) + \sigma_-^2(c)\big),
@@ -480,7 +505,7 @@ window.Quarto = {
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Las estimaciones <strong>caen</strong> al aumentar <span class="math inline">\(h\)</span> (<span class="math inline">\(2{,}4\to2{,}1\to1{,}2\)</span>) mientras los errores estándar caen (más datos): con anchos grandes entra más observaciones <strong>lejanas</strong>, y si la función tiene curvatura el <strong>sesgo</strong> aumenta. Los dos anchos pequeños dan resultados similares (<span class="math inline">\(2{,}4\)</span> y <span class="math inline">\(2{,}1\)</span>) pero el tercero se aparta bastante: el sesgo domina a <span class="math inline">\(h = 2\)</span>. Se elegiría el ancho <strong>MSE-óptimo</strong> (cercano a <span class="math inline">\(h = 0{,}5\)</span> a <span class="math inline">\(1\)</span>) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para <span class="math inline">\(h = 1\)</span> sería algo mayor que <span class="math inline">\(2{,}1\pm1{,}96(0{,}6)\)</span>.</p>
+<p>Las estimaciones <strong>caen</strong> al aumentar <span class="math inline">\(h\)</span> (<span class="math inline">\(2{,}4\to2{,}1\to1{,}2\)</span>) mientras los errores estándar caen (más datos): con anchos grandes entran más observaciones <strong>lejanas</strong>, y si la función tiene curvatura el <strong>sesgo</strong> aumenta. Los dos anchos pequeños dan resultados similares (<span class="math inline">\(2{,}4\)</span> y <span class="math inline">\(2{,}1\)</span>) pero el tercero se aparta bastante: el sesgo domina a <span class="math inline">\(h = 2\)</span>. Se elegiría el ancho <strong>MSE-óptimo</strong> (cercano a <span class="math inline">\(h = 0{,}5\)</span> a <span class="math inline">\(1\)</span>) con corrección de sesgo, y se reportaría esa sensibilidad. El intervalo robusto para <span class="math inline">\(h = 1\)</span> sería algo mayor que <span class="math inline">\(2{,}1\pm1{,}96(0{,}6)\)</span>.</p>
 </div>
 </div>
 </div>
@@ -919,6 +944,9 @@ window.Quarto = {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-07.html" class="pagination-link" aria-label="Clase 7 · Alta dimensión: LASSO">
+        <span class="nav-page-text">Clase 7 · Alta dimensión: LASSO</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

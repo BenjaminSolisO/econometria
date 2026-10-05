@@ -114,7 +114,7 @@ El **test de Dickey–Fuller** es entonces: estimar $\Delta y_t = \gamma y_{t-1}
 
 ## Errores serialmente correlacionados: el origen del test aumentado
 
-Si $\Delta y_t = u_t$ es un proceso estacionario general (no ruido blanco) con $\gamma_u(0) = \mathbb{E}[u_t^2]$ y varianza de largo plazo $\lambda^2 = \sigma_u^2\psi(1)^2 = \sum_h\gamma_u(h)$ (Clase 5), el **principio de invarianza** vale con $\lambda$ en lugar de $\sigma$: $T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)$ (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: $\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)$, pero ahora
+Si $\Delta y_t = u_t$ es un proceso estacionario general (no ruido blanco) con $\gamma_u(0) = \mathbb{E}[u_t^2]$ y varianza de largo plazo $\lambda^2 = \sum_h\gamma_u(h) = \sigma^2\psi(1)^2$ (Clase 5; aquí $u_t = \psi(L)\varepsilon_t$ y $\sigma^2$ es la varianza de las innovaciones $\varepsilon_t$, no la de $u_t$), el **principio de invarianza** vale con $\lambda$ en lugar de $\sigma$: $T^{-1/2}y_{\lfloor Tr\rfloor}\Rightarrow\lambda W(r)$ (por Beveridge–Nelson, Clase 5). La identidad del numerador sigue valiendo: $\sum y_{t-1}u_t = \frac12(y_T^2 - \sum u_t^2)$, pero ahora
 $$
 \frac1T\sum_{t = 1}^Ty_{t-1}u_t\ \xrightarrow{d}\ \frac12\big[\lambda^2W(1)^2 - \gamma_u(0)\big],\qquad
 T(\hat\phi - 1)\ \Rightarrow\ \frac{\tfrac12\big[W(1)^2 - 1\big]}{\int W^2} + \frac{\lambda^2 - \gamma_u(0)}{2\lambda^2\int W^2}.

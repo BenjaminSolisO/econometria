@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-3/clase-06.html" rel="next">
 <link href="../econometria-3/clase-04.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -143,6 +144,10 @@ window.Quarto = {
     <a class="nav-link active" href="../econometria-3/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -200,6 +205,54 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../econometria-3/clase-05.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Clase 5 · Asintótica con dependencia y errores HAC</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Raíces unitarias I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Raíces unitarias II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Cointegración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Vectores autorregresivos (VAR)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Impulso-respuesta e identificación estructural</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · VECM y el método de Johansen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Volatilidad condicional: ARCH y GARCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-3/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Espacio de estados y filtro de Kalman</span></a>
   </div>
 </li>
     </ul>
@@ -368,7 +421,7 @@ y_t = \psi(1)\varepsilon_t + \eta_{t-1} - \eta_t,\qquad\eta_t = \sum_{j\ge0}\til
 </div>
 <p>La <strong>varianza</strong> de <span class="math inline">\(\hat\sigma^2_{HAC}\)</span> crece con <span class="math inline">\(m\)</span>: bajo condiciones de cuarto orden (que se toman prestadas; Andrews, 1991), <span class="math inline">\(\operatorname{Var}(\hat\sigma^2_{HAC})\approx\frac43\frac mT\sigma^4_{LR}\)</span> para el kernel de Bartlett. Entonces <strong>el sesgo cae como <span class="math inline">\(1/m\)</span> y la varianza crece como <span class="math inline">\(m/T\)</span></strong>. El ECM, <span class="math inline">\(\text{sesgo}^2 + \text{varianza}\sim c_1/m^2 + c_2m/T\)</span>, se minimiza en <span class="math display">\[
 m^*\propto T^{1/3}.
-\]</span> Con esa tasa, <span class="math inline">\(\hat\sigma^2_{HAC}\to\sigma^2_{LR}\)</span> en probabilidad, a velocidad <span class="math inline">\(T^{-1/3}\)</span> (más lenta que la <span class="math inline">\(T^{-1/2}\)</span> habitual: es un problema <strong>no paramétrico</strong>, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es <span class="math inline">\(m = \lfloor4(T/100)^{2/9}\rfloor\)</span>: da <span class="math inline">\(m = 4\)</span> para <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(5\)</span> para <span class="math inline">\(T = 500\)</span> y <span class="math inline">\(6\)</span> para <span class="math inline">\(T = 1000\)</span>. (La potencia <span class="math inline">\(2/9\)</span> y no <span class="math inline">\(1/3\)</span> viene de un método basado en los datos para estimar las constantes <span class="math inline">\(c_1,c_2\)</span>.)</p>
+\]</span> Con esa tasa, <span class="math inline">\(\hat\sigma^2_{HAC}\to\sigma^2_{LR}\)</span> en probabilidad, a velocidad <span class="math inline">\(T^{-1/3}\)</span> (más lenta que la <span class="math inline">\(T^{-1/2}\)</span> habitual: es un problema <strong>no paramétrico</strong>, como una estimación de densidad). Una regla práctica (Newey y West, 1994) es <span class="math inline">\(m = \lfloor4(T/100)^{2/9}\rfloor\)</span>: da <span class="math inline">\(m = 4\)</span> para <span class="math inline">\(T = 100\)</span>, <span class="math inline">\(5\)</span> para <span class="math inline">\(T = 500\)</span> y <span class="math inline">\(6\)</span> para <span class="math inline">\(T = 1000\)</span>. (La potencia <span class="math inline">\(2/9\)</span> viene del paso <em>piloto</em> del método automático de Newey y West: ese es el número de rezagos que usan para estimar las constantes <span class="math inline">\(c_1,c_2\)</span>, y el ancho de banda final que proponen es proporcional a <span class="math inline">\(T^{1/3}\)</span>. Usada como regla fija, es una aproximación razonable para persistencia moderada.)</p>
 </section>
 <section id="alternativas" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="alternativas"><span class="header-section-number">4.3</span> Alternativas</h2>
@@ -388,7 +441,7 @@ m^*\propto T^{1/3}.
 \widehat{\operatorname{Avar}}(\hat\beta) = \frac1T\hat Q^{-1}\hat\Omega_{HAC}\hat Q^{-1}.
 \]</span> Es la fórmula de White (Clase 7 de Econometría 1) con autocovarianzas. Cuando <span class="math inline">\(\hat\Omega\)</span> solo incluye el término <span class="math inline">\(h = 0\)</span> (<span class="math inline">\(m = 0\)</span>) se recupera exactamente White.</p>
 <div id="exm-sobrerrechazo" class="theorem example">
-<p><span class="theorem-title"><strong>Ejemplo 2 (El costo de ignorar la dependencia)</strong></span> Sea <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(x_t\)</span> y <span class="math inline">\(u_t\)</span> <strong>independientes</strong>, ambos AR(1) con coeficientes <span class="math inline">\(\rho_x = \rho_u = 0{,}8\)</span> (y <span class="math inline">\(\beta = 0\)</span>). Entonces <span class="math inline">\(\xi_t = x_tu_t\)</span> tiene autocovarianza <span class="math inline">\(\gamma_\xi(h) = \gamma_x(h)\gamma_u(h) = \sigma_x^2\sigma_u^2(\rho_x\rho_u)^{|h|}\)</span>, y su varianza de largo plazo es <span class="math inline">\(\sigma_x^2\sigma_u^2\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}\)</span>. Como <span class="math inline">\(Q = \sigma_x^2\)</span>, la varianza asintótica real de <span class="math inline">\(\hat\beta\)</span> es <span class="math inline">\(\dfrac{\sigma_u^2}{\sigma_x^2}\cdot\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}\)</span>, mientras que la fórmula de MCO “clásica” da <span class="math inline">\(\sigma_u^2/(T\sigma_x^2)\)</span> (ignorando la dependencia). Con <span class="math inline">\(\rho_x\rho_u = 0{,}64\)</span> el factor es <span class="math inline">\(1{,}64/0{,}36 = 4{,}56\)</span>: <strong>los errores estándar clásicos son <span class="math inline">\(\sqrt{4{,}56} = 2{,}13\)</span> veces demasiado chicos</strong>. Un test al 5 % con <span class="math inline">\(t = \hat\beta/\text{ee}_{clásico}\)</span> rechaza <span class="math inline">\(H_0:\beta = 0\)</span> con probabilidad <span class="math inline">\(2(1 - \Phi(1{,}96/2{,}13)) = 36\)</span> % <strong>aunque <span class="math inline">\(x\)</span> y <span class="math inline">\(y\)</span> no tengan relación alguna</strong>. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.</p>
+<p><span class="theorem-title"><strong>Ejemplo 2 (El costo de ignorar la dependencia)</strong></span> Sea <span class="math inline">\(y_t = \beta x_t + u_t\)</span> con <span class="math inline">\(x_t\)</span> y <span class="math inline">\(u_t\)</span> <strong>independientes</strong>, ambos AR(1) con coeficientes <span class="math inline">\(\rho_x = \rho_u = 0{,}8\)</span> (y <span class="math inline">\(\beta = 0\)</span>). Entonces <span class="math inline">\(\xi_t = x_tu_t\)</span> tiene autocovarianza <span class="math inline">\(\gamma_\xi(h) = \gamma_x(h)\gamma_u(h) = \sigma_x^2\sigma_u^2(\rho_x\rho_u)^{|h|}\)</span>, y su varianza de largo plazo es <span class="math inline">\(\sigma_x^2\sigma_u^2\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}\)</span>. Como <span class="math inline">\(Q = \sigma_x^2\)</span>, la varianza asintótica real de <span class="math inline">\(\hat\beta\)</span> es <span class="math inline">\(\dfrac{\sigma_u^2}{\sigma_x^2}\cdot\dfrac{1 + \rho_x\rho_u}{1 - \rho_x\rho_u}\)</span>, mientras que la fórmula de MCO “clásica” da <span class="math inline">\(\sigma_u^2/\sigma_x^2\)</span> (ignorando la dependencia). Con <span class="math inline">\(\rho_x\rho_u = 0{,}64\)</span> el factor es <span class="math inline">\(1{,}64/0{,}36 = 4{,}56\)</span>: <strong>los errores estándar clásicos son <span class="math inline">\(\sqrt{4{,}56} = 2{,}13\)</span> veces demasiado chicos</strong>. Un test al 5 % con <span class="math inline">\(t = \hat\beta/\text{ee}_{clásico}\)</span> rechaza <span class="math inline">\(H_0:\beta = 0\)</span> con probabilidad <span class="math inline">\(2(1 - \Phi(1{,}96/2{,}13)) = 36\)</span> % <strong>aunque <span class="math inline">\(x\)</span> y <span class="math inline">\(y\)</span> no tengan relación alguna</strong>. Es el mismo fenómeno de las regresiones espurias, aquí en su versión estacionaria.</p>
 </div>
 </section>
 <section id="gmm-pronósticos-y-otros" class="level2" data-number="5.2">
@@ -532,7 +585,7 @@ I_T(0) = T\bar\xi^2\xrightarrow{d}\sigma^2_{LR}\,\chi^2_1.
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p><span class="math inline">\(T = 50\)</span>: <span class="math inline">\(4(0{,}5)^{0{,}222} = 4(0{,}857) = 3{,}43\to3\)</span>. <span class="math inline">\(T = 100\)</span>: <span class="math inline">\(4\)</span>. <span class="math inline">\(T = 500\)</span>: <span class="math inline">\(4(5)^{0{,}222} = 4(1{,}43) = 5{,}7\to5\)</span>. <span class="math inline">\(T = 2000\)</span>: <span class="math inline">\(4(20)^{0{,}222} = 4(1{,}945) = 7{,}8\to7\)</span>. Crece como <span class="math inline">\(T^{2/9}\)</span>, <strong>más despacio</strong> que el óptimo teórico <span class="math inline">\(T^{1/3}\)</span>, porque la constante se escala con las propias autocorrelaciones (más baja cuando la persistencia es moderada) y porque las ganancias son pequeñas: con <span class="math inline">\(T = 2000\)</span> un <span class="math inline">\(m\)</span> de <span class="math inline">\(7\)</span> ya captura casi todo salvo series muy persistentes. Es el costo de la tasa no paramétrica <span class="math inline">\(T^{-1/3}\)</span> en la precisión de <span class="math inline">\(\hat\sigma^2_{HAC}\)</span>.</p>
+<p><span class="math inline">\(T = 50\)</span>: <span class="math inline">\(4(0{,}5)^{0{,}222} = 4(0{,}857) = 3{,}43\to3\)</span>. <span class="math inline">\(T = 100\)</span>: <span class="math inline">\(4\)</span>. <span class="math inline">\(T = 500\)</span>: <span class="math inline">\(4(5)^{0{,}222} = 4(1{,}43) = 5{,}7\to5\)</span>. <span class="math inline">\(T = 2000\)</span>: <span class="math inline">\(4(20)^{0{,}222} = 4(1{,}945) = 7{,}8\to7\)</span>. Crece como <span class="math inline">\(T^{2/9}\)</span>, <strong>más despacio</strong> que la tasa óptima <span class="math inline">\(T^{1/3}\)</span>. La razón es que la fórmula es, en su origen, el número de rezagos del paso <em>piloto</em> del método de Newey y West (1994), que después elige un ancho proporcional a <span class="math inline">\(T^{1/3}\)</span> con constantes estimadas de los datos. Como regla fija funciona bien con persistencia moderada, pero con series muy persistentes queda corta (Ejercicio 5.2): ahí conviene el método automático completo o el preblanqueo.</p>
 </div>
 </div>
 </div>
@@ -970,6 +1023,9 @@ I_T(0) = T\bar\xi^2\xrightarrow{d}\sigma^2_{LR}\,\chi^2_1.
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../econometria-3/clase-06.html" class="pagination-link" aria-label="Clase 6 · Raíces unitarias I">
+        <span class="nav-page-text">Clase 6 · Raíces unitarias I</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

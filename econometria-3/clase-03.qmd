@@ -69,7 +69,7 @@ Si $\{y_t\}$ es un AR($p$) causal, para $n\ge p$ el BLP de $y_{n+1}$ es $\hat y_
 Sea $\tilde y_{n+1} = \sum_{k = 1}^p\phi_ky_{n + 1 - k}$. El error es $y_{n+1} - \tilde y_{n+1} = \varepsilon_{n+1}$, que por causalidad es **no correlacionado** con $y_s$ para todo $s\le n$, o sea con el pasado entero. Cumple las condiciones de ortogonalidad del @thm-blp, y como la solución a las ecuaciones normales es única, es el BLP. Sus coeficientes son $(\phi_1,\dots,\phi_p,0,\dots,0)$, de modo que $\phi_{n,n} = 0$ para $n>p$, y $\phi_{p,p} = \phi_p$. El ECM es $\mathbb{E}[\varepsilon_{n+1}^2] = \sigma^2$.
 :::
 
-Observa que **el pronóstico a un paso de un AR($p$) es exacto con $p$ rezagos**: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los $\varepsilon$ pasados se "recuperan" mediante invertibilidad y esa recuperación mejora con más datos).
+Observa que **el pronóstico a un paso de un AR($p$) ya es óptimo con $p$ rezagos**: más historia no ayuda. Con un MA o un ARMA la historia lejana sí importa (porque los $\varepsilon$ pasados se "recuperan" mediante invertibilidad y esa recuperación mejora con más datos).
 
 # Las innovaciones y el pronóstico con pasado infinito
 
