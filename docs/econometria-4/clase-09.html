@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El principio del bootstrap de Efron: consistencia para la media con demostración, funciones suaves, intervalos percentil, básico y percentil-t, el refinamiento asintótico por pivotalidad, los fracasos del bootstrap (máximo), el bootstrap salvaje y de pares en regresión y el bootstrap por bloques para series de tiempo.">
+
+<title>Clase 9 · Bootstrap – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-08.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-09.html">Clase 9 · Bootstrap</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#usar-la-muestra-como-si-fuera-la-población" id="toc-usar-la-muestra-como-si-fuera-la-población" class="nav-link active" data-scroll-target="#usar-la-muestra-como-si-fuera-la-población"><span class="header-section-number">1</span> Usar la muestra como si fuera la población</a></li>
+  <li><a href="#el-principio-del-bootstrap" id="toc-el-principio-del-bootstrap" class="nav-link" data-scroll-target="#el-principio-del-bootstrap"><span class="header-section-number">2</span> El principio del bootstrap</a></li>
+  <li><a href="#consistencia-del-bootstrap" id="toc-consistencia-del-bootstrap" class="nav-link" data-scroll-target="#consistencia-del-bootstrap"><span class="header-section-number">3</span> Consistencia del bootstrap</a>
+  <ul class="collapse">
+  <li><a href="#intervalos-de-confianza-bootstrap" id="toc-intervalos-de-confianza-bootstrap" class="nav-link" data-scroll-target="#intervalos-de-confianza-bootstrap"><span class="header-section-number">3.1</span> Intervalos de confianza bootstrap</a></li>
+  <li><a href="#el-refinamiento-asintótico-del-percentil-t" id="toc-el-refinamiento-asintótico-del-percentil-t" class="nav-link" data-scroll-target="#el-refinamiento-asintótico-del-percentil-t"><span class="header-section-number">3.2</span> El refinamiento asintótico del percentil-<span class="math inline">\(t\)</span></a></li>
+  </ul></li>
+  <li><a href="#cuando-el-bootstrap-falla" id="toc-cuando-el-bootstrap-falla" class="nav-link" data-scroll-target="#cuando-el-bootstrap-falla"><span class="header-section-number">4</span> Cuando el bootstrap falla</a></li>
+  <li><a href="#bootstrap-en-regresión" id="toc-bootstrap-en-regresión" class="nav-link" data-scroll-target="#bootstrap-en-regresión"><span class="header-section-number">5</span> Bootstrap en regresión</a></li>
+  <li><a href="#datos-dependientes" id="toc-datos-dependientes" class="nav-link" data-scroll-target="#datos-dependientes"><span class="header-section-number">6</span> Datos dependientes</a></li>
+  <li><a href="#postgrado-edgeworth-y-el-refinamiento-del-percentil-t" id="toc-postgrado-edgeworth-y-el-refinamiento-del-percentil-t" class="nav-link" data-scroll-target="#postgrado-edgeworth-y-el-refinamiento-del-percentil-t"><span class="header-section-number">7</span> ★ Postgrado: Edgeworth y el refinamiento del percentil-<span class="math inline">\(t\)</span></a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">8</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">9</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-09.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 9 · Bootstrap</h1>
+<p class="subtitle lead">Remuestreo, refinamientos asintóticos, bootstrap salvaje y datos dependientes</p>
+</div>
+
+<div>
+  <div class="description">
+    El principio del bootstrap de Efron: consistencia para la media con demostración, funciones suaves, intervalos percentil, básico y percentil-t, el refinamiento asintótico por pivotalidad, los fracasos del bootstrap (máximo), el bootstrap salvaje y de pares en regresión y el bootstrap por bloques para series de tiempo.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a></p>
+<section id="usar-la-muestra-como-si-fuera-la-población" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Usar la muestra como si fuera la población</h1>
+<p>Casi toda la inferencia que hemos hecho se apoya en aproximaciones <strong>asintóticas</strong>: la distribución de un estimador se aproxima por una normal cuya varianza se estima con una fórmula (el sándwich de Econometría 1, la varianza de Neyman, el estimador HAC). Eso tiene tres límites: (i) la fórmula puede ser <strong>difícil o imposible de derivar</strong> (un cociente de estimadores, un cuantil, un estimador de dos pasos con ML); (ii) la aproximación normal puede ser <strong>mala</strong> en muestras finitas; (iii) para algunos estadísticos, la distribución límite <strong>no es normal</strong> y no hay fórmula conveniente.</p>
+<p>El <strong>bootstrap</strong> de Efron (1979) es una forma radicalmente distinta de aproximar la distribución de un estadístico: en vez de derivarla teóricamente, <strong>la simula</strong>. La idea es la del <em>principio de analogía</em> (Goldberger, Clase 1 de Econometría 1): el mundo real es “población <span class="math inline">\(F\to\)</span> muestra <span class="math inline">\(\to\)</span> estadístico <span class="math inline">\(\hat\theta\)</span>”; <strong>imitamos</strong> ese mundo en la computadora: tratamos la muestra como si fuera la población, extraemos de ella <strong>nuevas muestras</strong> y vemos cómo se distribuye el estadístico recalculado.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Bradley Efron presentó el bootstrap en 1979, y el nombre viene de la expresión inglesa “to pull oneself up by one’s bootstraps” (levantarse tirando de los propios cordones de las botas), que alude a hacer algo aparentemente imposible: obtener información sobre la variabilidad del estadístico <em>usando solo la misma muestra</em>. El método fue posible gracias al aumento del poder computacional: hasta entonces, simular miles de veces un estimador era impensable; hoy es casi gratis, y por eso el bootstrap se volvió una herramienta estándar.</p></div></div></section>
+<section id="el-principio-del-bootstrap" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El principio del bootstrap</h1>
+<p>Sea <span class="math inline">\(X_1,\dots,X_n\)</span> i.i.d. con distribución <span class="math inline">\(F\)</span> y <span class="math inline">\(\hat\theta = T(X_1,\dots,X_n)\)</span> un estadístico (una media, una mediana, un coeficiente de regresión). Interesa la distribución de <span class="math inline">\(\sqrt n(\hat\theta - \theta(F))\)</span>, que depende de <span class="math inline">\(F\)</span> desconocida. El <strong>bootstrap</strong> reemplaza <span class="math inline">\(F\)</span> por la <strong>distribución empírica</strong> <span class="math inline">\(\hat F_n\)</span> (que da probabilidad <span class="math inline">\(1/n\)</span> a cada <span class="math inline">\(X_i\)</span>):</p>
+<ol type="1">
+<li>Generar una <strong>muestra bootstrap</strong> <span class="math inline">\(X_1^*,\dots,X_n^*\)</span> extrayendo <strong>con reemplazo</strong> <span class="math inline">\(n\)</span> observaciones de <span class="math inline">\(\{X_1,\dots,X_n\}\)</span>.</li>
+<li>Calcular <span class="math inline">\(\hat\theta^* = T(X_1^*,\dots,X_n^*)\)</span>.</li>
+<li>Repetir <span class="math inline">\(B\)</span> veces (por ejemplo, <span class="math inline">\(B = 1\,000\)</span>): <span class="math inline">\(\hat\theta^*_1,\dots,\hat\theta^*_B\)</span>.</li>
+</ol>
+<p>La distribución de <span class="math inline">\(\sqrt n(\hat\theta^* - \hat\theta)\)</span>, <strong>condicional en los datos</strong>, es la <strong>distribución bootstrap</strong>, y se usa para aproximar la de <span class="math inline">\(\sqrt n(\hat\theta - \theta)\)</span>. En términos prácticos: <span class="math display">\[
+\widehat{\operatorname{ee}}_{boot} = \Big(\frac1{B - 1}\sum_{b = 1}^B(\hat\theta_b^* - \bar\theta^*)^2\Big)^{1/2},\qquad\widehat{\text{sesgo}}_{boot} = \bar\theta^* - \hat\theta.
+\]</span> Cada muestra bootstrap contiene aproximadamente el <span class="math inline">\(63{,}2\)</span> % de las observaciones distintas (la probabilidad de que una observación <strong>no</strong> salga en una muestra es <span class="math inline">\((1 - 1/n)^n\to e^{-1} = 0{,}368\)</span>), y las demás aparecen repetidas. No se necesita ninguna fórmula para la varianza del estadístico: <strong>el computador la aproxima</strong>.</p>
+</section>
+<section id="consistencia-del-bootstrap" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Consistencia del bootstrap</h1>
+<p>El bootstrap es válido si la distribución bootstrap, que es una distribución <strong>condicional en los datos</strong>, converge a la misma distribución límite que la del estadístico original.</p>
+<div id="def-boot-cons" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Consistencia del bootstrap)</strong></span> El bootstrap es <strong>consistente</strong> para <span class="math inline">\(\sqrt n(\hat\theta - \theta)\)</span> si <span class="math display">\[
+\sup_{x}\Big|P^*\big(\sqrt n(\hat\theta^* - \hat\theta)\le x\big) - P\big(\sqrt n(\hat\theta - \theta)\le x\big)\Big|\xrightarrow{p}0,
+\]</span> donde <span class="math inline">\(P^*\)</span> es la probabilidad condicional en la muestra.</p>
+</div>
+<div id="thm-boot-media" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (El bootstrap de la media es consistente)</strong></span> Si <span class="math inline">\(X_i\)</span> son i.i.d. con <span class="math inline">\(\mathbb{E}X^2&lt;\infty\)</span>, <span class="math inline">\(\mu = \mathbb{E}X\)</span> y <span class="math inline">\(\sigma^2 = \operatorname{Var}(X)&gt;0\)</span>, entonces el bootstrap de la media muestral es consistente, casi seguramente: <span class="math display">\[
+\sup_x\Big|P^*\big(\sqrt n(\bar X^* - \bar X)\le x\big) - P\big(\sqrt n(\bar X - \mu)\le x\big)\Big|\to0.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Condicional en la muestra, <span class="math inline">\(X_1^*,\dots,X_n^*\)</span> son i.i.d. con distribución <span class="math inline">\(\hat F_n\)</span>, cuya media es <span class="math inline">\(\bar X\)</span> y cuya varianza es <span class="math inline">\(\hat\sigma_n^2 = \frac1n\sum(X_i - \bar X)^2\)</span>. Es un <strong>arreglo triangular</strong> (cambia con <span class="math inline">\(n\)</span>) de variables i.i.d., así que quiero aplicar un TCL para arreglos: el de Lindeberg–Feller. Hay que verificar que la varianza converge y que se cumple la condición de Lindeberg. La varianza empírica <span class="math inline">\(\hat\sigma_n^2\to\sigma^2\)</span> por la ley fuerte de los grandes números. La condición de Lindeberg dice que ningún dato individual domina la suma, y se cumple porque <span class="math inline">\(\max_i|X_i|/\sqrt n\to0\)</span> cuando hay segundo momento finito. Con eso, la distribución bootstrap converge a <span class="math inline">\(N(0,\sigma^2)\)</span>, que es la misma distribución límite del estadístico original.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Condicional en <span class="math inline">\(\{X_i\}\)</span>, <span class="math inline">\(\sqrt n(\bar X^* - \bar X) = n^{-1/2}\sum_i(X_i^* - \bar X)\)</span> es una suma de variables i.i.d. (con distribución <span class="math inline">\(\hat F_n\)</span>) de media cero y varianza <span class="math inline">\(\hat\sigma_n^2\)</span>. Por la ley fuerte, <span class="math inline">\(\hat\sigma_n^2 = \frac1n\sum X_i^2 - \bar X^2\to\sigma^2\)</span> casi seguramente. La <strong>condición de Lindeberg</strong> para el arreglo es, para todo <span class="math inline">\(\varepsilon&gt;0\)</span>, <span class="math display">\[
+\frac1{\hat\sigma_n^2}\mathbb{E}^*\Big[(X^* - \bar X)^2\mathbf{1}\{|X^* - \bar X|&gt;\varepsilon\sqrt n\hat\sigma_n\}\Big] = \frac1{\hat\sigma_n^2}\cdot\frac1n\sum_{i = 1}^n(X_i - \bar X)^2\mathbf{1}\{|X_i - \bar X|&gt;\varepsilon\sqrt n\hat\sigma_n\}\to0\quad\text{c.s.}
+\]</span> Esto vale porque <span class="math inline">\(\mathbb{E}X^2&lt;\infty\)</span> implica <span class="math inline">\(\max_{i\le n}|X_i|/\sqrt n\to0\)</span> c.s. (en el límite, los indicadores son cero para todo <span class="math inline">\(i\le n\)</span> a partir de cierto <span class="math inline">\(n\)</span> y el promedio de términos acotados por <span class="math inline">\(\frac1n\sum(X_i - \bar X)^2\to\sigma^2\)</span> se anula). Por el TCL de Lindeberg–Feller, <span class="math inline">\(\sqrt n(\bar X^* - \bar X)/\hat\sigma_n\Rightarrow N(0,1)\)</span> condicionalmente, y como <span class="math inline">\(\hat\sigma_n\to\sigma\)</span>, <span class="math inline">\(\sqrt n(\bar X^* - \bar X)\Rightarrow N(0,\sigma^2)\)</span>. Por otro lado, <span class="math inline">\(\sqrt n(\bar X - \mu)\Rightarrow N(0,\sigma^2)\)</span> por el TCL. Ambas funciones de distribución convergen a la <strong>misma función continua</strong> <span class="math inline">\(\Phi(x/\sigma)\)</span>, y por el teorema de Pólya (convergencia puntual a una distribución continua implica convergencia uniforme), la diferencia converge uniformemente a cero.</p>
+</div>
+<p>El resultado se extiende a <strong>funciones suaves de medias</strong> (la clase que incluye varianzas, correlaciones, razones y coeficientes de MCO): si <span class="math inline">\(\theta = g(\mu)\)</span> con <span class="math inline">\(g\)</span> continuamente diferenciable y <span class="math inline">\(\nabla g(\mu)\ne0\)</span>, el <strong>método delta condicional</strong> (Clase 6 de Econometría 1) da <span class="math inline">\(\sqrt n(g(\bar X^*) - g(\bar X))\approx\nabla g(\bar X)'\sqrt n(\bar X^* - \bar X)\Rightarrow N\big(0,\nabla g(\mu)'\Sigma\nabla g(\mu)\big)\)</span>, la misma distribución límite que <span class="math inline">\(\sqrt n(g(\bar X) - g(\mu))\)</span>. Por lo tanto el bootstrap es consistente para MCO, MV, GMM y la mayoría de los estimadores de los cursos anteriores (bajo condiciones de regularidad; es lo que se verifica en la literatura de Hall (1992) y Horowitz (2001)).</p>
+<section id="intervalos-de-confianza-bootstrap" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="intervalos-de-confianza-bootstrap"><span class="header-section-number">3.1</span> Intervalos de confianza bootstrap</h2>
+<p>Con <span class="math inline">\(B\)</span> réplicas hay varias maneras de construir un intervalo del <span class="math inline">\((1 - \alpha)\)</span> para <span class="math inline">\(\theta\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Método</th>
+<th>Intervalo</th>
+<th>Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Normal</strong></td>
+<td><span class="math inline">\(\hat\theta\pm z_{1 - \alpha/2}\widehat{\operatorname{ee}}_{boot}\)</span></td>
+<td>solo usa el error estándar bootstrap</td>
+</tr>
+<tr class="even">
+<td><strong>Percentil</strong></td>
+<td><span class="math inline">\([q^*_{\alpha/2},\ q^*_{1 - \alpha/2}]\)</span></td>
+<td>cuantiles de <span class="math inline">\(\hat\theta^*\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Básico (pivotal)</strong></td>
+<td><span class="math inline">\([2\hat\theta - q^*_{1 - \alpha/2},\ 2\hat\theta - q^*_{\alpha/2}]\)</span></td>
+<td>usa la distribución de <span class="math inline">\(\hat\theta^* - \hat\theta\)</span> como la de <span class="math inline">\(\hat\theta - \theta\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Percentil-<span class="math inline">\(t\)</span></strong></td>
+<td><span class="math inline">\([\hat\theta - t^*_{1 - \alpha/2}\widehat{\operatorname{ee}},\ \hat\theta - t^*_{\alpha/2}\widehat{\operatorname{ee}}]\)</span></td>
+<td>cuantiles del estadístico <strong>estudentizado</strong> <span class="math inline">\(t^* = (\hat\theta^* - \hat\theta)/\operatorname{ee}^*\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>El percentil-<span class="math inline">\(t\)</span> requiere calcular un error estándar <span class="math inline">\(\operatorname{ee}^*\)</span> <strong>dentro</strong> de cada réplica (con una fórmula, o con un bootstrap anidado). Los cuatro son asintóticamente válidos, pero <strong>difieren en su precisión en muestras finitas</strong>, y esa diferencia tiene una explicación teórica.</p>
+</section>
+<section id="el-refinamiento-asintótico-del-percentil-t" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="el-refinamiento-asintótico-del-percentil-t"><span class="header-section-number">3.2</span> El refinamiento asintótico del percentil-<span class="math inline">\(t\)</span></h2>
+<p>Un intervalo basado en la aproximación normal tiene un <strong>error de cobertura</strong> de orden <span class="math inline">\(n^{-1/2}\)</span> (para intervalos de una cola) o <span class="math inline">\(n^{-1}\)</span> (de dos colas). El bootstrap del <strong>estadístico estudentizado</strong> logra un error <strong>menor</strong>: <span class="math inline">\(n^{-1}\)</span> en una cola y <span class="math inline">\(n^{-2}\)</span> en dos colas. Es el <strong>refinamiento asintótico</strong> (Hall, 1992), y la condición clave es que el estadístico sea <strong>asintóticamente pivotal</strong>: su distribución límite <strong>no depende de parámetros desconocidos</strong>.</p>
+<p>La razón (§★) usa el <strong>desarrollo de Edgeworth</strong> de la función de distribución: para un estadístico estándar, <span class="math inline">\(P(T_n\le x) = \Phi(x) + n^{-1/2}p(x)\phi(x) + O(n^{-1})\)</span>, donde el polinomio <span class="math inline">\(p\)</span> depende de momentos desconocidos de <span class="math inline">\(F\)</span>. El bootstrap estima ese término con <strong>error <span class="math inline">\(O(n^{-1/2})\)</span></strong> (porque los momentos se estiman a esa tasa), de modo que el error total es <span class="math inline">\(n^{-1/2}\cdot O(n^{-1/2}) = O(n^{-1})\)</span>: <strong>la mitad del error de la aproximación normal</strong> (que ignora el término <span class="math inline">\(n^{-1/2}p(x)\phi(x)\)</span>). Pero esto funciona solo si el estadístico es <strong>pivotal</strong>: si <span class="math inline">\(T_n = \sqrt n(\hat\theta - \theta)\)</span> (no estudentizado), su distribución depende de <span class="math inline">\(\sigma\)</span>, y el bootstrap estima <span class="math inline">\(\sigma\)</span> con error <span class="math inline">\(O(n^{-1/2})\)</span>, <strong>el mismo orden</strong> que se quería corregir: no hay mejora respecto de la normal. Por eso, <strong>la recomendación general es hacer bootstrap de estadísticos estudentizados</strong> (percentil-<span class="math inline">\(t\)</span>), y no de estimadores “crudos”.</p>
+</section>
+</section>
+<section id="cuando-el-bootstrap-falla" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Cuando el bootstrap falla</h1>
+<p>El bootstrap no es una varita mágica: requiere que el estadístico sea “suave” en <span class="math inline">\(F\)</span>. Cuatro casos clásicos de <strong>inconsistencia</strong>:</p>
+<p><strong>(1) Estadísticos de orden extremos.</strong> Sea <span class="math inline">\(X_i\sim U(0,\theta)\)</span> y <span class="math inline">\(\hat\theta = X_{(n)}\)</span> (el máximo). La distribución verdadera es <span class="math inline">\(n(\theta - X_{(n)})\Rightarrow\text{Exp}(1/\theta)\)</span>, <strong>continua</strong>. Pero en el bootstrap, el máximo de la muestra bootstrap <strong>es igual a <span class="math inline">\(X_{(n)}\)</span> con probabilidad positiva</strong>:</p>
+<div id="prp-boot-max" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (El bootstrap del máximo es inconsistente)</strong></span> <span class="math inline">\(P^*\big(X^*_{(n)} = X_{(n)}\big) = 1 - (1 - 1/n)^n\to1 - e^{-1} = 0{,}632\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(X^*_{(n)} = X_{(n)}\)</span> si y solo si <strong>al menos una</strong> de las <span class="math inline">\(n\)</span> extracciones con reemplazo elige la observación máxima. La probabilidad de que una extracción <strong>no</strong> la elija es <span class="math inline">\(1 - 1/n\)</span>, y como son independientes, la de que <strong>ninguna</strong> la elija es <span class="math inline">\((1 - 1/n)^n\)</span>. Luego <span class="math inline">\(P^*(X^*_{(n)} = X_{(n)}) = 1 - (1 - 1/n)^n\to1 - e^{-1}\)</span>.</p>
+</div>
+<p>Entonces la distribución bootstrap de <span class="math inline">\(n(\hat\theta - \hat\theta^*)\)</span> tiene un <strong>átomo de masa <span class="math inline">\(0{,}632\)</span> en cero</strong>, mientras que la verdadera distribución de <span class="math inline">\(n(\theta - \hat\theta)\)</span> no tiene ningún átomo: el bootstrap <strong>no</strong> aproxima la distribución. El estadístico no es suave en <span class="math inline">\(F\)</span> (depende del extremo del soporte).</p>
+<p><strong>(2) Parámetros en la frontera</strong> o <strong>no regulares</strong> (el estimador de Hodges y el test de razón de verosimilitud con parámetro en la frontera, Clases 2 y 3 de Econometría 2): la distribución del estimador es <strong>no uniforme</strong> en el parámetro, y el bootstrap, que se calcula en el valor estimado, no la reproduce. <strong>(3) Momentos infinitos</strong> (varianza infinita): la distribución límite del promedio no es normal y el bootstrap con <span class="math inline">\(n\)</span> de <span class="math inline">\(n\)</span> falla. <strong>(4) Datos dependientes</strong>: el bootstrap i.i.d. destruye la dependencia (abajo).</p>
+<p>Remedios comunes: el <strong>bootstrap de <span class="math inline">\(m\)</span> de <span class="math inline">\(n\)</span></strong> (remuestrear <span class="math inline">\(m\ll n\)</span> observaciones, con <span class="math inline">\(m\to\infty\)</span> y <span class="math inline">\(m/n\to0\)</span>) y el <strong>submuestreo</strong> (<em>subsampling</em>, Politis y Romano, 1994), que funcionan bajo condiciones mucho más débiles pero con menor precisión.</p>
+</section>
+<section id="bootstrap-en-regresión" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Bootstrap en regresión</h1>
+<p>Con datos de regresión <span class="math inline">\((Y_i,X_i)\)</span>, el remuestreo puede hacerse de varias maneras, que <strong>suponen cosas distintas</strong>:</p>
+<ul>
+<li><strong>Bootstrap de pares</strong> (<em>pairs/case resampling</em>): se remuestrea con reemplazo el par completo <span class="math inline">\((Y_i,X_i)\)</span> y se recalcula <span class="math inline">\(\hat\beta^*\)</span>. Es <strong>robusto a la heterocedasticidad</strong> y a mala especificación de la forma de la varianza, porque preserva la relación entre <span class="math inline">\(X_i\)</span> y la distribución de <span class="math inline">\(Y_i\)</span> dado <span class="math inline">\(X_i\)</span>. Es la opción por defecto cuando las observaciones son i.i.d.</li>
+<li><strong>Bootstrap de residuos</strong>: se estima <span class="math inline">\(\hat\beta\)</span> y los residuos <span class="math inline">\(\hat u_i\)</span>, y se construye <span class="math inline">\(Y_i^* = X_i'\hat\beta + u_i^*\)</span> con <span class="math inline">\(u_i^*\)</span> remuestreado de <span class="math inline">\(\{\hat u_j\}\)</span>. <strong>Supone errores i.i.d.</strong> (homocedasticidad: los residuos se “mezclan” entre observaciones con distintas <span class="math inline">\(X_i\)</span>). Es inconsistente bajo heterocedasticidad.</li>
+<li><strong>Bootstrap salvaje</strong> (<em>wild</em>, Wu, 1986; Liu, 1988; Mammen, 1993): conserva la heterocedasticidad <strong>sin remuestrear</strong>: <span class="math inline">\(Y_i^* = X_i'\hat\beta + \hat u_iw_i\)</span>, con <span class="math inline">\(w_i\)</span> i.i.d. e independientes de los datos, con <span class="math inline">\(\mathbb{E}[w_i] = 0\)</span> y <span class="math inline">\(\mathbb{E}[w_i^2] = 1\)</span>.</li>
+</ul>
+<div id="prp-wild" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (El bootstrap salvaje reproduce el estimador de White)</strong></span> Con <span class="math inline">\(\hat\beta^* = (X'X)^{-1}X'Y^*\)</span>, la varianza bootstrap condicional es <span class="math display">\[
+\operatorname{Var}^*(\hat\beta^*) = (X'X)^{-1}\Big(\sum_iX_iX_i'\hat u_i^2\Big)(X'X)^{-1},
+\]</span> el estimador HC0 de <strong>White</strong> (Clase 7 de Econometría 1).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\hat\beta^* - \hat\beta = (X'X)^{-1}X'(\hat u\odot w) = (X'X)^{-1}\sum_iX_i\hat u_iw_i\)</span>. Condicional en los datos, los <span class="math inline">\(w_i\)</span> son independientes de media cero y varianza uno, así que <span class="math inline">\(\operatorname{Var}^*\big(\sum X_i\hat u_iw_i\big) = \sum_iX_iX_i'\hat u_i^2\)</span>, y se multiplica por <span class="math inline">\((X'X)^{-1}\)</span> a cada lado.</p>
+</div>
+<p>Las dos distribuciones más usadas para <span class="math inline">\(w_i\)</span> son la de <strong>Rademacher</strong> (<span class="math inline">\(w = +1\)</span> o <span class="math inline">\(-1\)</span> con probabilidad <span class="math inline">\(\tfrac12\)</span> cada uno) y la de <strong>Mammen</strong> (<span class="math inline">\(w = -(\sqrt5 - 1)/2\)</span> con probabilidad <span class="math inline">\((\sqrt5 + 1)/(2\sqrt5)\)</span> y <span class="math inline">\(w = (\sqrt5 + 1)/2\)</span> con la complementaria): ambas tienen media cero y varianza uno, y la de Mammen además tiene <strong>tercer momento igual a uno</strong>, lo que mejora el comportamiento en muestras finitas cuando los errores son asimétricos (Ejercicio 9.5). El bootstrap salvaje es la herramienta estándar con <strong>heterocedasticidad</strong> y, en su versión <strong>agrupada por cluster</strong>, con <strong>pocos clusters</strong> (Clase 10).</p>
+<p>Cuando se usa el bootstrap para <strong>testear una hipótesis</strong>, conviene <strong>imponer la hipótesis nula</strong> al generar las muestras (usando los residuos del modelo <strong>restringido</strong>), de modo que la distribución bootstrap sea la del estadístico <strong>bajo <span class="math inline">\(H_0\)</span></strong> (Davidson y MacKinnon). Es la forma que tiene el mejor control del tamaño.</p>
+</section>
+<section id="datos-dependientes" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Datos dependientes</h1>
+<p>El bootstrap i.i.d. <strong>falla</strong> con series de tiempo: al remuestrear observaciones sueltas se <strong>destruye</strong> la dependencia temporal. Por ejemplo, para la media de un AR(1) con coeficiente <span class="math inline">\(\phi\)</span>, el bootstrap i.i.d. reproduce la varianza <span class="math inline">\(\gamma(0)/n\)</span> y no la correcta, <span class="math inline">\(\sigma_{LR}^2/n = \gamma(0)\frac{1 + \phi}{1 - \phi}\cdot\frac1n\)</span> (Clase 1 de Econometría 3): subestima el error estándar por un factor <span class="math inline">\(\sqrt{(1 - \phi)/(1 + \phi)}\)</span> (con <span class="math inline">\(\phi = 0{,}6\)</span>, a la mitad: Ejercicio 9.6). Hay dos soluciones principales:</p>
+<ul>
+<li><strong>Bootstrap por bloques</strong> (Künsch, 1989; Liu y Singh, 1992): se remuestrean <strong>bloques consecutivos</strong> de longitud <span class="math inline">\(\ell\)</span> (con <span class="math inline">\(\ell\to\infty\)</span> y <span class="math inline">\(\ell/n\to0\)</span>, típicamente <span class="math inline">\(\ell\sim n^{1/3}\)</span>) y se concatenan para formar la serie bootstrap. La dependencia <strong>dentro</strong> de cada bloque se preserva; la de <strong>entre</strong> bloques se pierde (error de borde). Variantes: bloques <strong>móviles</strong> (solapados), el <strong>bootstrap estacionario</strong> de Politis y Romano (longitudes aleatorias geométricas, para que la serie bootstrap sea estacionaria) y bloques <strong>no solapados</strong>. La varianza bootstrap de la media converge a la <strong>varianza de largo plazo</strong> (el estimador de Newey–West de la Clase 5 de Econometría 3, de manera no paramétrica).</li>
+<li><strong>Bootstrap basado en un modelo</strong> (<em>sieve</em> o de residuos): se ajusta un modelo (un AR(<span class="math inline">\(p\)</span>), un VAR) y se remuestrean los <strong>residuos</strong> (que son i.i.d. bajo el modelo), regenerando la serie recursivamente. Es lo que se hace para las <strong>funciones impulso-respuesta</strong> (Clase 10 de Econometría 3), con <strong>corrección de sesgo</strong> de Kilian para los coeficientes cerca de la raíz unitaria.</li>
+</ul>
+</section>
+<section id="postgrado-edgeworth-y-el-refinamiento-del-percentil-t" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> ★ Postgrado: Edgeworth y el refinamiento del percentil-<span class="math inline">\(t\)</span></h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los desarrollos de Edgeworth (que se toman prestados: Hall, 1992) permiten ver <strong>por qué</strong> el bootstrap del estadístico estudentizado mejora la aproximación normal y el del no estudentizado no.</p>
+</div>
+</div>
+<p>Sea <span class="math inline">\(X_i\)</span> i.i.d. con media <span class="math inline">\(\mu\)</span>, varianza <span class="math inline">\(\sigma^2\)</span>, <strong>asimetría</strong> <span class="math inline">\(\kappa = \mathbb{E}[(X - \mu)^3]/\sigma^3\)</span> y suficientes momentos. Entonces <span class="math display">\[
+P\Big(\frac{\sqrt n(\bar X - \mu)}\sigma\le x\Big) = \Phi(x) - \frac{\kappa}{6\sqrt n}(x^2 - 1)\phi(x) + O(n^{-1}),
+\]</span> <span class="math display">\[
+P\Big(\frac{\sqrt n(\bar X - \mu)}{s}\le x\Big) = \Phi(x) + \frac\kappa{6\sqrt n}(2x^2 + 1)\phi(x) + O(n^{-1}),
+\]</span> con <span class="math inline">\(s\)</span> la desviación estándar muestral (<strong>estudentizado</strong>). Lo que importa es la <strong>estructura</strong>: la corrección de orden <span class="math inline">\(n^{-1/2}\)</span> es un polinomio par por <span class="math inline">\(\phi(x)\)</span> multiplicado por <span class="math inline">\(\kappa\)</span> (que es un parámetro <strong>desconocido</strong>). El análogo bootstrap tiene la misma forma con <span class="math inline">\(\hat\kappa\)</span> en lugar de <span class="math inline">\(\kappa\)</span>.</p>
+<p><em>Estudentizado (pivotal).</em> <span class="math inline">\(P^*(\sqrt n(\bar X^* - \bar X)/s^*\le x) - P(\sqrt n(\bar X - \mu)/s\le x) = \frac{\hat\kappa - \kappa}{6\sqrt n}(2x^2 + 1)\phi(x) + O_p(n^{-1}) = O_p(n^{-1/2})\cdot O(n^{-1/2}) = O_p(n^{-1})\)</span>, porque <span class="math inline">\(\hat\kappa - \kappa = O_p(n^{-1/2})\)</span>. La aproximación bootstrap tiene error <span class="math inline">\(O(n^{-1})\)</span>, <strong>menor</strong> que el <span class="math inline">\(O(n^{-1/2})\)</span> de la normal.</p>
+<p><em>No estudentizado, escala desconocida.</em> La distribución de <span class="math inline">\(\sqrt n(\bar X - \mu)\)</span> (sin dividir por <span class="math inline">\(\sigma\)</span>) es <span class="math inline">\(G_n(x) = \Phi(x/\sigma) + O(n^{-1/2})\)</span>, y el bootstrap la aproxima con <span class="math inline">\(\hat G_n(x) = \Phi(x/\hat\sigma) + O_p(n^{-1/2})\)</span>. Pero <span class="math inline">\(\Phi(x/\hat\sigma) - \Phi(x/\sigma) = \phi(x/\sigma)\frac x{\sigma^2}(\sigma - \hat\sigma) + \dots = O_p(n^{-1/2})\)</span> porque <span class="math inline">\(\hat\sigma - \sigma = O_p(n^{-1/2})\)</span>: <strong>ese error es del mismo orden <span class="math inline">\(n^{-1/2}\)</span></strong> que el de la aproximación normal. No hay refinamiento: <strong>la pivotalidad</strong> es la que elimina el término de orden <span class="math inline">\(n^{-1/2}\)</span>.</p>
+<p>Una observación sobre las <strong>colas</strong>: en las expansiones, el término de <span class="math inline">\(n^{-1/2}\)</span> es <strong>par</strong> como función de <span class="math inline">\(x\)</span> y por eso se <strong>cancela</strong> en el intervalo de dos colas (<span class="math inline">\(P(|T|\le x) = P(T\le x) - P(T\le-x)\)</span> elimina los polinomios pares en <span class="math inline">\(x\)</span> multiplicados por la misma constante, y el error baja a <span class="math inline">\(O(n^{-1})\)</span> y, con bootstrap, a <span class="math inline">\(O(n^{-2})\)</span>). Para intervalos de <strong>una cola</strong> (pruebas unilaterales) el refinamiento es el más valioso: el error normal es <span class="math inline">\(O(n^{-1/2})\)</span> y el del percentil-<span class="math inline">\(t\)</span>, <span class="math inline">\(O(n^{-1})\)</span>.</p>
+</section>
+<section id="resumen" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Resumen</h1>
+<ul>
+<li><strong>Bootstrap:</strong> aproximar la distribución de <span class="math inline">\(\hat\theta\)</span> remuestreando de <span class="math inline">\(\hat F_n\)</span> y recalculando <span class="math inline">\(\hat\theta^*\)</span>. No requiere fórmulas de varianza.</li>
+<li><strong>Consistencia</strong> (<a href="#thm-boot-media" class="quarto-xref">Teorema&nbsp;1</a>): para la media vía el TCL de Lindeberg–Feller condicional; se extiende a funciones suaves de medias (método delta). Cuatro intervalos: normal, percentil, básico y <strong>percentil-<span class="math inline">\(t\)</span></strong>.</li>
+<li><strong>Refinamiento asintótico:</strong> el percentil-<span class="math inline">\(t\)</span> (estadístico <strong>pivotal</strong>) reduce el error de <span class="math inline">\(n^{-1/2}\)</span> a <span class="math inline">\(n^{-1}\)</span> (Edgeworth). El estadístico no estudentizado no mejora.</li>
+<li><strong>Fallas:</strong> máximo (<a href="#prp-boot-max" class="quarto-xref">Proposición&nbsp;1</a>: átomo de <span class="math inline">\(0{,}632\)</span>), parámetros en la frontera, momentos infinitos, <strong>datos dependientes</strong>. Remedios: <span class="math inline">\(m\)</span> de <span class="math inline">\(n\)</span>, submuestreo.</li>
+<li><strong>Regresión:</strong> pares (robusto), residuos (supone homocedasticidad) y <strong>salvaje</strong> (reproduce White, <a href="#prp-wild" class="quarto-xref">Proposición&nbsp;2</a>; Rademacher, Mammen). Imponer <span class="math inline">\(H_0\)</span> para tests.</li>
+<li><strong>Series de tiempo:</strong> bootstrap por <strong>bloques</strong> (largo <span class="math inline">\(\sim n^{1/3}\)</span>, estacionario) o basado en un modelo (IRF).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Ejercicios</h1>
+<p><strong>Ejercicio 9.1.</strong> (a) ¿Cuántas muestras bootstrap distintas (no ordenadas) hay para <span class="math inline">\(n = 5\)</span>? (b) ¿Cuál es la probabilidad de que una observación dada no aparezca en una muestra bootstrap para <span class="math inline">\(n = 5\)</span>, <span class="math inline">\(n = 100\)</span> y <span class="math inline">\(n\to\infty\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li>El número de multiconjuntos de tamaño <span class="math inline">\(n\)</span> de un conjunto de <span class="math inline">\(n\)</span> elementos es <span class="math inline">\(\binom{2n - 1}n\)</span>: para <span class="math inline">\(n = 5\)</span>, <span class="math inline">\(\binom95 = 126\)</span>. (b) <span class="math inline">\((1 - 1/n)^n\)</span>: <span class="math inline">\(n = 5\)</span>: <span class="math inline">\(0{,}8^5 = 0{,}328\)</span>; <span class="math inline">\(n = 100\)</span>: <span class="math inline">\(0{,}99^{100} = 0{,}366\)</span>; <span class="math inline">\(n\to\infty\)</span>: <span class="math inline">\(e^{-1} = 0{,}368\)</span>. Entonces cada muestra bootstrap contiene en promedio <span class="math inline">\(1 - 0{,}368 = 63{,}2\)</span> % de las observaciones originales (distintas), y el <span class="math inline">\(36{,}8\)</span> % restante aparece duplicado. Esas observaciones “fuera de la bolsa” (<em>out-of-bag</em>) se usan, por ejemplo, para estimar el error de predicción de los bosques aleatorios.</li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.2.</strong> Cinco medias bootstrap (como ejemplo mínimo; en la práctica <span class="math inline">\(B\ge1\,000\)</span>) son <span class="math inline">\(5{,}8,\,6{,}4,\,6{,}0,\,6{,}6,\,6{,}2\)</span>. Calcula el error estándar bootstrap. Si la media muestral original es <span class="math inline">\(6{,}0\)</span>, ¿cuál es el sesgo bootstrap estimado?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Media de las réplicas: <span class="math inline">\(\bar\theta^* = 6{,}2\)</span>. Desviaciones: <span class="math inline">\(-0{,}4,\,0{,}2,\,-0{,}2,\,0{,}4,\,0\)</span>; cuadrados: <span class="math inline">\(0{,}16,\,0{,}04,\,0{,}04,\,0{,}16,\,0\)</span>; suma <span class="math inline">\(=0{,}40\)</span>. <span class="math inline">\(\widehat{\operatorname{ee}}_{boot} = \sqrt{0{,}40/4} = 0{,}316\)</span>. Sesgo estimado: <span class="math inline">\(\bar\theta^* - \hat\theta = 6{,}2 - 6{,}0 = 0{,}2\)</span>. (Para la media muestral el sesgo verdadero es cero: este <span class="math inline">\(0{,}2\)</span> es ruido de simulación con solo cinco réplicas. Con <span class="math inline">\(B = 1\,000\)</span> el error de Monte Carlo sería mucho menor.)</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.3.</strong> Con <span class="math inline">\(\hat\theta = 2{,}1\)</span>, <span class="math inline">\(\widehat{\operatorname{ee}} = 0{,}55\)</span>, y cuantiles bootstrap <span class="math inline">\(q^*_{0{,}025} = 1{,}05\)</span>, <span class="math inline">\(q^*_{0{,}975} = 3{,}20\)</span> de <span class="math inline">\(\hat\theta^*\)</span> y <span class="math inline">\(t^*_{0{,}025} = -2{,}3\)</span>, <span class="math inline">\(t^*_{0{,}975} = 1{,}7\)</span> del estadístico estudentizado, calcula los intervalos percentil, básico y percentil-<span class="math inline">\(t\)</span> del 95 %.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Percentil: <span class="math inline">\([1{,}05;\ 3{,}20]\)</span>. Básico: <span class="math inline">\([2(2{,}1) - 3{,}20;\ 2(2{,}1) - 1{,}05] = [1{,}00;\ 3{,}15]\)</span>. Percentil-<span class="math inline">\(t\)</span>: <span class="math inline">\([\hat\theta - t^*_{0{,}975}\widehat{\operatorname{ee}};\ \hat\theta - t^*_{0{,}025}\widehat{\operatorname{ee}}] = [2{,}1 - 1{,}7(0{,}55);\ 2{,}1 + 2{,}3(0{,}55)] = [1{,}165;\ 3{,}365]\)</span>. Notar que los intervalos difieren cuando la distribución bootstrap es <strong>asimétrica</strong>: la cola derecha de <span class="math inline">\(\hat\theta^*\)</span> (<span class="math inline">\(3{,}20 - 2{,}1 = 1{,}1\)</span>) es más larga que la izquierda (<span class="math inline">\(2{,}1 - 1{,}05 = 1{,}05\)</span>), levemente; el percentil-<span class="math inline">\(t\)</span> <strong>corrige</strong> por la asimetría del estadístico estudentizado (<span class="math inline">\(t^*\)</span> tiene cola izquierda más larga, <span class="math inline">\(-2{,}3\)</span> frente a <span class="math inline">\(1{,}7\)</span>) y desplaza el intervalo a la derecha: intuitivamente, la asimetría indica que el estimador tiende a <strong>subestimar</strong>, y el intervalo compensa.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.4.</strong> Calcula <span class="math inline">\(P^*(X^*_{(n)} = X_{(n)})\)</span> para <span class="math inline">\(n = 10\)</span> y <span class="math inline">\(n = 100\)</span>. ¿Qué implica para el intervalo percentil del máximo?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(1 - (1 - 1/n)^n\)</span>: <span class="math inline">\(n = 10\)</span>: <span class="math inline">\(1 - 0{,}9^{10} = 1 - 0{,}349 = 0{,}651\)</span>; <span class="math inline">\(n = 100\)</span>: <span class="math inline">\(1 - 0{,}99^{100} = 1 - 0{,}366 = 0{,}634\)</span>; límite <span class="math inline">\(0{,}632\)</span>. En más del <span class="math inline">\(63\)</span> % de las muestras bootstrap, el máximo coincide con el original, de modo que <span class="math inline">\(\hat\theta^* = \hat\theta\)</span> y el <strong>cuantil superior del intervalo percentil</strong> es <span class="math inline">\(\hat\theta\)</span> mismo (nunca excede el máximo observado). El intervalo percentil para el límite superior <span class="math inline">\(\theta\)</span> del soporte <strong>no puede cubrir valores mayores que <span class="math inline">\(\hat\theta\)</span></strong>, aunque el verdadero <span class="math inline">\(\theta\)</span> es siempre <span class="math inline">\(\ge X_{(n)}\)</span> y casi siempre estrictamente mayor: el intervalo cubre con probabilidad <span class="math inline">\(0\)</span>, no <span class="math inline">\(95\)</span> %. Una corrección es el bootstrap de <span class="math inline">\(m\)</span> de <span class="math inline">\(n\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.5.</strong> Verifica que la distribución de Mammen tiene media <span class="math inline">\(0\)</span>, varianza <span class="math inline">\(1\)</span> y tercer momento <span class="math inline">\(1\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Valores <span class="math inline">\(a = -(\sqrt5 - 1)/2 = -0{,}618\)</span> con <span class="math inline">\(p = (\sqrt5 + 1)/(2\sqrt5) = 0{,}7236\)</span>, y <span class="math inline">\(b = (\sqrt5 + 1)/2 = 1{,}618\)</span> con <span class="math inline">\(1 - p = 0{,}2764\)</span>. Media: <span class="math inline">\(0{,}7236(-0{,}618) + 0{,}2764(1{,}618) = -0{,}4472 + 0{,}4472 = 0\)</span>. Varianza (=segundo momento): <span class="math inline">\(0{,}7236(0{,}382) + 0{,}2764(2{,}618) = 0{,}2764 + 0{,}7236 = 1\)</span>. Tercer momento: <span class="math inline">\(0{,}7236(-0{,}236) + 0{,}2764(4{,}236) = -0{,}1708 + 1{,}1708 = 1{,}0\)</span>. La <strong>asimetría</strong> <span class="math inline">\(\mathbb{E}w^3 = 1\)</span> permite que los errores bootstrap <span class="math inline">\(\hat u_iw_i\)</span> reproduzcan hasta el tercer momento de <span class="math inline">\(u_i\)</span> (la asimetría condicional), lo que mejora el refinamiento. La de Rademacher es simétrica (<span class="math inline">\(\mathbb{E}w^3 = 0\)</span>) y se prefiere cuando los errores son aproximadamente simétricos o con pocos clusters (Clase 10).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.6.</strong> Para la media de un AR(1) con <span class="math inline">\(\phi = 0{,}6\)</span>, compara la varianza que aproxima el bootstrap i.i.d. con la correcta. ¿Qué factor del error estándar se pierde? ¿Cuántos bloques se usarían con <span class="math inline">\(n = 100\)</span> y <span class="math inline">\(\ell\approx n^{1/3}\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Bootstrap i.i.d.: <span class="math inline">\(\gamma(0)/n\)</span>. Correcta: <span class="math inline">\(\sigma_{LR}^2/n = \gamma(0)\frac{1 + \phi}{1 - \phi}\cdot\frac1n = 4\gamma(0)/n\)</span> para <span class="math inline">\(\phi = 0{,}6\)</span> (<span class="math inline">\(\frac{1{,}6}{0{,}4} = 4\)</span>). El i.i.d. captura <span class="math inline">\(1/4\)</span> de la varianza: el error estándar queda en <span class="math inline">\(\sqrt{1/4} = 0{,}5\)</span> de lo correcto: <strong>se subestima a la mitad</strong>, y un intervalo del 95 % tendría una cobertura real de <span class="math inline">\(2\Phi(0{,}98) - 1\approx67\)</span> %. Bloques: <span class="math inline">\(\ell = 100^{1/3} = 4{,}6\approx5\)</span>, y <span class="math inline">\(n/\ell = 20\)</span> bloques por serie bootstrap. Con bloques de largo <span class="math inline">\(5\)</span> se captura la dependencia con rezagos hasta <span class="math inline">\(4\)</span>, que con <span class="math inline">\(\phi = 0{,}6\)</span> es casi todo (<span class="math inline">\(0{,}6^5 = 0{,}08\)</span>).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.7 ★.</strong> Con <span class="math inline">\(n = 25\)</span> y asimetría <span class="math inline">\(\kappa = 1\)</span>, calcula, con el desarrollo de Edgeworth del estadístico estudentizado, <span class="math inline">\(P(T\le1{,}96)\)</span> y <span class="math inline">\(P(T\le-1{,}96)\)</span>. ¿Cuáles son los errores de cola de la aproximación normal? ¿Se cancelan en el intervalo de dos colas?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Término: <span class="math inline">\(\dfrac{\kappa}{6\sqrt n}(2x^2 + 1)\phi(x)\)</span> con <span class="math inline">\(x = \pm1{,}96\)</span>: <span class="math inline">\(\dfrac1{6\cdot5}(2\cdot3{,}842 + 1)(0{,}0584) = \dfrac{8{,}684\cdot0{,}0584}{30} = 0{,}0169\)</span>. <span class="math inline">\(P(T\le1{,}96)\approx0{,}9750 + 0{,}0169 = 0{,}9919\)</span> (cola derecha: <span class="math inline">\(0{,}0081\)</span>, frente a la nominal <span class="math inline">\(0{,}025\)</span>). <span class="math inline">\(P(T\le-1{,}96)\approx0{,}0250 + 0{,}0169 = 0{,}0419\)</span> (cola izquierda: <span class="math inline">\(0{,}0419\)</span>, casi el <strong>doble</strong> de la nominal). Para una distribución asimétrica a la derecha, el estadístico estudentizado tiene cola izquierda más pesada. En el intervalo de <strong>dos colas</strong>: <span class="math inline">\(0{,}9919 - 0{,}0419 = 0{,}950\)</span>: los errores se <strong>cancelan</strong> (el término es par en <span class="math inline">\(x\)</span> y suma el mismo valor en ambas colas), de modo que la cobertura de dos colas es correcta hasta <span class="math inline">\(O(n^{-1})\)</span>. Pero cada <strong>cola por separado</strong> tiene error de <span class="math inline">\(\approx0{,}017\)</span> (<span class="math inline">\(68\)</span> % de error relativo): en pruebas <strong>unilaterales</strong> o intervalos de una cola, el percentil-<span class="math inline">\(t\)</span> es mucho mejor que el intervalo normal.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-08.html" class="pagination-link" aria-label="Clase 8 · Aprendizaje automático para inferencia causal">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 8 · Aprendizaje automático para inferencia causal</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

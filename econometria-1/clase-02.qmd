@@ -190,7 +190,7 @@ es el "$R^2$ poblacional" de la CEF: la fracción de la variabilidad de $y$ que 
 
 La CEF es maravillosa, pero tiene un problema práctico: puede ser cualquier función. Con $x$ continuo y multidimensional, estimarla sin estructura es difícil.[^curse] Así que nos preguntamos algo más modesto: **entre todas las funciones lineales $x'b$, ¿cuál predice mejor a $y$?**
 
-[^curse]: Es la "maldición de la dimensionalidad". Con $k$ regresores continuos, el número de observaciones que necesitas para estimar $m(x)$ con una precisión dada crece exponencialmente en $k$. La econometría no paramétrica vive peleando con esa maldición.
+[^curse]: Es la "maldición de la dimensionalidad". Con $k$ regresores continuos, el número de observaciones que necesitas para estimar $m(x)$ con una precisión dada crece exponencialmente en $k$. La econometría no paramétrica (Econometría 4) vive peleando con esa maldición.
 
 ::: {#def-blp}
 ## Mejor predictor lineal

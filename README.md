@@ -1,6 +1,6 @@
 # Econometría
 
-Sitio de los cursos **Econometría 1, 2 y 3**: teoría, demostraciones paso a paso y ejercicios resueltos.
+Sitio de los cursos **Econometría 1, 2, 3 y 4**: teoría, demostraciones paso a paso y ejercicios resueltos.
 
 Sitio publicado: <https://benjaminsoliso.github.io/econometria/>
 
@@ -11,6 +11,7 @@ index.qmd                 Landing page
 econometria-1/            10 clases teóricas (HTML + PDF)
 econometria-2/            13 clases teóricas (HTML + PDF)
 econometria-3/            13 clases de series de tiempo (HTML + PDF)
+econometria-4/            10 clases de inferencia causal, no paramétrica y ML (HTML + PDF)
 assets/                   Estilos, preámbulo LaTeX y figuras (figuras.R las regenera)
 docs/                     Sitio renderizado (lo sirve GitHub Pages)
 ```

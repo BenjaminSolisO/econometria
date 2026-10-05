@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos.">
+<meta name="description" content="Diez clases teóricas: resultados potenciales, selección en observables, LATE, diferencias en diferencias, econometría no paramétrica, regresión discontinua, alta dimensión, aprendizaje automático para inferencia causal, bootstrap e inferencia robusta.">
 
-<title>Econometría</title>
+<title>Econometría 4 – Econometría</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,23 +30,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c64d0ac6b346b31fb053d1269afbdd45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-01.html" rel="next">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,7 +76,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<style>#title-block-header{display:none;}</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
@@ -107,17 +107,17 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="assets/extra.css">
+<link rel="stylesheet" href="../assets/extra.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Econometría</span>
     </a>
   </div>
@@ -128,23 +128,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-1/index.html"> 
+    <a class="nav-link" href="../econometria-1/index.html"> 
 <span class="menu-text">Econometría 1</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-2/index.html"> 
+    <a class="nav-link" href="../econometria-2/index.html"> 
 <span class="menu-text">Econometría 2</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-3/index.html"> 
+    <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./econometria-4/index.html"> 
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
 <span class="menu-text">Econometría 4</span></a>
   </li>  
 </ul>
@@ -153,28 +153,112 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/index.html">Econometría 4</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Econometría</h1>
+<h1 class="title">Econometría 4</h1>
+<p class="subtitle lead">Inferencia causal, métodos no paramétricos y aprendizaje automático</p>
 </div>
 
 <div>
   <div class="description">
-    Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos.
+    Diez clases teóricas: resultados potenciales, selección en observables, LATE, diferencias en diferencias, econometría no paramétrica, regresión discontinua, alta dimensión, aprendizaje automático para inferencia causal, bootstrap e inferencia robusta.
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta">
 
     
   
@@ -186,128 +270,74 @@ window.Quarto = {
 </header>
 
 
-<div class="hero">
-<div class="eyebrow">
-Cuatro cursos · teoría y demostraciones
-</div>
-<h1>
-Econometría,<br>paso a paso.
-</h1>
-<p class="lead">
-Un recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender <em>por qué</em> funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.
-</p>
-<div class="formula">
-<span class="math display">\[\hat\beta \;=\; (X'X)^{-1}X'y \;=\; \beta + \Big(\tfrac{1}{n}\textstyle\sum_i x_ix_i'\Big)^{-1}\tfrac{1}{n}\textstyle\sum_i x_iu_i\]</span>
-</div>
-</div>
-<div class="cursos">
-<div class="curso">
-<div class="num">
-1
-</div>
-<h3 class="anchored">
-Econometría 1
-</h3>
-<p>
-El modelo de regresión lineal: proyecciones, MCO, Gauss–Markov, inferencia exacta y asintótica, errores de especificación, MCG y variables instrumentales. Diez clases, pregrado con extensiones ★ de postgrado.
-</p>
-<p><span class="estado activo">● Disponible · 10 clases</span> <a class="boton" href="./econometria-1/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-2
-</div>
-<h3 class="anchored">
-Econometría 2
-</h3>
-<p>
-Más allá del modelo lineal: estimación por extremos, máxima verosimilitud, método generalizado de momentos, elección discreta, conteo y duración, regresión cuantílica, datos de panel y estimación por simulación. Trece clases.
-</p>
-<p><span class="estado activo">● Disponible · 13 clases</span> <a class="boton" href="./econometria-2/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-3
-</div>
-<h3 class="anchored">
-Econometría 3
-</h3>
-<p>
-Series de tiempo: procesos estacionarios y ARMA, pronóstico, inferencia con dependencia, raíces unitarias y cointegración, VAR y identificación estructural, volatilidad condicional y espacio de estados. Trece clases.
-</p>
-<p><span class="estado activo">● Disponible · 13 clases</span> <a class="boton" href="./econometria-3/index.html">Entrar al curso →</a></p>
-</div>
-<div class="curso">
-<div class="num">
-4
-</div>
-<h3 class="anchored">
-Econometría 4
-</h3>
-<p>
-Inferencia causal, métodos no paramétricos y aprendizaje automático: resultados potenciales, selección en observables, LATE, diferencias en diferencias, discontinuidad, LASSO, DML, bootstrap e inferencia robusta. Diez clases.
-</p>
-<p><span class="estado activo">● Disponible · 10 clases</span> <a class="boton" href="./econometria-4/index.html">Entrar al curso →</a></p>
-</div>
-</div>
-<section id="cómo-están-escritos" class="level2">
-<h2 class="anchored" data-anchor-id="cómo-están-escritos">Cómo están escritos</h2>
-<div class="principios">
-<div>
-<h4 class="anchored">
-Borrador antes que demostración
-</h4>
-<p>
-Antes de cada demostración hay un recuadro donde se piensa en voz alta: qué se sabe, qué se quiere, qué truco podría servir. La demostración formal viene después, limpia y con cada paso justificado.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Notas al margen
-</h4>
-<p>
-Contexto histórico, advertencias, conexiones con otras clases y alguna que otra broma. Leerlas es opcional; saltárselas, también.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Dos niveles en un mismo texto
-</h4>
-<p>
-El núcleo de cada clase es de pregrado. Las secciones marcadas con ★ llevan el mismo tema a nivel de postgrado, sin cambiar de notación ni de libro.
-</p>
-</div>
-<div>
-<h4 class="anchored">
-Ejercicios con solución
-</h4>
-<p>
-Cada clase termina con ejercicios de ambos niveles. Las soluciones están plegadas: primero se intenta, después se mira.
-</p>
-</div>
-</div>
-</section>
-<section id="un-ejemplo-del-estilo" class="level2">
-<h2 class="anchored" data-anchor-id="un-ejemplo-del-estilo">Un ejemplo del estilo</h2>
-<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<p>Este curso reúne tres temas que han transformado la econometría aplicada en las últimas dos décadas, y que comparten una misma pregunta: <strong>cómo hacer inferencia válida cuando el modelo paramétrico simple ya no alcanza</strong>. El primero es la <strong>inferencia causal</strong>: qué significa, matemáticamente, el efecto de un tratamiento, y bajo qué supuestos los datos lo identifican (experimentos, selección en observables, instrumentos, diferencias en diferencias, discontinuidades). El segundo son los <strong>métodos no paramétricos y de alta dimensión</strong>: estimar funciones sin imponer una forma, regularizar cuando hay más variables que observaciones, y usar aprendizaje automático sin perder la inferencia. El tercero es la <strong>inferencia robusta</strong>: cómo calcular errores estándar y valores <span class="math inline">\(p\)</span> confiables cuando fallan las aproximaciones habituales (remuestreo, clusters, instrumentos débiles).</p>
+<p>Como en los cursos anteriores, cada resultado está demostrado o marcado como un hecho que se toma prestado (los desarrollos de Edgeworth, el test CLR, las cotas minimax y pocos más), y cada demostración va precedida de un recuadro <strong>Borrador</strong> donde se piensa en voz alta cómo encontrarla. Las secciones <strong>★ Postgrado</strong> profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Requisitos">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Borrador
+<span class="screen-reader-only">Precaución</span>Requisitos
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Quiero mostrar que <span class="math inline">\(X'Xb = 0\)</span> implica <span class="math inline">\(Xb = 0\)</span>. No puedo “cancelar” <span class="math inline">\(X'\)</span> porque no tiene inversa. ¿Qué sé de vectores que son cero? Que un vector es cero si y solo si su norma es cero. Y <span class="math inline">\(\|Xb\|^2 = b'X'Xb\)</span>… ¡que tiene un <span class="math inline">\(X'Xb\)</span> adentro! Es el truco de multiplicar por <span class="math inline">\(b'\)</span> a la izquierda.</p>
+<p>Este curso supone Econometría 1 (MCO, teoría asintótica, variables instrumentales) y Econometría 2 (M-estimadores, máxima verosimilitud, GMM, paneles). Algunas clases usan además Econometría 3 (el estimador HAC y el bootstrap de funciones impulso-respuesta). Se citan por número de clase.</p>
 </div>
 </div>
-<div class="proof">
-<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(X'Xb = 0\)</span>, entonces <span class="math inline">\(0 = b'X'Xb = (Xb)'(Xb) = \|Xb\|^2 = \sum_i (Xb)_i^2\)</span>. Una suma de cuadrados es cero solo si cada término lo es, luego <span class="math inline">\(Xb = 0\)</span>.</p>
-</div>
-<p style="margin-top:2rem;">
-Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, donde se usa para demostrar que <span class="math inline">\(X'X\)</span> es invertible exactamente cuando <span class="math inline">\(X\)</span> tiene rango columna completo.
-</p>
+<section id="clases" class="level2">
+<h2 class="anchored" data-anchor-id="clases">Clases</h2>
+<ul class="clases">
+<li>
+<span class="n">01</span><span><a href="../econometria-4/clase-01.html">Resultados potenciales y experimentos</a><span class="d">Modelo de Rubin, SUTVA, ATE y ATT, sesgo de selección, aleatorización, varianza de Neyman y potencia. ★ Test de aleatorización de Fisher.</span></span>
+</li>
+<li>
+<span class="n">02</span><span><a href="../econometria-4/clase-02.html">Selección en observables</a><span class="d">Insesgamiento condicional y traslape, el teorema del propensity score, ponderación inversa, matching y el estimador AIPW doblemente robusto. ★ Cota de eficiencia.</span></span>
+</li>
+<li>
+<span class="n">03</span><span><a href="../econometria-4/clase-03.html">Variables instrumentales con efectos heterogéneos</a><span class="d">Compliers, monotonía, el teorema de Imbens–Angrist (Wald = LATE) y MC2E como promedio ponderado. ★ Efectos de tratamiento marginales.</span></span>
+</li>
+<li>
+<span class="n">04</span><span><a href="../econometria-4/clase-04.html">Diferencias en diferencias</a><span class="d">Tendencias paralelas, estudios de eventos, correlación serial y adopción escalonada con pesos negativos de los efectos fijos bidireccionales. ★ Residuo bidireccional.</span></span>
+</li>
+<li>
+<span class="n">05</span><span><a href="../econometria-4/clase-05.html">Econometría no paramétrica</a><span class="d">Kernel, Nadaraya–Watson y regresión local lineal con sesgo y varianza demostrados, validación cruzada, series y la maldición de la dimensionalidad. ★ Cotas minimax.</span></span>
+</li>
+<li>
+<span class="n">06</span><span><a href="../econometria-4/clase-06.html">Regresión discontinua</a><span class="d">Identificación por continuidad, estimación local lineal, inferencia robusta con corrección de sesgo, validez y RD difusa. ★ Sesgo de frontera.</span></span>
+</li>
+<li>
+<span class="n">07</span><span><a href="../econometria-4/clase-07.html">Alta dimensión: LASSO</a><span class="d">Ridge y LASSO, KKT, umbral suave, la desigualdad oráculo y el fracaso de la inferencia post-selección. ★ Demostración de la desigualdad oráculo.</span></span>
+</li>
+<li>
+<span class="n">08</span><span><a href="../econometria-4/clase-08.html">Aprendizaje automático para inferencia causal</a><span class="d">Modelo parcialmente lineal, ortogonalidad de Neyman, cross-fitting y el teorema de DML con producto de tasas. ★ Momentos ortogonales.</span></span>
+</li>
+<li>
+<span class="n">09</span><span><a href="../econometria-4/clase-09.html">Bootstrap</a><span class="d">Consistencia, intervalos percentil-t y refinamiento asintótico, fallas, bootstrap salvaje y por bloques. ★ Desarrollos de Edgeworth.</span></span>
+</li>
+<li>
+<span class="n">10</span><span><a href="../econometria-4/clase-10.html">Inferencia robusta</a><span class="d">Errores por clúster, pocos clusters y bootstrap salvaje, clusters de tamaño desigual e instrumentos débiles con el test de Anderson–Rubin. ★ Número efectivo de clusters.</span></span>
+</li>
+</ul>
+</section>
+<section id="notación" class="level2">
+<h2 class="anchored" data-anchor-id="notación">Notación</h2>
+<p>Los resultados potenciales son <span class="math inline">\(Y_i(0),Y_i(1)\)</span>, el tratamiento <span class="math inline">\(D_i\)</span> y las covariables <span class="math inline">\(X_i\)</span>; el propensity score es <span class="math inline">\(e(x) = P(D = 1\mid X = x)\)</span> y <span class="math inline">\(\mu_d(x) = \mathbb{E}[Y\mid D = d,X = x]\)</span>. ATE, ATT y LATE son los efectos promedio sobre toda la población, los tratados y los cumplidores. <span class="math inline">\(K\)</span> es un kernel y <span class="math inline">\(h\)</span> un ancho de banda; <span class="math inline">\(\|\beta\|_1\)</span> y <span class="math inline">\(\|\beta\|_0\)</span> son las normas <span class="math inline">\(\ell_1\)</span> y de conteo; <span class="math inline">\(\hat\eta\)</span> denota las funciones de perturbación estimadas y <span class="math inline">\(\psi\)</span> un momento ortogonal. <span class="math inline">\(\hat\theta^*\)</span> es un estimador bootstrap y <span class="math inline">\(G\)</span> el número de clusters. Los vectores son columna y <span class="math inline">\('\)</span> es la transpuesta.</p>
+</section>
+<section id="bibliografía" class="level2">
+<h2 class="anchored" data-anchor-id="bibliografía">Bibliografía</h2>
+<ul>
+<li>Imbens, G. y Rubin, D. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences</em>. Cambridge University Press. (La referencia para las Clases 1 a 3.)</li>
+<li>Angrist, J. y Pischke, J.-S. (2009). <em>Mostly Harmless Econometrics</em>. Princeton University Press. (Diferencias en diferencias, discontinuidad y VI con mirada aplicada.)</li>
+<li>Cunningham, S. (2021). <em>Causal Inference: The Mixtape</em>. Yale University Press. (Introducción accesible a los diseños causales.)</li>
+<li>Li, Q. y Racine, J. (2007). <em>Nonparametric Econometrics</em>. Princeton University Press. (Clase 5.)</li>
+<li>Tsybakov, A. (2009). <em>Introduction to Nonparametric Estimation</em>. Springer. (Cotas minimax.)</li>
+<li>Hastie, T., Tibshirani, R. y Wainwright, M. (2015). <em>Statistical Learning with Sparsity</em>. CRC Press. (LASSO y alta dimensión.)</li>
+<li>Chernozhukov, V. et al.&nbsp;(2018). “Double/debiased machine learning for treatment and structural parameters”, <em>Econometrics Journal</em>. (Clase 8.)</li>
+<li>Hall, P. (1992). <em>The Bootstrap and Edgeworth Expansion</em>. Springer. (Clase 9.)</li>
+<li>Cameron, A. C. y Miller, D. (2015). “A practitioner’s guide to cluster-robust inference”, <em>Journal of Human Resources</em>. (Clase 10.)</li>
+<li>Hansen, B. (2022). <em>Econometrics</em>. Princeton University Press. (Postgrado; marco moderno.)</li>
+</ul>
 
 
 </section>
@@ -718,6 +748,15 @@ Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, 
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-4/clase-01.html" class="pagination-link" aria-label="Clase 1 · Resultados potenciales y experimentos">
+        <span class="nav-page-text">Clase 1 · Resultados potenciales y experimentos</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -736,5 +775,5 @@ Este es un fragmento de la <a href="./econometria-1/clase-01.html">Clase 1</a>, 
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -1,0 +1,216 @@
+---
+title: "Clase 9 · Bootstrap"
+subtitle: "Remuestreo, refinamientos asintóticos, bootstrap salvaje y datos dependientes"
+description: "El principio del bootstrap de Efron: consistencia para la media con demostración, funciones suaves, intervalos percentil, básico y percentil-t, el refinamiento asintótico por pivotalidad, los fracasos del bootstrap (máximo), el bootstrap salvaje y de pares en regresión y el bootstrap por bloques para series de tiempo."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Usar la muestra como si fuera la población
+
+Casi toda la inferencia que hemos hecho se apoya en aproximaciones **asintóticas**: la distribución de un estimador se aproxima por una normal cuya varianza se estima con una fórmula (el sándwich de Econometría 1, la varianza de Neyman, el estimador HAC). Eso tiene tres límites: (i) la fórmula puede ser **difícil o imposible de derivar** (un cociente de estimadores, un cuantil, un estimador de dos pasos con ML); (ii) la aproximación normal puede ser **mala** en muestras finitas; (iii) para algunos estadísticos, la distribución límite **no es normal** y no hay fórmula conveniente.
+
+El **bootstrap** de Efron (1979) es una forma radicalmente distinta de aproximar la distribución de un estadístico: en vez de derivarla teóricamente, **la simula**. La idea es la del *principio de analogía* (Goldberger, Clase 1 de Econometría 1): el mundo real es "población $F\to$ muestra $\to$ estadístico $\hat\theta$"; **imitamos** ese mundo en la computadora: tratamos la muestra como si fuera la población, extraemos de ella **nuevas muestras** y vemos cómo se distribuye el estadístico recalculado.[^efron]
+
+[^efron]: Bradley Efron presentó el bootstrap en 1979, y el nombre viene de la expresión inglesa "to pull oneself up by one's bootstraps" (levantarse tirando de los propios cordones de las botas), que alude a hacer algo aparentemente imposible: obtener información sobre la variabilidad del estadístico *usando solo la misma muestra*. El método fue posible gracias al aumento del poder computacional: hasta entonces, simular miles de veces un estimador era impensable; hoy es casi gratis, y por eso el bootstrap se volvió una herramienta estándar.
+
+# El principio del bootstrap
+
+Sea $X_1,\dots,X_n$ i.i.d. con distribución $F$ y $\hat\theta = T(X_1,\dots,X_n)$ un estadístico (una media, una mediana, un coeficiente de regresión). Interesa la distribución de $\sqrt n(\hat\theta - \theta(F))$, que depende de $F$ desconocida. El **bootstrap** reemplaza $F$ por la **distribución empírica** $\hat F_n$ (que da probabilidad $1/n$ a cada $X_i$):
+
+1. Generar una **muestra bootstrap** $X_1^*,\dots,X_n^*$ extrayendo **con reemplazo** $n$ observaciones de $\{X_1,\dots,X_n\}$.
+2. Calcular $\hat\theta^* = T(X_1^*,\dots,X_n^*)$.
+3. Repetir $B$ veces (por ejemplo, $B = 1\,000$): $\hat\theta^*_1,\dots,\hat\theta^*_B$.
+
+La distribución de $\sqrt n(\hat\theta^* - \hat\theta)$, **condicional en los datos**, es la **distribución bootstrap**, y se usa para aproximar la de $\sqrt n(\hat\theta - \theta)$. En términos prácticos:
+$$
+\widehat{\operatorname{ee}}_{boot} = \Big(\frac1{B - 1}\sum_{b = 1}^B(\hat\theta_b^* - \bar\theta^*)^2\Big)^{1/2},\qquad\widehat{\text{sesgo}}_{boot} = \bar\theta^* - \hat\theta.
+$$
+Cada muestra bootstrap contiene aproximadamente el $63{,}2$ % de las observaciones distintas (la probabilidad de que una observación **no** salga en una muestra es $(1 - 1/n)^n\to e^{-1} = 0{,}368$), y las demás aparecen repetidas. No se necesita ninguna fórmula para la varianza del estadístico: **el computador la aproxima**.
+
+# Consistencia del bootstrap
+
+El bootstrap es válido si la distribución bootstrap, que es una distribución **condicional en los datos**, converge a la misma distribución límite que la del estadístico original.
+
+::: {#def-boot-cons}
+## Consistencia del bootstrap
+El bootstrap es **consistente** para $\sqrt n(\hat\theta - \theta)$ si
+$$
+\sup_{x}\Big|P^*\big(\sqrt n(\hat\theta^* - \hat\theta)\le x\big) - P\big(\sqrt n(\hat\theta - \theta)\le x\big)\Big|\xrightarrow{p}0,
+$$
+donde $P^*$ es la probabilidad condicional en la muestra.
+:::
+
+::: {#thm-boot-media}
+## El bootstrap de la media es consistente
+Si $X_i$ son i.i.d. con $\mathbb{E}X^2<\infty$, $\mu = \mathbb{E}X$ y $\sigma^2 = \operatorname{Var}(X)>0$, entonces el bootstrap de la media muestral es consistente, casi seguramente:
+$$
+\sup_x\Big|P^*\big(\sqrt n(\bar X^* - \bar X)\le x\big) - P\big(\sqrt n(\bar X - \mu)\le x\big)\Big|\to0.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Condicional en la muestra, $X_1^*,\dots,X_n^*$ son i.i.d. con distribución $\hat F_n$, cuya media es $\bar X$ y cuya varianza es $\hat\sigma_n^2 = \frac1n\sum(X_i - \bar X)^2$. Es un **arreglo triangular** (cambia con $n$) de variables i.i.d., así que quiero aplicar un TCL para arreglos: el de Lindeberg–Feller. Hay que verificar que la varianza converge y que se cumple la condición de Lindeberg. La varianza empírica $\hat\sigma_n^2\to\sigma^2$ por la ley fuerte de los grandes números. La condición de Lindeberg dice que ningún dato individual domina la suma, y se cumple porque $\max_i|X_i|/\sqrt n\to0$ cuando hay segundo momento finito. Con eso, la distribución bootstrap converge a $N(0,\sigma^2)$, que es la misma distribución límite del estadístico original.
+:::
+
+::: {.proof}
+Condicional en $\{X_i\}$, $\sqrt n(\bar X^* - \bar X) = n^{-1/2}\sum_i(X_i^* - \bar X)$ es una suma de variables i.i.d. (con distribución $\hat F_n$) de media cero y varianza $\hat\sigma_n^2$. Por la ley fuerte, $\hat\sigma_n^2 = \frac1n\sum X_i^2 - \bar X^2\to\sigma^2$ casi seguramente. La **condición de Lindeberg** para el arreglo es, para todo $\varepsilon>0$,
+$$
+\frac1{\hat\sigma_n^2}\mathbb{E}^*\Big[(X^* - \bar X)^2\mathbf{1}\{|X^* - \bar X|>\varepsilon\sqrt n\hat\sigma_n\}\Big] = \frac1{\hat\sigma_n^2}\cdot\frac1n\sum_{i = 1}^n(X_i - \bar X)^2\mathbf{1}\{|X_i - \bar X|>\varepsilon\sqrt n\hat\sigma_n\}\to0\quad\text{c.s.}
+$$
+Esto vale porque $\mathbb{E}X^2<\infty$ implica $\max_{i\le n}|X_i|/\sqrt n\to0$ c.s. (en el límite, los indicadores son cero para todo $i\le n$ a partir de cierto $n$ y el promedio de términos acotados por $\frac1n\sum(X_i - \bar X)^2\to\sigma^2$ se anula). Por el TCL de Lindeberg–Feller, $\sqrt n(\bar X^* - \bar X)/\hat\sigma_n\Rightarrow N(0,1)$ condicionalmente, y como $\hat\sigma_n\to\sigma$, $\sqrt n(\bar X^* - \bar X)\Rightarrow N(0,\sigma^2)$. Por otro lado, $\sqrt n(\bar X - \mu)\Rightarrow N(0,\sigma^2)$ por el TCL. Ambas funciones de distribución convergen a la **misma función continua** $\Phi(x/\sigma)$, y por el teorema de Pólya (convergencia puntual a una distribución continua implica convergencia uniforme), la diferencia converge uniformemente a cero.
+:::
+
+El resultado se extiende a **funciones suaves de medias** (la clase que incluye varianzas, correlaciones, razones y coeficientes de MCO): si $\theta = g(\mu)$ con $g$ continuamente diferenciable y $\nabla g(\mu)\ne0$, el **método delta condicional** (Clase 6 de Econometría 1) da $\sqrt n(g(\bar X^*) - g(\bar X))\approx\nabla g(\bar X)'\sqrt n(\bar X^* - \bar X)\Rightarrow N\big(0,\nabla g(\mu)'\Sigma\nabla g(\mu)\big)$, la misma distribución límite que $\sqrt n(g(\bar X) - g(\mu))$. Por lo tanto el bootstrap es consistente para MCO, MV, GMM y la mayoría de los estimadores de los cursos anteriores (bajo condiciones de regularidad; es lo que se verifica en la literatura de Hall (1992) y Horowitz (2001)).
+
+## Intervalos de confianza bootstrap
+
+Con $B$ réplicas hay varias maneras de construir un intervalo del $(1 - \alpha)$ para $\theta$:
+
+| Método | Intervalo | Idea |
+|---|---|---|
+| **Normal** | $\hat\theta\pm z_{1 - \alpha/2}\widehat{\operatorname{ee}}_{boot}$ | solo usa el error estándar bootstrap |
+| **Percentil** | $[q^*_{\alpha/2},\ q^*_{1 - \alpha/2}]$ | cuantiles de $\hat\theta^*$ |
+| **Básico (pivotal)** | $[2\hat\theta - q^*_{1 - \alpha/2},\ 2\hat\theta - q^*_{\alpha/2}]$ | usa la distribución de $\hat\theta^* - \hat\theta$ como la de $\hat\theta - \theta$ |
+| **Percentil-$t$** | $[\hat\theta - t^*_{1 - \alpha/2}\widehat{\operatorname{ee}},\ \hat\theta - t^*_{\alpha/2}\widehat{\operatorname{ee}}]$ | cuantiles del estadístico **estudentizado** $t^* = (\hat\theta^* - \hat\theta)/\operatorname{ee}^*$ |
+
+El percentil-$t$ requiere calcular un error estándar $\operatorname{ee}^*$ **dentro** de cada réplica (con una fórmula, o con un bootstrap anidado). Los cuatro son asintóticamente válidos, pero **difieren en su precisión en muestras finitas**, y esa diferencia tiene una explicación teórica.
+
+## El refinamiento asintótico del percentil-$t$
+
+Un intervalo basado en la aproximación normal tiene un **error de cobertura** de orden $n^{-1/2}$ (para intervalos de una cola) o $n^{-1}$ (de dos colas). El bootstrap del **estadístico estudentizado** logra un error **menor**: $n^{-1}$ en una cola y $n^{-2}$ en dos colas. Es el **refinamiento asintótico** (Hall, 1992), y la condición clave es que el estadístico sea **asintóticamente pivotal**: su distribución límite **no depende de parámetros desconocidos**.
+
+La razón (§★) usa el **desarrollo de Edgeworth** de la función de distribución: para un estadístico estándar, $P(T_n\le x) = \Phi(x) + n^{-1/2}p(x)\phi(x) + O(n^{-1})$, donde el polinomio $p$ depende de momentos desconocidos de $F$. El bootstrap estima ese término con **error $O(n^{-1/2})$** (porque los momentos se estiman a esa tasa), de modo que el error total es $n^{-1/2}\cdot O(n^{-1/2}) = O(n^{-1})$: **la mitad del error de la aproximación normal** (que ignora el término $n^{-1/2}p(x)\phi(x)$). Pero esto funciona solo si el estadístico es **pivotal**: si $T_n = \sqrt n(\hat\theta - \theta)$ (no estudentizado), su distribución depende de $\sigma$, y el bootstrap estima $\sigma$ con error $O(n^{-1/2})$, **el mismo orden** que se quería corregir: no hay mejora respecto de la normal. Por eso, **la recomendación general es hacer bootstrap de estadísticos estudentizados** (percentil-$t$), y no de estimadores "crudos".
+
+# Cuando el bootstrap falla
+
+El bootstrap no es una varita mágica: requiere que el estadístico sea "suave" en $F$. Cuatro casos clásicos de **inconsistencia**:
+
+**(1) Estadísticos de orden extremos.** Sea $X_i\sim U(0,\theta)$ y $\hat\theta = X_{(n)}$ (el máximo). La distribución verdadera es $n(\theta - X_{(n)})\Rightarrow\text{Exp}(1/\theta)$, **continua**. Pero en el bootstrap, el máximo de la muestra bootstrap **es igual a $X_{(n)}$ con probabilidad positiva**:
+
+::: {#prp-boot-max}
+## El bootstrap del máximo es inconsistente
+$P^*\big(X^*_{(n)} = X_{(n)}\big) = 1 - (1 - 1/n)^n\to1 - e^{-1} = 0{,}632$.
+:::
+
+::: {.proof}
+$X^*_{(n)} = X_{(n)}$ si y solo si **al menos una** de las $n$ extracciones con reemplazo elige la observación máxima. La probabilidad de que una extracción **no** la elija es $1 - 1/n$, y como son independientes, la de que **ninguna** la elija es $(1 - 1/n)^n$. Luego $P^*(X^*_{(n)} = X_{(n)}) = 1 - (1 - 1/n)^n\to1 - e^{-1}$.
+:::
+
+Entonces la distribución bootstrap de $n(\hat\theta - \hat\theta^*)$ tiene un **átomo de masa $0{,}632$ en cero**, mientras que la verdadera distribución de $n(\theta - \hat\theta)$ no tiene ningún átomo: el bootstrap **no** aproxima la distribución. El estadístico no es suave en $F$ (depende del extremo del soporte).
+
+**(2) Parámetros en la frontera** o **no regulares** (el estimador de Hodges y el test de razón de verosimilitud con parámetro en la frontera, Clases 2 y 3 de Econometría 2): la distribución del estimador es **no uniforme** en el parámetro, y el bootstrap, que se calcula en el valor estimado, no la reproduce. **(3) Momentos infinitos** (varianza infinita): la distribución límite del promedio no es normal y el bootstrap con $n$ de $n$ falla. **(4) Datos dependientes**: el bootstrap i.i.d. destruye la dependencia (abajo).
+
+Remedios comunes: el **bootstrap de $m$ de $n$** (remuestrear $m\ll n$ observaciones, con $m\to\infty$ y $m/n\to0$) y el **submuestreo** (*subsampling*, Politis y Romano, 1994), que funcionan bajo condiciones mucho más débiles pero con menor precisión.
+
+# Bootstrap en regresión
+
+Con datos de regresión $(Y_i,X_i)$, el remuestreo puede hacerse de varias maneras, que **suponen cosas distintas**:
+
+- **Bootstrap de pares** (*pairs/case resampling*): se remuestrea con reemplazo el par completo $(Y_i,X_i)$ y se recalcula $\hat\beta^*$. Es **robusto a la heterocedasticidad** y a mala especificación de la forma de la varianza, porque preserva la relación entre $X_i$ y la distribución de $Y_i$ dado $X_i$. Es la opción por defecto cuando las observaciones son i.i.d.
+- **Bootstrap de residuos**: se estima $\hat\beta$ y los residuos $\hat u_i$, y se construye $Y_i^* = X_i'\hat\beta + u_i^*$ con $u_i^*$ remuestreado de $\{\hat u_j\}$. **Supone errores i.i.d.** (homocedasticidad: los residuos se "mezclan" entre observaciones con distintas $X_i$). Es inconsistente bajo heterocedasticidad.
+- **Bootstrap salvaje** (*wild*, Wu, 1986; Liu, 1988; Mammen, 1993): conserva la heterocedasticidad **sin remuestrear**: $Y_i^* = X_i'\hat\beta + \hat u_iw_i$, con $w_i$ i.i.d. e independientes de los datos, con $\mathbb{E}[w_i] = 0$ y $\mathbb{E}[w_i^2] = 1$.
+
+::: {#prp-wild}
+## El bootstrap salvaje reproduce el estimador de White
+Con $\hat\beta^* = (X'X)^{-1}X'Y^*$, la varianza bootstrap condicional es
+$$
+\operatorname{Var}^*(\hat\beta^*) = (X'X)^{-1}\Big(\sum_iX_iX_i'\hat u_i^2\Big)(X'X)^{-1},
+$$
+el estimador HC0 de **White** (Clase 7 de Econometría 1).
+:::
+
+::: {.proof}
+$\hat\beta^* - \hat\beta = (X'X)^{-1}X'(\hat u\odot w) = (X'X)^{-1}\sum_iX_i\hat u_iw_i$. Condicional en los datos, los $w_i$ son independientes de media cero y varianza uno, así que $\operatorname{Var}^*\big(\sum X_i\hat u_iw_i\big) = \sum_iX_iX_i'\hat u_i^2$, y se multiplica por $(X'X)^{-1}$ a cada lado.
+:::
+
+Las dos distribuciones más usadas para $w_i$ son la de **Rademacher** ($w = +1$ o $-1$ con probabilidad $\tfrac12$ cada uno) y la de **Mammen** ($w = -(\sqrt5 - 1)/2$ con probabilidad $(\sqrt5 + 1)/(2\sqrt5)$ y $w = (\sqrt5 + 1)/2$ con la complementaria): ambas tienen media cero y varianza uno, y la de Mammen además tiene **tercer momento igual a uno**, lo que mejora el comportamiento en muestras finitas cuando los errores son asimétricos (Ejercicio 9.5). El bootstrap salvaje es la herramienta estándar con **heterocedasticidad** y, en su versión **agrupada por cluster**, con **pocos clusters** (Clase 10).
+
+Cuando se usa el bootstrap para **testear una hipótesis**, conviene **imponer la hipótesis nula** al generar las muestras (usando los residuos del modelo **restringido**), de modo que la distribución bootstrap sea la del estadístico **bajo $H_0$** (Davidson y MacKinnon). Es la forma que tiene el mejor control del tamaño.
+
+# Datos dependientes
+
+El bootstrap i.i.d. **falla** con series de tiempo: al remuestrear observaciones sueltas se **destruye** la dependencia temporal. Por ejemplo, para la media de un AR(1) con coeficiente $\phi$, el bootstrap i.i.d. reproduce la varianza $\gamma(0)/n$ y no la correcta, $\sigma_{LR}^2/n = \gamma(0)\frac{1 + \phi}{1 - \phi}\cdot\frac1n$ (Clase 1 de Econometría 3): subestima el error estándar por un factor $\sqrt{(1 - \phi)/(1 + \phi)}$ (con $\phi = 0{,}6$, a la mitad: Ejercicio 9.6). Hay dos soluciones principales:
+
+- **Bootstrap por bloques** (Künsch, 1989; Liu y Singh, 1992): se remuestrean **bloques consecutivos** de longitud $\ell$ (con $\ell\to\infty$ y $\ell/n\to0$, típicamente $\ell\sim n^{1/3}$) y se concatenan para formar la serie bootstrap. La dependencia **dentro** de cada bloque se preserva; la de **entre** bloques se pierde (error de borde). Variantes: bloques **móviles** (solapados), el **bootstrap estacionario** de Politis y Romano (longitudes aleatorias geométricas, para que la serie bootstrap sea estacionaria) y bloques **no solapados**. La varianza bootstrap de la media converge a la **varianza de largo plazo** (el estimador de Newey–West de la Clase 5 de Econometría 3, de manera no paramétrica).
+- **Bootstrap basado en un modelo** (*sieve* o de residuos): se ajusta un modelo (un AR($p$), un VAR) y se remuestrean los **residuos** (que son i.i.d. bajo el modelo), regenerando la serie recursivamente. Es lo que se hace para las **funciones impulso-respuesta** (Clase 10 de Econometría 3), con **corrección de sesgo** de Kilian para los coeficientes cerca de la raíz unitaria.
+
+# ★ Postgrado: Edgeworth y el refinamiento del percentil-$t$
+
+::: {.callout-important title="★ Postgrado"}
+Los desarrollos de Edgeworth (que se toman prestados: Hall, 1992) permiten ver **por qué** el bootstrap del estadístico estudentizado mejora la aproximación normal y el del no estudentizado no.
+:::
+
+Sea $X_i$ i.i.d. con media $\mu$, varianza $\sigma^2$, **asimetría** $\kappa = \mathbb{E}[(X - \mu)^3]/\sigma^3$ y suficientes momentos. Entonces
+$$
+P\Big(\frac{\sqrt n(\bar X - \mu)}\sigma\le x\Big) = \Phi(x) - \frac{\kappa}{6\sqrt n}(x^2 - 1)\phi(x) + O(n^{-1}),
+$$
+$$
+P\Big(\frac{\sqrt n(\bar X - \mu)}{s}\le x\Big) = \Phi(x) + \frac\kappa{6\sqrt n}(2x^2 + 1)\phi(x) + O(n^{-1}),
+$$
+con $s$ la desviación estándar muestral (**estudentizado**). Lo que importa es la **estructura**: la corrección de orden $n^{-1/2}$ es un polinomio par por $\phi(x)$ multiplicado por $\kappa$ (que es un parámetro **desconocido**). El análogo bootstrap tiene la misma forma con $\hat\kappa$ en lugar de $\kappa$.
+
+*Estudentizado (pivotal).* $P^*(\sqrt n(\bar X^* - \bar X)/s^*\le x) - P(\sqrt n(\bar X - \mu)/s\le x) = \frac{\hat\kappa - \kappa}{6\sqrt n}(2x^2 + 1)\phi(x) + O_p(n^{-1}) = O_p(n^{-1/2})\cdot O(n^{-1/2}) = O_p(n^{-1})$, porque $\hat\kappa - \kappa = O_p(n^{-1/2})$. La aproximación bootstrap tiene error $O(n^{-1})$, **menor** que el $O(n^{-1/2})$ de la normal.
+
+*No estudentizado, escala desconocida.* La distribución de $\sqrt n(\bar X - \mu)$ (sin dividir por $\sigma$) es $G_n(x) = \Phi(x/\sigma) + O(n^{-1/2})$, y el bootstrap la aproxima con $\hat G_n(x) = \Phi(x/\hat\sigma) + O_p(n^{-1/2})$. Pero $\Phi(x/\hat\sigma) - \Phi(x/\sigma) = \phi(x/\sigma)\frac x{\sigma^2}(\sigma - \hat\sigma) + \dots = O_p(n^{-1/2})$ porque $\hat\sigma - \sigma = O_p(n^{-1/2})$: **ese error es del mismo orden $n^{-1/2}$** que el de la aproximación normal. No hay refinamiento: **la pivotalidad** es la que elimina el término de orden $n^{-1/2}$.
+
+Una observación sobre las **colas**: en las expansiones, el término de $n^{-1/2}$ es **par** como función de $x$ y por eso se **cancela** en el intervalo de dos colas ($P(|T|\le x) = P(T\le x) - P(T\le-x)$ elimina los polinomios pares en $x$ multiplicados por la misma constante, y el error baja a $O(n^{-1})$ y, con bootstrap, a $O(n^{-2})$). Para intervalos de **una cola** (pruebas unilaterales) el refinamiento es el más valioso: el error normal es $O(n^{-1/2})$ y el del percentil-$t$, $O(n^{-1})$.
+
+# Resumen
+
+- **Bootstrap:** aproximar la distribución de $\hat\theta$ remuestreando de $\hat F_n$ y recalculando $\hat\theta^*$. No requiere fórmulas de varianza.
+- **Consistencia** (@thm-boot-media): para la media vía el TCL de Lindeberg–Feller condicional; se extiende a funciones suaves de medias (método delta). Cuatro intervalos: normal, percentil, básico y **percentil-$t$**.
+- **Refinamiento asintótico:** el percentil-$t$ (estadístico **pivotal**) reduce el error de $n^{-1/2}$ a $n^{-1}$ (Edgeworth). El estadístico no estudentizado no mejora.
+- **Fallas:** máximo (@prp-boot-max: átomo de $0{,}632$), parámetros en la frontera, momentos infinitos, **datos dependientes**. Remedios: $m$ de $n$, submuestreo.
+- **Regresión:** pares (robusto), residuos (supone homocedasticidad) y **salvaje** (reproduce White, @prp-wild; Rademacher, Mammen). Imponer $H_0$ para tests.
+- **Series de tiempo:** bootstrap por **bloques** (largo $\sim n^{1/3}$, estacionario) o basado en un modelo (IRF).
+
+# Ejercicios
+
+**Ejercicio 9.1.** (a) ¿Cuántas muestras bootstrap distintas (no ordenadas) hay para $n = 5$? (b) ¿Cuál es la probabilidad de que una observación dada no aparezca en una muestra bootstrap para $n = 5$, $n = 100$ y $n\to\infty$?
+
+::: {.callout-tip collapse="true" title="Solución 9.1"}
+(a) El número de multiconjuntos de tamaño $n$ de un conjunto de $n$ elementos es $\binom{2n - 1}n$: para $n = 5$, $\binom95 = 126$. (b) $(1 - 1/n)^n$: $n = 5$: $0{,}8^5 = 0{,}328$; $n = 100$: $0{,}99^{100} = 0{,}366$; $n\to\infty$: $e^{-1} = 0{,}368$. Entonces cada muestra bootstrap contiene en promedio $1 - 0{,}368 = 63{,}2$ % de las observaciones originales (distintas), y el $36{,}8$ % restante aparece duplicado. Esas observaciones "fuera de la bolsa" (*out-of-bag*) se usan, por ejemplo, para estimar el error de predicción de los bosques aleatorios.
+:::
+
+**Ejercicio 9.2.** Cinco medias bootstrap (como ejemplo mínimo; en la práctica $B\ge1\,000$) son $5{,}8,\,6{,}4,\,6{,}0,\,6{,}6,\,6{,}2$. Calcula el error estándar bootstrap. Si la media muestral original es $6{,}0$, ¿cuál es el sesgo bootstrap estimado?
+
+::: {.callout-tip collapse="true" title="Solución 9.2"}
+Media de las réplicas: $\bar\theta^* = 6{,}2$. Desviaciones: $-0{,}4,\,0{,}2,\,-0{,}2,\,0{,}4,\,0$; cuadrados: $0{,}16,\,0{,}04,\,0{,}04,\,0{,}16,\,0$; suma $=0{,}40$. $\widehat{\operatorname{ee}}_{boot} = \sqrt{0{,}40/4} = 0{,}316$. Sesgo estimado: $\bar\theta^* - \hat\theta = 6{,}2 - 6{,}0 = 0{,}2$. (Para la media muestral el sesgo verdadero es cero: este $0{,}2$ es ruido de simulación con solo cinco réplicas. Con $B = 1\,000$ el error de Monte Carlo sería mucho menor.)
+:::
+
+**Ejercicio 9.3.** Con $\hat\theta = 2{,}1$, $\widehat{\operatorname{ee}} = 0{,}55$, y cuantiles bootstrap $q^*_{0{,}025} = 1{,}05$, $q^*_{0{,}975} = 3{,}20$ de $\hat\theta^*$ y $t^*_{0{,}025} = -2{,}3$, $t^*_{0{,}975} = 1{,}7$ del estadístico estudentizado, calcula los intervalos percentil, básico y percentil-$t$ del 95 %.
+
+::: {.callout-tip collapse="true" title="Solución 9.3"}
+Percentil: $[1{,}05;\ 3{,}20]$. Básico: $[2(2{,}1) - 3{,}20;\ 2(2{,}1) - 1{,}05] = [1{,}00;\ 3{,}15]$. Percentil-$t$: $[\hat\theta - t^*_{0{,}975}\widehat{\operatorname{ee}};\ \hat\theta - t^*_{0{,}025}\widehat{\operatorname{ee}}] = [2{,}1 - 1{,}7(0{,}55);\ 2{,}1 + 2{,}3(0{,}55)] = [1{,}165;\ 3{,}365]$. Notar que los intervalos difieren cuando la distribución bootstrap es **asimétrica**: la cola derecha de $\hat\theta^*$ ($3{,}20 - 2{,}1 = 1{,}1$) es más larga que la izquierda ($2{,}1 - 1{,}05 = 1{,}05$), levemente; el percentil-$t$ **corrige** por la asimetría del estadístico estudentizado ($t^*$ tiene cola izquierda más larga, $-2{,}3$ frente a $1{,}7$) y desplaza el intervalo a la derecha: intuitivamente, la asimetría indica que el estimador tiende a **subestimar**, y el intervalo compensa.
+:::
+
+**Ejercicio 9.4.** Calcula $P^*(X^*_{(n)} = X_{(n)})$ para $n = 10$ y $n = 100$. ¿Qué implica para el intervalo percentil del máximo?
+
+::: {.callout-tip collapse="true" title="Solución 9.4"}
+$1 - (1 - 1/n)^n$: $n = 10$: $1 - 0{,}9^{10} = 1 - 0{,}349 = 0{,}651$; $n = 100$: $1 - 0{,}99^{100} = 1 - 0{,}366 = 0{,}634$; límite $0{,}632$. En más del $63$ % de las muestras bootstrap, el máximo coincide con el original, de modo que $\hat\theta^* = \hat\theta$ y el **cuantil superior del intervalo percentil** es $\hat\theta$ mismo (nunca excede el máximo observado). El intervalo percentil para el límite superior $\theta$ del soporte **no puede cubrir valores mayores que $\hat\theta$**, aunque el verdadero $\theta$ es siempre $\ge X_{(n)}$ y casi siempre estrictamente mayor: el intervalo cubre con probabilidad $0$, no $95$ %. Una corrección es el bootstrap de $m$ de $n$.
+:::
+
+**Ejercicio 9.5.** Verifica que la distribución de Mammen tiene media $0$, varianza $1$ y tercer momento $1$.
+
+::: {.callout-tip collapse="true" title="Solución 9.5"}
+Valores $a = -(\sqrt5 - 1)/2 = -0{,}618$ con $p = (\sqrt5 + 1)/(2\sqrt5) = 0{,}7236$, y $b = (\sqrt5 + 1)/2 = 1{,}618$ con $1 - p = 0{,}2764$. Media: $0{,}7236(-0{,}618) + 0{,}2764(1{,}618) = -0{,}4472 + 0{,}4472 = 0$. Varianza (=segundo momento): $0{,}7236(0{,}382) + 0{,}2764(2{,}618) = 0{,}2764 + 0{,}7236 = 1$. Tercer momento: $0{,}7236(-0{,}236) + 0{,}2764(4{,}236) = -0{,}1708 + 1{,}1708 = 1{,}0$. La **asimetría** $\mathbb{E}w^3 = 1$ permite que los errores bootstrap $\hat u_iw_i$ reproduzcan hasta el tercer momento de $u_i$ (la asimetría condicional), lo que mejora el refinamiento. La de Rademacher es simétrica ($\mathbb{E}w^3 = 0$) y se prefiere cuando los errores son aproximadamente simétricos o con pocos clusters (Clase 10).
+:::
+
+**Ejercicio 9.6.** Para la media de un AR(1) con $\phi = 0{,}6$, compara la varianza que aproxima el bootstrap i.i.d. con la correcta. ¿Qué factor del error estándar se pierde? ¿Cuántos bloques se usarían con $n = 100$ y $\ell\approx n^{1/3}$?
+
+::: {.callout-tip collapse="true" title="Solución 9.6"}
+Bootstrap i.i.d.: $\gamma(0)/n$. Correcta: $\sigma_{LR}^2/n = \gamma(0)\frac{1 + \phi}{1 - \phi}\cdot\frac1n = 4\gamma(0)/n$ para $\phi = 0{,}6$ ($\frac{1{,}6}{0{,}4} = 4$). El i.i.d. captura $1/4$ de la varianza: el error estándar queda en $\sqrt{1/4} = 0{,}5$ de lo correcto: **se subestima a la mitad**, y un intervalo del 95 % tendría una cobertura real de $2\Phi(0{,}98) - 1\approx67$ %. Bloques: $\ell = 100^{1/3} = 4{,}6\approx5$, y $n/\ell = 20$ bloques por serie bootstrap. Con bloques de largo $5$ se captura la dependencia con rezagos hasta $4$, que con $\phi = 0{,}6$ es casi todo ($0{,}6^5 = 0{,}08$).
+:::
+
+**Ejercicio 9.7 ★.** Con $n = 25$ y asimetría $\kappa = 1$, calcula, con el desarrollo de Edgeworth del estadístico estudentizado, $P(T\le1{,}96)$ y $P(T\le-1{,}96)$. ¿Cuáles son los errores de cola de la aproximación normal? ¿Se cancelan en el intervalo de dos colas?
+
+::: {.callout-tip collapse="true" title="Solución 9.7 ★"}
+Término: $\dfrac{\kappa}{6\sqrt n}(2x^2 + 1)\phi(x)$ con $x = \pm1{,}96$: $\dfrac1{6\cdot5}(2\cdot3{,}842 + 1)(0{,}0584) = \dfrac{8{,}684\cdot0{,}0584}{30} = 0{,}0169$. $P(T\le1{,}96)\approx0{,}9750 + 0{,}0169 = 0{,}9919$ (cola derecha: $0{,}0081$, frente a la nominal $0{,}025$). $P(T\le-1{,}96)\approx0{,}0250 + 0{,}0169 = 0{,}0419$ (cola izquierda: $0{,}0419$, casi el **doble** de la nominal). Para una distribución asimétrica a la derecha, el estadístico estudentizado tiene cola izquierda más pesada. En el intervalo de **dos colas**: $0{,}9919 - 0{,}0419 = 0{,}950$: los errores se **cancelan** (el término es par en $x$ y suma el mismo valor en ambas colas), de modo que la cobertura de dos colas es correcta hasta $O(n^{-1})$. Pero cada **cola por separado** tiene error de $\approx0{,}017$ ($68$ % de error relativo): en pruebas **unilaterales** o intervalos de una cola, el percentil-$t$ es mucho mejor que el intervalo normal.
+:::

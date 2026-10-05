@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Inferencia válida cuando fallan los supuestos habituales: varianza robusta por clúster y su asintótica en el número de clusters, cuándo agrupar, el sesgo con pocos clusters, el bootstrap salvaje por clúster, clusters de tamaño desigual y la inferencia con instrumentos débiles mediante el test de Anderson–Rubin.">
+
+<title>Clase 10 · Inferencia robusta – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-09.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-10.html">Clase 10 · Inferencia robusta</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Aprendizaje automático para inferencia causal</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Bootstrap</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 10 · Inferencia robusta</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-la-fórmula-estándar-miente" id="toc-cuando-la-fórmula-estándar-miente" class="nav-link active" data-scroll-target="#cuando-la-fórmula-estándar-miente"><span class="header-section-number">1</span> Cuando la fórmula estándar miente</a></li>
+  <li><a href="#parte-a-errores-estándar-por-clúster" id="toc-parte-a-errores-estándar-por-clúster" class="nav-link" data-scroll-target="#parte-a-errores-estándar-por-clúster"><span class="header-section-number">2</span> Parte A: errores estándar por clúster</a>
+  <ul class="collapse">
+  <li><a href="#el-modelo-y-el-estimador" id="toc-el-modelo-y-el-estimador" class="nav-link" data-scroll-target="#el-modelo-y-el-estimador"><span class="header-section-number">2.1</span> El modelo y el estimador</a></li>
+  <li><a href="#cuándo-hay-que-agrupar" id="toc-cuándo-hay-que-agrupar" class="nav-link" data-scroll-target="#cuándo-hay-que-agrupar"><span class="header-section-number">2.2</span> ¿Cuándo hay que agrupar?</a></li>
+  </ul></li>
+  <li><a href="#pocos-clusters" id="toc-pocos-clusters" class="nav-link" data-scroll-target="#pocos-clusters"><span class="header-section-number">3</span> Pocos clusters</a>
+  <ul class="collapse">
+  <li><a href="#remedios" id="toc-remedios" class="nav-link" data-scroll-target="#remedios"><span class="header-section-number">3.1</span> Remedios</a></li>
+  <li><a href="#clusters-de-tamaño-desigual-el-número-efectivo" id="toc-clusters-de-tamaño-desigual-el-número-efectivo" class="nav-link" data-scroll-target="#clusters-de-tamaño-desigual-el-número-efectivo"><span class="header-section-number">3.2</span> Clusters de tamaño desigual: el número efectivo</a></li>
+  </ul></li>
+  <li><a href="#parte-b-instrumentos-débiles" id="toc-parte-b-instrumentos-débiles" class="nav-link" data-scroll-target="#parte-b-instrumentos-débiles"><span class="header-section-number">4</span> Parte B: instrumentos débiles</a>
+  <ul class="collapse">
+  <li><a href="#el-problema" id="toc-el-problema" class="nav-link" data-scroll-target="#el-problema"><span class="header-section-number">4.1</span> El problema</a></li>
+  <li><a href="#el-test-de-andersonrubin" id="toc-el-test-de-andersonrubin" class="nav-link" data-scroll-target="#el-test-de-andersonrubin"><span class="header-section-number">4.2</span> El test de Anderson–Rubin</a></li>
+  <li><a href="#más-instrumentos-más-herramientas" id="toc-más-instrumentos-más-herramientas" class="nav-link" data-scroll-target="#más-instrumentos-más-herramientas"><span class="header-section-number">4.3</span> Más instrumentos, más herramientas</a></li>
+  </ul></li>
+  <li><a href="#postgrado-clusters-con-tamaños-muy-heterogéneos" id="toc-postgrado-clusters-con-tamaños-muy-heterogéneos" class="nav-link" data-scroll-target="#postgrado-clusters-con-tamaños-muy-heterogéneos"><span class="header-section-number">5</span> ★ Postgrado: clusters con tamaños muy heterogéneos</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">6</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">7</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-10.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 10 · Inferencia robusta</h1>
+<p class="subtitle lead">Errores por clúster, pocos clusters e instrumentos débiles</p>
+</div>
+
+<div>
+  <div class="description">
+    Inferencia válida cuando fallan los supuestos habituales: varianza robusta por clúster y su asintótica en el número de clusters, cuándo agrupar, el sesgo con pocos clusters, el bootstrap salvaje por clúster, clusters de tamaño desigual y la inferencia con instrumentos débiles mediante el test de Anderson–Rubin.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-la-fórmula-estándar-miente" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando la fórmula estándar miente</h1>
+<p>Las clases anteriores desarrollaron estimadores y su distribución asintótica. Pero un buen estimador con <strong>errores estándar incorrectos</strong> produce conclusiones falsas: intervalos que cubren menos de lo anunciado, tests que rechazan con una frecuencia mucho mayor que el nivel nominal. Esta clase recoge los dos problemas de inferencia que más afectan el trabajo aplicado y que ya aparecieron en pasos anteriores:</p>
+<ol type="1">
+<li><strong>Dependencia dentro de grupos</strong> (clusters): observaciones de un mismo estado, escuela o empresa no son independientes. El error estándar usual los trata como si lo fueran. (Clase 9 de Econometría 2, Clase 4 de este curso.)</li>
+<li><strong>Instrumentos débiles</strong>: cuando el instrumento está poco correlacionado con la variable endógena, la distribución asintótica <strong>normal</strong> de MC2E deja de ser una buena aproximación, aunque <span class="math inline">\(n\)</span> sea grande. (Clase 10 de Econometría 1, Clase 3 de este curso.)</li>
+</ol>
+<p>En ambos casos, la solución moderna combina una <strong>fórmula robusta</strong> con una <strong>corrección de muestra finita</strong> o un método de <strong>inferencia alternativo</strong> cuya validez no depende del supuesto problemático.</p>
+</section>
+<section id="parte-a-errores-estándar-por-clúster" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Parte A: errores estándar por clúster</h1>
+<section id="el-modelo-y-el-estimador" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="el-modelo-y-el-estimador"><span class="header-section-number">2.1</span> El modelo y el estimador</h2>
+<p>Sean <span class="math inline">\(g = 1,\dots,G\)</span> clusters, con <span class="math inline">\(N_g\)</span> observaciones cada uno y <span class="math inline">\(N = \sum_gN_g\)</span>. El modelo es <span class="math inline">\(y_{ig} = x_{ig}'\beta + u_{ig}\)</span>, con <span class="math inline">\(\mathbb{E}[u_{ig}\mid x_{ig}] = 0\)</span> y <strong>dependencia arbitraria dentro</strong> de cada cluster: <span class="math inline">\(\mathbb{E}[u_{ig}u_{jg}\mid X]\ne0\)</span>, pero <strong>independencia entre clusters</strong>. Apilando por cluster, <span class="math inline">\(y_g = X_g\beta + u_g\)</span> y <span class="math display">\[
+\hat\beta - \beta = \Big(\sum_gX_g'X_g\Big)^{-1}\sum_gX_g'u_g.
+\]</span> El <strong>estimador de varianza robusto por clúster</strong> (Liang y Zeger, 1986; Arellano, 1987) es el sándwich con el cluster como unidad: <span class="math display">\[
+\hat V_{CR} = \Big(\sum_gX_g'X_g\Big)^{-1}\Big(\sum_gX_g'\hat u_g\hat u_g'X_g\Big)\Big(\sum_gX_g'X_g\Big)^{-1},
+\]</span> con <span class="math inline">\(\hat u_g = y_g - X_g\hat\beta\)</span> los residuos de MCO. Es la generalización del estimador de White de Econometría 1 (donde cada observación es su propio cluster, <span class="math inline">\(N_g = 1\)</span>) y es <strong>válido con cualquier correlación dentro del cluster</strong> (serial, espacial, por factores comunes).</p>
+<div id="thm-cluster" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Normalidad asintótica con <span class="math inline">\(G\to\infty\)</span>)</strong></span> Si los clusters son independientes, <span class="math inline">\(G\to\infty\)</span>, los tamaños <span class="math inline">\(N_g\)</span> están acotados (o más generalmente la participación máxima <span class="math inline">\(\max_gN_g/N\to0\)</span>), y se cumplen condiciones de momentos y de rango, entonces <span class="math display">\[
+\hat V_{CR}^{-1/2}(\hat\beta - \beta)\xrightarrow{d}N(0,I),
+\]</span> y <span class="math inline">\(\hat V_{CR}\)</span> es consistente en el sentido <span class="math inline">\(G\,\hat V_{CR}\to_p Q^{-1}\Omega Q^{-1}\)</span> con <span class="math inline">\(Q = \mathbb{E}[X_g'X_g]\)</span> y <span class="math inline">\(\Omega = \mathbb{E}[X_g'u_gu_g'X_g]\)</span> (para clusters idénticamente distribuidos).</p>
+</div>
+<p>La demostración es la del TCL para i.i.d. (Clase 7 de Econometría 1) con <strong>el cluster como observación</strong>: las variables <span class="math inline">\(s_g = X_g'u_g\)</span> son independientes entre clusters, con media cero y varianza <span class="math inline">\(\Omega\)</span>. Lo que importa es que la <strong>asintótica es en <span class="math inline">\(G\)</span></strong>, no en <span class="math inline">\(N\)</span>: con pocos clusters grandes, no hay muchas piezas independientes de información, por muchas observaciones que haya dentro. (La demostración de Econometría 2, Clase 9, para el estimador de efectos fijos es la misma.)</p>
+</section>
+<section id="cuándo-hay-que-agrupar" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="cuándo-hay-que-agrupar"><span class="header-section-number">2.2</span> ¿Cuándo hay que agrupar?</h2>
+<p>La regla informal “agrupa por todo” es incorrecta, y tampoco basta “agrupa cuando sospeches correlación”. Abadie, Athey, Imbens y Wooldridge (2023) aclaran que hay <strong>dos razones</strong> para agrupar: (i) <strong>muestreo por clusters</strong> (se muestrearon escuelas y luego alumnos dentro de ellas, y los clusters son una muestra de una población de clusters), o (ii) <strong>asignación del tratamiento por clusters</strong> (el tratamiento varía a nivel del cluster: una política estatal, un programa asignado por escuela). Si ninguna ocurre, agrupar es <strong>innecesario</strong> y puede ser conservador. Un criterio práctico: <strong>agrupar al nivel en que varía el tratamiento</strong> (o a un nivel mayor en que se espera correlación de errores). El tamaño del problema lo da el <strong>efecto Moulton</strong> (1986): con clusters de tamaño <span class="math inline">\(m\)</span>, correlación intra-cluster <span class="math inline">\(\rho_u\)</span> del error y <span class="math inline">\(\rho_x\)</span> del regresor, <span class="math display">\[
+\frac{\operatorname{Var}(\hat\beta)}{\operatorname{Var}_{\text{ingenuo}}(\hat\beta)}\approx1 + (m - 1)\rho_x\rho_u.
+\]</span> Cuando el regresor es <strong>constante dentro del cluster</strong> (política a nivel de estado), <span class="math inline">\(\rho_x = 1\)</span> y el factor es <span class="math inline">\(1 + (m - 1)\rho_u\)</span>: con <span class="math inline">\(m = 20\)</span> y <span class="math inline">\(\rho_u = 0{,}1\)</span>, vale <span class="math inline">\(2{,}9\)</span> (error estándar <span class="math inline">\(1{,}7\)</span> veces mayor, Ejercicio 10.2). Si el regresor varía <strong>solo entre individuos</strong> y es independiente dentro de cada cluster (<span class="math inline">\(\rho_x\approx0\)</span>), el efecto es despreciable aun con <span class="math inline">\(\rho_u\)</span> alta.</p>
+<p>Se puede <strong>agrupar de dos maneras a la vez</strong> (<em>two-way clustering</em>, Cameron, Gelbach y Miller, 2011; por ejemplo, por estado y por año): <span class="math inline">\(\hat V = \hat V_{\text{estado}} + \hat V_{\text{año}} - \hat V_{\text{estado}\cap\text{año}}\)</span> (inclusión–exclusión), que requiere <strong>muchos</strong> clusters en <strong>ambas</strong> dimensiones.</p>
+</section>
+</section>
+<section id="pocos-clusters" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Pocos clusters</h1>
+<p>El teorema asegura validez con <span class="math inline">\(G\to\infty\)</span>. En la práctica <span class="math inline">\(G\)</span> puede ser <span class="math inline">\(10\)</span> (estados en una región), o <span class="math inline">\(50\)</span> (estados de Estados Unidos), y la aproximación normal es <strong>mala</strong>: el estimador <span class="math inline">\(\hat V_{CR}\)</span> está <strong>sesgado hacia abajo</strong> y su distribución tiene colas más gruesas que las de la normal. Dos fuentes: (i) los residuos <span class="math inline">\(\hat u_g\)</span> son <strong>más chicos</strong> que los verdaderos <span class="math inline">\(u_g\)</span> porque MCO se ajusta a ellos (el mismo efecto de <span class="math inline">\(\hat u'\hat u&lt;u'u\)</span> de Econometría 1), y la corrección <span class="math inline">\(G/(G - 1)\cdot(N - 1)/(N - K)\)</span> que aplican los programas solo lo corrige parcialmente; (ii) con <span class="math inline">\(G\)</span> chico, el denominador estimado <span class="math inline">\(\hat V_{CR}\)</span> es <strong>muy variable</strong> (se estima con <span class="math inline">\(G\)</span> piezas). El resultado es que el test <span class="math inline">\(t\)</span> con crítico <span class="math inline">\(1{,}96\)</span> <strong>rechaza demasiado</strong>: con <span class="math inline">\(G = 10\)</span> es común un tamaño real de <span class="math inline">\(10\)</span>–<span class="math inline">\(20\)</span> %, y con <span class="math inline">\(G = 6\)</span> más aún.</p>
+<section id="remedios" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="remedios"><span class="header-section-number">3.1</span> Remedios</h2>
+<ol type="1">
+<li><strong>Valores críticos <span class="math inline">\(t(G - 1)\)</span></strong> en vez de normales (Cameron y Miller, 2015): una corrección simple que amplía los intervalos. Para el caso especial en que se promedia por cluster, la justificación es <strong>exacta</strong>.</li>
+</ol>
+<div id="prp-donald-lang" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Caso exacto: el método de Donald–Lang)</strong></span> Si el regresor es <strong>constante dentro de cada cluster</strong> (<span class="math inline">\(x_{ig} = x_g\)</span>), los clusters tienen igual tamaño y los errores a nivel de cluster son normales, entonces MCO con errores por cluster es numéricamente igual a <strong>MCO sobre las <span class="math inline">\(G\)</span> medias de cluster</strong> <span class="math inline">\(\bar y_g = x_g'\beta + \bar u_g\)</span>, y el estadístico <span class="math inline">\(t\)</span> de un coeficiente tiene distribución <strong>exacta <span class="math inline">\(t(G - K)\)</span></strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(x_{ig} = x_g\)</span>, <span class="math inline">\(\hat\beta = (\sum_gN_gx_gx_g')^{-1}\sum_gN_gx_g\bar y_g\)</span>: es MCO ponderado sobre las medias (con pesos <span class="math inline">\(N_g\)</span>, iguales si los tamaños son iguales). Los <span class="math inline">\(\bar u_g\)</span> son independientes entre clusters, de media cero y varianza común (clusters del mismo tamaño), y normales por hipótesis: se cumplen <strong>exactamente</strong> los supuestos de regresión lineal normal con <span class="math inline">\(G\)</span> observaciones (Clase 5 de Econometría 1), de modo que el estadístico <span class="math inline">\(t\)</span> tiene distribución <span class="math inline">\(t(G - K)\)</span>.</p>
+</div>
+<p>Es un recordatorio útil: <strong>la información efectiva es <span class="math inline">\(G\)</span></strong>, no <span class="math inline">\(N\)</span>: una regresión con millones de observaciones individuales pero un tratamiento definido en <span class="math inline">\(G = 10\)</span> estados tiene <strong><span class="math inline">\(10\)</span> puntos de información</strong>. Con efectos heterogéneos o tamaños desiguales, la aproximación <span class="math inline">\(t(G - 1)\)</span> es solo una guía.</p>
+<ol start="2" type="1">
+<li><p><strong>Estimadores de varianza con corrección de sesgo</strong> (CR2/CR3; Bell y McCaffrey, 2002; Imbens y Kolesár, 2016): ajustan cada residuo cluster por <strong>su apalancamiento</strong> (como el HC2/HC3 de Econometría 1), y se usan con grados de libertad de <strong>Satterthwaite</strong> que reflejan la variabilidad de <span class="math inline">\(\hat V\)</span>. Son los <strong>recomendados por defecto</strong> con <span class="math inline">\(G&lt;50\)</span>.</p></li>
+<li><p><strong>Bootstrap salvaje por clúster</strong> (Cameron, Gelbach y Miller, 2008): la versión agrupada del bootstrap salvaje de la Clase 9. Se generan muestras <span class="math inline">\(y_{ig}^* = x_{ig}'\tilde\beta + \tilde u_{ig}w_g\)</span>, con <strong>el mismo <span class="math inline">\(w_g\)</span> para todo el cluster</strong> (preserva la correlación interna) y <span class="math inline">\(\tilde\beta,\tilde u\)</span> los estimadores <strong>restringidos por <span class="math inline">\(H_0\)</span></strong>, y se calcula el estadístico <span class="math inline">\(t\)</span> en cada réplica (<span class="math inline">\(t^*\)</span>): el <strong>valor <span class="math inline">\(p\)</span></strong> es la fracción de <span class="math inline">\(|t^*|\)</span> mayores que <span class="math inline">\(|t|\)</span> observado. Se usa el estadístico <strong>estudentizado</strong> (refinamiento de la Clase 9) y se <strong>impone la hipótesis nula</strong>. Tiene muy buen desempeño con <span class="math inline">\(G\)</span> chico, salvo cuando <span class="math inline">\(G\)</span> es <strong>muy</strong> chico: con <span class="math inline">\(G\)</span> clusters y pesos de Rademacher hay solo <span class="math inline">\(2^G\)</span> combinaciones (por simetría, <span class="math inline">\(2^{G - 1}\)</span> distintas), y para <span class="math inline">\(G = 5\)</span> el menor valor <span class="math inline">\(p\)</span> posible es <span class="math inline">\(1/16 = 0{,}0625&gt;0{,}05\)</span> (<strong>nunca</strong> se rechaza al 5 %; Ejercicio 10.3). Para <span class="math inline">\(G&lt;12\)</span> se usa la distribución de <strong>Webb</strong> de seis puntos, o <strong>inferencia por aleatorización</strong>.</p></li>
+<li><p><strong>Cuando hay muy pocos grupos tratados</strong> (en DiD, un solo estado tratado): los métodos anteriores fallan, y se recurre a <strong>inferencia por aleatorización</strong> o al <strong>control sintético</strong> (Clase 4).</p></li>
+</ol>
+</section>
+<section id="clusters-de-tamaño-desigual-el-número-efectivo" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="clusters-de-tamaño-desigual-el-número-efectivo"><span class="header-section-number">3.2</span> Clusters de tamaño desigual: el número efectivo</h2>
+<p>Aun con <span class="math inline">\(G\)</span> grande, si los clusters son de tamaños muy distintos (un cluster contiene la mitad de los datos), la información efectiva <strong>no es <span class="math inline">\(G\)</span></strong>.</p>
+<div id="prp-g-efectivo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Número efectivo de clusters)</strong></span> Para la media muestral <span class="math inline">\(\bar y = \sum_gN_g\bar y_g/N\)</span> con efectos de cluster independientes y de varianza <span class="math inline">\(\tau^2\)</span> (que dominan sobre el ruido individual), <span class="math inline">\(\operatorname{Var}(\bar y) = \tau^2/G^*\)</span>, con <span class="math display">\[
+G^* = \frac{N^2}{\sum_gN_g^2}\le G,
+\]</span> con igualdad solo si todos los clusters tienen el mismo tamaño.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(\bar y = \sum_g(N_g/N)\bar y_g\)</span> con <span class="math inline">\(\bar y_g = \mu + \varepsilon_g\)</span>, <span class="math inline">\(\operatorname{Var}(\varepsilon_g) = \tau^2\)</span> independientes. Entonces <span class="math inline">\(\operatorname{Var}(\bar y) = \tau^2\sum_g(N_g/N)^2 = \tau^2\sum N_g^2/N^2 = \tau^2/G^*\)</span>. Por Cauchy–Schwarz, <span class="math inline">\(N^2 = (\sum_gN_g)^2\le G\sum_gN_g^2\)</span>, de modo que <span class="math inline">\(G^*\le G\)</span>, con igualdad cuando todos los <span class="math inline">\(N_g\)</span> son iguales.</p>
+</div>
+<p>Con <span class="math inline">\(G = 10\)</span> clusters donde uno tiene <span class="math inline">\(91\)</span> observaciones y los otros nueve, <span class="math inline">\(1\)</span> cada una (<span class="math inline">\(N = 100\)</span>): <span class="math inline">\(G^* = 100^2/(91^2 + 9) = 1{,}2\)</span>: <strong>es, en la práctica, un solo cluster</strong>, aunque haya diez (Ejercicio 10.4). Es un diagnóstico útil: reportar <span class="math inline">\(G^*\)</span> junto con <span class="math inline">\(G\)</span>, y usar los métodos de pocos clusters cuando <span class="math inline">\(G^*\)</span> es pequeño aunque <span class="math inline">\(G\)</span> no lo sea.</p>
+</section>
+</section>
+<section id="parte-b-instrumentos-débiles" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Parte B: instrumentos débiles</h1>
+<section id="el-problema" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="el-problema"><span class="header-section-number">4.1</span> El problema</h2>
+<p>En el modelo de VI <span class="math inline">\(y = \beta x + u\)</span>, <span class="math inline">\(x = Z\pi + v\)</span>, el estimador de MC2E tiene, con <strong>instrumentos fuertes</strong> (<span class="math inline">\(\pi\)</span> fijo, <span class="math inline">\(n\to\infty\)</span>), la distribución normal de la Clase 10 de Econometría 1. Pero cuando <span class="math inline">\(\pi\)</span> es <strong>pequeño</strong> (instrumentos débiles), el mundo cambia (Staiger y Stock, 1997): modelando <span class="math inline">\(\pi = c/\sqrt n\)</span> (para capturar que la primera etapa es “difícil de distinguir de cero” en muestras de tamaño razonable), MC2E <strong>no es consistente</strong> y su distribución límite es <strong>no normal</strong>, sesgada hacia el estimador de MCO (inconsistente). La intuición: si <span class="math inline">\(Z\)</span> casi no predice <span class="math inline">\(x\)</span>, la parte de <span class="math inline">\(\hat x\)</span> que viene de <span class="math inline">\(Z\)</span> es principalmente <strong>ruido de estimación</strong> de la primera etapa, que se correlaciona con <span class="math inline">\(u\)</span> por la misma razón que <span class="math inline">\(x\)</span>.</p>
+<p>El <strong>estadístico <span class="math inline">\(F\)</span> de la primera etapa</strong> (para la hipótesis <span class="math inline">\(\pi = 0\)</span>) mide la fuerza: <span class="math inline">\(F\approx1 + \mu^2/K\)</span>, con <span class="math inline">\(\mu^2\)</span> el parámetro de concentración. <strong>Regla de Stock y Yogo (2005)</strong>: para que el sesgo relativo de MC2E respecto de MCO sea a lo más <span class="math inline">\(10\)</span> % con un instrumento, se necesita <span class="math inline">\(F\gtrsim10\)</span> (más con muchos instrumentos); un sesgo relativo aproximado es <span class="math inline">\(\approx1/(F - 1)\)</span> (Ejercicio 10.5). Con <strong>heterocedasticidad o clusters</strong>, se usa el <span class="math inline">\(F\)</span> <strong>efectivo</strong> de Olea y Pflueger (2013). Pero la regla de <span class="math inline">\(F&gt;10\)</span> tiene un problema de <strong>pretest</strong>: condicionar en que el <span class="math inline">\(F\)</span> salió grande <strong>distorsiona</strong> la inferencia posterior (la misma no uniformidad de la Clase 7), y una investigación reciente (Lee, McCrary, Moreira y Porter, 2022) muestra que, para que el test <span class="math inline">\(t\)</span> usual tenga el tamaño correcto, el <span class="math inline">\(F\)</span> necesario es del orden de <strong>cien</strong>, no de diez. La salida es <strong>no depender</strong> de la fuerza del instrumento.</p>
+</section>
+<section id="el-test-de-andersonrubin" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="el-test-de-andersonrubin"><span class="header-section-number">4.2</span> El test de Anderson–Rubin</h2>
+<p>Anderson y Rubin (1949) propusieron un test para <span class="math inline">\(H_0:\beta = \beta_0\)</span> cuya <strong>validez no depende de <span class="math inline">\(\pi\)</span></strong>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(y = \beta x + u\)</span>, <span class="math inline">\(x = Z\pi + v\)</span>, con <span class="math inline">\(Z\)</span> (<span class="math inline">\(n\times K\)</span>) <strong>exógeno</strong> (<span class="math inline">\(\mathbb{E}[u\mid Z] = 0\)</span>) y <span class="math inline">\(u\mid Z\sim N(0,\sigma^2I_n)\)</span> (para la versión exacta; la versión asintótica con heterocedasticidad usa errores robustos).</p>
+</div>
+</div>
+<div id="thm-ar" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Test de Anderson–Rubin)</strong></span> Bajo <span class="math inline">\(H_0:\beta = \beta_0\)</span>, el residuo <span class="math inline">\(y - \beta_0x = u\)</span> es <strong>el error estructural</strong>, que es independiente de <span class="math inline">\(Z\)</span> por exogeneidad. El estadístico <span class="math inline">\(AR(\beta_0)\)</span> es el <span class="math inline">\(F\)</span> de significancia conjunta de los <span class="math inline">\(K\)</span> coeficientes en la regresión de <span class="math inline">\(y - \beta_0x\)</span> sobre <span class="math inline">\(Z\)</span>: <span class="math display">\[
+AR(\beta_0) = \frac{(y - \beta_0x)'P_Z(y - \beta_0x)/K}{(y - \beta_0x)'M_Z(y - \beta_0x)/(n - K)}\sim F(K,\,n - K)\quad\text{bajo }H_0,
+\]</span> <strong>para cualquier valor de <span class="math inline">\(\pi\)</span></strong> (incluso <span class="math inline">\(\pi = 0\)</span>). Con homocedasticidad y normalidad, la distribución es <strong>exacta</strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Bajo <span class="math inline">\(H_0\)</span>, <span class="math inline">\(y - \beta_0x = u\)</span> con <span class="math inline">\(u\mid Z\sim N(0,\sigma^2I)\)</span>. El estadístico es el cociente entre <span class="math inline">\(u'P_Zu/K\)</span> y <span class="math inline">\(u'M_Zu/(n - K)\)</span>, donde <span class="math inline">\(P_Z,M_Z\)</span> son proyectores complementarios y ortogonales: por el resultado de formas cuadráticas idempotentes de la Clase 5 de Econometría 1, <span class="math inline">\(u'P_Zu/\sigma^2\sim\chi^2_K\)</span> y <span class="math inline">\(u'M_Zu/\sigma^2\sim\chi^2_{n - K}\)</span> son <strong>independientes</strong>, y su cociente (dividido por los grados de libertad) es <span class="math inline">\(F(K,n - K)\)</span>. La distribución no depende de <span class="math inline">\(\pi\)</span> ni de <span class="math inline">\(\beta\)</span>: solo de que <span class="math inline">\(Z\perp u\)</span>.</p>
+</div>
+<p>La <strong>potencia</strong> del test sí depende de la fuerza: si <span class="math inline">\(H_0\)</span> es falsa, <span class="math inline">\(y - \beta_0x = (\beta - \beta_0)x + u = (\beta - \beta_0)(Z\pi + v) + u\)</span>, cuya proyección sobre <span class="math inline">\(Z\)</span> tiene coeficiente <span class="math inline">\((\beta - \beta_0)\pi\)</span>: distinto de cero solo si <span class="math inline">\(\pi\ne0\)</span>. Con instrumentos <strong>muy débiles</strong>, el test no rechaza nada (poca potencia), pero <strong>nunca sobrerrechaza</strong>: el tamaño es correcto. Es una propiedad notable: la validez está <strong>garantizada</strong>, y la debilidad se refleja honestamente en la <strong>falta de potencia</strong>.</p>
+<p>El <strong>intervalo de confianza de Anderson–Rubin</strong> es el conjunto de los <span class="math inline">\(\beta_0\)</span> que <strong>no se rechazan</strong>: <span class="math inline">\(\{\beta_0:AR(\beta_0)\le F_{1 - \alpha}\}\)</span>. Cuando el instrumento es fuerte, es un intervalo parecido al de Wald. Cuando es débil, puede ser <strong>muy ancho</strong>, <strong>no acotado</strong> (toda la recta real) o la <strong>unión de dos intervalos</strong>: y es <strong>correcto</strong> que así sea (cuando los datos no dicen nada sobre <span class="math inline">\(\beta\)</span>, el conjunto de valores plausibles es enorme).</p>
+<div id="exm-ar" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Instrumento débil, efecto aparentemente significativo)</strong></span> Un instrumento binario único (<span class="math inline">\(K = 1\)</span>) tiene primera etapa <span class="math inline">\(\hat\pi = 0{,}10\)</span> (error estándar <span class="math inline">\(0{,}05\)</span>: <span class="math inline">\(t = 2\)</span>, <span class="math inline">\(F\approx4\)</span>) y forma reducida <span class="math inline">\(\hat\gamma = 0{,}30\)</span> (error estándar <span class="math inline">\(0{,}12\)</span>: <span class="math inline">\(t = 2{,}5\)</span>), con covarianza cero entre ambas. El estimador de Wald es <span class="math inline">\(\hat\beta = 0{,}30/0{,}10 = 3{,}0\)</span>. Un intervalo de Wald (método delta) tiene error estándar <span class="math inline">\(\sqrt{0{,}12^2 + 3^2\cdot0{,}05^2}/0{,}10 = 1{,}92\)</span>: <span class="math inline">\([-0{,}76;\ 6{,}76]\)</span>. El intervalo de <strong>Anderson–Rubin</strong> resuelve <span class="math inline">\((0{,}30 - 0{,}10\beta_0)^2\le1{,}96^2(0{,}12^2 + \beta_0^2\cdot0{,}05^2)\)</span>, es decir <span class="math inline">\(0{,}000396\beta_0^2 - 0{,}06\beta_0 + 0{,}0347\le0\)</span>, con raíces <span class="math inline">\(0{,}58\)</span> y <span class="math inline">\(150{,}9\)</span>: el intervalo es <span class="math inline">\([0{,}58;\ 150{,}9]\)</span>. Los dos intervalos son muy distintos: AR <strong>rechaza</strong> <span class="math inline">\(\beta_0 = 0\)</span> (consistente con la forma reducida significativa) pero deja el efecto <strong>casi indeterminado hacia arriba</strong>, porque la primera etapa casi no distingue <span class="math inline">\(\pi\)</span> de cero. (En el caso exactamente identificado, el intervalo de AR coincide con el de <strong>Fieller</strong> para el cociente de dos estimadores.)</p>
+</div>
+</section>
+<section id="más-instrumentos-más-herramientas" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="más-instrumentos-más-herramientas"><span class="header-section-number">4.3</span> Más instrumentos, más herramientas</h2>
+<p>Con <strong>varios instrumentos</strong> (<span class="math inline">\(K&gt;1\)</span>), el test AR tiene <span class="math inline">\(K\)</span> grados de libertad y pierde potencia (usa todas las direcciones, incluso las irrelevantes). Alternativas más potentes que mantienen la validez: el test de <strong>Kleibergen</strong> (<strong>K</strong>), el de <strong>razón de verosimilitud condicional</strong> (<strong>CLR</strong>, Moreira, 2003, se toma prestado) y el test <span class="math inline">\(J\)</span>-AR combinado. Estos tests están implementados en software estándar y son la práctica recomendada. Con <strong>muchos instrumentos</strong> (relevantes o no), MC2E tiene sesgo hacia MCO que <strong>crece con <span class="math inline">\(K\)</span></strong>: se prefieren <strong>LIML</strong>, el estimador de Fuller o JIVE, que tienen mucho menor sesgo.</p>
+<p><strong>Protocolo recomendado</strong> con VI: (1) reportar la <strong>primera etapa</strong> y su <span class="math inline">\(F\)</span> (el efectivo, si hay heterocedasticidad o clusters); (2) reportar la <strong>forma reducida</strong> (el efecto de <span class="math inline">\(Z\)</span> sobre <span class="math inline">\(Y\)</span>), que es un resultado de <strong>MCO sin problemas de instrumentos débiles</strong>; (3) <strong>no condicionar</strong> la inferencia en que el <span class="math inline">\(F\)</span> supere un umbral; (4) usar <strong>intervalos robustos</strong> (AR, CLR) además del de Wald.</p>
+</section>
+</section>
+<section id="postgrado-clusters-con-tamaños-muy-heterogéneos" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> ★ Postgrado: clusters con tamaños muy heterogéneos</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Extendemos el número efectivo de clusters al caso de una regresión con regresor a nivel de cluster y mostramos la condición de Lindeberg sobre la participación máxima.</p>
+</div>
+</div>
+<p>Para la media con efectos de cluster de varianza <span class="math inline">\(\tau^2\)</span> y ruido individual de varianza <span class="math inline">\(\sigma^2\)</span>, la varianza exacta es <span class="math inline">\(\operatorname{Var}(\bar y) = \sum_g(N_g/N)^2\big(\tau^2 + \sigma^2/N_g\big) = \tau^2/G^* + \sigma^2/N\)</span>. La <strong>contribución del efecto de cluster</strong> decrece como <span class="math inline">\(1/G^*\)</span>, no como <span class="math inline">\(1/G\)</span> ni como <span class="math inline">\(1/N\)</span>. Si <span class="math inline">\(\tau^2\)</span> es grande relativo a <span class="math inline">\(\sigma^2\)</span> (correlación intra-cluster alta) la varianza está dominada por el primer término, y la inferencia se rige por <span class="math inline">\(G^*\)</span>. Para la <strong>normalidad asintótica</strong>, la condición de Lindeberg para <span class="math inline">\(\sum_g(N_g/N)\varepsilon_g\)</span> (suma ponderada de variables independientes) requiere que <strong>ningún cluster domine</strong>: <span class="math inline">\(\max_gN_g/N\to0\)</span>, es decir, <span class="math inline">\(\max_g(N_g/N)^2/\sum_g(N_g/N)^2\to0\)</span>. Si un cluster concentra una fracción del total que <strong>no tiende a cero</strong>, el estimador hereda la distribución de <strong>ese</strong> cluster (no es normal si <span class="math inline">\(\varepsilon_g\)</span> no lo es) y la inferencia asintótica falla: es el caso límite de <span class="math inline">\(G^*\to1\)</span>. En la práctica esto ocurre con <strong>datos de países</strong> (Estados Unidos o China como un cluster dominante), <strong>industrias concentradas</strong> y <strong>ciudades</strong> (un área metropolitana que es una gran fracción de la muestra), donde reportar <span class="math inline">\(G^*\)</span> advierte del problema.</p>
+<p>Para una regresión con <span class="math inline">\(K\)</span> regresores el análisis equivale a un <span class="math inline">\(G^*\)</span> por regresor, con pesos que dependen de cuánto <strong>varía el regresor</strong> dentro de cada cluster (Carter, Schnepel y Steigerwald, 2017): un cluster con regresor constante y gran tamaño pesa mucho en la estimación y poco en la varianza efectiva.</p>
+</section>
+<section id="resumen" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Resumen</h1>
+<ul>
+<li><strong>Errores por clúster</strong> (<a href="#thm-cluster" class="quarto-xref">Teorema&nbsp;1</a>): sándwich con el cluster como unidad; válido con dependencia arbitraria dentro y <strong>asintótica en <span class="math inline">\(G\)</span></strong>. Agrupar al nivel de <strong>asignación del tratamiento</strong> (o muestreo por clusters); el efecto Moulton <span class="math inline">\(1 + (m - 1)\rho_x\rho_u\)</span> mide el problema.</li>
+<li><strong>Pocos clusters:</strong> <span class="math inline">\(\hat V_{CR}\)</span> sesgada hacia abajo, tests con tamaño excesivo. Remedios: <strong><span class="math inline">\(t(G - 1)\)</span></strong>, CR2 con Satterthwaite, <strong>bootstrap salvaje por clúster</strong> (pesos por cluster, imponiendo <span class="math inline">\(H_0\)</span>, Webb si <span class="math inline">\(G&lt;12\)</span>). Información efectiva: <span class="math inline">\(G\)</span> (Donald–Lang, <a href="#prp-donald-lang" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li><strong>Tamaños desiguales:</strong> el número efectivo <span class="math inline">\(G^* = N^2/\sum N_g^2\)</span> puede ser mucho menor que <span class="math inline">\(G\)</span> (<a href="#prp-g-efectivo" class="quarto-xref">Proposición&nbsp;2</a>).</li>
+<li><strong>Instrumentos débiles:</strong> MC2E sesgado y no normal; <span class="math inline">\(F&gt;10\)</span> no basta ni es seguro de condicionar. <strong>Anderson–Rubin</strong> (<a href="#thm-ar" class="quarto-xref">Teorema&nbsp;2</a>): test válido para <strong>cualquier</strong> <span class="math inline">\(\pi\)</span>; conjunto de confianza que puede ser ancho o no acotado <strong>con razón</strong>. CLR para más potencia; LIML con muchos instrumentos.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ejercicios</h1>
+<p><strong>Ejercicio 10.1.</strong> Con <span class="math inline">\(G = 4\)</span> clusters de igual tamaño y medias de cluster <span class="math inline">\(\bar y_g = (2,4,3,5)\)</span>, calcula la media, el error estándar por clúster con el factor <span class="math inline">\(G/(G - 1)\)</span> y un IC del 95 % con valores críticos normales y con <span class="math inline">\(t(G - 1)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Media: <span class="math inline">\(3{,}5\)</span>. <span class="math inline">\(\sum(\bar y_g - 3{,}5)^2 = 2{,}25 + 0{,}25 + 0{,}25 + 2{,}25 = 5{,}0\)</span>. <span class="math inline">\(\hat V = \frac1{G^2}\sum(\bar y_g - \bar y)^2\cdot\frac G{G - 1} = \frac1{16}\cdot5\cdot\frac43 = 0{,}4167\)</span>, error estándar <span class="math inline">\(=0{,}645\)</span>. IC normal: <span class="math inline">\(3{,}5\pm1{,}96(0{,}645) = (2{,}24;\ 4{,}76)\)</span>. IC con <span class="math inline">\(t(3)\)</span> (crítico <span class="math inline">\(3{,}182\)</span>): <span class="math inline">\(3{,}5\pm3{,}182(0{,}645) = (1{,}45;\ 5{,}55)\)</span>: <strong>mucho más ancho</strong> (<span class="math inline">\(4{,}1\)</span> frente a <span class="math inline">\(2{,}5\)</span>). Con solo cuatro clusters, la aproximación normal es muy optimista; el <span class="math inline">\(t(G - 1)\)</span> es exacto si las medias de cluster son normales.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.2.</strong> Calcula el factor de Moulton para <span class="math inline">\(m = 20\)</span> observaciones por cluster, regresor constante dentro del cluster (<span class="math inline">\(\rho_x = 1\)</span>) y <span class="math inline">\(\rho_u = 0{,}1\)</span>. ¿Cuánto se subestima el error estándar sin agrupar? ¿Y con <span class="math inline">\(\rho_x = 0\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Factor de varianza: <span class="math inline">\(1 + (m - 1)\rho_x\rho_u = 1 + 19\cdot1\cdot0{,}1 = 2{,}9\)</span>. Error estándar verdadero <span class="math inline">\(=\sqrt{2{,}9} = 1{,}70\)</span> veces el ingenuo: el ingenuo está <strong><span class="math inline">\(41\)</span> % por debajo</strong> del correcto. Con <span class="math inline">\(\rho_x = 0\)</span> (el regresor varía de manera independiente entre individuos del mismo cluster): factor <span class="math inline">\(=1\)</span>, no hace falta agrupar. Es el mensaje de Abadie et al.: el problema aparece cuando <strong>el regresor y el error están ambos correlacionados dentro del cluster</strong>; con un tratamiento a nivel de estado (<span class="math inline">\(\rho_x = 1\)</span>) es máximo.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.3.</strong> En un bootstrap salvaje con pesos de Rademacher y <span class="math inline">\(G = 5\)</span> clusters: ¿cuántas combinaciones de signos hay, cuántos valores <span class="math inline">\(|t^*|\)</span> distintos (por simetría), y cuál es el menor valor <span class="math inline">\(p\)</span> posible? ¿Y con <span class="math inline">\(G = 10\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(G = 5\)</span>: <span class="math inline">\(2^5 = 32\)</span> combinaciones; como <span class="math inline">\(t^*(−w) = ±t^*(w)\)</span> (invertir todos los signos cambia el signo del estadístico en el modelo restringido), solo <span class="math inline">\(16\)</span> valores distintos de <span class="math inline">\(|t^*|\)</span>. El valor <span class="math inline">\(p\)</span> bilateral mínimo es <span class="math inline">\(1/16 = 0{,}0625&gt;0{,}05\)</span>: <strong>el test nunca puede rechazar al 5 %</strong>, aunque el efecto sea enorme. <span class="math inline">\(G = 10\)</span>: <span class="math inline">\(2^{10} = 1\,024\)</span> combinaciones, <span class="math inline">\(512\)</span> distintas: <span class="math inline">\(p_{\min} = 1/512 = 0{,}002\)</span>, sin problema. Con <span class="math inline">\(G&lt;12\)</span> se usa la distribución de Webb (seis puntos, <span class="math inline">\(6^G\)</span> combinaciones) o inferencia por aleatorización.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.4.</strong> Calcula <span class="math inline">\(G^*\)</span> para (a) diez clusters de <span class="math inline">\(10\)</span> observaciones; (b) un cluster de <span class="math inline">\(91\)</span> y nueve de <span class="math inline">\(1\)</span>; (c) tamaños <span class="math inline">\((50,30,10,5,5)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><span class="math inline">\(N = 100\)</span>, <span class="math inline">\(\sum N_g^2 = 10\cdot100 = 1\,000\)</span>: <span class="math inline">\(G^* = 10\,000/1\,000 = 10 = G\)</span>. (b) <span class="math inline">\(\sum N_g^2 = 91^2 + 9 = 8\,290\)</span>: <span class="math inline">\(G^* = 10\,000/8\,290 = 1{,}21\)</span>: <strong>un solo cluster efectivo</strong>, aunque <span class="math inline">\(G = 10\)</span>. (c) <span class="math inline">\(\sum N_g^2 = 2\,500 + 900 + 100 + 25 + 25 = 3\,550\)</span>: <span class="math inline">\(G^* = 10\,000/3\,550 = 2{,}82\)</span> (con <span class="math inline">\(G = 5\)</span>). Un cluster que concentra la mitad de los datos (c) reduce la información efectiva a menos de tres clusters: la inferencia por clúster sería muy poco confiable.</li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.5.</strong> Con el sesgo relativo aproximado de MC2E respecto de MCO <span class="math inline">\(\approx1/(F - 1)\)</span>, calcula el sesgo relativo para <span class="math inline">\(F = 11\)</span>, <span class="math inline">\(F = 3\)</span> y <span class="math inline">\(F = 1{,}5\)</span>. Si el sesgo de MCO es <span class="math inline">\(0{,}50\)</span>, ¿cuál es el sesgo de MC2E en cada caso?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(F = 11\)</span>: <span class="math inline">\(1/10 = 10\)</span> %: sesgo de MC2E <span class="math inline">\(=0{,}05\)</span>. <span class="math inline">\(F = 3\)</span>: <span class="math inline">\(1/2 = 50\)</span> %: <span class="math inline">\(0{,}25\)</span>. <span class="math inline">\(F = 1{,}5\)</span>: <span class="math inline">\(1/0{,}5 = 200\)</span> % (la aproximación deja de valer: el sesgo es de <strong>orden mayor que el de MCO</strong>, el instrumento es peor que no usarlo en un caso extremo). Interpretación: con <span class="math inline">\(F = 11\)</span> MC2E reduce el sesgo de MCO en un <span class="math inline">\(90\)</span> %; con <span class="math inline">\(F = 3\)</span> solo a la mitad; con <span class="math inline">\(F\)</span> cercano a <span class="math inline">\(1\)</span> no hay información en el instrumento y MC2E converge al sesgo de MCO o peor. La regla <span class="math inline">\(F&gt;10\)</span> proviene de este cálculo, pero es solo una guía para el sesgo, <strong>no</strong> para el tamaño de los tests (<span class="math inline">\(\approx100\)</span> para <span class="math inline">\(5\)</span> %).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.6.</strong> En el <a href="#exm-ar" class="quarto-xref">Ejemplo&nbsp;1</a>, calcula <span class="math inline">\(AR(0)\)</span> para <span class="math inline">\(H_0:\beta_0 = 0\)</span> y <span class="math inline">\(AR(3)\)</span> para <span class="math inline">\(H_0:\beta_0 = 3\)</span> (el valor de Wald). Compara con el crítico <span class="math inline">\(\chi^2_1 = 3{,}84\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(AR(\beta_0) = (\hat\gamma - \beta_0\hat\pi)^2/(\operatorname{ee}_\gamma^2 + \beta_0^2\operatorname{ee}_\pi^2)\)</span> (con covarianza cero). <span class="math inline">\(AR(0) = 0{,}30^2/0{,}12^2 = 0{,}09/0{,}0144 = 6{,}25&gt;3{,}84\)</span>: <strong>se rechaza</strong> <span class="math inline">\(\beta_0 = 0\)</span> (es el <span class="math inline">\(t^2\)</span> de la forma reducida: <span class="math inline">\(2{,}5^2 = 6{,}25\)</span>). <span class="math inline">\(AR(3) = (0{,}30 - 0{,}30)^2/(\dots) = 0\)</span>: no se rechaza (por construcción, <span class="math inline">\(\hat\beta_{Wald} = 3\)</span> está siempre en el conjunto). Lo informativo es el conjunto completo <span class="math inline">\([0{,}58;\ 150{,}9]\)</span>: rechaza valores pequeños y negativos, pero <strong>no puede descartar efectos enormes</strong> como <span class="math inline">\(\beta_0 = 100\)</span>: <span class="math inline">\((0{,}30 - 10)^2/(0{,}0144 + 10\,000\cdot0{,}0025) = 94{,}1/25{,}01 = 3{,}76&lt;3{,}84\)</span> (no rechazado). Es el reflejo de que la primera etapa no distingue <span class="math inline">\(\pi = 0{,}10\)</span> de valores cercanos a cero.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.7 ★.</strong> Con efectos de cluster <span class="math inline">\(\tau^2 = 1\)</span>, ruido individual <span class="math inline">\(\sigma^2 = 4\)</span> y <span class="math inline">\(G = 10\)</span> clusters de tamaño <span class="math inline">\(m = 10\)</span> cada uno, calcula <span class="math inline">\(\operatorname{Var}(\bar y)\)</span> y qué parte viene del efecto de cluster. Repite con un cluster de <span class="math inline">\(55\)</span> y nueve de <span class="math inline">\(5\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(\bar y) = \tau^2/G^* + \sigma^2/N\)</span> con <span class="math inline">\(N = 100\)</span>. Iguales: <span class="math inline">\(G^* = 10\)</span>: <span class="math inline">\(1/10 + 4/100 = 0{,}10 + 0{,}04 = 0{,}14\)</span>; el <span class="math inline">\(71\)</span> % viene del efecto de cluster. Desiguales (<span class="math inline">\(55,5,\dots,5\)</span>): <span class="math inline">\(\sum N_g^2 = 3\,025 + 9\cdot25 = 3\,250\)</span>, <span class="math inline">\(G^* = 10\,000/3\,250 = 3{,}08\)</span>; <span class="math inline">\(\operatorname{Var} = 1/3{,}08 + 0{,}04 = 0{,}325 + 0{,}04 = 0{,}365\)</span>: <strong><span class="math inline">\(2{,}6\)</span> veces mayor</strong>, con los mismos <span class="math inline">\(N\)</span> y <span class="math inline">\(G\)</span>, y el <span class="math inline">\(89\)</span> % se debe al efecto de cluster. Las dos configuraciones tienen <span class="math inline">\(G = 10\)</span> y <span class="math inline">\(N = 100\)</span>, pero la segunda tiene <strong>menos de un tercio de la información efectiva</strong>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-09.html" class="pagination-link" aria-label="Clase 9 · Bootstrap">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 9 · Bootstrap</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

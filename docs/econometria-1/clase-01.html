@@ -144,6 +144,10 @@ window.Quarto = {
     <a class="nav-link" href="../econometria-3/index.html"> 
 <span class="menu-text">Econometría 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -412,7 +416,7 @@ X'X = \sum_{i=1}^n x_i x_i', \qquad X'y = \sum_{i=1}^n x_i y_i.
 <p>Los espacios nulos coinciden, luego tienen la misma dimensión y, por rango–nulidad, <span class="math inline">\(\operatorname{rango}(X'X)=\operatorname{rango}(X)\)</span>. Como <span class="math inline">\(X'X\)</span> es <span class="math inline">\(k\times k\)</span>, es invertible si y solo si su rango es <span class="math inline">\(k\)</span>, es decir, si y solo si <span class="math inline">\(\operatorname{rango}(X) = k\)</span>.</p>
 </div>
 <p>Este teorema es la razón de ser del supuesto de “no multicolinealidad perfecta” que veremos en la Clase 3: el estimador de MCO es <span class="math inline">\((X'X)^{-1}X'y\)</span>, y la inversa existe exactamente cuando <span class="math inline">\(X\)</span> tiene rango columna completo. Nota también que esto exige <span class="math inline">\(n \ge k\)</span>: una matriz <span class="math inline">\(n\times k\)</span> no puede tener rango mayor que <span class="math inline">\(n\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Si tienes más variables que observaciones, <span class="math inline">\(X'X\)</span> es singular <em>siempre</em>. Ese es el mundo de “alta dimensión” (<span class="math inline">\(k &gt; n\)</span>), donde MCO no está definido y entran LASSO y compañía. Es un tema que este sitio aún no cubre.</p></div></div></section>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Si tienes más variables que observaciones, <span class="math inline">\(X'X\)</span> es singular <em>siempre</em>. Ese es el mundo de “alta dimensión” (<span class="math inline">\(k &gt; n\)</span>), donde MCO no está definido y entran LASSO y compañía. Econometría 4 lo desarrolla (Clase 7).</p></div></div></section>
 <section id="formas-cuadráticas-y-matrices-definidas-positivas" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Formas cuadráticas y matrices definidas positivas</h1>
 <div id="def-definida" class="theorem definition">

@@ -150,7 +150,7 @@ Los espacios nulos coinciden, luego tienen la misma dimensión y, por rango–nu
 
 Este teorema es la razón de ser del supuesto de "no multicolinealidad perfecta" que veremos en la Clase 3: el estimador de MCO es $(X'X)^{-1}X'y$, y la inversa existe exactamente cuando $X$ tiene rango columna completo. Nota también que esto exige $n \ge k$: una matriz $n\times k$ no puede tener rango mayor que $n$.[^nk]
 
-[^nk]: Si tienes más variables que observaciones, $X'X$ es singular *siempre*. Ese es el mundo de "alta dimensión" ($k > n$), donde MCO no está definido y entran LASSO y compañía. Es un tema que este sitio aún no cubre.
+[^nk]: Si tienes más variables que observaciones, $X'X$ es singular *siempre*. Ese es el mundo de "alta dimensión" ($k > n$), donde MCO no está definido y entran LASSO y compañía. Econometría 4 lo desarrolla (Clase 7).
 
 # Formas cuadráticas y matrices definidas positivas
 

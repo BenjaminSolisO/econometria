@@ -286,7 +286,7 @@
     "href": "index.html",
     "title": "Econometría",
     "section": "",
-    "text": "Tres cursos · teoría y demostraciones\n\n\n\nUn recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender por qué funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.\n\n\n\\[\\hat\\beta \\;=\\; (X'X)^{-1}X'y \\;=\\; \\beta + \\Big(\\tfrac{1}{n}\\textstyle\\sum_i x_ix_i'\\Big)^{-1}\\tfrac{1}{n}\\textstyle\\sum_i x_iu_i\\]"
+    "text": "Cuatro cursos · teoría y demostraciones\n\n\n\nUn recorrido por la econometría desde el modelo de regresión hasta las fronteras del postgrado, escrito para entender por qué funcionan las cosas. Cada teorema viene con su demostración completa, y cada demostración viene con el borrador que explica cómo encontrarla.\n\n\n\\[\\hat\\beta \\;=\\; (X'X)^{-1}X'y \\;=\\; \\beta + \\Big(\\tfrac{1}{n}\\textstyle\\sum_i x_ix_i'\\Big)^{-1}\\tfrac{1}{n}\\textstyle\\sum_i x_iu_i\\]"
   },
   {
     "objectID": "index.html#cómo-están-escritos",
@@ -2265,6 +2265,171 @@
     "crumbs": [
       "Inicio",
       "Clase 8 · Aprendizaje automático para inferencia causal"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-09.html",
+    "href": "econometria-4/clase-09.html",
+    "title": "Clase 9 · Bootstrap",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Bootstrap"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-09.html#intervalos-de-confianza-bootstrap",
+    "href": "econometria-4/clase-09.html#intervalos-de-confianza-bootstrap",
+    "title": "Clase 9 · Bootstrap",
+    "section": "3.1 Intervalos de confianza bootstrap",
+    "text": "3.1 Intervalos de confianza bootstrap\nCon \\(B\\) réplicas hay varias maneras de construir un intervalo del \\((1 - \\alpha)\\) para \\(\\theta\\):\n\n\n\n\n\n\n\n\nMétodo\nIntervalo\nIdea\n\n\n\n\nNormal\n\\(\\hat\\theta\\pm z_{1 - \\alpha/2}\\widehat{\\operatorname{ee}}_{boot}\\)\nsolo usa el error estándar bootstrap\n\n\nPercentil\n\\([q^*_{\\alpha/2},\\ q^*_{1 - \\alpha/2}]\\)\ncuantiles de \\(\\hat\\theta^*\\)\n\n\nBásico (pivotal)\n\\([2\\hat\\theta - q^*_{1 - \\alpha/2},\\ 2\\hat\\theta - q^*_{\\alpha/2}]\\)\nusa la distribución de \\(\\hat\\theta^* - \\hat\\theta\\) como la de \\(\\hat\\theta - \\theta\\)\n\n\nPercentil-\\(t\\)\n\\([\\hat\\theta - t^*_{1 - \\alpha/2}\\widehat{\\operatorname{ee}},\\ \\hat\\theta - t^*_{\\alpha/2}\\widehat{\\operatorname{ee}}]\\)\ncuantiles del estadístico estudentizado \\(t^* = (\\hat\\theta^* - \\hat\\theta)/\\operatorname{ee}^*\\)\n\n\n\nEl percentil-\\(t\\) requiere calcular un error estándar \\(\\operatorname{ee}^*\\) dentro de cada réplica (con una fórmula, o con un bootstrap anidado). Los cuatro son asintóticamente válidos, pero difieren en su precisión en muestras finitas, y esa diferencia tiene una explicación teórica.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Bootstrap"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-09.html#el-refinamiento-asintótico-del-percentil-t",
+    "href": "econometria-4/clase-09.html#el-refinamiento-asintótico-del-percentil-t",
+    "title": "Clase 9 · Bootstrap",
+    "section": "3.2 El refinamiento asintótico del percentil-\\(t\\)",
+    "text": "3.2 El refinamiento asintótico del percentil-\\(t\\)\nUn intervalo basado en la aproximación normal tiene un error de cobertura de orden \\(n^{-1/2}\\) (para intervalos de una cola) o \\(n^{-1}\\) (de dos colas). El bootstrap del estadístico estudentizado logra un error menor: \\(n^{-1}\\) en una cola y \\(n^{-2}\\) en dos colas. Es el refinamiento asintótico (Hall, 1992), y la condición clave es que el estadístico sea asintóticamente pivotal: su distribución límite no depende de parámetros desconocidos.\nLa razón (§★) usa el desarrollo de Edgeworth de la función de distribución: para un estadístico estándar, \\(P(T_n\\le x) = \\Phi(x) + n^{-1/2}p(x)\\phi(x) + O(n^{-1})\\), donde el polinomio \\(p\\) depende de momentos desconocidos de \\(F\\). El bootstrap estima ese término con error \\(O(n^{-1/2})\\) (porque los momentos se estiman a esa tasa), de modo que el error total es \\(n^{-1/2}\\cdot O(n^{-1/2}) = O(n^{-1})\\): la mitad del error de la aproximación normal (que ignora el término \\(n^{-1/2}p(x)\\phi(x)\\)). Pero esto funciona solo si el estadístico es pivotal: si \\(T_n = \\sqrt n(\\hat\\theta - \\theta)\\) (no estudentizado), su distribución depende de \\(\\sigma\\), y el bootstrap estima \\(\\sigma\\) con error \\(O(n^{-1/2})\\), el mismo orden que se quería corregir: no hay mejora respecto de la normal. Por eso, la recomendación general es hacer bootstrap de estadísticos estudentizados (percentil-\\(t\\)), y no de estimadores “crudos”.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Bootstrap"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html",
+    "href": "econometria-4/clase-10.html",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#el-modelo-y-el-estimador",
+    "href": "econometria-4/clase-10.html#el-modelo-y-el-estimador",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "2.1 El modelo y el estimador",
+    "text": "2.1 El modelo y el estimador\nSean \\(g = 1,\\dots,G\\) clusters, con \\(N_g\\) observaciones cada uno y \\(N = \\sum_gN_g\\). El modelo es \\(y_{ig} = x_{ig}'\\beta + u_{ig}\\), con \\(\\mathbb{E}[u_{ig}\\mid x_{ig}] = 0\\) y dependencia arbitraria dentro de cada cluster: \\(\\mathbb{E}[u_{ig}u_{jg}\\mid X]\\ne0\\), pero independencia entre clusters. Apilando por cluster, \\(y_g = X_g\\beta + u_g\\) y \\[\n\\hat\\beta - \\beta = \\Big(\\sum_gX_g'X_g\\Big)^{-1}\\sum_gX_g'u_g.\n\\] El estimador de varianza robusto por clúster (Liang y Zeger, 1986; Arellano, 1987) es el sándwich con el cluster como unidad: \\[\n\\hat V_{CR} = \\Big(\\sum_gX_g'X_g\\Big)^{-1}\\Big(\\sum_gX_g'\\hat u_g\\hat u_g'X_g\\Big)\\Big(\\sum_gX_g'X_g\\Big)^{-1},\n\\] con \\(\\hat u_g = y_g - X_g\\hat\\beta\\) los residuos de MCO. Es la generalización del estimador de White de Econometría 1 (donde cada observación es su propio cluster, \\(N_g = 1\\)) y es válido con cualquier correlación dentro del cluster (serial, espacial, por factores comunes).\n\nTeorema 1 (Normalidad asintótica con \\(G\\to\\infty\\)) Si los clusters son independientes, \\(G\\to\\infty\\), los tamaños \\(N_g\\) están acotados (o más generalmente la participación máxima \\(\\max_gN_g/N\\to0\\)), y se cumplen condiciones de momentos y de rango, entonces \\[\n\\hat V_{CR}^{-1/2}(\\hat\\beta - \\beta)\\xrightarrow{d}N(0,I),\n\\] y \\(\\hat V_{CR}\\) es consistente en el sentido \\(G\\,\\hat V_{CR}\\to_p Q^{-1}\\Omega Q^{-1}\\) con \\(Q = \\mathbb{E}[X_g'X_g]\\) y \\(\\Omega = \\mathbb{E}[X_g'u_gu_g'X_g]\\) (para clusters idénticamente distribuidos).\n\nLa demostración es la del TCL para i.i.d. (Clase 7 de Econometría 1) con el cluster como observación: las variables \\(s_g = X_g'u_g\\) son independientes entre clusters, con media cero y varianza \\(\\Omega\\). Lo que importa es que la asintótica es en \\(G\\), no en \\(N\\): con pocos clusters grandes, no hay muchas piezas independientes de información, por muchas observaciones que haya dentro. (La demostración de Econometría 2, Clase 9, para el estimador de efectos fijos es la misma.)",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#cuándo-hay-que-agrupar",
+    "href": "econometria-4/clase-10.html#cuándo-hay-que-agrupar",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "2.2 ¿Cuándo hay que agrupar?",
+    "text": "2.2 ¿Cuándo hay que agrupar?\nLa regla informal “agrupa por todo” es incorrecta, y tampoco basta “agrupa cuando sospeches correlación”. Abadie, Athey, Imbens y Wooldridge (2023) aclaran que hay dos razones para agrupar: (i) muestreo por clusters (se muestrearon escuelas y luego alumnos dentro de ellas, y los clusters son una muestra de una población de clusters), o (ii) asignación del tratamiento por clusters (el tratamiento varía a nivel del cluster: una política estatal, un programa asignado por escuela). Si ninguna ocurre, agrupar es innecesario y puede ser conservador. Un criterio práctico: agrupar al nivel en que varía el tratamiento (o a un nivel mayor en que se espera correlación de errores). El tamaño del problema lo da el efecto Moulton (1986): con clusters de tamaño \\(m\\), correlación intra-cluster \\(\\rho_u\\) del error y \\(\\rho_x\\) del regresor, \\[\n\\frac{\\operatorname{Var}(\\hat\\beta)}{\\operatorname{Var}_{\\text{ingenuo}}(\\hat\\beta)}\\approx1 + (m - 1)\\rho_x\\rho_u.\n\\] Cuando el regresor es constante dentro del cluster (política a nivel de estado), \\(\\rho_x = 1\\) y el factor es \\(1 + (m - 1)\\rho_u\\): con \\(m = 20\\) y \\(\\rho_u = 0{,}1\\), vale \\(2{,}9\\) (error estándar \\(1{,}7\\) veces mayor, Ejercicio 10.2). Si el regresor varía solo entre individuos y es independiente dentro de cada cluster (\\(\\rho_x\\approx0\\)), el efecto es despreciable aun con \\(\\rho_u\\) alta.\nSe puede agrupar de dos maneras a la vez (two-way clustering, Cameron, Gelbach y Miller, 2011; por ejemplo, por estado y por año): \\(\\hat V = \\hat V_{\\text{estado}} + \\hat V_{\\text{año}} - \\hat V_{\\text{estado}\\cap\\text{año}}\\) (inclusión–exclusión), que requiere muchos clusters en ambas dimensiones.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#remedios",
+    "href": "econometria-4/clase-10.html#remedios",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "3.1 Remedios",
+    "text": "3.1 Remedios\n\nValores críticos \\(t(G - 1)\\) en vez de normales (Cameron y Miller, 2015): una corrección simple que amplía los intervalos. Para el caso especial en que se promedia por cluster, la justificación es exacta.\n\n\nProposición 1 (Caso exacto: el método de Donald–Lang) Si el regresor es constante dentro de cada cluster (\\(x_{ig} = x_g\\)), los clusters tienen igual tamaño y los errores a nivel de cluster son normales, entonces MCO con errores por cluster es numéricamente igual a MCO sobre las \\(G\\) medias de cluster \\(\\bar y_g = x_g'\\beta + \\bar u_g\\), y el estadístico \\(t\\) de un coeficiente tiene distribución exacta \\(t(G - K)\\).\n\n\nDemostración. Con \\(x_{ig} = x_g\\), \\(\\hat\\beta = (\\sum_gN_gx_gx_g')^{-1}\\sum_gN_gx_g\\bar y_g\\): es MCO ponderado sobre las medias (con pesos \\(N_g\\), iguales si los tamaños son iguales). Los \\(\\bar u_g\\) son independientes entre clusters, de media cero y varianza común (clusters del mismo tamaño), y normales por hipótesis: se cumplen exactamente los supuestos de regresión lineal normal con \\(G\\) observaciones (Clase 5 de Econometría 1), de modo que el estadístico \\(t\\) tiene distribución \\(t(G - K)\\).\n\nEs un recordatorio útil: la información efectiva es \\(G\\), no \\(N\\): una regresión con millones de observaciones individuales pero un tratamiento definido en \\(G = 10\\) estados tiene \\(10\\) puntos de información. Con efectos heterogéneos o tamaños desiguales, la aproximación \\(t(G - 1)\\) es solo una guía.\n\nEstimadores de varianza con corrección de sesgo (CR2/CR3; Bell y McCaffrey, 2002; Imbens y Kolesár, 2016): ajustan cada residuo cluster por su apalancamiento (como el HC2/HC3 de Econometría 1), y se usan con grados de libertad de Satterthwaite que reflejan la variabilidad de \\(\\hat V\\). Son los recomendados por defecto con \\(G&lt;50\\).\nBootstrap salvaje por clúster (Cameron, Gelbach y Miller, 2008): la versión agrupada del bootstrap salvaje de la Clase 9. Se generan muestras \\(y_{ig}^* = x_{ig}'\\tilde\\beta + \\tilde u_{ig}w_g\\), con el mismo \\(w_g\\) para todo el cluster (preserva la correlación interna) y \\(\\tilde\\beta,\\tilde u\\) los estimadores restringidos por \\(H_0\\), y se calcula el estadístico \\(t\\) en cada réplica (\\(t^*\\)): el valor \\(p\\) es la fracción de \\(|t^*|\\) mayores que \\(|t|\\) observado. Se usa el estadístico estudentizado (refinamiento de la Clase 9) y se impone la hipótesis nula. Tiene muy buen desempeño con \\(G\\) chico, salvo cuando \\(G\\) es muy chico: con \\(G\\) clusters y pesos de Rademacher hay solo \\(2^G\\) combinaciones (por simetría, \\(2^{G - 1}\\) distintas), y para \\(G = 5\\) el menor valor \\(p\\) posible es \\(1/16 = 0{,}0625&gt;0{,}05\\) (nunca se rechaza al 5 %; Ejercicio 10.3). Para \\(G&lt;12\\) se usa la distribución de Webb de seis puntos, o inferencia por aleatorización.\nCuando hay muy pocos grupos tratados (en DiD, un solo estado tratado): los métodos anteriores fallan, y se recurre a inferencia por aleatorización o al control sintético (Clase 4).",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#clusters-de-tamaño-desigual-el-número-efectivo",
+    "href": "econometria-4/clase-10.html#clusters-de-tamaño-desigual-el-número-efectivo",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "3.2 Clusters de tamaño desigual: el número efectivo",
+    "text": "3.2 Clusters de tamaño desigual: el número efectivo\nAun con \\(G\\) grande, si los clusters son de tamaños muy distintos (un cluster contiene la mitad de los datos), la información efectiva no es \\(G\\).\n\nProposición 2 (Número efectivo de clusters) Para la media muestral \\(\\bar y = \\sum_gN_g\\bar y_g/N\\) con efectos de cluster independientes y de varianza \\(\\tau^2\\) (que dominan sobre el ruido individual), \\(\\operatorname{Var}(\\bar y) = \\tau^2/G^*\\), con \\[\nG^* = \\frac{N^2}{\\sum_gN_g^2}\\le G,\n\\] con igualdad solo si todos los clusters tienen el mismo tamaño.\n\n\nDemostración. \\(\\bar y = \\sum_g(N_g/N)\\bar y_g\\) con \\(\\bar y_g = \\mu + \\varepsilon_g\\), \\(\\operatorname{Var}(\\varepsilon_g) = \\tau^2\\) independientes. Entonces \\(\\operatorname{Var}(\\bar y) = \\tau^2\\sum_g(N_g/N)^2 = \\tau^2\\sum N_g^2/N^2 = \\tau^2/G^*\\). Por Cauchy–Schwarz, \\(N^2 = (\\sum_gN_g)^2\\le G\\sum_gN_g^2\\), de modo que \\(G^*\\le G\\), con igualdad cuando todos los \\(N_g\\) son iguales.\n\nCon \\(G = 10\\) clusters donde uno tiene \\(91\\) observaciones y los otros nueve, \\(1\\) cada una (\\(N = 100\\)): \\(G^* = 100^2/(91^2 + 9) = 1{,}2\\): es, en la práctica, un solo cluster, aunque haya diez (Ejercicio 10.4). Es un diagnóstico útil: reportar \\(G^*\\) junto con \\(G\\), y usar los métodos de pocos clusters cuando \\(G^*\\) es pequeño aunque \\(G\\) no lo sea.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#el-problema",
+    "href": "econometria-4/clase-10.html#el-problema",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "4.1 El problema",
+    "text": "4.1 El problema\nEn el modelo de VI \\(y = \\beta x + u\\), \\(x = Z\\pi + v\\), el estimador de MC2E tiene, con instrumentos fuertes (\\(\\pi\\) fijo, \\(n\\to\\infty\\)), la distribución normal de la Clase 10 de Econometría 1. Pero cuando \\(\\pi\\) es pequeño (instrumentos débiles), el mundo cambia (Staiger y Stock, 1997): modelando \\(\\pi = c/\\sqrt n\\) (para capturar que la primera etapa es “difícil de distinguir de cero” en muestras de tamaño razonable), MC2E no es consistente y su distribución límite es no normal, sesgada hacia el estimador de MCO (inconsistente). La intuición: si \\(Z\\) casi no predice \\(x\\), la parte de \\(\\hat x\\) que viene de \\(Z\\) es principalmente ruido de estimación de la primera etapa, que se correlaciona con \\(u\\) por la misma razón que \\(x\\).\nEl estadístico \\(F\\) de la primera etapa (para la hipótesis \\(\\pi = 0\\)) mide la fuerza: \\(F\\approx1 + \\mu^2/K\\), con \\(\\mu^2\\) el parámetro de concentración. Regla de Stock y Yogo (2005): para que el sesgo relativo de MC2E respecto de MCO sea a lo más \\(10\\) % con un instrumento, se necesita \\(F\\gtrsim10\\) (más con muchos instrumentos); un sesgo relativo aproximado es \\(\\approx1/(F - 1)\\) (Ejercicio 10.5). Con heterocedasticidad o clusters, se usa el \\(F\\) efectivo de Olea y Pflueger (2013). Pero la regla de \\(F&gt;10\\) tiene un problema de pretest: condicionar en que el \\(F\\) salió grande distorsiona la inferencia posterior (la misma no uniformidad de la Clase 7), y una investigación reciente (Lee, McCrary, Moreira y Porter, 2022) muestra que, para que el test \\(t\\) usual tenga el tamaño correcto, el \\(F\\) necesario es del orden de cien, no de diez. La salida es no depender de la fuerza del instrumento.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#el-test-de-andersonrubin",
+    "href": "econometria-4/clase-10.html#el-test-de-andersonrubin",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "4.2 El test de Anderson–Rubin",
+    "text": "4.2 El test de Anderson–Rubin\nAnderson y Rubin (1949) propusieron un test para \\(H_0:\\beta = \\beta_0\\) cuya validez no depende de \\(\\pi\\).\n\n\n\n\n\n\nPrecauciónSupuestos\n\n\n\n\\(y = \\beta x + u\\), \\(x = Z\\pi + v\\), con \\(Z\\) (\\(n\\times K\\)) exógeno (\\(\\mathbb{E}[u\\mid Z] = 0\\)) y \\(u\\mid Z\\sim N(0,\\sigma^2I_n)\\) (para la versión exacta; la versión asintótica con heterocedasticidad usa errores robustos).\n\n\n\nTeorema 2 (Test de Anderson–Rubin) Bajo \\(H_0:\\beta = \\beta_0\\), el residuo \\(y - \\beta_0x = u\\) es el error estructural, que es independiente de \\(Z\\) por exogeneidad. El estadístico \\(AR(\\beta_0)\\) es el \\(F\\) de significancia conjunta de los \\(K\\) coeficientes en la regresión de \\(y - \\beta_0x\\) sobre \\(Z\\): \\[\nAR(\\beta_0) = \\frac{(y - \\beta_0x)'P_Z(y - \\beta_0x)/K}{(y - \\beta_0x)'M_Z(y - \\beta_0x)/(n - K)}\\sim F(K,\\,n - K)\\quad\\text{bajo }H_0,\n\\] para cualquier valor de \\(\\pi\\) (incluso \\(\\pi = 0\\)). Con homocedasticidad y normalidad, la distribución es exacta.\n\n\nDemostración. Bajo \\(H_0\\), \\(y - \\beta_0x = u\\) con \\(u\\mid Z\\sim N(0,\\sigma^2I)\\). El estadístico es el cociente entre \\(u'P_Zu/K\\) y \\(u'M_Zu/(n - K)\\), donde \\(P_Z,M_Z\\) son proyectores complementarios y ortogonales: por el resultado de formas cuadráticas idempotentes de la Clase 5 de Econometría 1, \\(u'P_Zu/\\sigma^2\\sim\\chi^2_K\\) y \\(u'M_Zu/\\sigma^2\\sim\\chi^2_{n - K}\\) son independientes, y su cociente (dividido por los grados de libertad) es \\(F(K,n - K)\\). La distribución no depende de \\(\\pi\\) ni de \\(\\beta\\): solo de que \\(Z\\perp u\\).\n\nLa potencia del test sí depende de la fuerza: si \\(H_0\\) es falsa, \\(y - \\beta_0x = (\\beta - \\beta_0)x + u = (\\beta - \\beta_0)(Z\\pi + v) + u\\), cuya proyección sobre \\(Z\\) tiene coeficiente \\((\\beta - \\beta_0)\\pi\\): distinto de cero solo si \\(\\pi\\ne0\\). Con instrumentos muy débiles, el test no rechaza nada (poca potencia), pero nunca sobrerrechaza: el tamaño es correcto. Es una propiedad notable: la validez está garantizada, y la debilidad se refleja honestamente en la falta de potencia.\nEl intervalo de confianza de Anderson–Rubin es el conjunto de los \\(\\beta_0\\) que no se rechazan: \\(\\{\\beta_0:AR(\\beta_0)\\le F_{1 - \\alpha}\\}\\). Cuando el instrumento es fuerte, es un intervalo parecido al de Wald. Cuando es débil, puede ser muy ancho, no acotado (toda la recta real) o la unión de dos intervalos: y es correcto que así sea (cuando los datos no dicen nada sobre \\(\\beta\\), el conjunto de valores plausibles es enorme).\n\nEjemplo 1 (Instrumento débil, efecto aparentemente significativo) Un instrumento binario único (\\(K = 1\\)) tiene primera etapa \\(\\hat\\pi = 0{,}10\\) (error estándar \\(0{,}05\\): \\(t = 2\\), \\(F\\approx4\\)) y forma reducida \\(\\hat\\gamma = 0{,}30\\) (error estándar \\(0{,}12\\): \\(t = 2{,}5\\)), con covarianza cero entre ambas. El estimador de Wald es \\(\\hat\\beta = 0{,}30/0{,}10 = 3{,}0\\). Un intervalo de Wald (método delta) tiene error estándar \\(\\sqrt{0{,}12^2 + 3^2\\cdot0{,}05^2}/0{,}10 = 1{,}92\\): \\([-0{,}76;\\ 6{,}76]\\). El intervalo de Anderson–Rubin resuelve \\((0{,}30 - 0{,}10\\beta_0)^2\\le1{,}96^2(0{,}12^2 + \\beta_0^2\\cdot0{,}05^2)\\), es decir \\(0{,}000396\\beta_0^2 - 0{,}06\\beta_0 + 0{,}0347\\le0\\), con raíces \\(0{,}58\\) y \\(150{,}9\\): el intervalo es \\([0{,}58;\\ 150{,}9]\\). Los dos intervalos son muy distintos: AR rechaza \\(\\beta_0 = 0\\) (consistente con la forma reducida significativa) pero deja el efecto casi indeterminado hacia arriba, porque la primera etapa casi no distingue \\(\\pi\\) de cero. (En el caso exactamente identificado, el intervalo de AR coincide con el de Fieller para el cociente de dos estimadores.)",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-10.html#más-instrumentos-más-herramientas",
+    "href": "econometria-4/clase-10.html#más-instrumentos-más-herramientas",
+    "title": "Clase 10 · Inferencia robusta",
+    "section": "4.3 Más instrumentos, más herramientas",
+    "text": "4.3 Más instrumentos, más herramientas\nCon varios instrumentos (\\(K&gt;1\\)), el test AR tiene \\(K\\) grados de libertad y pierde potencia (usa todas las direcciones, incluso las irrelevantes). Alternativas más potentes que mantienen la validez: el test de Kleibergen (K), el de razón de verosimilitud condicional (CLR, Moreira, 2003, se toma prestado) y el test \\(J\\)-AR combinado. Estos tests están implementados en software estándar y son la práctica recomendada. Con muchos instrumentos (relevantes o no), MC2E tiene sesgo hacia MCO que crece con \\(K\\): se prefieren LIML, el estimador de Fuller o JIVE, que tienen mucho menor sesgo.\nProtocolo recomendado con VI: (1) reportar la primera etapa y su \\(F\\) (el efectivo, si hay heterocedasticidad o clusters); (2) reportar la forma reducida (el efecto de \\(Z\\) sobre \\(Y\\)), que es un resultado de MCO sin problemas de instrumentos débiles; (3) no condicionar la inferencia en que el \\(F\\) supere un umbral; (4) usar intervalos robustos (AR, CLR) además del de Wald.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Inferencia robusta"
+    ]
+  },
+  {
+    "objectID": "econometria-4/index.html",
+    "href": "econometria-4/index.html",
+    "title": "Econometría 4",
+    "section": "",
+    "text": "Este curso reúne tres temas que han transformado la econometría aplicada en las últimas dos décadas, y que comparten una misma pregunta: cómo hacer inferencia válida cuando el modelo paramétrico simple ya no alcanza. El primero es la inferencia causal: qué significa, matemáticamente, el efecto de un tratamiento, y bajo qué supuestos los datos lo identifican (experimentos, selección en observables, instrumentos, diferencias en diferencias, discontinuidades). El segundo son los métodos no paramétricos y de alta dimensión: estimar funciones sin imponer una forma, regularizar cuando hay más variables que observaciones, y usar aprendizaje automático sin perder la inferencia. El tercero es la inferencia robusta: cómo calcular errores estándar y valores \\(p\\) confiables cuando fallan las aproximaciones habituales (remuestreo, clusters, instrumentos débiles).\nComo en los cursos anteriores, cada resultado está demostrado o marcado como un hecho que se toma prestado (los desarrollos de Edgeworth, el test CLR, las cotas minimax y pocos más), y cada demostración va precedida de un recuadro Borrador donde se piensa en voz alta cómo encontrarla. Las secciones ★ Postgrado profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).",
+    "crumbs": [
+      "Inicio",
+      "Econometría 4"
+    ]
+  },
+  {
+    "objectID": "econometria-4/index.html#clases",
+    "href": "econometria-4/index.html#clases",
+    "title": "Econometría 4",
+    "section": "Clases",
+    "text": "Clases\n\n\n01Resultados potenciales y experimentosModelo de Rubin, SUTVA, ATE y ATT, sesgo de selección, aleatorización, varianza de Neyman y potencia. ★ Test de aleatorización de Fisher.\n\n\n02Selección en observablesInsesgamiento condicional y traslape, el teorema del propensity score, ponderación inversa, matching y el estimador AIPW doblemente robusto. ★ Cota de eficiencia.\n\n\n03Variables instrumentales con efectos heterogéneosCompliers, monotonía, el teorema de Imbens–Angrist (Wald = LATE) y MC2E como promedio ponderado. ★ Efectos de tratamiento marginales.\n\n\n04Diferencias en diferenciasTendencias paralelas, estudios de eventos, correlación serial y adopción escalonada con pesos negativos de los efectos fijos bidireccionales. ★ Residuo bidireccional.\n\n\n05Econometría no paramétricaKernel, Nadaraya–Watson y regresión local lineal con sesgo y varianza demostrados, validación cruzada, series y la maldición de la dimensionalidad. ★ Cotas minimax.\n\n\n06Regresión discontinuaIdentificación por continuidad, estimación local lineal, inferencia robusta con corrección de sesgo, validez y RD difusa. ★ Sesgo de frontera.\n\n\n07Alta dimensión: LASSORidge y LASSO, KKT, umbral suave, la desigualdad oráculo y el fracaso de la inferencia post-selección. ★ Demostración de la desigualdad oráculo.\n\n\n08Aprendizaje automático para inferencia causalModelo parcialmente lineal, ortogonalidad de Neyman, cross-fitting y el teorema de DML con producto de tasas. ★ Momentos ortogonales.\n\n\n09BootstrapConsistencia, intervalos percentil-t y refinamiento asintótico, fallas, bootstrap salvaje y por bloques. ★ Desarrollos de Edgeworth.\n\n\n10Inferencia robustaErrores por clúster, pocos clusters y bootstrap salvaje, clusters de tamaño desigual e instrumentos débiles con el test de Anderson–Rubin. ★ Número efectivo de clusters.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 4"
+    ]
+  },
+  {
+    "objectID": "econometria-4/index.html#notación",
+    "href": "econometria-4/index.html#notación",
+    "title": "Econometría 4",
+    "section": "Notación",
+    "text": "Notación\nLos resultados potenciales son \\(Y_i(0),Y_i(1)\\), el tratamiento \\(D_i\\) y las covariables \\(X_i\\); el propensity score es \\(e(x) = P(D = 1\\mid X = x)\\) y \\(\\mu_d(x) = \\mathbb{E}[Y\\mid D = d,X = x]\\). ATE, ATT y LATE son los efectos promedio sobre toda la población, los tratados y los cumplidores. \\(K\\) es un kernel y \\(h\\) un ancho de banda; \\(\\|\\beta\\|_1\\) y \\(\\|\\beta\\|_0\\) son las normas \\(\\ell_1\\) y de conteo; \\(\\hat\\eta\\) denota las funciones de perturbación estimadas y \\(\\psi\\) un momento ortogonal. \\(\\hat\\theta^*\\) es un estimador bootstrap y \\(G\\) el número de clusters. Los vectores son columna y \\('\\) es la transpuesta.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 4"
+    ]
+  },
+  {
+    "objectID": "econometria-4/index.html#bibliografía",
+    "href": "econometria-4/index.html#bibliografía",
+    "title": "Econometría 4",
+    "section": "Bibliografía",
+    "text": "Bibliografía\n\nImbens, G. y Rubin, D. (2015). Causal Inference for Statistics, Social, and Biomedical Sciences. Cambridge University Press. (La referencia para las Clases 1 a 3.)\nAngrist, J. y Pischke, J.-S. (2009). Mostly Harmless Econometrics. Princeton University Press. (Diferencias en diferencias, discontinuidad y VI con mirada aplicada.)\nCunningham, S. (2021). Causal Inference: The Mixtape. Yale University Press. (Introducción accesible a los diseños causales.)\nLi, Q. y Racine, J. (2007). Nonparametric Econometrics. Princeton University Press. (Clase 5.)\nTsybakov, A. (2009). Introduction to Nonparametric Estimation. Springer. (Cotas minimax.)\nHastie, T., Tibshirani, R. y Wainwright, M. (2015). Statistical Learning with Sparsity. CRC Press. (LASSO y alta dimensión.)\nChernozhukov, V. et al. (2018). “Double/debiased machine learning for treatment and structural parameters”, Econometrics Journal. (Clase 8.)\nHall, P. (1992). The Bootstrap and Edgeworth Expansion. Springer. (Clase 9.)\nCameron, A. C. y Miller, D. (2015). “A practitioner’s guide to cluster-robust inference”, Journal of Human Resources. (Clase 10.)\nHansen, B. (2022). Econometrics. Princeton University Press. (Postgrado; marco moderno.)",
+    "crumbs": [
+      "Inicio",
+      "Econometría 4"
     ]
   }
 ]

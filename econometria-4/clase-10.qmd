@@ -1,0 +1,206 @@
+---
+title: "Clase 10 · Inferencia robusta"
+subtitle: "Errores por clúster, pocos clusters e instrumentos débiles"
+description: "Inferencia válida cuando fallan los supuestos habituales: varianza robusta por clúster y su asintótica en el número de clusters, cuándo agrupar, el sesgo con pocos clusters, el bootstrap salvaje por clúster, clusters de tamaño desigual y la inferencia con instrumentos débiles mediante el test de Anderson–Rubin."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando la fórmula estándar miente
+
+Las clases anteriores desarrollaron estimadores y su distribución asintótica. Pero un buen estimador con **errores estándar incorrectos** produce conclusiones falsas: intervalos que cubren menos de lo anunciado, tests que rechazan con una frecuencia mucho mayor que el nivel nominal. Esta clase recoge los dos problemas de inferencia que más afectan el trabajo aplicado y que ya aparecieron en pasos anteriores:
+
+1. **Dependencia dentro de grupos** (clusters): observaciones de un mismo estado, escuela o empresa no son independientes. El error estándar usual los trata como si lo fueran. (Clase 9 de Econometría 2, Clase 4 de este curso.)
+2. **Instrumentos débiles**: cuando el instrumento está poco correlacionado con la variable endógena, la distribución asintótica **normal** de MC2E deja de ser una buena aproximación, aunque $n$ sea grande. (Clase 10 de Econometría 1, Clase 3 de este curso.)
+
+En ambos casos, la solución moderna combina una **fórmula robusta** con una **corrección de muestra finita** o un método de **inferencia alternativo** cuya validez no depende del supuesto problemático.
+
+# Parte A: errores estándar por clúster
+
+## El modelo y el estimador
+
+Sean $g = 1,\dots,G$ clusters, con $N_g$ observaciones cada uno y $N = \sum_gN_g$. El modelo es $y_{ig} = x_{ig}'\beta + u_{ig}$, con $\mathbb{E}[u_{ig}\mid x_{ig}] = 0$ y **dependencia arbitraria dentro** de cada cluster: $\mathbb{E}[u_{ig}u_{jg}\mid X]\ne0$, pero **independencia entre clusters**. Apilando por cluster, $y_g = X_g\beta + u_g$ y
+$$
+\hat\beta - \beta = \Big(\sum_gX_g'X_g\Big)^{-1}\sum_gX_g'u_g.
+$$
+El **estimador de varianza robusto por clúster** (Liang y Zeger, 1986; Arellano, 1987) es el sándwich con el cluster como unidad:
+$$
+\hat V_{CR} = \Big(\sum_gX_g'X_g\Big)^{-1}\Big(\sum_gX_g'\hat u_g\hat u_g'X_g\Big)\Big(\sum_gX_g'X_g\Big)^{-1},
+$$
+con $\hat u_g = y_g - X_g\hat\beta$ los residuos de MCO. Es la generalización del estimador de White de Econometría 1 (donde cada observación es su propio cluster, $N_g = 1$) y es **válido con cualquier correlación dentro del cluster** (serial, espacial, por factores comunes).
+
+::: {#thm-cluster}
+## Normalidad asintótica con $G\to\infty$
+Si los clusters son independientes, $G\to\infty$, los tamaños $N_g$ están acotados (o más generalmente la participación máxima $\max_gN_g/N\to0$), y se cumplen condiciones de momentos y de rango, entonces
+$$
+\hat V_{CR}^{-1/2}(\hat\beta - \beta)\xrightarrow{d}N(0,I),
+$$
+y $\hat V_{CR}$ es consistente en el sentido $G\,\hat V_{CR}\to_p Q^{-1}\Omega Q^{-1}$ con $Q = \mathbb{E}[X_g'X_g]$ y $\Omega = \mathbb{E}[X_g'u_gu_g'X_g]$ (para clusters idénticamente distribuidos).
+:::
+
+La demostración es la del TCL para i.i.d. (Clase 7 de Econometría 1) con **el cluster como observación**: las variables $s_g = X_g'u_g$ son independientes entre clusters, con media cero y varianza $\Omega$. Lo que importa es que la **asintótica es en $G$**, no en $N$: con pocos clusters grandes, no hay muchas piezas independientes de información, por muchas observaciones que haya dentro. (La demostración de Econometría 2, Clase 9, para el estimador de efectos fijos es la misma.)
+
+## ¿Cuándo hay que agrupar?
+
+La regla informal "agrupa por todo" es incorrecta, y tampoco basta "agrupa cuando sospeches correlación". Abadie, Athey, Imbens y Wooldridge (2023) aclaran que hay **dos razones** para agrupar: (i) **muestreo por clusters** (se muestrearon escuelas y luego alumnos dentro de ellas, y los clusters son una muestra de una población de clusters), o (ii) **asignación del tratamiento por clusters** (el tratamiento varía a nivel del cluster: una política estatal, un programa asignado por escuela). Si ninguna ocurre, agrupar es **innecesario** y puede ser conservador. Un criterio práctico: **agrupar al nivel en que varía el tratamiento** (o a un nivel mayor en que se espera correlación de errores). El tamaño del problema lo da el **efecto Moulton** (1986): con clusters de tamaño $m$, correlación intra-cluster $\rho_u$ del error y $\rho_x$ del regresor,
+$$
+\frac{\operatorname{Var}(\hat\beta)}{\operatorname{Var}_{\text{ingenuo}}(\hat\beta)}\approx1 + (m - 1)\rho_x\rho_u.
+$$
+Cuando el regresor es **constante dentro del cluster** (política a nivel de estado), $\rho_x = 1$ y el factor es $1 + (m - 1)\rho_u$: con $m = 20$ y $\rho_u = 0{,}1$, vale $2{,}9$ (error estándar $1{,}7$ veces mayor, Ejercicio 10.2). Si el regresor varía **solo entre individuos** y es independiente dentro de cada cluster ($\rho_x\approx0$), el efecto es despreciable aun con $\rho_u$ alta.
+
+Se puede **agrupar de dos maneras a la vez** (*two-way clustering*, Cameron, Gelbach y Miller, 2011; por ejemplo, por estado y por año): $\hat V = \hat V_{\text{estado}} + \hat V_{\text{año}} - \hat V_{\text{estado}\cap\text{año}}$ (inclusión–exclusión), que requiere **muchos** clusters en **ambas** dimensiones.
+
+# Pocos clusters
+
+El teorema asegura validez con $G\to\infty$. En la práctica $G$ puede ser $10$ (estados en una región), o $50$ (estados de Estados Unidos), y la aproximación normal es **mala**: el estimador $\hat V_{CR}$ está **sesgado hacia abajo** y su distribución tiene colas más gruesas que las de la normal. Dos fuentes: (i) los residuos $\hat u_g$ son **más chicos** que los verdaderos $u_g$ porque MCO se ajusta a ellos (el mismo efecto de $\hat u'\hat u<u'u$ de Econometría 1), y la corrección $G/(G - 1)\cdot(N - 1)/(N - K)$ que aplican los programas solo lo corrige parcialmente; (ii) con $G$ chico, el denominador estimado $\hat V_{CR}$ es **muy variable** (se estima con $G$ piezas). El resultado es que el test $t$ con crítico $1{,}96$ **rechaza demasiado**: con $G = 10$ es común un tamaño real de $10$–$20$ %, y con $G = 6$ más aún.
+
+## Remedios
+
+1. **Valores críticos $t(G - 1)$** en vez de normales (Cameron y Miller, 2015): una corrección simple que amplía los intervalos. Para el caso especial en que se promedia por cluster, la justificación es **exacta**.
+
+::: {#prp-donald-lang}
+## Caso exacto: el método de Donald–Lang
+Si el regresor es **constante dentro de cada cluster** ($x_{ig} = x_g$), los clusters tienen igual tamaño y los errores a nivel de cluster son normales, entonces MCO con errores por cluster es numéricamente igual a **MCO sobre las $G$ medias de cluster** $\bar y_g = x_g'\beta + \bar u_g$, y el estadístico $t$ de un coeficiente tiene distribución **exacta $t(G - K)$**.
+:::
+
+::: {.proof}
+Con $x_{ig} = x_g$, $\hat\beta = (\sum_gN_gx_gx_g')^{-1}\sum_gN_gx_g\bar y_g$: es MCO ponderado sobre las medias (con pesos $N_g$, iguales si los tamaños son iguales). Los $\bar u_g$ son independientes entre clusters, de media cero y varianza común (clusters del mismo tamaño), y normales por hipótesis: se cumplen **exactamente** los supuestos de regresión lineal normal con $G$ observaciones (Clase 5 de Econometría 1), de modo que el estadístico $t$ tiene distribución $t(G - K)$.
+:::
+
+Es un recordatorio útil: **la información efectiva es $G$**, no $N$: una regresión con millones de observaciones individuales pero un tratamiento definido en $G = 10$ estados tiene **$10$ puntos de información**. Con efectos heterogéneos o tamaños desiguales, la aproximación $t(G - 1)$ es solo una guía.
+
+2. **Estimadores de varianza con corrección de sesgo** (CR2/CR3; Bell y McCaffrey, 2002; Imbens y Kolesár, 2016): ajustan cada residuo cluster por **su apalancamiento** (como el HC2/HC3 de Econometría 1), y se usan con grados de libertad de **Satterthwaite** que reflejan la variabilidad de $\hat V$. Son los **recomendados por defecto** con $G<50$.
+
+3. **Bootstrap salvaje por clúster** (Cameron, Gelbach y Miller, 2008): la versión agrupada del bootstrap salvaje de la Clase 9. Se generan muestras $y_{ig}^* = x_{ig}'\tilde\beta + \tilde u_{ig}w_g$, con **el mismo $w_g$ para todo el cluster** (preserva la correlación interna) y $\tilde\beta,\tilde u$ los estimadores **restringidos por $H_0$**, y se calcula el estadístico $t$ en cada réplica ($t^*$): el **valor $p$** es la fracción de $|t^*|$ mayores que $|t|$ observado. Se usa el estadístico **estudentizado** (refinamiento de la Clase 9) y se **impone la hipótesis nula**. Tiene muy buen desempeño con $G$ chico, salvo cuando $G$ es **muy** chico: con $G$ clusters y pesos de Rademacher hay solo $2^G$ combinaciones (por simetría, $2^{G - 1}$ distintas), y para $G = 5$ el menor valor $p$ posible es $1/16 = 0{,}0625>0{,}05$ (**nunca** se rechaza al 5 %; Ejercicio 10.3). Para $G<12$ se usa la distribución de **Webb** de seis puntos, o **inferencia por aleatorización**.
+
+4. **Cuando hay muy pocos grupos tratados** (en DiD, un solo estado tratado): los métodos anteriores fallan, y se recurre a **inferencia por aleatorización** o al **control sintético** (Clase 4).
+
+## Clusters de tamaño desigual: el número efectivo
+
+Aun con $G$ grande, si los clusters son de tamaños muy distintos (un cluster contiene la mitad de los datos), la información efectiva **no es $G$**.
+
+::: {#prp-g-efectivo}
+## Número efectivo de clusters
+Para la media muestral $\bar y = \sum_gN_g\bar y_g/N$ con efectos de cluster independientes y de varianza $\tau^2$ (que dominan sobre el ruido individual), $\operatorname{Var}(\bar y) = \tau^2/G^*$, con
+$$
+G^* = \frac{N^2}{\sum_gN_g^2}\le G,
+$$
+con igualdad solo si todos los clusters tienen el mismo tamaño.
+:::
+
+::: {.proof}
+$\bar y = \sum_g(N_g/N)\bar y_g$ con $\bar y_g = \mu + \varepsilon_g$, $\operatorname{Var}(\varepsilon_g) = \tau^2$ independientes. Entonces $\operatorname{Var}(\bar y) = \tau^2\sum_g(N_g/N)^2 = \tau^2\sum N_g^2/N^2 = \tau^2/G^*$. Por Cauchy–Schwarz, $N^2 = (\sum_gN_g)^2\le G\sum_gN_g^2$, de modo que $G^*\le G$, con igualdad cuando todos los $N_g$ son iguales.
+:::
+
+Con $G = 10$ clusters donde uno tiene $91$ observaciones y los otros nueve, $1$ cada una ($N = 100$): $G^* = 100^2/(91^2 + 9) = 1{,}2$: **es, en la práctica, un solo cluster**, aunque haya diez (Ejercicio 10.4). Es un diagnóstico útil: reportar $G^*$ junto con $G$, y usar los métodos de pocos clusters cuando $G^*$ es pequeño aunque $G$ no lo sea.
+
+# Parte B: instrumentos débiles
+
+## El problema
+
+En el modelo de VI $y = \beta x + u$, $x = Z\pi + v$, el estimador de MC2E tiene, con **instrumentos fuertes** ($\pi$ fijo, $n\to\infty$), la distribución normal de la Clase 10 de Econometría 1. Pero cuando $\pi$ es **pequeño** (instrumentos débiles), el mundo cambia (Staiger y Stock, 1997): modelando $\pi = c/\sqrt n$ (para capturar que la primera etapa es "difícil de distinguir de cero" en muestras de tamaño razonable), MC2E **no es consistente** y su distribución límite es **no normal**, sesgada hacia el estimador de MCO (inconsistente). La intuición: si $Z$ casi no predice $x$, la parte de $\hat x$ que viene de $Z$ es principalmente **ruido de estimación** de la primera etapa, que se correlaciona con $u$ por la misma razón que $x$.
+
+El **estadístico $F$ de la primera etapa** (para la hipótesis $\pi = 0$) mide la fuerza: $F\approx1 + \mu^2/K$, con $\mu^2$ el parámetro de concentración. **Regla de Stock y Yogo (2005)**: para que el sesgo relativo de MC2E respecto de MCO sea a lo más $10$ % con un instrumento, se necesita $F\gtrsim10$ (más con muchos instrumentos); un sesgo relativo aproximado es $\approx1/(F - 1)$ (Ejercicio 10.5). Con **heterocedasticidad o clusters**, se usa el $F$ **efectivo** de Olea y Pflueger (2013). Pero la regla de $F>10$ tiene un problema de **pretest**: condicionar en que el $F$ salió grande **distorsiona** la inferencia posterior (la misma no uniformidad de la Clase 7), y una investigación reciente (Lee, McCrary, Moreira y Porter, 2022) muestra que, para que el test $t$ usual tenga el tamaño correcto, el $F$ necesario es del orden de **cien**, no de diez. La salida es **no depender** de la fuerza del instrumento.
+
+## El test de Anderson–Rubin
+
+Anderson y Rubin (1949) propusieron un test para $H_0:\beta = \beta_0$ cuya **validez no depende de $\pi$**.
+
+::: {.callout-caution title="Supuestos"}
+$y = \beta x + u$, $x = Z\pi + v$, con $Z$ ($n\times K$) **exógeno** ($\mathbb{E}[u\mid Z] = 0$) y $u\mid Z\sim N(0,\sigma^2I_n)$ (para la versión exacta; la versión asintótica con heterocedasticidad usa errores robustos).
+:::
+
+::: {#thm-ar}
+## Test de Anderson–Rubin
+Bajo $H_0:\beta = \beta_0$, el residuo $y - \beta_0x = u$ es **el error estructural**, que es independiente de $Z$ por exogeneidad. El estadístico $AR(\beta_0)$ es el $F$ de significancia conjunta de los $K$ coeficientes en la regresión de $y - \beta_0x$ sobre $Z$:
+$$
+AR(\beta_0) = \frac{(y - \beta_0x)'P_Z(y - \beta_0x)/K}{(y - \beta_0x)'M_Z(y - \beta_0x)/(n - K)}\sim F(K,\,n - K)\quad\text{bajo }H_0,
+$$
+**para cualquier valor de $\pi$** (incluso $\pi = 0$). Con homocedasticidad y normalidad, la distribución es **exacta**.
+:::
+
+::: {.proof}
+Bajo $H_0$, $y - \beta_0x = u$ con $u\mid Z\sim N(0,\sigma^2I)$. El estadístico es el cociente entre $u'P_Zu/K$ y $u'M_Zu/(n - K)$, donde $P_Z,M_Z$ son proyectores complementarios y ortogonales: por el resultado de formas cuadráticas idempotentes de la Clase 5 de Econometría 1, $u'P_Zu/\sigma^2\sim\chi^2_K$ y $u'M_Zu/\sigma^2\sim\chi^2_{n - K}$ son **independientes**, y su cociente (dividido por los grados de libertad) es $F(K,n - K)$. La distribución no depende de $\pi$ ni de $\beta$: solo de que $Z\perp u$.
+:::
+
+La **potencia** del test sí depende de la fuerza: si $H_0$ es falsa, $y - \beta_0x = (\beta - \beta_0)x + u = (\beta - \beta_0)(Z\pi + v) + u$, cuya proyección sobre $Z$ tiene coeficiente $(\beta - \beta_0)\pi$: distinto de cero solo si $\pi\ne0$. Con instrumentos **muy débiles**, el test no rechaza nada (poca potencia), pero **nunca sobrerrechaza**: el tamaño es correcto. Es una propiedad notable: la validez está **garantizada**, y la debilidad se refleja honestamente en la **falta de potencia**.
+
+El **intervalo de confianza de Anderson–Rubin** es el conjunto de los $\beta_0$ que **no se rechazan**: $\{\beta_0:AR(\beta_0)\le F_{1 - \alpha}\}$. Cuando el instrumento es fuerte, es un intervalo parecido al de Wald. Cuando es débil, puede ser **muy ancho**, **no acotado** (toda la recta real) o la **unión de dos intervalos**: y es **correcto** que así sea (cuando los datos no dicen nada sobre $\beta$, el conjunto de valores plausibles es enorme).
+
+::: {#exm-ar}
+## Instrumento débil, efecto aparentemente significativo
+Un instrumento binario único ($K = 1$) tiene primera etapa $\hat\pi = 0{,}10$ (error estándar $0{,}05$: $t = 2$, $F\approx4$) y forma reducida $\hat\gamma = 0{,}30$ (error estándar $0{,}12$: $t = 2{,}5$), con covarianza cero entre ambas. El estimador de Wald es $\hat\beta = 0{,}30/0{,}10 = 3{,}0$. Un intervalo de Wald (método delta) tiene error estándar $\sqrt{0{,}12^2 + 3^2\cdot0{,}05^2}/0{,}10 = 1{,}92$: $[-0{,}76;\ 6{,}76]$. El intervalo de **Anderson–Rubin** resuelve $(0{,}30 - 0{,}10\beta_0)^2\le1{,}96^2(0{,}12^2 + \beta_0^2\cdot0{,}05^2)$, es decir $0{,}000396\beta_0^2 - 0{,}06\beta_0 + 0{,}0347\le0$, con raíces $0{,}58$ y $150{,}9$: el intervalo es $[0{,}58;\ 150{,}9]$. Los dos intervalos son muy distintos: AR **rechaza** $\beta_0 = 0$ (consistente con la forma reducida significativa) pero deja el efecto **casi indeterminado hacia arriba**, porque la primera etapa casi no distingue $\pi$ de cero. (En el caso exactamente identificado, el intervalo de AR coincide con el de **Fieller** para el cociente de dos estimadores.)
+:::
+
+## Más instrumentos, más herramientas
+
+Con **varios instrumentos** ($K>1$), el test AR tiene $K$ grados de libertad y pierde potencia (usa todas las direcciones, incluso las irrelevantes). Alternativas más potentes que mantienen la validez: el test de **Kleibergen** (**K**), el de **razón de verosimilitud condicional** (**CLR**, Moreira, 2003, se toma prestado) y el test $J$-AR combinado. Estos tests están implementados en software estándar y son la práctica recomendada. Con **muchos instrumentos** (relevantes o no), MC2E tiene sesgo hacia MCO que **crece con $K$**: se prefieren **LIML**, el estimador de Fuller o JIVE, que tienen mucho menor sesgo.
+
+**Protocolo recomendado** con VI: (1) reportar la **primera etapa** y su $F$ (el efectivo, si hay heterocedasticidad o clusters); (2) reportar la **forma reducida** (el efecto de $Z$ sobre $Y$), que es un resultado de **MCO sin problemas de instrumentos débiles**; (3) **no condicionar** la inferencia en que el $F$ supere un umbral; (4) usar **intervalos robustos** (AR, CLR) además del de Wald.
+
+# ★ Postgrado: clusters con tamaños muy heterogéneos
+
+::: {.callout-important title="★ Postgrado"}
+Extendemos el número efectivo de clusters al caso de una regresión con regresor a nivel de cluster y mostramos la condición de Lindeberg sobre la participación máxima.
+:::
+
+Para la media con efectos de cluster de varianza $\tau^2$ y ruido individual de varianza $\sigma^2$, la varianza exacta es $\operatorname{Var}(\bar y) = \sum_g(N_g/N)^2\big(\tau^2 + \sigma^2/N_g\big) = \tau^2/G^* + \sigma^2/N$. La **contribución del efecto de cluster** decrece como $1/G^*$, no como $1/G$ ni como $1/N$. Si $\tau^2$ es grande relativo a $\sigma^2$ (correlación intra-cluster alta) la varianza está dominada por el primer término, y la inferencia se rige por $G^*$. Para la **normalidad asintótica**, la condición de Lindeberg para $\sum_g(N_g/N)\varepsilon_g$ (suma ponderada de variables independientes) requiere que **ningún cluster domine**: $\max_gN_g/N\to0$, es decir, $\max_g(N_g/N)^2/\sum_g(N_g/N)^2\to0$. Si un cluster concentra una fracción del total que **no tiende a cero**, el estimador hereda la distribución de **ese** cluster (no es normal si $\varepsilon_g$ no lo es) y la inferencia asintótica falla: es el caso límite de $G^*\to1$. En la práctica esto ocurre con **datos de países** (Estados Unidos o China como un cluster dominante), **industrias concentradas** y **ciudades** (un área metropolitana que es una gran fracción de la muestra), donde reportar $G^*$ advierte del problema.
+
+Para una regresión con $K$ regresores el análisis equivale a un $G^*$ por regresor, con pesos que dependen de cuánto **varía el regresor** dentro de cada cluster (Carter, Schnepel y Steigerwald, 2017): un cluster con regresor constante y gran tamaño pesa mucho en la estimación y poco en la varianza efectiva.
+
+# Resumen
+
+- **Errores por clúster** (@thm-cluster): sándwich con el cluster como unidad; válido con dependencia arbitraria dentro y **asintótica en $G$**. Agrupar al nivel de **asignación del tratamiento** (o muestreo por clusters); el efecto Moulton $1 + (m - 1)\rho_x\rho_u$ mide el problema.
+- **Pocos clusters:** $\hat V_{CR}$ sesgada hacia abajo, tests con tamaño excesivo. Remedios: **$t(G - 1)$**, CR2 con Satterthwaite, **bootstrap salvaje por clúster** (pesos por cluster, imponiendo $H_0$, Webb si $G<12$). Información efectiva: $G$ (Donald–Lang, @prp-donald-lang).
+- **Tamaños desiguales:** el número efectivo $G^* = N^2/\sum N_g^2$ puede ser mucho menor que $G$ (@prp-g-efectivo).
+- **Instrumentos débiles:** MC2E sesgado y no normal; $F>10$ no basta ni es seguro de condicionar. **Anderson–Rubin** (@thm-ar): test válido para **cualquier** $\pi$; conjunto de confianza que puede ser ancho o no acotado **con razón**. CLR para más potencia; LIML con muchos instrumentos.
+
+# Ejercicios
+
+**Ejercicio 10.1.** Con $G = 4$ clusters de igual tamaño y medias de cluster $\bar y_g = (2,4,3,5)$, calcula la media, el error estándar por clúster con el factor $G/(G - 1)$ y un IC del 95 % con valores críticos normales y con $t(G - 1)$.
+
+::: {.callout-tip collapse="true" title="Solución 10.1"}
+Media: $3{,}5$. $\sum(\bar y_g - 3{,}5)^2 = 2{,}25 + 0{,}25 + 0{,}25 + 2{,}25 = 5{,}0$. $\hat V = \frac1{G^2}\sum(\bar y_g - \bar y)^2\cdot\frac G{G - 1} = \frac1{16}\cdot5\cdot\frac43 = 0{,}4167$, error estándar $=0{,}645$. IC normal: $3{,}5\pm1{,}96(0{,}645) = (2{,}24;\ 4{,}76)$. IC con $t(3)$ (crítico $3{,}182$): $3{,}5\pm3{,}182(0{,}645) = (1{,}45;\ 5{,}55)$: **mucho más ancho** ($4{,}1$ frente a $2{,}5$). Con solo cuatro clusters, la aproximación normal es muy optimista; el $t(G - 1)$ es exacto si las medias de cluster son normales.
+:::
+
+**Ejercicio 10.2.** Calcula el factor de Moulton para $m = 20$ observaciones por cluster, regresor constante dentro del cluster ($\rho_x = 1$) y $\rho_u = 0{,}1$. ¿Cuánto se subestima el error estándar sin agrupar? ¿Y con $\rho_x = 0$?
+
+::: {.callout-tip collapse="true" title="Solución 10.2"}
+Factor de varianza: $1 + (m - 1)\rho_x\rho_u = 1 + 19\cdot1\cdot0{,}1 = 2{,}9$. Error estándar verdadero $=\sqrt{2{,}9} = 1{,}70$ veces el ingenuo: el ingenuo está **$41$ % por debajo** del correcto. Con $\rho_x = 0$ (el regresor varía de manera independiente entre individuos del mismo cluster): factor $=1$, no hace falta agrupar. Es el mensaje de Abadie et al.: el problema aparece cuando **el regresor y el error están ambos correlacionados dentro del cluster**; con un tratamiento a nivel de estado ($\rho_x = 1$) es máximo.
+:::
+
+**Ejercicio 10.3.** En un bootstrap salvaje con pesos de Rademacher y $G = 5$ clusters: ¿cuántas combinaciones de signos hay, cuántos valores $|t^*|$ distintos (por simetría), y cuál es el menor valor $p$ posible? ¿Y con $G = 10$?
+
+::: {.callout-tip collapse="true" title="Solución 10.3"}
+$G = 5$: $2^5 = 32$ combinaciones; como $t^*(−w) = ±t^*(w)$ (invertir todos los signos cambia el signo del estadístico en el modelo restringido), solo $16$ valores distintos de $|t^*|$. El valor $p$ bilateral mínimo es $1/16 = 0{,}0625>0{,}05$: **el test nunca puede rechazar al 5 %**, aunque el efecto sea enorme. $G = 10$: $2^{10} = 1\,024$ combinaciones, $512$ distintas: $p_{\min} = 1/512 = 0{,}002$, sin problema. Con $G<12$ se usa la distribución de Webb (seis puntos, $6^G$ combinaciones) o inferencia por aleatorización.
+:::
+
+**Ejercicio 10.4.** Calcula $G^*$ para (a) diez clusters de $10$ observaciones; (b) un cluster de $91$ y nueve de $1$; (c) tamaños $(50,30,10,5,5)$.
+
+::: {.callout-tip collapse="true" title="Solución 10.4"}
+(a) $N = 100$, $\sum N_g^2 = 10\cdot100 = 1\,000$: $G^* = 10\,000/1\,000 = 10 = G$. (b) $\sum N_g^2 = 91^2 + 9 = 8\,290$: $G^* = 10\,000/8\,290 = 1{,}21$: **un solo cluster efectivo**, aunque $G = 10$. (c) $\sum N_g^2 = 2\,500 + 900 + 100 + 25 + 25 = 3\,550$: $G^* = 10\,000/3\,550 = 2{,}82$ (con $G = 5$). Un cluster que concentra la mitad de los datos (c) reduce la información efectiva a menos de tres clusters: la inferencia por clúster sería muy poco confiable.
+:::
+
+**Ejercicio 10.5.** Con el sesgo relativo aproximado de MC2E respecto de MCO $\approx1/(F - 1)$, calcula el sesgo relativo para $F = 11$, $F = 3$ y $F = 1{,}5$. Si el sesgo de MCO es $0{,}50$, ¿cuál es el sesgo de MC2E en cada caso?
+
+::: {.callout-tip collapse="true" title="Solución 10.5"}
+$F = 11$: $1/10 = 10$ %: sesgo de MC2E $=0{,}05$. $F = 3$: $1/2 = 50$ %: $0{,}25$. $F = 1{,}5$: $1/0{,}5 = 200$ % (la aproximación deja de valer: el sesgo es de **orden mayor que el de MCO**, el instrumento es peor que no usarlo en un caso extremo). Interpretación: con $F = 11$ MC2E reduce el sesgo de MCO en un $90$ %; con $F = 3$ solo a la mitad; con $F$ cercano a $1$ no hay información en el instrumento y MC2E converge al sesgo de MCO o peor. La regla $F>10$ proviene de este cálculo, pero es solo una guía para el sesgo, **no** para el tamaño de los tests ($\approx100$ para $5$ %).
+:::
+
+**Ejercicio 10.6.** En el @exm-ar, calcula $AR(0)$ para $H_0:\beta_0 = 0$ y $AR(3)$ para $H_0:\beta_0 = 3$ (el valor de Wald). Compara con el crítico $\chi^2_1 = 3{,}84$.
+
+::: {.callout-tip collapse="true" title="Solución 10.6"}
+$AR(\beta_0) = (\hat\gamma - \beta_0\hat\pi)^2/(\operatorname{ee}_\gamma^2 + \beta_0^2\operatorname{ee}_\pi^2)$ (con covarianza cero). $AR(0) = 0{,}30^2/0{,}12^2 = 0{,}09/0{,}0144 = 6{,}25>3{,}84$: **se rechaza** $\beta_0 = 0$ (es el $t^2$ de la forma reducida: $2{,}5^2 = 6{,}25$). $AR(3) = (0{,}30 - 0{,}30)^2/(\dots) = 0$: no se rechaza (por construcción, $\hat\beta_{Wald} = 3$ está siempre en el conjunto). Lo informativo es el conjunto completo $[0{,}58;\ 150{,}9]$: rechaza valores pequeños y negativos, pero **no puede descartar efectos enormes** como $\beta_0 = 100$: $(0{,}30 - 10)^2/(0{,}0144 + 10\,000\cdot0{,}0025) = 94{,}1/25{,}01 = 3{,}76<3{,}84$ (no rechazado). Es el reflejo de que la primera etapa no distingue $\pi = 0{,}10$ de valores cercanos a cero.
+:::
+
+**Ejercicio 10.7 ★.** Con efectos de cluster $\tau^2 = 1$, ruido individual $\sigma^2 = 4$ y $G = 10$ clusters de tamaño $m = 10$ cada uno, calcula $\operatorname{Var}(\bar y)$ y qué parte viene del efecto de cluster. Repite con un cluster de $55$ y nueve de $5$.
+
+::: {.callout-tip collapse="true" title="Solución 10.7 ★"}
+$\operatorname{Var}(\bar y) = \tau^2/G^* + \sigma^2/N$ con $N = 100$. Iguales: $G^* = 10$: $1/10 + 4/100 = 0{,}10 + 0{,}04 = 0{,}14$; el $71$ % viene del efecto de cluster. Desiguales ($55,5,\dots,5$): $\sum N_g^2 = 3\,025 + 9\cdot25 = 3\,250$, $G^* = 10\,000/3\,250 = 3{,}08$; $\operatorname{Var} = 1/3{,}08 + 0{,}04 = 0{,}325 + 0{,}04 = 0{,}365$: **$2{,}6$ veces mayor**, con los mismos $N$ y $G$, y el $89$ % se debe al efecto de cluster. Las dos configuraciones tienen $G = 10$ y $N = 100$, pero la segunda tiene **menos de un tercio de la información efectiva**.
+:::

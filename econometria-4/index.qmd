@@ -1,10 +1,48 @@
 ---
 title: "Econometría 4"
 subtitle: "Inferencia causal, métodos no paramétricos y aprendizaje automático"
-description: "En preparación."
+description: "Diez clases teóricas: resultados potenciales, selección en observables, LATE, diferencias en diferencias, econometría no paramétrica, regresión discontinua, alta dimensión, aprendizaje automático para inferencia causal, bootstrap e inferencia robusta."
 format: html
 number-sections: false
 toc: false
 ---
 
-Este curso está en preparación.
+Este curso reúne tres temas que han transformado la econometría aplicada en las últimas dos décadas, y que comparten una misma pregunta: **cómo hacer inferencia válida cuando el modelo paramétrico simple ya no alcanza**. El primero es la **inferencia causal**: qué significa, matemáticamente, el efecto de un tratamiento, y bajo qué supuestos los datos lo identifican (experimentos, selección en observables, instrumentos, diferencias en diferencias, discontinuidades). El segundo son los **métodos no paramétricos y de alta dimensión**: estimar funciones sin imponer una forma, regularizar cuando hay más variables que observaciones, y usar aprendizaje automático sin perder la inferencia. El tercero es la **inferencia robusta**: cómo calcular errores estándar y valores $p$ confiables cuando fallan las aproximaciones habituales (remuestreo, clusters, instrumentos débiles).
+
+Como en los cursos anteriores, cada resultado está demostrado o marcado como un hecho que se toma prestado (los desarrollos de Edgeworth, el test CLR, las cotas minimax y pocos más), y cada demostración va precedida de un recuadro **Borrador** donde se piensa en voz alta cómo encontrarla. Las secciones **★ Postgrado** profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).
+
+::: {.callout-caution title="Requisitos"}
+Este curso supone Econometría 1 (MCO, teoría asintótica, variables instrumentales) y Econometría 2 (M-estimadores, máxima verosimilitud, GMM, paneles). Algunas clases usan además Econometría 3 (el estimador HAC y el bootstrap de funciones impulso-respuesta). Se citan por número de clase.
+:::
+
+## Clases
+
+<ul class="clases">
+<li><span class="n">01</span><span><a href="clase-01.qmd">Resultados potenciales y experimentos</a><span class="d">Modelo de Rubin, SUTVA, ATE y ATT, sesgo de selección, aleatorización, varianza de Neyman y potencia. ★ Test de aleatorización de Fisher.</span></span></li>
+<li><span class="n">02</span><span><a href="clase-02.qmd">Selección en observables</a><span class="d">Insesgamiento condicional y traslape, el teorema del propensity score, ponderación inversa, matching y el estimador AIPW doblemente robusto. ★ Cota de eficiencia.</span></span></li>
+<li><span class="n">03</span><span><a href="clase-03.qmd">Variables instrumentales con efectos heterogéneos</a><span class="d">Compliers, monotonía, el teorema de Imbens–Angrist (Wald = LATE) y MC2E como promedio ponderado. ★ Efectos de tratamiento marginales.</span></span></li>
+<li><span class="n">04</span><span><a href="clase-04.qmd">Diferencias en diferencias</a><span class="d">Tendencias paralelas, estudios de eventos, correlación serial y adopción escalonada con pesos negativos de los efectos fijos bidireccionales. ★ Residuo bidireccional.</span></span></li>
+<li><span class="n">05</span><span><a href="clase-05.qmd">Econometría no paramétrica</a><span class="d">Kernel, Nadaraya–Watson y regresión local lineal con sesgo y varianza demostrados, validación cruzada, series y la maldición de la dimensionalidad. ★ Cotas minimax.</span></span></li>
+<li><span class="n">06</span><span><a href="clase-06.qmd">Regresión discontinua</a><span class="d">Identificación por continuidad, estimación local lineal, inferencia robusta con corrección de sesgo, validez y RD difusa. ★ Sesgo de frontera.</span></span></li>
+<li><span class="n">07</span><span><a href="clase-07.qmd">Alta dimensión: LASSO</a><span class="d">Ridge y LASSO, KKT, umbral suave, la desigualdad oráculo y el fracaso de la inferencia post-selección. ★ Demostración de la desigualdad oráculo.</span></span></li>
+<li><span class="n">08</span><span><a href="clase-08.qmd">Aprendizaje automático para inferencia causal</a><span class="d">Modelo parcialmente lineal, ortogonalidad de Neyman, cross-fitting y el teorema de DML con producto de tasas. ★ Momentos ortogonales.</span></span></li>
+<li><span class="n">09</span><span><a href="clase-09.qmd">Bootstrap</a><span class="d">Consistencia, intervalos percentil-t y refinamiento asintótico, fallas, bootstrap salvaje y por bloques. ★ Desarrollos de Edgeworth.</span></span></li>
+<li><span class="n">10</span><span><a href="clase-10.qmd">Inferencia robusta</a><span class="d">Errores por clúster, pocos clusters y bootstrap salvaje, clusters de tamaño desigual e instrumentos débiles con el test de Anderson–Rubin. ★ Número efectivo de clusters.</span></span></li>
+</ul>
+
+## Notación
+
+Los resultados potenciales son $Y_i(0),Y_i(1)$, el tratamiento $D_i$ y las covariables $X_i$; el propensity score es $e(x) = P(D = 1\mid X = x)$ y $\mu_d(x) = \mathbb{E}[Y\mid D = d,X = x]$. ATE, ATT y LATE son los efectos promedio sobre toda la población, los tratados y los cumplidores. $K$ es un kernel y $h$ un ancho de banda; $\|\beta\|_1$ y $\|\beta\|_0$ son las normas $\ell_1$ y de conteo; $\hat\eta$ denota las funciones de perturbación estimadas y $\psi$ un momento ortogonal. $\hat\theta^*$ es un estimador bootstrap y $G$ el número de clusters. Los vectores son columna y $'$ es la transpuesta.
+
+## Bibliografía
+
+- Imbens, G. y Rubin, D. (2015). *Causal Inference for Statistics, Social, and Biomedical Sciences*. Cambridge University Press. (La referencia para las Clases 1 a 3.)
+- Angrist, J. y Pischke, J.-S. (2009). *Mostly Harmless Econometrics*. Princeton University Press. (Diferencias en diferencias, discontinuidad y VI con mirada aplicada.)
+- Cunningham, S. (2021). *Causal Inference: The Mixtape*. Yale University Press. (Introducción accesible a los diseños causales.)
+- Li, Q. y Racine, J. (2007). *Nonparametric Econometrics*. Princeton University Press. (Clase 5.)
+- Tsybakov, A. (2009). *Introduction to Nonparametric Estimation*. Springer. (Cotas minimax.)
+- Hastie, T., Tibshirani, R. y Wainwright, M. (2015). *Statistical Learning with Sparsity*. CRC Press. (LASSO y alta dimensión.)
+- Chernozhukov, V. et al. (2018). "Double/debiased machine learning for treatment and structural parameters", *Econometrics Journal*. (Clase 8.)
+- Hall, P. (1992). *The Bootstrap and Edgeworth Expansion*. Springer. (Clase 9.)
+- Cameron, A. C. y Miller, D. (2015). "A practitioner's guide to cluster-robust inference", *Journal of Human Resources*. (Clase 10.)
+- Hansen, B. (2022). *Econometrics*. Princeton University Press. (Postgrado; marco moderno.)

@@ -1,6 +1,6 @@
 ---
 title: "Econometría"
-description: "Cursos de Econometría 1, 2 y 3: teoría, demostraciones paso a paso y ejercicios resueltos."
+description: "Cursos de Econometría 1, 2, 3 y 4: teoría, demostraciones paso a paso y ejercicios resueltos."
 page-layout: full
 title-block-banner: false
 toc: false
@@ -12,7 +12,7 @@ format:
 ---
 
 ::: {.hero}
-<div class="eyebrow">Tres cursos · teoría y demostraciones</div>
+<div class="eyebrow">Cuatro cursos · teoría y demostraciones</div>
 
 <h1>Econometría,<br>paso a paso.</h1>
 
@@ -44,6 +44,14 @@ format:
 <p>Series de tiempo: procesos estacionarios y ARMA, pronóstico, inferencia con dependencia, raíces unitarias y cointegración, VAR y identificación estructural, volatilidad condicional y espacio de estados. Trece clases.</p>
 <span class="estado activo">● Disponible · 13 clases</span>
 <a class="boton" href="econometria-3/index.qmd">Entrar al curso →</a>
+</div>
+
+<div class="curso">
+<div class="num">4</div>
+<h3>Econometría 4</h3>
+<p>Inferencia causal, métodos no paramétricos y aprendizaje automático: resultados potenciales, selección en observables, LATE, diferencias en diferencias, discontinuidad, LASSO, DML, bootstrap e inferencia robusta. Diez clases.</p>
+<span class="estado activo">● Disponible · 10 clases</span>
+<a class="boton" href="econometria-4/index.qmd">Entrar al curso →</a>
 </div>
 :::
 
