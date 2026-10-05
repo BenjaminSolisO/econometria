@@ -1,0 +1,209 @@
+---
+title: "Clase 7 · Alta dimensión: LASSO"
+subtitle: "Regularización, dispersión y el fracaso de la inferencia post-selección"
+description: "Regresión con muchos regresores: ridge y LASSO, condiciones KKT, umbral suave, desigualdad oráculo con demostración, el problema de la inferencia después de seleccionar variables (Leeb–Pötscher), post-LASSO, elección rigurosa de la penalización y la idea de doble selección."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando hay más variables que observaciones
+
+En Econometría 1 supusimos $k<n$ regresores. Hoy es común lo contrario: un investigador dispone de cientos o miles de variables candidatas (características de empresas, expresiones génicas, palabras de un texto, interacciones y términos polinómicos de unas pocas variables básicas) para $n$ observaciones. Si $p\ge n$, $X'X$ es **singular** y MCO ni siquiera está definido (Clase 1 de Econometría 1); y aun con $p<n$ pero $p$ comparable a $n$, MCO **sobreajusta**: el ajuste dentro de muestra es excelente y el pronóstico fuera de muestra, desastroso.
+
+La respuesta de la estadística moderna es **regularizar**: imponer una restricción o una penalización que contrarreste la libertad de ajustar ruido. Esta clase estudia la más influyente, el **LASSO** (Tibshirani, 1996), y hace dos preguntas centrales: (1) ¿cuándo el LASSO **predice bien** aunque $p\gg n$? (la respuesta es la *desigualdad oráculo*); (2) ¿cuándo se puede usar para **inferencia** sobre un parámetro (la pregunta causal)? (la respuesta es: no directamente, y por eso la Clase 8).[^tibshirani]
+
+[^tibshirani]: Robert Tibshirani propuso el LASSO (*least absolute shrinkage and selection operator*) en 1996, y el acrónimo es una pequeña broma: un lazo es lo que se usa para atrapar ganado, y el LASSO "atrapa" los coeficientes que valen cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre "estadística en alta dimensión". En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo **sin** destruir la inferencia.
+
+# El modelo disperso
+
+Sea $Y = X\beta_0 + \varepsilon$ con $X$ de $n\times p$, $p$ posiblemente mucho mayor que $n$. La hipótesis estructural que hace posible el problema es la **dispersión** (*sparsity*): solo **$s$ coeficientes son distintos de cero**, con $s\ll n$. Sea $S = \{j:\beta_{0j}\ne0\}$ el soporte, $|S| = s$. No sabemos cuál es $S$: esa es la dificultad. Si lo supiéramos, bastaría una regresión de MCO sobre las $s$ variables (el **oráculo**), con error de predicción $\approx\sigma^2s/n$. La pregunta es cuánto se pierde por **no conocer** $S$.
+
+La idea ingenua es **selección de subconjuntos** (*best subset*): minimizar $\|Y - X\beta\|^2$ sujeto a $\|\beta\|_0\le s$ (donde $\|\beta\|_0$ es el número de coeficientes no nulos). Es un problema **no convexo** y combinatorio ($\binom ps$ subconjuntos), computacionalmente inviable para $p$ grande. El LASSO lo **relaja** reemplazando la norma $\ell_0$ por la $\ell_1$, que es la envolvente convexa.
+
+# Ridge y LASSO
+
+**Ridge** (Hoerl y Kennard, 1970): minimiza $\|Y - X\beta\|^2 + \lambda\|\beta\|_2^2$, con solución $\hat\beta_R = (X'X + \lambda I)^{-1}X'Y$, siempre definida (la suma $X'X + \lambda I$ es invertible para $\lambda>0$) y que **contrae** todos los coeficientes hacia cero. Es el estimador de Econometría 1, Clase 4 ★ (donde vimos que ridge le gana a MCO en ECM). Pero ridge **no** pone coeficientes en cero: no hace selección de variables.
+
+::: {#def-lasso}
+## LASSO
+$$
+\hat\beta^{L} = \arg\min_{\beta\in\mathbb{R}^p}\ \frac1{2n}\|Y - X\beta\|_2^2 + \lambda\|\beta\|_1,\qquad\|\beta\|_1 = \sum_{j = 1}^p|\beta_j|.
+$$
+:::
+
+La penalización $\ell_1$ tiene un **vértice** en cada eje: la función $|\beta_j|$ no es diferenciable en cero, y eso hace que la solución tenga **coeficientes exactamente iguales a cero**. El problema es **convexo** (suma de una cuadrática y una norma), con solución única bajo condiciones leves, y se resuelve rápido para $p$ en los miles (descenso por coordenadas, LARS).
+
+## Condiciones de optimalidad (KKT)
+
+Como la función objetivo es convexa, el mínimo se caracteriza por que **cero pertenece al subdiferencial**.
+
+::: {#prp-kkt}
+## Condiciones KKT del LASSO
+$\hat\beta$ es solución del LASSO si y solo si, para cada $j$,
+$$
+\frac1nX_j'(Y - X\hat\beta) = \lambda\,\operatorname{sgn}(\hat\beta_j)\ \text{ si }\hat\beta_j\ne0,\qquad\Big|\frac1nX_j'(Y - X\hat\beta)\Big|\le\lambda\ \text{ si }\hat\beta_j = 0.
+$$
+:::
+
+::: {.proof}
+El subdiferencial de $|b|$ es $\{\operatorname{sgn}(b)\}$ si $b\ne0$ y $[-1,1]$ si $b = 0$. La condición de optimalidad de primer orden para una función convexa es que el gradiente de la parte suave más un elemento del subdiferencial de la penalización sea cero: $-\frac1nX_j'(Y - X\hat\beta) + \lambda s_j = 0$ con $s_j\in\partial|\hat\beta_j|$. Despejando se obtienen las dos condiciones.
+:::
+
+La lectura es muy clara: **una variable entra en el modelo solo si su correlación (muestral) con el residuo actual es, en valor absoluto, igual a $\lambda$**; las que tienen correlación menor que $\lambda$ quedan en cero. $\lambda$ es el **umbral de entrada**. Cuanto mayor es $\lambda$, menos variables entran; con $\lambda\ge\max_j|X_j'Y|/n$ todas son cero, y con $\lambda\to0$ se recupera MCO.
+
+## Umbral suave (diseño ortonormal)
+
+El comportamiento más transparente aparece con **regresores ortonormales** ($X'X/n = I_p$), caso en que el problema se **separa** por coordenada.
+
+::: {#prp-umbral}
+## LASSO como umbral suave
+Si $X'X/n = I_p$ y $z_j = X_j'Y/n$ es el coeficiente de MCO de $j$, entonces
+$$
+\hat\beta^L_j = \operatorname{sgn}(z_j)\big(|z_j| - \lambda\big)_+ = \begin{cases}z_j - \lambda&\text{si }z_j>\lambda,\\0&\text{si }|z_j|\le\lambda,\\z_j + \lambda&\text{si }z_j<-\lambda.\end{cases}
+$$
+:::
+
+::: {.proof}
+Con $X'X/n = I$, $\frac1{2n}\|Y - X\beta\|^2 = \tfrac12\|\beta - z\|^2 + \text{cte}$ (completando cuadrados: $\frac1{2n}\|Y\|^2 - z'\beta + \tfrac12\|\beta\|^2$), de modo que el problema es $\sum_j\big[\tfrac12(\beta_j - z_j)^2 + \lambda|\beta_j|\big]$, **separable**. Para cada $j$, por KKT: si $\hat\beta_j\ne0$, $z_j - \hat\beta_j = \lambda\operatorname{sgn}(\hat\beta_j)$, es decir $\hat\beta_j = z_j - \lambda\operatorname{sgn}(\hat\beta_j)$, que tiene el signo de $z_j$ solo si $|z_j|>\lambda$; si $\hat\beta_j = 0$, $|z_j|\le\lambda$. Esto es el umbral suave.
+:::
+
+Comparación con alternativas, con la misma estimación inicial $z$: **MCO** deja $z_j$ intacto; **ridge** lo **divide** por $1 + \lambda$ (contrae proporcionalmente); **umbral duro** (selección de subconjuntos) deja $z_j$ si $|z_j|>\lambda$ y pone cero si no; el **LASSO** **resta** $\lambda$ a los grandes y pone en cero a los pequeños. Observa que LASSO **introduce sesgo** en los coeficientes grandes (los reduce en $\lambda$): es el precio de la estimación estable.
+
+# La desigualdad oráculo
+
+¿Qué tan bien predice el LASSO? La teoría moderna responde con una **cota no asintótica** del error de predicción, válida para cualquier $n,p,s$, que depende de $p$ solo por $\log p$.
+
+::: {.callout-caution title="Supuestos"}
+1. **Modelo disperso:** $Y = X\beta_0 + \varepsilon$, con soporte $S$, $|S| = s$.
+2. **Errores sub-gaussianos:** por ejemplo $\varepsilon_i$ i.i.d. $N(0,\sigma^2)$, y columnas normalizadas $\|X_j\|_2^2/n = 1$.
+3. **Condición de autovalor restringido (RE):** existe $\phi>0$ tal que $\|Xv\|_2^2/n\ge\phi^2\|v_S\|_2^2$ para todo $v$ con $\|v_{S^c}\|_1\le3\|v_S\|_1$. Es una versión débil de "$X'X/n$ es invertible", exigida solo en un **cono** de direcciones (concentradas en $S$).
+:::
+
+::: {#thm-oraculo}
+## Desigualdad oráculo (Bickel, Ritov y Tsybakov, 2009)
+Bajo los supuestos, con $\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n}$, con probabilidad al menos $1 - \delta$,
+$$
+\frac1n\|X(\hat\beta^L - \beta_0)\|_2^2\le\frac{9\lambda^2s}{\phi^2},\qquad\|\hat\beta^L - \beta_0\|_1\le\frac{12\lambda s}{\phi^2}.
+$$
+En particular, el error de predicción es $O\big(\sigma^2s\log(p/\delta)/(n\phi^2)\big)$.
+:::
+
+Lo notable es la **forma**: el error es proporcional a $s$ (el número de variables relevantes, como el oráculo) y a $\log p$ (el **costo de no conocer cuáles son**), no a $p$. Con $p = e^{n/10}$ variables (¡exponencialmente más variables que datos!) el error de predicción sigue siendo pequeño si $s$ es chico. La demostración está en la sección ★.
+
+Para **elegir $\lambda$** hay dos criterios. El **teórico** (el de arriba, o su versión robusta de Belloni, Chen, Chernozhukov y Hansen, 2012, con la desviación estándar estimada en cada variable) garantiza el evento $\|X'\varepsilon/n\|_\infty\le\lambda/2$ con alta probabilidad. El **práctico** más usado es la **validación cruzada** de $K$ pliegues (Clase 5): elegir el $\lambda$ que minimiza el error de predicción fuera de muestra. Esta tiende a elegir un $\lambda$ **menor** que el teórico, con **más variables** incluidas (buena para predecir; mala para la selección exacta).
+
+## Selección de variables
+
+La desigualdad oráculo es sobre **predicción** y estimación, no sobre **qué variables se seleccionan**. El LASSO selecciona **exactamente** $S$ con alta probabilidad solo bajo condiciones más fuertes: la **condición de irrepresentabilidad** (las variables irrelevantes no pueden estar demasiado correlacionadas con las relevantes: Zhao y Yu, 2006; Wainwright, 2009) y un **tamaño mínimo** de los coeficientes verdaderos (*beta-min*: $\min_{j\in S}|\beta_{0j}|\gg\lambda$, de modo que no se confundan con ruido). En la práctica, con regresores correlacionados, el LASSO elige una variable de un grupo correlacionado y descarta las otras de manera algo arbitraria, y su selección es **inestable** entre muestras. Variantes: el *elastic net* (mezcla $\ell_1$ y $\ell_2$, agrupa regresores correlacionados), el LASSO **adaptativo** (pesa la penalización por $1/|\hat\beta_j^{init}|$ para reducir el sesgo) y el *group LASSO*.
+
+# El problema de la inferencia después de seleccionar
+
+Para un economista, el objetivo suele ser el efecto causal de **una** variable $D$, controlando por un vector grande $X$. Una tentación natural: (1) usar el LASSO para **seleccionar** los controles relevantes, (2) correr MCO de $Y$ sobre $D$ y los controles seleccionados, (3) reportar los errores estándar de MCO **como si el modelo hubiera sido elegido de antemano**. Es un procedimiento **inválido**, por dos razones que se refuerzan.
+
+**(i) Sesgo por variable omitida.** Si el LASSO descarta una variable $X_j$ con un coeficiente pequeño en la ecuación de $Y$ pero **fuertemente correlacionada con $D$**, la regresión sobre los controles seleccionados omite $X_j$ y el coeficiente de $D$ queda sesgado. El sesgo es pequeño en la ecuación de $Y$ (por eso se descartó) pero **no** en el efecto de $D$ (Ejercicio 7.6).
+
+**(ii) La distribución de los estimadores es no uniforme** (Leeb y Pötscher, 2005). El resultado de la selección **depende de los mismos datos** que luego se usan para inferir. Para coeficientes que son **cercanos a cero en relación a $n^{-1/2}$**, el estimador post-selección tiene una distribución que **no es normal** ni siquiera asintóticamente, y que **depende del valor desconocido** del coeficiente: la teoría asintótica "habitual" (para un parámetro **fijo**) no es **uniforme**. Es el mismo fenómeno del **estimador de Hodges** (Clase 2 de Econometría 2, ★): un estimador que es "mejor" en el punto $\theta = 0$ es pésimo en vecindades de tamaño $n^{-1/2}$ de ese punto.
+
+Un ejemplo simple lo hace visible. Sea $\hat\beta\sim N(b,1)$ (estimador estandarizado de un coeficiente $b$). Un investigador **conserva** la variable solo si $|\hat\beta|>1{,}96$ (la "selecciona") y, si la conserva, reporta el intervalo $\hat\beta\pm1{,}96$; si la descarta, reporta $\{0\}$.
+
+::: {#prp-cobertura}
+## Cobertura del intervalo post-selección
+Para $b\ne0$, la cobertura del procedimiento es $P\big(|\hat\beta|>1{,}96,\ |\hat\beta - b|\le1{,}96\big)$. Para $b>0$ y $b\le1{,}96$ vale $\Phi(1{,}96) - \Phi(1{,}96 - b)$, que **tiende a cero cuando $b\to0^+$**.
+:::
+
+::: {.proof}
+Si $b\ne0$, el intervalo cubre $b$ solo si fue **seleccionado** (si no, el intervalo es $\{0\}\ne b$) y si $|\hat\beta - b|\le1{,}96$. Para $b>0$ moderado, la condición $|\hat\beta|>1{,}96$ con $\hat\beta\ge b - 1{,}96>-1{,}96$ equivale a $\hat\beta>1{,}96$; y $|\hat\beta - b|\le1{,}96$ a $\hat\beta\le b + 1{,}96$. Entonces la cobertura es $P(1{,}96<\hat\beta\le b + 1{,}96) = \Phi(1{,}96) - \Phi(1{,}96 - b)$ (con $\hat\beta - b\sim N(0,1)$). Para $b\to0^+$, $\Phi(1{,}96) - \Phi(1{,}96 - b)\to0$.
+:::
+
+La cobertura nominal es $95$ %, pero con $b = 1$ la cobertura real es $\Phi(1{,}96) - \Phi(0{,}96) = 0{,}975 - 0{,}832 = 14$ %, con $b = 2$ es $49$ %, y con $b = 0{,}2$ solo $1{,}4$ % (Ejercicio 7.4). **Cuanto más cerca de cero (sin serlo) está el coeficiente, peor**. Se trata de una propiedad de **cualquier** procedimiento que seleccione y luego haga inferencia con los mismos datos, y aplica al LASSO: los coeficientes pequeños pero no nulos, en la zona donde el LASSO "duda", son los que arruinan la cobertura.
+
+## Remedios parciales
+
+- **Post-LASSO** (Belloni y Chernozhukov, 2013): usar el LASSO **solo para seleccionar** y reestimar por MCO las variables elegidas. Elimina el **sesgo de contracción** de $\lambda$ en los coeficientes grandes (Ejercicio 7.5) y mejora la predicción, pero **no** resuelve el problema de inferencia.
+- **Penalización con carga por variable** (*rigorous LASSO*): $\lambda_j = \lambda\hat\sigma_j$ con $\hat\sigma_j$ estimada, robusta a heterocedasticidad (Belloni et al., 2012).
+- **Doble selección** (Belloni, Chernozhukov y Hansen, 2014): para el efecto de $D$ sobre $Y$ controlando por $X$ de alta dimensión, (1) LASSO de $Y$ sobre $X$ (selecciona controles que predicen el resultado); (2) LASSO de $D$ sobre $X$ (selecciona controles que predicen el tratamiento); (3) MCO de $Y$ sobre $D$ y la **unión** de los controles seleccionados en (1) y (2). Un control que importa para el sesgo debe estar relacionado con $Y$ **y** con $D$; basta que sea elegido en **alguna** de las dos ecuaciones para entrar. El resultado es un estimador **$\sqrt n$-normal** del efecto de $D$ con inferencia válida **uniforme** en el modelo: el error por omitir un control es un **producto** de dos errores pequeños (el de la ecuación de $Y$ y el de la de $D$). Esa es la propiedad de **ortogonalidad de Neyman** que se desarrolla en la Clase 8 y que está detrás de todos los métodos modernos de inferencia con aprendizaje automático.
+
+# ★ Postgrado: demostración de la desigualdad oráculo
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos el @thm-oraculo. El argumento tiene tres pasos: una **desigualdad básica** (el LASSO es mejor que $\beta_0$ en su propio criterio), el **cono** donde vive el error, y el uso de la condición RE.
+:::
+
+Sea $v = \hat\beta^L - \beta_0$ y definamos el evento $\mathcal{G} = \{\|X'\varepsilon\|_\infty/n\le\lambda/2\}$.
+
+*Paso 0: el evento tiene alta probabilidad.* Cada $X_j'\varepsilon/n\sim N(0,\sigma^2/n)$ (columnas normalizadas), así que $P(|X_j'\varepsilon/n|>t)\le2e^{-nt^2/(2\sigma^2)}$. Con $t = \lambda/2$ y la cota de la unión sobre $p$ variables, $P(\mathcal{G}^c)\le2pe^{-n\lambda^2/(8\sigma^2)} = \delta$ para $\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n}$.
+
+*Paso 1: desigualdad básica.* Como $\hat\beta^L$ minimiza el criterio, $\frac1{2n}\|Y - X\hat\beta\|^2 + \lambda\|\hat\beta\|_1\le\frac1{2n}\|Y - X\beta_0\|^2 + \lambda\|\beta_0\|_1$. Con $Y - X\hat\beta = \varepsilon - Xv$ y expandiendo,
+$$
+\frac1{2n}\|Xv\|^2\le\frac1n\varepsilon'Xv + \lambda\big(\|\beta_0\|_1 - \|\hat\beta\|_1\big).
+$$
+En $\mathcal{G}$, $\big|\tfrac1n\varepsilon'Xv\big|\le\|X'\varepsilon/n\|_\infty\|v\|_1\le\tfrac\lambda2\|v\|_1$. Además, como $\beta_0$ tiene soporte $S$: $\|\hat\beta\|_1 = \|\beta_{0S} + v_S\|_1 + \|v_{S^c}\|_1\ge\|\beta_0\|_1 - \|v_S\|_1 + \|v_{S^c}\|_1$, de modo que $\|\beta_0\|_1 - \|\hat\beta\|_1\le\|v_S\|_1 - \|v_{S^c}\|_1$. Reemplazando,
+$$
+\frac1{2n}\|Xv\|^2\le\frac\lambda2\big(\|v_S\|_1 + \|v_{S^c}\|_1\big) + \lambda\big(\|v_S\|_1 - \|v_{S^c}\|_1\big) = \frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1.
+$$ {#eq-basica}
+
+*Paso 2: el cono.* El lado izquierdo es no negativo, así que $\frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1\ge0$, es decir $\|v_{S^c}\|_1\le3\|v_S\|_1$: **$v$ está en el cono** de la condición RE. Por lo tanto $\|Xv\|^2/n\ge\phi^2\|v_S\|_2^2$.
+
+*Paso 3: cota de predicción.* De @eq-basica, descartando el término negativo, $\frac1{2n}\|Xv\|^2\le\frac{3\lambda}2\|v_S\|_1\le\frac{3\lambda}2\sqrt s\|v_S\|_2\le\frac{3\lambda\sqrt s}{2\phi}\cdot\frac{\|Xv\|}{\sqrt n}$ (por Cauchy–Schwarz y por RE). Multiplicando por $2$ y dividiendo por $\|Xv\|/\sqrt n$ (si es no nulo): $\|Xv\|/\sqrt n\le3\lambda\sqrt s/\phi$, es decir $\|Xv\|^2/n\le9\lambda^2s/\phi^2$.
+
+*Paso 4: error en $\ell_1$.* $\|v\|_1 = \|v_S\|_1 + \|v_{S^c}\|_1\le4\|v_S\|_1\le4\sqrt s\|v_S\|_2\le\frac{4\sqrt s}\phi\cdot\frac{\|Xv\|}{\sqrt n}\le\frac{4\sqrt s}\phi\cdot\frac{3\lambda\sqrt s}\phi = \frac{12\lambda s}{\phi^2}$. $\square$
+
+Dos comentarios. **(i)** La condición RE es **inevitable**: sin alguna forma de identificabilidad en el cono, no hay manera de separar los coeficientes verdaderos de los espurios. **(ii)** El factor $\sqrt s$ en el paso 3 viene de pasar de $\ell_1$ a $\ell_2$ sobre $S$ ($s$ coordenadas), y la constante $3$ del cono es consecuencia de $\lambda\ge2\|X'\varepsilon\|_\infty/n$. Las constantes son conservadoras: en la práctica el LASSO funciona mucho mejor que lo que sugieren.
+
+# Resumen
+
+- Con $p\gtrsim n$, MCO falla; se **regulariza**. **Ridge** contrae; **LASSO** ($\ell_1$) contrae y selecciona (pone ceros). El LASSO es convexo, con **KKT**: entran las variables con $|X_j'r|/n = \lambda$ (@prp-kkt).
+- Con diseño ortonormal, LASSO es **umbral suave** (@prp-umbral): resta $\lambda$ a los grandes y anula los pequeños; introduce **sesgo** en los grandes.
+- **Desigualdad oráculo** (@thm-oraculo): bajo dispersión y la condición RE, el error de predicción es $\lesssim\sigma^2s\log p/(n\phi^2)$: depende de $p$ solo por $\log p$. Selección exacta exige irrepresentabilidad y beta-min.
+- **Inferencia post-selección inválida**: sesgo por variable omitida y no uniformidad (Leeb–Pötscher); un intervalo naive tiene cobertura de **14 %** con $b = 1$ (@prp-cobertura).
+- **Remedios:** post-LASSO (quita el sesgo de contracción), penalización rigurosa, y la **doble selección** (ortogonalidad de Neyman: Clase 8).
+
+# Ejercicios
+
+**Ejercicio 7.1.** Con los coeficientes de MCO $z = (3,\,-1{,}2,\,0{,}4,\,0)$ y diseño ortonormal, calcula las estimaciones de LASSO, umbral duro y ridge con $\lambda = 0{,}5$.
+
+::: {.callout-tip collapse="true" title="Solución 7.1"}
+LASSO (umbral suave, resta $0{,}5$ en valor absoluto): $(2{,}5,\ -0{,}7,\ 0,\ 0)$ (el tercero, $|0{,}4|<0{,}5$, se anula). Umbral duro: deja $z_j$ si $|z_j|>0{,}5$: $(3,\ -1{,}2,\ 0,\ 0)$. Ridge: $z_j/(1 + \lambda) = z_j/1{,}5$: $(2{,}0,\ -0{,}8,\ 0{,}267,\ 0)$. LASSO es el único que combina **selección** (ceros) y **contracción** de los grandes; ridge no selecciona; el umbral duro selecciona pero no contrae (y su estimador es discontinuo en $z$).
+:::
+
+**Ejercicio 7.2.** En una solución del LASSO con $\lambda = 0{,}3$, las correlaciones con el residuo $X_j'r/n$ son $(0{,}30,\ -0{,}30,\ 0{,}10)$ para $j = 1,2,3$. ¿Qué variables están activas? ¿Podría una solución tener $X_1'r/n = 0{,}5$?
+
+::: {.callout-tip collapse="true" title="Solución 7.2"}
+Por KKT, las **activas** tienen $|X_j'r|/n = \lambda = 0{,}3$ con signo igual al de $\hat\beta_j$: las variables $1$ (con $\hat\beta_1>0$) y $2$ (con $\hat\beta_2<0$) están activas; la $3$ ($|0{,}10|<0{,}3$) es cero. **No** puede haber una solución con $|X_1'r|/n = 0{,}5>\lambda$: ninguna variable puede tener correlación con el residuo mayor que $\lambda$ (si la tuviera, agregarla o aumentar su coeficiente reduciría el criterio, contradiciendo la optimalidad). Es la regla: el LASSO "agota" la correlación hasta el nivel $\lambda$.
+:::
+
+**Ejercicio 7.3.** Calcula $\lambda$ teórico para $n = 400$, $p = 1\,000$, $\sigma = 1$ y $\delta = 0{,}05$. Compara el costo $\log p$ con el oráculo para $s = 5$.
+
+::: {.callout-tip collapse="true" title="Solución 7.3"}
+$\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n} = 2\sqrt{2\ln(40\,000)/400} = 2\sqrt{2\cdot10{,}597/400} = 2\sqrt{0{,}0530} = 2(0{,}230) = 0{,}46$. El error del oráculo (conoce $S$, MCO sobre $5$ variables) es $\sigma^2s/n = 5/400 = 0{,}0125$. El del LASSO escala como $\sigma^2s\log p/n = 5\cdot6{,}9/400 = 0{,}086$: unas $7$ veces mayor: es el **precio de no conocer** el soporte entre $1\,000$ candidatos. Notar que ese precio crece como $\log p$: pasar de $1\,000$ a $1\,000\,000$ variables lo multiplica por $2$ (de $6{,}9$ a $13{,}8$), no por $1\,000$.
+:::
+
+**Ejercicio 7.4.** Calcula la cobertura del intervalo post-selección de la @prp-cobertura para $b = 0{,}2,\ 1,\ 2$ y $b = 0$.
+
+::: {.callout-tip collapse="true" title="Solución 7.4"}
+Para $0<b\le1{,}96$: cobertura $=\Phi(1{,}96) - \Phi(1{,}96 - b)$. $b = 0{,}2$: $0{,}9750 - \Phi(1{,}76) = 0{,}9750 - 0{,}9608 = 0{,}014$ ($1{,}4$ %). $b = 1$: $0{,}9750 - \Phi(0{,}96) = 0{,}9750 - 0{,}8315 = 0{,}1435$ ($14$ %). $b = 2$: $P(\hat\beta>1{,}96\text{ y }\hat\beta\le3{,}96) = \Phi(1{,}96) - \Phi(-0{,}04) = 0{,}9750 - 0{,}4840 = 0{,}491$ ($49$ %). $b = 0$: el intervalo es $\{0\}$ cuando no se selecciona (probabilidad $0{,}95$) y cubre $b = 0$; cuando se selecciona, no cubre: cobertura $=0{,}95$. La cobertura es la nominal **solo** en $b = 0$ (y converge a $95$ % para $b$ grande, $>4$), pero para coeficientes pequeños no nulos es **muy baja**: es la no uniformidad de Leeb–Pötscher.
+:::
+
+**Ejercicio 7.5.** Con diseño ortonormal, $z = 3$ y $\lambda = 0{,}5$, ¿qué estima el LASSO? ¿Y el post-LASSO? ¿Por qué mejora?
+
+::: {.callout-tip collapse="true" title="Solución 7.5"}
+LASSO: $3 - 0{,}5 = 2{,}5$ (sesgo de $-0{,}5$, la contracción). Post-LASSO: se selecciona la variable (porque $|z| = 3>0{,}5$) y se reestima por MCO sobre ella: $\hat\beta = z = 3$, que es el estimador de MCO **sin contracción**. Mejora porque quita el sesgo de $\lambda$ para las variables **seleccionadas** (que son las de coeficiente grande, donde la contracción es innecesaria), manteniendo la selección. El costo es que **depende** de que la selección sea buena: si se incluyó una variable irrelevante, post-LASSO la estima con la varianza completa de MCO.
+:::
+
+**Ejercicio 7.6.** El modelo verdadero es $Y = 0{,}5D + 0{,}1X_5 + \varepsilon$, con $\operatorname{Cov}(D,X_5) = 0{,}8$ y $\operatorname{Var}(D) = 1$. Un LASSO de $Y$ sobre $(D,X_1,\dots,X_{100})$ con $\lambda = 0{,}15$ pone en cero a $X_5$. Calcula el sesgo del coeficiente de $D$ y explica cómo la doble selección lo evita.
+
+::: {.callout-tip collapse="true" title="Solución 7.6"}
+Al omitir $X_5$, el coeficiente de $D$ en la regresión restante estima $0{,}5 + 0{,}1\cdot\operatorname{Cov}(D,X_5)/\operatorname{Var}(D) = 0{,}5 + 0{,}1\cdot0{,}8 = 0{,}58$: sesgo de $0{,}08$, o $16$ % del efecto verdadero. El coeficiente de $X_5$ ($0{,}1$) es **menor** que el umbral $\lambda = 0{,}15$ y se descarta: en la ecuación de $Y$ es "irrelevante", pero en la de $D$ es **muy relevante** (correlación $0{,}8$). La **doble selección** corre además un LASSO de $D$ sobre $X$: ahí $X_5$ tiene un coeficiente grande y es **seleccionado**. La unión de los controles seleccionados incluye $X_5$, y la regresión final de $Y$ sobre $D$ y esa unión elimina el sesgo. Un control que causa sesgo de variable omitida tiene que estar relacionado con **ambas** variables, y la doble selección lo captura si lo está con cualquiera de las dos.
+:::
+
+**Ejercicio 7.7 ★.** En el Paso 3 de la demostración, con $\lambda = 0{,}2$, $s = 3$ y $\phi = 0{,}6$, calcula las cotas de predicción y de $\ell_1$ del @thm-oraculo. ¿Por qué estas cotas son conservadoras? ¿De dónde sale la restricción $\|v_{S^c}\|_1\le3\|v_S\|_1$?
+
+::: {.callout-tip collapse="true" title="Solución 7.7 ★"}
+Predicción: $9\lambda^2s/\phi^2 = 9(0{,}04)(3)/0{,}36 = 3{,}0$; $\ell_1$: $12\lambda s/\phi^2 = 12(0{,}2)(3)/0{,}36 = 20$. Las constantes ($9$ y $12$) vienen de cotas sucesivas de Cauchy–Schwarz y de la triangular, y son **generosas**: en simulaciones el error es mucho menor. La restricción $\|v_{S^c}\|_1\le3\|v_S\|_1$ sale del **Paso 1**: como $\frac1{2n}\|Xv\|^2\ge0$, de @eq-basica se obtiene $\frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1\ge0$. Los factores $\frac32$ y $\frac12$ provienen de combinar $\lambda/2$ (de la cota del ruido, que usa $\lambda\ge2\|X'\varepsilon\|_\infty/n$) con $\lambda$ (de la penalización): $\frac12 + 1 = \frac32$ y $1 - \frac12 = \frac12$, y su cociente es $3$. Si se elige $\lambda$ más grande ($\lambda\ge c\|X'\varepsilon\|_\infty/n$ con $c>2$) el cono se estrecha.
+:::

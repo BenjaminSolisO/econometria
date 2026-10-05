@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Regresión con muchos regresores: ridge y LASSO, condiciones KKT, umbral suave, desigualdad oráculo con demostración, el problema de la inferencia después de seleccionar variables (Leeb–Pötscher), post-LASSO, elección rigurosa de la penalización y la idea de doble selección.">
+
+<title>Clase 7 · Alta dimensión: LASSO – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-4/clase-06.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-4/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-4/clase-07.html">Clase 7 · Alta dimensión: LASSO</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Resultados potenciales y experimentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Selección en observables</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Variables instrumentales con efectos heterogéneos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Diferencias en diferencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Econometría no paramétrica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Regresión discontinua</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-4/clase-07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 7 · Alta dimensión: LASSO</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-hay-más-variables-que-observaciones" id="toc-cuando-hay-más-variables-que-observaciones" class="nav-link active" data-scroll-target="#cuando-hay-más-variables-que-observaciones"><span class="header-section-number">1</span> Cuando hay más variables que observaciones</a></li>
+  <li><a href="#el-modelo-disperso" id="toc-el-modelo-disperso" class="nav-link" data-scroll-target="#el-modelo-disperso"><span class="header-section-number">2</span> El modelo disperso</a></li>
+  <li><a href="#ridge-y-lasso" id="toc-ridge-y-lasso" class="nav-link" data-scroll-target="#ridge-y-lasso"><span class="header-section-number">3</span> Ridge y LASSO</a>
+  <ul class="collapse">
+  <li><a href="#condiciones-de-optimalidad-kkt" id="toc-condiciones-de-optimalidad-kkt" class="nav-link" data-scroll-target="#condiciones-de-optimalidad-kkt"><span class="header-section-number">3.1</span> Condiciones de optimalidad (KKT)</a></li>
+  <li><a href="#umbral-suave-diseño-ortonormal" id="toc-umbral-suave-diseño-ortonormal" class="nav-link" data-scroll-target="#umbral-suave-diseño-ortonormal"><span class="header-section-number">3.2</span> Umbral suave (diseño ortonormal)</a></li>
+  </ul></li>
+  <li><a href="#la-desigualdad-oráculo" id="toc-la-desigualdad-oráculo" class="nav-link" data-scroll-target="#la-desigualdad-oráculo"><span class="header-section-number">4</span> La desigualdad oráculo</a>
+  <ul class="collapse">
+  <li><a href="#selección-de-variables" id="toc-selección-de-variables" class="nav-link" data-scroll-target="#selección-de-variables"><span class="header-section-number">4.1</span> Selección de variables</a></li>
+  </ul></li>
+  <li><a href="#el-problema-de-la-inferencia-después-de-seleccionar" id="toc-el-problema-de-la-inferencia-después-de-seleccionar" class="nav-link" data-scroll-target="#el-problema-de-la-inferencia-después-de-seleccionar"><span class="header-section-number">5</span> El problema de la inferencia después de seleccionar</a>
+  <ul class="collapse">
+  <li><a href="#remedios-parciales" id="toc-remedios-parciales" class="nav-link" data-scroll-target="#remedios-parciales"><span class="header-section-number">5.1</span> Remedios parciales</a></li>
+  </ul></li>
+  <li><a href="#postgrado-demostración-de-la-desigualdad-oráculo" id="toc-postgrado-demostración-de-la-desigualdad-oráculo" class="nav-link" data-scroll-target="#postgrado-demostración-de-la-desigualdad-oráculo"><span class="header-section-number">6</span> ★ Postgrado: demostración de la desigualdad oráculo</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-07.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 7 · Alta dimensión: LASSO</h1>
+<p class="subtitle lead">Regularización, dispersión y el fracaso de la inferencia post-selección</p>
+</div>
+
+<div>
+  <div class="description">
+    Regresión con muchos regresores: ridge y LASSO, condiciones KKT, umbral suave, desigualdad oráculo con demostración, el problema de la inferencia después de seleccionar variables (Leeb–Pötscher), post-LASSO, elección rigurosa de la penalización y la idea de doble selección.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-hay-más-variables-que-observaciones" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando hay más variables que observaciones</h1>
+<p>En Econometría 1 supusimos <span class="math inline">\(k&lt;n\)</span> regresores. Hoy es común lo contrario: un investigador dispone de cientos o miles de variables candidatas (características de empresas, expresiones génicas, palabras de un texto, interacciones y términos polinómicos de unas pocas variables básicas) para <span class="math inline">\(n\)</span> observaciones. Si <span class="math inline">\(p\ge n\)</span>, <span class="math inline">\(X'X\)</span> es <strong>singular</strong> y MCO ni siquiera está definido (Clase 1 de Econometría 1); y aun con <span class="math inline">\(p&lt;n\)</span> pero <span class="math inline">\(p\)</span> comparable a <span class="math inline">\(n\)</span>, MCO <strong>sobreajusta</strong>: el ajuste dentro de muestra es excelente y el pronóstico fuera de muestra, desastroso.</p>
+<p>La respuesta de la estadística moderna es <strong>regularizar</strong>: imponer una restricción o una penalización que contrarreste la libertad de ajustar ruido. Esta clase estudia la más influyente, el <strong>LASSO</strong> (Tibshirani, 1996), y hace dos preguntas centrales: (1) ¿cuándo el LASSO <strong>predice bien</strong> aunque <span class="math inline">\(p\gg n\)</span>? (la respuesta es la <em>desigualdad oráculo</em>); (2) ¿cuándo se puede usar para <strong>inferencia</strong> sobre un parámetro (la pregunta causal)? (la respuesta es: no directamente, y por eso la Clase 8).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Robert Tibshirani propuso el LASSO (<em>least absolute shrinkage and selection operator</em>) en 1996, y el acrónimo es una pequeña broma: un lazo es lo que se usa para atrapar ganado, y el LASSO “atrapa” los coeficientes que valen cero. Es uno de los artículos de estadística más citados de las últimas décadas, y el origen de una literatura entera sobre “estadística en alta dimensión”. En econometría se popularizó a partir de los trabajos de Belloni, Chernozhukov y sus coautores a partir de 2011, que mostraron cómo usarlo <strong>sin</strong> destruir la inferencia.</p></div></div></section>
+<section id="el-modelo-disperso" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El modelo disperso</h1>
+<p>Sea <span class="math inline">\(Y = X\beta_0 + \varepsilon\)</span> con <span class="math inline">\(X\)</span> de <span class="math inline">\(n\times p\)</span>, <span class="math inline">\(p\)</span> posiblemente mucho mayor que <span class="math inline">\(n\)</span>. La hipótesis estructural que hace posible el problema es la <strong>dispersión</strong> (<em>sparsity</em>): solo <strong><span class="math inline">\(s\)</span> coeficientes son distintos de cero</strong>, con <span class="math inline">\(s\ll n\)</span>. Sea <span class="math inline">\(S = \{j:\beta_{0j}\ne0\}\)</span> el soporte, <span class="math inline">\(|S| = s\)</span>. No sabemos cuál es <span class="math inline">\(S\)</span>: esa es la dificultad. Si lo supiéramos, bastaría una regresión de MCO sobre las <span class="math inline">\(s\)</span> variables (el <strong>oráculo</strong>), con error de predicción <span class="math inline">\(\approx\sigma^2s/n\)</span>. La pregunta es cuánto se pierde por <strong>no conocer</strong> <span class="math inline">\(S\)</span>.</p>
+<p>La idea ingenua es <strong>selección de subconjuntos</strong> (<em>best subset</em>): minimizar <span class="math inline">\(\|Y - X\beta\|^2\)</span> sujeto a <span class="math inline">\(\|\beta\|_0\le s\)</span> (donde <span class="math inline">\(\|\beta\|_0\)</span> es el número de coeficientes no nulos). Es un problema <strong>no convexo</strong> y combinatorio (<span class="math inline">\(\binom ps\)</span> subconjuntos), computacionalmente inviable para <span class="math inline">\(p\)</span> grande. El LASSO lo <strong>relaja</strong> reemplazando la norma <span class="math inline">\(\ell_0\)</span> por la <span class="math inline">\(\ell_1\)</span>, que es la envolvente convexa.</p>
+</section>
+<section id="ridge-y-lasso" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Ridge y LASSO</h1>
+<p><strong>Ridge</strong> (Hoerl y Kennard, 1970): minimiza <span class="math inline">\(\|Y - X\beta\|^2 + \lambda\|\beta\|_2^2\)</span>, con solución <span class="math inline">\(\hat\beta_R = (X'X + \lambda I)^{-1}X'Y\)</span>, siempre definida (la suma <span class="math inline">\(X'X + \lambda I\)</span> es invertible para <span class="math inline">\(\lambda&gt;0\)</span>) y que <strong>contrae</strong> todos los coeficientes hacia cero. Es el estimador de Econometría 1, Clase 4 ★ (donde vimos que ridge le gana a MCO en ECM). Pero ridge <strong>no</strong> pone coeficientes en cero: no hace selección de variables.</p>
+<div id="def-lasso" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (LASSO)</strong></span> <span class="math display">\[
+\hat\beta^{L} = \arg\min_{\beta\in\mathbb{R}^p}\ \frac1{2n}\|Y - X\beta\|_2^2 + \lambda\|\beta\|_1,\qquad\|\beta\|_1 = \sum_{j = 1}^p|\beta_j|.
+\]</span></p>
+</div>
+<p>La penalización <span class="math inline">\(\ell_1\)</span> tiene un <strong>vértice</strong> en cada eje: la función <span class="math inline">\(|\beta_j|\)</span> no es diferenciable en cero, y eso hace que la solución tenga <strong>coeficientes exactamente iguales a cero</strong>. El problema es <strong>convexo</strong> (suma de una cuadrática y una norma), con solución única bajo condiciones leves, y se resuelve rápido para <span class="math inline">\(p\)</span> en los miles (descenso por coordenadas, LARS).</p>
+<section id="condiciones-de-optimalidad-kkt" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="condiciones-de-optimalidad-kkt"><span class="header-section-number">3.1</span> Condiciones de optimalidad (KKT)</h2>
+<p>Como la función objetivo es convexa, el mínimo se caracteriza por que <strong>cero pertenece al subdiferencial</strong>.</p>
+<div id="prp-kkt" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Condiciones KKT del LASSO)</strong></span> <span class="math inline">\(\hat\beta\)</span> es solución del LASSO si y solo si, para cada <span class="math inline">\(j\)</span>, <span class="math display">\[
+\frac1nX_j'(Y - X\hat\beta) = \lambda\,\operatorname{sgn}(\hat\beta_j)\ \text{ si }\hat\beta_j\ne0,\qquad\Big|\frac1nX_j'(Y - X\hat\beta)\Big|\le\lambda\ \text{ si }\hat\beta_j = 0.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>El subdiferencial de <span class="math inline">\(|b|\)</span> es <span class="math inline">\(\{\operatorname{sgn}(b)\}\)</span> si <span class="math inline">\(b\ne0\)</span> y <span class="math inline">\([-1,1]\)</span> si <span class="math inline">\(b = 0\)</span>. La condición de optimalidad de primer orden para una función convexa es que el gradiente de la parte suave más un elemento del subdiferencial de la penalización sea cero: <span class="math inline">\(-\frac1nX_j'(Y - X\hat\beta) + \lambda s_j = 0\)</span> con <span class="math inline">\(s_j\in\partial|\hat\beta_j|\)</span>. Despejando se obtienen las dos condiciones.</p>
+</div>
+<p>La lectura es muy clara: <strong>una variable entra en el modelo solo si su correlación (muestral) con el residuo actual es, en valor absoluto, igual a <span class="math inline">\(\lambda\)</span></strong>; las que tienen correlación menor que <span class="math inline">\(\lambda\)</span> quedan en cero. <span class="math inline">\(\lambda\)</span> es el <strong>umbral de entrada</strong>. Cuanto mayor es <span class="math inline">\(\lambda\)</span>, menos variables entran; con <span class="math inline">\(\lambda\ge\max_j|X_j'Y|/n\)</span> todas son cero, y con <span class="math inline">\(\lambda\to0\)</span> se recupera MCO.</p>
+</section>
+<section id="umbral-suave-diseño-ortonormal" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="umbral-suave-diseño-ortonormal"><span class="header-section-number">3.2</span> Umbral suave (diseño ortonormal)</h2>
+<p>El comportamiento más transparente aparece con <strong>regresores ortonormales</strong> (<span class="math inline">\(X'X/n = I_p\)</span>), caso en que el problema se <strong>separa</strong> por coordenada.</p>
+<div id="prp-umbral" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (LASSO como umbral suave)</strong></span> Si <span class="math inline">\(X'X/n = I_p\)</span> y <span class="math inline">\(z_j = X_j'Y/n\)</span> es el coeficiente de MCO de <span class="math inline">\(j\)</span>, entonces <span class="math display">\[
+\hat\beta^L_j = \operatorname{sgn}(z_j)\big(|z_j| - \lambda\big)_+ = \begin{cases}z_j - \lambda&amp;\text{si }z_j&gt;\lambda,\\0&amp;\text{si }|z_j|\le\lambda,\\z_j + \lambda&amp;\text{si }z_j&lt;-\lambda.\end{cases}
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(X'X/n = I\)</span>, <span class="math inline">\(\frac1{2n}\|Y - X\beta\|^2 = \tfrac12\|\beta - z\|^2 + \text{cte}\)</span> (completando cuadrados: <span class="math inline">\(\frac1{2n}\|Y\|^2 - z'\beta + \tfrac12\|\beta\|^2\)</span>), de modo que el problema es <span class="math inline">\(\sum_j\big[\tfrac12(\beta_j - z_j)^2 + \lambda|\beta_j|\big]\)</span>, <strong>separable</strong>. Para cada <span class="math inline">\(j\)</span>, por KKT: si <span class="math inline">\(\hat\beta_j\ne0\)</span>, <span class="math inline">\(z_j - \hat\beta_j = \lambda\operatorname{sgn}(\hat\beta_j)\)</span>, es decir <span class="math inline">\(\hat\beta_j = z_j - \lambda\operatorname{sgn}(\hat\beta_j)\)</span>, que tiene el signo de <span class="math inline">\(z_j\)</span> solo si <span class="math inline">\(|z_j|&gt;\lambda\)</span>; si <span class="math inline">\(\hat\beta_j = 0\)</span>, <span class="math inline">\(|z_j|\le\lambda\)</span>. Esto es el umbral suave.</p>
+</div>
+<p>Comparación con alternativas, con la misma estimación inicial <span class="math inline">\(z\)</span>: <strong>MCO</strong> deja <span class="math inline">\(z_j\)</span> intacto; <strong>ridge</strong> lo <strong>divide</strong> por <span class="math inline">\(1 + \lambda\)</span> (contrae proporcionalmente); <strong>umbral duro</strong> (selección de subconjuntos) deja <span class="math inline">\(z_j\)</span> si <span class="math inline">\(|z_j|&gt;\lambda\)</span> y pone cero si no; el <strong>LASSO</strong> <strong>resta</strong> <span class="math inline">\(\lambda\)</span> a los grandes y pone en cero a los pequeños. Observa que LASSO <strong>introduce sesgo</strong> en los coeficientes grandes (los reduce en <span class="math inline">\(\lambda\)</span>): es el precio de la estimación estable.</p>
+</section>
+</section>
+<section id="la-desigualdad-oráculo" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> La desigualdad oráculo</h1>
+<p>¿Qué tan bien predice el LASSO? La teoría moderna responde con una <strong>cota no asintótica</strong> del error de predicción, válida para cualquier <span class="math inline">\(n,p,s\)</span>, que depende de <span class="math inline">\(p\)</span> solo por <span class="math inline">\(\log p\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Modelo disperso:</strong> <span class="math inline">\(Y = X\beta_0 + \varepsilon\)</span>, con soporte <span class="math inline">\(S\)</span>, <span class="math inline">\(|S| = s\)</span>.</li>
+<li><strong>Errores sub-gaussianos:</strong> por ejemplo <span class="math inline">\(\varepsilon_i\)</span> i.i.d. <span class="math inline">\(N(0,\sigma^2)\)</span>, y columnas normalizadas <span class="math inline">\(\|X_j\|_2^2/n = 1\)</span>.</li>
+<li><strong>Condición de autovalor restringido (RE):</strong> existe <span class="math inline">\(\phi&gt;0\)</span> tal que <span class="math inline">\(\|Xv\|_2^2/n\ge\phi^2\|v_S\|_2^2\)</span> para todo <span class="math inline">\(v\)</span> con <span class="math inline">\(\|v_{S^c}\|_1\le3\|v_S\|_1\)</span>. Es una versión débil de “<span class="math inline">\(X'X/n\)</span> es invertible”, exigida solo en un <strong>cono</strong> de direcciones (concentradas en <span class="math inline">\(S\)</span>).</li>
+</ol>
+</div>
+</div>
+<div id="thm-oraculo" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Desigualdad oráculo (Bickel, Ritov y Tsybakov, 2009))</strong></span> Bajo los supuestos, con <span class="math inline">\(\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n}\)</span>, con probabilidad al menos <span class="math inline">\(1 - \delta\)</span>, <span class="math display">\[
+\frac1n\|X(\hat\beta^L - \beta_0)\|_2^2\le\frac{9\lambda^2s}{\phi^2},\qquad\|\hat\beta^L - \beta_0\|_1\le\frac{12\lambda s}{\phi^2}.
+\]</span> En particular, el error de predicción es <span class="math inline">\(O\big(\sigma^2s\log(p/\delta)/(n\phi^2)\big)\)</span>.</p>
+</div>
+<p>Lo notable es la <strong>forma</strong>: el error es proporcional a <span class="math inline">\(s\)</span> (el número de variables relevantes, como el oráculo) y a <span class="math inline">\(\log p\)</span> (el <strong>costo de no conocer cuáles son</strong>), no a <span class="math inline">\(p\)</span>. Con <span class="math inline">\(p = e^{n/10}\)</span> variables (¡exponencialmente más variables que datos!) el error de predicción sigue siendo pequeño si <span class="math inline">\(s\)</span> es chico. La demostración está en la sección ★.</p>
+<p>Para <strong>elegir <span class="math inline">\(\lambda\)</span></strong> hay dos criterios. El <strong>teórico</strong> (el de arriba, o su versión robusta de Belloni, Chen, Chernozhukov y Hansen, 2012, con la desviación estándar estimada en cada variable) garantiza el evento <span class="math inline">\(\|X'\varepsilon/n\|_\infty\le\lambda/2\)</span> con alta probabilidad. El <strong>práctico</strong> más usado es la <strong>validación cruzada</strong> de <span class="math inline">\(K\)</span> pliegues (Clase 5): elegir el <span class="math inline">\(\lambda\)</span> que minimiza el error de predicción fuera de muestra. Esta tiende a elegir un <span class="math inline">\(\lambda\)</span> <strong>menor</strong> que el teórico, con <strong>más variables</strong> incluidas (buena para predecir; mala para la selección exacta).</p>
+<section id="selección-de-variables" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="selección-de-variables"><span class="header-section-number">4.1</span> Selección de variables</h2>
+<p>La desigualdad oráculo es sobre <strong>predicción</strong> y estimación, no sobre <strong>qué variables se seleccionan</strong>. El LASSO selecciona <strong>exactamente</strong> <span class="math inline">\(S\)</span> con alta probabilidad solo bajo condiciones más fuertes: la <strong>condición de irrepresentabilidad</strong> (las variables irrelevantes no pueden estar demasiado correlacionadas con las relevantes: Zhao y Yu, 2006; Wainwright, 2009) y un <strong>tamaño mínimo</strong> de los coeficientes verdaderos (<em>beta-min</em>: <span class="math inline">\(\min_{j\in S}|\beta_{0j}|\gg\lambda\)</span>, de modo que no se confundan con ruido). En la práctica, con regresores correlacionados, el LASSO elige una variable de un grupo correlacionado y descarta las otras de manera algo arbitraria, y su selección es <strong>inestable</strong> entre muestras. Variantes: el <em>elastic net</em> (mezcla <span class="math inline">\(\ell_1\)</span> y <span class="math inline">\(\ell_2\)</span>, agrupa regresores correlacionados), el LASSO <strong>adaptativo</strong> (pesa la penalización por <span class="math inline">\(1/|\hat\beta_j^{init}|\)</span> para reducir el sesgo) y el <em>group LASSO</em>.</p>
+</section>
+</section>
+<section id="el-problema-de-la-inferencia-después-de-seleccionar" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> El problema de la inferencia después de seleccionar</h1>
+<p>Para un economista, el objetivo suele ser el efecto causal de <strong>una</strong> variable <span class="math inline">\(D\)</span>, controlando por un vector grande <span class="math inline">\(X\)</span>. Una tentación natural: (1) usar el LASSO para <strong>seleccionar</strong> los controles relevantes, (2) correr MCO de <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(D\)</span> y los controles seleccionados, (3) reportar los errores estándar de MCO <strong>como si el modelo hubiera sido elegido de antemano</strong>. Es un procedimiento <strong>inválido</strong>, por dos razones que se refuerzan.</p>
+<p><strong>(i) Sesgo por variable omitida.</strong> Si el LASSO descarta una variable <span class="math inline">\(X_j\)</span> con un coeficiente pequeño en la ecuación de <span class="math inline">\(Y\)</span> pero <strong>fuertemente correlacionada con <span class="math inline">\(D\)</span></strong>, la regresión sobre los controles seleccionados omite <span class="math inline">\(X_j\)</span> y el coeficiente de <span class="math inline">\(D\)</span> queda sesgado. El sesgo es pequeño en la ecuación de <span class="math inline">\(Y\)</span> (por eso se descartó) pero <strong>no</strong> en el efecto de <span class="math inline">\(D\)</span> (Ejercicio 7.6).</p>
+<p><strong>(ii) La distribución de los estimadores es no uniforme</strong> (Leeb y Pötscher, 2005). El resultado de la selección <strong>depende de los mismos datos</strong> que luego se usan para inferir. Para coeficientes que son <strong>cercanos a cero en relación a <span class="math inline">\(n^{-1/2}\)</span></strong>, el estimador post-selección tiene una distribución que <strong>no es normal</strong> ni siquiera asintóticamente, y que <strong>depende del valor desconocido</strong> del coeficiente: la teoría asintótica “habitual” (para un parámetro <strong>fijo</strong>) no es <strong>uniforme</strong>. Es el mismo fenómeno del <strong>estimador de Hodges</strong> (Clase 2 de Econometría 2, ★): un estimador que es “mejor” en el punto <span class="math inline">\(\theta = 0\)</span> es pésimo en vecindades de tamaño <span class="math inline">\(n^{-1/2}\)</span> de ese punto.</p>
+<p>Un ejemplo simple lo hace visible. Sea <span class="math inline">\(\hat\beta\sim N(b,1)\)</span> (estimador estandarizado de un coeficiente <span class="math inline">\(b\)</span>). Un investigador <strong>conserva</strong> la variable solo si <span class="math inline">\(|\hat\beta|&gt;1{,}96\)</span> (la “selecciona”) y, si la conserva, reporta el intervalo <span class="math inline">\(\hat\beta\pm1{,}96\)</span>; si la descarta, reporta <span class="math inline">\(\{0\}\)</span>.</p>
+<div id="prp-cobertura" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Cobertura del intervalo post-selección)</strong></span> Para <span class="math inline">\(b\ne0\)</span>, la cobertura del procedimiento es <span class="math inline">\(P\big(|\hat\beta|&gt;1{,}96,\ |\hat\beta - b|\le1{,}96\big)\)</span>. Para <span class="math inline">\(b&gt;0\)</span> y <span class="math inline">\(b\le1{,}96\)</span> vale <span class="math inline">\(\Phi(1{,}96) - \Phi(1{,}96 - b)\)</span>, que <strong>tiende a cero cuando <span class="math inline">\(b\to0^+\)</span></strong>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(b\ne0\)</span>, el intervalo cubre <span class="math inline">\(b\)</span> solo si fue <strong>seleccionado</strong> (si no, el intervalo es <span class="math inline">\(\{0\}\ne b\)</span>) y si <span class="math inline">\(|\hat\beta - b|\le1{,}96\)</span>. Para <span class="math inline">\(b&gt;0\)</span> moderado, la condición <span class="math inline">\(|\hat\beta|&gt;1{,}96\)</span> con <span class="math inline">\(\hat\beta\ge b - 1{,}96&gt;-1{,}96\)</span> equivale a <span class="math inline">\(\hat\beta&gt;1{,}96\)</span>; y <span class="math inline">\(|\hat\beta - b|\le1{,}96\)</span> a <span class="math inline">\(\hat\beta\le b + 1{,}96\)</span>. Entonces la cobertura es <span class="math inline">\(P(1{,}96&lt;\hat\beta\le b + 1{,}96) = \Phi(1{,}96) - \Phi(1{,}96 - b)\)</span> (con <span class="math inline">\(\hat\beta - b\sim N(0,1)\)</span>). Para <span class="math inline">\(b\to0^+\)</span>, <span class="math inline">\(\Phi(1{,}96) - \Phi(1{,}96 - b)\to0\)</span>.</p>
+</div>
+<p>La cobertura nominal es <span class="math inline">\(95\)</span> %, pero con <span class="math inline">\(b = 1\)</span> la cobertura real es <span class="math inline">\(\Phi(1{,}96) - \Phi(0{,}96) = 0{,}975 - 0{,}832 = 14\)</span> %, con <span class="math inline">\(b = 2\)</span> es <span class="math inline">\(49\)</span> %, y con <span class="math inline">\(b = 0{,}2\)</span> solo <span class="math inline">\(1{,}4\)</span> % (Ejercicio 7.4). <strong>Cuanto más cerca de cero (sin serlo) está el coeficiente, peor</strong>. Se trata de una propiedad de <strong>cualquier</strong> procedimiento que seleccione y luego haga inferencia con los mismos datos, y aplica al LASSO: los coeficientes pequeños pero no nulos, en la zona donde el LASSO “duda”, son los que arruinan la cobertura.</p>
+<section id="remedios-parciales" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="remedios-parciales"><span class="header-section-number">5.1</span> Remedios parciales</h2>
+<ul>
+<li><strong>Post-LASSO</strong> (Belloni y Chernozhukov, 2013): usar el LASSO <strong>solo para seleccionar</strong> y reestimar por MCO las variables elegidas. Elimina el <strong>sesgo de contracción</strong> de <span class="math inline">\(\lambda\)</span> en los coeficientes grandes (Ejercicio 7.5) y mejora la predicción, pero <strong>no</strong> resuelve el problema de inferencia.</li>
+<li><strong>Penalización con carga por variable</strong> (<em>rigorous LASSO</em>): <span class="math inline">\(\lambda_j = \lambda\hat\sigma_j\)</span> con <span class="math inline">\(\hat\sigma_j\)</span> estimada, robusta a heterocedasticidad (Belloni et al., 2012).</li>
+<li><strong>Doble selección</strong> (Belloni, Chernozhukov y Hansen, 2014): para el efecto de <span class="math inline">\(D\)</span> sobre <span class="math inline">\(Y\)</span> controlando por <span class="math inline">\(X\)</span> de alta dimensión, (1) LASSO de <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(X\)</span> (selecciona controles que predicen el resultado); (2) LASSO de <span class="math inline">\(D\)</span> sobre <span class="math inline">\(X\)</span> (selecciona controles que predicen el tratamiento); (3) MCO de <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(D\)</span> y la <strong>unión</strong> de los controles seleccionados en (1) y (2). Un control que importa para el sesgo debe estar relacionado con <span class="math inline">\(Y\)</span> <strong>y</strong> con <span class="math inline">\(D\)</span>; basta que sea elegido en <strong>alguna</strong> de las dos ecuaciones para entrar. El resultado es un estimador <strong><span class="math inline">\(\sqrt n\)</span>-normal</strong> del efecto de <span class="math inline">\(D\)</span> con inferencia válida <strong>uniforme</strong> en el modelo: el error por omitir un control es un <strong>producto</strong> de dos errores pequeños (el de la ecuación de <span class="math inline">\(Y\)</span> y el de la de <span class="math inline">\(D\)</span>). Esa es la propiedad de <strong>ortogonalidad de Neyman</strong> que se desarrolla en la Clase 8 y que está detrás de todos los métodos modernos de inferencia con aprendizaje automático.</li>
+</ul>
+</section>
+</section>
+<section id="postgrado-demostración-de-la-desigualdad-oráculo" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: demostración de la desigualdad oráculo</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Demostramos el <a href="#thm-oraculo" class="quarto-xref">Teorema&nbsp;1</a>. El argumento tiene tres pasos: una <strong>desigualdad básica</strong> (el LASSO es mejor que <span class="math inline">\(\beta_0\)</span> en su propio criterio), el <strong>cono</strong> donde vive el error, y el uso de la condición RE.</p>
+</div>
+</div>
+<p>Sea <span class="math inline">\(v = \hat\beta^L - \beta_0\)</span> y definamos el evento <span class="math inline">\(\mathcal{G} = \{\|X'\varepsilon\|_\infty/n\le\lambda/2\}\)</span>.</p>
+<p><em>Paso 0: el evento tiene alta probabilidad.</em> Cada <span class="math inline">\(X_j'\varepsilon/n\sim N(0,\sigma^2/n)\)</span> (columnas normalizadas), así que <span class="math inline">\(P(|X_j'\varepsilon/n|&gt;t)\le2e^{-nt^2/(2\sigma^2)}\)</span>. Con <span class="math inline">\(t = \lambda/2\)</span> y la cota de la unión sobre <span class="math inline">\(p\)</span> variables, <span class="math inline">\(P(\mathcal{G}^c)\le2pe^{-n\lambda^2/(8\sigma^2)} = \delta\)</span> para <span class="math inline">\(\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n}\)</span>.</p>
+<p><em>Paso 1: desigualdad básica.</em> Como <span class="math inline">\(\hat\beta^L\)</span> minimiza el criterio, <span class="math inline">\(\frac1{2n}\|Y - X\hat\beta\|^2 + \lambda\|\hat\beta\|_1\le\frac1{2n}\|Y - X\beta_0\|^2 + \lambda\|\beta_0\|_1\)</span>. Con <span class="math inline">\(Y - X\hat\beta = \varepsilon - Xv\)</span> y expandiendo, <span class="math display">\[
+\frac1{2n}\|Xv\|^2\le\frac1n\varepsilon'Xv + \lambda\big(\|\beta_0\|_1 - \|\hat\beta\|_1\big).
+\]</span> En <span class="math inline">\(\mathcal{G}\)</span>, <span class="math inline">\(\big|\tfrac1n\varepsilon'Xv\big|\le\|X'\varepsilon/n\|_\infty\|v\|_1\le\tfrac\lambda2\|v\|_1\)</span>. Además, como <span class="math inline">\(\beta_0\)</span> tiene soporte <span class="math inline">\(S\)</span>: <span class="math inline">\(\|\hat\beta\|_1 = \|\beta_{0S} + v_S\|_1 + \|v_{S^c}\|_1\ge\|\beta_0\|_1 - \|v_S\|_1 + \|v_{S^c}\|_1\)</span>, de modo que <span class="math inline">\(\|\beta_0\|_1 - \|\hat\beta\|_1\le\|v_S\|_1 - \|v_{S^c}\|_1\)</span>. Reemplazando, <span id="eq-basica"><span class="math display">\[
+\frac1{2n}\|Xv\|^2\le\frac\lambda2\big(\|v_S\|_1 + \|v_{S^c}\|_1\big) + \lambda\big(\|v_S\|_1 - \|v_{S^c}\|_1\big) = \frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1.
+\tag{1}\]</span></span></p>
+<p><em>Paso 2: el cono.</em> El lado izquierdo es no negativo, así que <span class="math inline">\(\frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1\ge0\)</span>, es decir <span class="math inline">\(\|v_{S^c}\|_1\le3\|v_S\|_1\)</span>: <strong><span class="math inline">\(v\)</span> está en el cono</strong> de la condición RE. Por lo tanto <span class="math inline">\(\|Xv\|^2/n\ge\phi^2\|v_S\|_2^2\)</span>.</p>
+<p><em>Paso 3: cota de predicción.</em> De <a href="#eq-basica" class="quarto-xref">Ecuación&nbsp;1</a>, descartando el término negativo, <span class="math inline">\(\frac1{2n}\|Xv\|^2\le\frac{3\lambda}2\|v_S\|_1\le\frac{3\lambda}2\sqrt s\|v_S\|_2\le\frac{3\lambda\sqrt s}{2\phi}\cdot\frac{\|Xv\|}{\sqrt n}\)</span> (por Cauchy–Schwarz y por RE). Multiplicando por <span class="math inline">\(2\)</span> y dividiendo por <span class="math inline">\(\|Xv\|/\sqrt n\)</span> (si es no nulo): <span class="math inline">\(\|Xv\|/\sqrt n\le3\lambda\sqrt s/\phi\)</span>, es decir <span class="math inline">\(\|Xv\|^2/n\le9\lambda^2s/\phi^2\)</span>.</p>
+<p><em>Paso 4: error en <span class="math inline">\(\ell_1\)</span>.</em> <span class="math inline">\(\|v\|_1 = \|v_S\|_1 + \|v_{S^c}\|_1\le4\|v_S\|_1\le4\sqrt s\|v_S\|_2\le\frac{4\sqrt s}\phi\cdot\frac{\|Xv\|}{\sqrt n}\le\frac{4\sqrt s}\phi\cdot\frac{3\lambda\sqrt s}\phi = \frac{12\lambda s}{\phi^2}\)</span>. <span class="math inline">\(\square\)</span></p>
+<p>Dos comentarios. <strong>(i)</strong> La condición RE es <strong>inevitable</strong>: sin alguna forma de identificabilidad en el cono, no hay manera de separar los coeficientes verdaderos de los espurios. <strong>(ii)</strong> El factor <span class="math inline">\(\sqrt s\)</span> en el paso 3 viene de pasar de <span class="math inline">\(\ell_1\)</span> a <span class="math inline">\(\ell_2\)</span> sobre <span class="math inline">\(S\)</span> (<span class="math inline">\(s\)</span> coordenadas), y la constante <span class="math inline">\(3\)</span> del cono es consecuencia de <span class="math inline">\(\lambda\ge2\|X'\varepsilon\|_\infty/n\)</span>. Las constantes son conservadoras: en la práctica el LASSO funciona mucho mejor que lo que sugieren.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Con <span class="math inline">\(p\gtrsim n\)</span>, MCO falla; se <strong>regulariza</strong>. <strong>Ridge</strong> contrae; <strong>LASSO</strong> (<span class="math inline">\(\ell_1\)</span>) contrae y selecciona (pone ceros). El LASSO es convexo, con <strong>KKT</strong>: entran las variables con <span class="math inline">\(|X_j'r|/n = \lambda\)</span> (<a href="#prp-kkt" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li>Con diseño ortonormal, LASSO es <strong>umbral suave</strong> (<a href="#prp-umbral" class="quarto-xref">Proposición&nbsp;2</a>): resta <span class="math inline">\(\lambda\)</span> a los grandes y anula los pequeños; introduce <strong>sesgo</strong> en los grandes.</li>
+<li><strong>Desigualdad oráculo</strong> (<a href="#thm-oraculo" class="quarto-xref">Teorema&nbsp;1</a>): bajo dispersión y la condición RE, el error de predicción es <span class="math inline">\(\lesssim\sigma^2s\log p/(n\phi^2)\)</span>: depende de <span class="math inline">\(p\)</span> solo por <span class="math inline">\(\log p\)</span>. Selección exacta exige irrepresentabilidad y beta-min.</li>
+<li><strong>Inferencia post-selección inválida</strong>: sesgo por variable omitida y no uniformidad (Leeb–Pötscher); un intervalo naive tiene cobertura de <strong>14 %</strong> con <span class="math inline">\(b = 1\)</span> (<a href="#prp-cobertura" class="quarto-xref">Proposición&nbsp;3</a>).</li>
+<li><strong>Remedios:</strong> post-LASSO (quita el sesgo de contracción), penalización rigurosa, y la <strong>doble selección</strong> (ortogonalidad de Neyman: Clase 8).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 7.1.</strong> Con los coeficientes de MCO <span class="math inline">\(z = (3,\,-1{,}2,\,0{,}4,\,0)\)</span> y diseño ortonormal, calcula las estimaciones de LASSO, umbral duro y ridge con <span class="math inline">\(\lambda = 0{,}5\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>LASSO (umbral suave, resta <span class="math inline">\(0{,}5\)</span> en valor absoluto): <span class="math inline">\((2{,}5,\ -0{,}7,\ 0,\ 0)\)</span> (el tercero, <span class="math inline">\(|0{,}4|&lt;0{,}5\)</span>, se anula). Umbral duro: deja <span class="math inline">\(z_j\)</span> si <span class="math inline">\(|z_j|&gt;0{,}5\)</span>: <span class="math inline">\((3,\ -1{,}2,\ 0,\ 0)\)</span>. Ridge: <span class="math inline">\(z_j/(1 + \lambda) = z_j/1{,}5\)</span>: <span class="math inline">\((2{,}0,\ -0{,}8,\ 0{,}267,\ 0)\)</span>. LASSO es el único que combina <strong>selección</strong> (ceros) y <strong>contracción</strong> de los grandes; ridge no selecciona; el umbral duro selecciona pero no contrae (y su estimador es discontinuo en <span class="math inline">\(z\)</span>).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.2.</strong> En una solución del LASSO con <span class="math inline">\(\lambda = 0{,}3\)</span>, las correlaciones con el residuo <span class="math inline">\(X_j'r/n\)</span> son <span class="math inline">\((0{,}30,\ -0{,}30,\ 0{,}10)\)</span> para <span class="math inline">\(j = 1,2,3\)</span>. ¿Qué variables están activas? ¿Podría una solución tener <span class="math inline">\(X_1'r/n = 0{,}5\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Por KKT, las <strong>activas</strong> tienen <span class="math inline">\(|X_j'r|/n = \lambda = 0{,}3\)</span> con signo igual al de <span class="math inline">\(\hat\beta_j\)</span>: las variables <span class="math inline">\(1\)</span> (con <span class="math inline">\(\hat\beta_1&gt;0\)</span>) y <span class="math inline">\(2\)</span> (con <span class="math inline">\(\hat\beta_2&lt;0\)</span>) están activas; la <span class="math inline">\(3\)</span> (<span class="math inline">\(|0{,}10|&lt;0{,}3\)</span>) es cero. <strong>No</strong> puede haber una solución con <span class="math inline">\(|X_1'r|/n = 0{,}5&gt;\lambda\)</span>: ninguna variable puede tener correlación con el residuo mayor que <span class="math inline">\(\lambda\)</span> (si la tuviera, agregarla o aumentar su coeficiente reduciría el criterio, contradiciendo la optimalidad). Es la regla: el LASSO “agota” la correlación hasta el nivel <span class="math inline">\(\lambda\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.3.</strong> Calcula <span class="math inline">\(\lambda\)</span> teórico para <span class="math inline">\(n = 400\)</span>, <span class="math inline">\(p = 1\,000\)</span>, <span class="math inline">\(\sigma = 1\)</span> y <span class="math inline">\(\delta = 0{,}05\)</span>. Compara el costo <span class="math inline">\(\log p\)</span> con el oráculo para <span class="math inline">\(s = 5\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\lambda = 2\sigma\sqrt{2\log(2p/\delta)/n} = 2\sqrt{2\ln(40\,000)/400} = 2\sqrt{2\cdot10{,}597/400} = 2\sqrt{0{,}0530} = 2(0{,}230) = 0{,}46\)</span>. El error del oráculo (conoce <span class="math inline">\(S\)</span>, MCO sobre <span class="math inline">\(5\)</span> variables) es <span class="math inline">\(\sigma^2s/n = 5/400 = 0{,}0125\)</span>. El del LASSO escala como <span class="math inline">\(\sigma^2s\log p/n = 5\cdot6{,}9/400 = 0{,}086\)</span>: unas <span class="math inline">\(7\)</span> veces mayor: es el <strong>precio de no conocer</strong> el soporte entre <span class="math inline">\(1\,000\)</span> candidatos. Notar que ese precio crece como <span class="math inline">\(\log p\)</span>: pasar de <span class="math inline">\(1\,000\)</span> a <span class="math inline">\(1\,000\,000\)</span> variables lo multiplica por <span class="math inline">\(2\)</span> (de <span class="math inline">\(6{,}9\)</span> a <span class="math inline">\(13{,}8\)</span>), no por <span class="math inline">\(1\,000\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.4.</strong> Calcula la cobertura del intervalo post-selección de la <a href="#prp-cobertura" class="quarto-xref">Proposición&nbsp;3</a> para <span class="math inline">\(b = 0{,}2,\ 1,\ 2\)</span> y <span class="math inline">\(b = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Para <span class="math inline">\(0&lt;b\le1{,}96\)</span>: cobertura <span class="math inline">\(=\Phi(1{,}96) - \Phi(1{,}96 - b)\)</span>. <span class="math inline">\(b = 0{,}2\)</span>: <span class="math inline">\(0{,}9750 - \Phi(1{,}76) = 0{,}9750 - 0{,}9608 = 0{,}014\)</span> (<span class="math inline">\(1{,}4\)</span> %). <span class="math inline">\(b = 1\)</span>: <span class="math inline">\(0{,}9750 - \Phi(0{,}96) = 0{,}9750 - 0{,}8315 = 0{,}1435\)</span> (<span class="math inline">\(14\)</span> %). <span class="math inline">\(b = 2\)</span>: <span class="math inline">\(P(\hat\beta&gt;1{,}96\text{ y }\hat\beta\le3{,}96) = \Phi(1{,}96) - \Phi(-0{,}04) = 0{,}9750 - 0{,}4840 = 0{,}491\)</span> (<span class="math inline">\(49\)</span> %). <span class="math inline">\(b = 0\)</span>: el intervalo es <span class="math inline">\(\{0\}\)</span> cuando no se selecciona (probabilidad <span class="math inline">\(0{,}95\)</span>) y cubre <span class="math inline">\(b = 0\)</span>; cuando se selecciona, no cubre: cobertura <span class="math inline">\(=0{,}95\)</span>. La cobertura es la nominal <strong>solo</strong> en <span class="math inline">\(b = 0\)</span> (y converge a <span class="math inline">\(95\)</span> % para <span class="math inline">\(b\)</span> grande, <span class="math inline">\(&gt;4\)</span>), pero para coeficientes pequeños no nulos es <strong>muy baja</strong>: es la no uniformidad de Leeb–Pötscher.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.5.</strong> Con diseño ortonormal, <span class="math inline">\(z = 3\)</span> y <span class="math inline">\(\lambda = 0{,}5\)</span>, ¿qué estima el LASSO? ¿Y el post-LASSO? ¿Por qué mejora?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>LASSO: <span class="math inline">\(3 - 0{,}5 = 2{,}5\)</span> (sesgo de <span class="math inline">\(-0{,}5\)</span>, la contracción). Post-LASSO: se selecciona la variable (porque <span class="math inline">\(|z| = 3&gt;0{,}5\)</span>) y se reestima por MCO sobre ella: <span class="math inline">\(\hat\beta = z = 3\)</span>, que es el estimador de MCO <strong>sin contracción</strong>. Mejora porque quita el sesgo de <span class="math inline">\(\lambda\)</span> para las variables <strong>seleccionadas</strong> (que son las de coeficiente grande, donde la contracción es innecesaria), manteniendo la selección. El costo es que <strong>depende</strong> de que la selección sea buena: si se incluyó una variable irrelevante, post-LASSO la estima con la varianza completa de MCO.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.6.</strong> El modelo verdadero es <span class="math inline">\(Y = 0{,}5D + 0{,}1X_5 + \varepsilon\)</span>, con <span class="math inline">\(\operatorname{Cov}(D,X_5) = 0{,}8\)</span> y <span class="math inline">\(\operatorname{Var}(D) = 1\)</span>. Un LASSO de <span class="math inline">\(Y\)</span> sobre <span class="math inline">\((D,X_1,\dots,X_{100})\)</span> con <span class="math inline">\(\lambda = 0{,}15\)</span> pone en cero a <span class="math inline">\(X_5\)</span>. Calcula el sesgo del coeficiente de <span class="math inline">\(D\)</span> y explica cómo la doble selección lo evita.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Al omitir <span class="math inline">\(X_5\)</span>, el coeficiente de <span class="math inline">\(D\)</span> en la regresión restante estima <span class="math inline">\(0{,}5 + 0{,}1\cdot\operatorname{Cov}(D,X_5)/\operatorname{Var}(D) = 0{,}5 + 0{,}1\cdot0{,}8 = 0{,}58\)</span>: sesgo de <span class="math inline">\(0{,}08\)</span>, o <span class="math inline">\(16\)</span> % del efecto verdadero. El coeficiente de <span class="math inline">\(X_5\)</span> (<span class="math inline">\(0{,}1\)</span>) es <strong>menor</strong> que el umbral <span class="math inline">\(\lambda = 0{,}15\)</span> y se descarta: en la ecuación de <span class="math inline">\(Y\)</span> es “irrelevante”, pero en la de <span class="math inline">\(D\)</span> es <strong>muy relevante</strong> (correlación <span class="math inline">\(0{,}8\)</span>). La <strong>doble selección</strong> corre además un LASSO de <span class="math inline">\(D\)</span> sobre <span class="math inline">\(X\)</span>: ahí <span class="math inline">\(X_5\)</span> tiene un coeficiente grande y es <strong>seleccionado</strong>. La unión de los controles seleccionados incluye <span class="math inline">\(X_5\)</span>, y la regresión final de <span class="math inline">\(Y\)</span> sobre <span class="math inline">\(D\)</span> y esa unión elimina el sesgo. Un control que causa sesgo de variable omitida tiene que estar relacionado con <strong>ambas</strong> variables, y la doble selección lo captura si lo está con cualquiera de las dos.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.7 ★.</strong> En el Paso 3 de la demostración, con <span class="math inline">\(\lambda = 0{,}2\)</span>, <span class="math inline">\(s = 3\)</span> y <span class="math inline">\(\phi = 0{,}6\)</span>, calcula las cotas de predicción y de <span class="math inline">\(\ell_1\)</span> del <a href="#thm-oraculo" class="quarto-xref">Teorema&nbsp;1</a>. ¿Por qué estas cotas son conservadoras? ¿De dónde sale la restricción <span class="math inline">\(\|v_{S^c}\|_1\le3\|v_S\|_1\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Predicción: <span class="math inline">\(9\lambda^2s/\phi^2 = 9(0{,}04)(3)/0{,}36 = 3{,}0\)</span>; <span class="math inline">\(\ell_1\)</span>: <span class="math inline">\(12\lambda s/\phi^2 = 12(0{,}2)(3)/0{,}36 = 20\)</span>. Las constantes (<span class="math inline">\(9\)</span> y <span class="math inline">\(12\)</span>) vienen de cotas sucesivas de Cauchy–Schwarz y de la triangular, y son <strong>generosas</strong>: en simulaciones el error es mucho menor. La restricción <span class="math inline">\(\|v_{S^c}\|_1\le3\|v_S\|_1\)</span> sale del <strong>Paso 1</strong>: como <span class="math inline">\(\frac1{2n}\|Xv\|^2\ge0\)</span>, de <a href="#eq-basica" class="quarto-xref">Ecuación&nbsp;1</a> se obtiene <span class="math inline">\(\frac{3\lambda}2\|v_S\|_1 - \frac\lambda2\|v_{S^c}\|_1\ge0\)</span>. Los factores <span class="math inline">\(\frac32\)</span> y <span class="math inline">\(\frac12\)</span> provienen de combinar <span class="math inline">\(\lambda/2\)</span> (de la cota del ruido, que usa <span class="math inline">\(\lambda\ge2\|X'\varepsilon\|_\infty/n\)</span>) con <span class="math inline">\(\lambda\)</span> (de la penalización): <span class="math inline">\(\frac12 + 1 = \frac32\)</span> y <span class="math inline">\(1 - \frac12 = \frac12\)</span>, y su cociente es <span class="math inline">\(3\)</span>. Si se elige <span class="math inline">\(\lambda\)</span> más grande (<span class="math inline">\(\lambda\ge c\|X'\varepsilon\|_\infty/n\)</span> con <span class="math inline">\(c&gt;2\)</span>) el cono se estrecha.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-4/clase-06.html" class="pagination-link" aria-label="Clase 6 · Regresión discontinua">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 6 · Regresión discontinua</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

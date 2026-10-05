@@ -2189,5 +2189,82 @@
       "Inicio",
       "Clase 6 · Regresión discontinua"
     ]
+  },
+  {
+    "objectID": "econometria-4/clase-07.html",
+    "href": "econometria-4/clase-07.html",
+    "title": "Clase 7 · Alta dimensión: LASSO",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · Alta dimensión: LASSO"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-07.html#condiciones-de-optimalidad-kkt",
+    "href": "econometria-4/clase-07.html#condiciones-de-optimalidad-kkt",
+    "title": "Clase 7 · Alta dimensión: LASSO",
+    "section": "3.1 Condiciones de optimalidad (KKT)",
+    "text": "3.1 Condiciones de optimalidad (KKT)\nComo la función objetivo es convexa, el mínimo se caracteriza por que cero pertenece al subdiferencial.\n\nProposición 1 (Condiciones KKT del LASSO) \\(\\hat\\beta\\) es solución del LASSO si y solo si, para cada \\(j\\), \\[\n\\frac1nX_j'(Y - X\\hat\\beta) = \\lambda\\,\\operatorname{sgn}(\\hat\\beta_j)\\ \\text{ si }\\hat\\beta_j\\ne0,\\qquad\\Big|\\frac1nX_j'(Y - X\\hat\\beta)\\Big|\\le\\lambda\\ \\text{ si }\\hat\\beta_j = 0.\n\\]\n\n\nDemostración. El subdiferencial de \\(|b|\\) es \\(\\{\\operatorname{sgn}(b)\\}\\) si \\(b\\ne0\\) y \\([-1,1]\\) si \\(b = 0\\). La condición de optimalidad de primer orden para una función convexa es que el gradiente de la parte suave más un elemento del subdiferencial de la penalización sea cero: \\(-\\frac1nX_j'(Y - X\\hat\\beta) + \\lambda s_j = 0\\) con \\(s_j\\in\\partial|\\hat\\beta_j|\\). Despejando se obtienen las dos condiciones.\n\nLa lectura es muy clara: una variable entra en el modelo solo si su correlación (muestral) con el residuo actual es, en valor absoluto, igual a \\(\\lambda\\); las que tienen correlación menor que \\(\\lambda\\) quedan en cero. \\(\\lambda\\) es el umbral de entrada. Cuanto mayor es \\(\\lambda\\), menos variables entran; con \\(\\lambda\\ge\\max_j|X_j'Y|/n\\) todas son cero, y con \\(\\lambda\\to0\\) se recupera MCO.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · Alta dimensión: LASSO"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-07.html#umbral-suave-diseño-ortonormal",
+    "href": "econometria-4/clase-07.html#umbral-suave-diseño-ortonormal",
+    "title": "Clase 7 · Alta dimensión: LASSO",
+    "section": "3.2 Umbral suave (diseño ortonormal)",
+    "text": "3.2 Umbral suave (diseño ortonormal)\nEl comportamiento más transparente aparece con regresores ortonormales (\\(X'X/n = I_p\\)), caso en que el problema se separa por coordenada.\n\nProposición 2 (LASSO como umbral suave) Si \\(X'X/n = I_p\\) y \\(z_j = X_j'Y/n\\) es el coeficiente de MCO de \\(j\\), entonces \\[\n\\hat\\beta^L_j = \\operatorname{sgn}(z_j)\\big(|z_j| - \\lambda\\big)_+ = \\begin{cases}z_j - \\lambda&\\text{si }z_j&gt;\\lambda,\\\\0&\\text{si }|z_j|\\le\\lambda,\\\\z_j + \\lambda&\\text{si }z_j&lt;-\\lambda.\\end{cases}\n\\]\n\n\nDemostración. Con \\(X'X/n = I\\), \\(\\frac1{2n}\\|Y - X\\beta\\|^2 = \\tfrac12\\|\\beta - z\\|^2 + \\text{cte}\\) (completando cuadrados: \\(\\frac1{2n}\\|Y\\|^2 - z'\\beta + \\tfrac12\\|\\beta\\|^2\\)), de modo que el problema es \\(\\sum_j\\big[\\tfrac12(\\beta_j - z_j)^2 + \\lambda|\\beta_j|\\big]\\), separable. Para cada \\(j\\), por KKT: si \\(\\hat\\beta_j\\ne0\\), \\(z_j - \\hat\\beta_j = \\lambda\\operatorname{sgn}(\\hat\\beta_j)\\), es decir \\(\\hat\\beta_j = z_j - \\lambda\\operatorname{sgn}(\\hat\\beta_j)\\), que tiene el signo de \\(z_j\\) solo si \\(|z_j|&gt;\\lambda\\); si \\(\\hat\\beta_j = 0\\), \\(|z_j|\\le\\lambda\\). Esto es el umbral suave.\n\nComparación con alternativas, con la misma estimación inicial \\(z\\): MCO deja \\(z_j\\) intacto; ridge lo divide por \\(1 + \\lambda\\) (contrae proporcionalmente); umbral duro (selección de subconjuntos) deja \\(z_j\\) si \\(|z_j|&gt;\\lambda\\) y pone cero si no; el LASSO resta \\(\\lambda\\) a los grandes y pone en cero a los pequeños. Observa que LASSO introduce sesgo en los coeficientes grandes (los reduce en \\(\\lambda\\)): es el precio de la estimación estable.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · Alta dimensión: LASSO"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-07.html#selección-de-variables",
+    "href": "econometria-4/clase-07.html#selección-de-variables",
+    "title": "Clase 7 · Alta dimensión: LASSO",
+    "section": "4.1 Selección de variables",
+    "text": "4.1 Selección de variables\nLa desigualdad oráculo es sobre predicción y estimación, no sobre qué variables se seleccionan. El LASSO selecciona exactamente \\(S\\) con alta probabilidad solo bajo condiciones más fuertes: la condición de irrepresentabilidad (las variables irrelevantes no pueden estar demasiado correlacionadas con las relevantes: Zhao y Yu, 2006; Wainwright, 2009) y un tamaño mínimo de los coeficientes verdaderos (beta-min: \\(\\min_{j\\in S}|\\beta_{0j}|\\gg\\lambda\\), de modo que no se confundan con ruido). En la práctica, con regresores correlacionados, el LASSO elige una variable de un grupo correlacionado y descarta las otras de manera algo arbitraria, y su selección es inestable entre muestras. Variantes: el elastic net (mezcla \\(\\ell_1\\) y \\(\\ell_2\\), agrupa regresores correlacionados), el LASSO adaptativo (pesa la penalización por \\(1/|\\hat\\beta_j^{init}|\\) para reducir el sesgo) y el group LASSO.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · Alta dimensión: LASSO"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-07.html#remedios-parciales",
+    "href": "econometria-4/clase-07.html#remedios-parciales",
+    "title": "Clase 7 · Alta dimensión: LASSO",
+    "section": "5.1 Remedios parciales",
+    "text": "5.1 Remedios parciales\n\nPost-LASSO (Belloni y Chernozhukov, 2013): usar el LASSO solo para seleccionar y reestimar por MCO las variables elegidas. Elimina el sesgo de contracción de \\(\\lambda\\) en los coeficientes grandes (Ejercicio 7.5) y mejora la predicción, pero no resuelve el problema de inferencia.\nPenalización con carga por variable (rigorous LASSO): \\(\\lambda_j = \\lambda\\hat\\sigma_j\\) con \\(\\hat\\sigma_j\\) estimada, robusta a heterocedasticidad (Belloni et al., 2012).\nDoble selección (Belloni, Chernozhukov y Hansen, 2014): para el efecto de \\(D\\) sobre \\(Y\\) controlando por \\(X\\) de alta dimensión, (1) LASSO de \\(Y\\) sobre \\(X\\) (selecciona controles que predicen el resultado); (2) LASSO de \\(D\\) sobre \\(X\\) (selecciona controles que predicen el tratamiento); (3) MCO de \\(Y\\) sobre \\(D\\) y la unión de los controles seleccionados en (1) y (2). Un control que importa para el sesgo debe estar relacionado con \\(Y\\) y con \\(D\\); basta que sea elegido en alguna de las dos ecuaciones para entrar. El resultado es un estimador \\(\\sqrt n\\)-normal del efecto de \\(D\\) con inferencia válida uniforme en el modelo: el error por omitir un control es un producto de dos errores pequeños (el de la ecuación de \\(Y\\) y el de la de \\(D\\)). Esa es la propiedad de ortogonalidad de Neyman que se desarrolla en la Clase 8 y que está detrás de todos los métodos modernos de inferencia con aprendizaje automático.",
+    "crumbs": [
+      "Inicio",
+      "Clase 7 · Alta dimensión: LASSO"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-08.html",
+    "href": "econometria-4/clase-08.html",
+    "title": "Clase 8 · Aprendizaje automático para inferencia causal",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Aprendizaje automático para inferencia causal"
+    ]
+  },
+  {
+    "objectID": "econometria-4/clase-08.html#por-qué-el-enfoque-ingenuo-falla",
+    "href": "econometria-4/clase-08.html#por-qué-el-enfoque-ingenuo-falla",
+    "title": "Clase 8 · Aprendizaje automático para inferencia causal",
+    "section": "2.1 Por qué el enfoque ingenuo falla",
+    "text": "2.1 Por qué el enfoque ingenuo falla\nLa tentación natural es estimar \\(g_0\\) por ML y plug-in: obtener \\(\\hat g(X)\\) con un bosque aleatorio o LASSO, y luego regresar \\(Y - \\hat g(X)\\) sobre \\(D\\): \\[\n\\hat\\theta_{ing} = \\frac{\\sum_iD_i(Y_i - \\hat g(X_i))}{\\sum_iD_i^2}.\n\\] Sustituyendo \\(Y_i = D_i\\theta_0 + g_0(X_i) + U_i\\): \\[\n\\sqrt n(\\hat\\theta_{ing} - \\theta_0) = \\Big(\\tfrac1n\\sum D_i^2\\Big)^{-1}\\Big[\\underbrace{\\tfrac1{\\sqrt n}\\sum_iD_iU_i}_{\\to N\\text{, bien}} + \\underbrace{\\tfrac1{\\sqrt n}\\sum_iD_i\\big(g_0(X_i) - \\hat g(X_i)\\big)}_{\\text{sesgo de regularización}}\\Big].\n\\tag{2}\\] El segundo término es el problema. Como \\(D_i = m_0(X_i) + V_i\\) tiene componente explicable por \\(X\\), \\(\\mathbb{E}[D(g_0 - \\hat g)(X)] = \\mathbb{E}[m_0(X)(g_0 - \\hat g)(X)]\\ne0\\) en general: la esperanza de la suma es del orden de \\(\\sqrt n\\cdot\\|g_0 - \\hat g\\|\\), un efecto de primer orden. Si \\(\\hat g\\) converge a una tasa \\(n^{-\\varphi}\\) con \\(\\varphi&lt;1/2\\) (lo normal con ML), este término diverge. El estimador tiene sesgo no despreciable y el intervalo de confianza nominal cubre mal (Ejercicio 8.1). El culpable es que el momento \\(\\mathbb{E}[D(Y - \\theta D - g(X))]\\) es sensible de primer orden a errores en \\(g\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 8 · Aprendizaje automático para inferencia causal"
+    ]
   }
 ]

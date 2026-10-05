@@ -1,0 +1,209 @@
+---
+title: "Clase 8 · Aprendizaje automático para inferencia causal"
+subtitle: "Double/debiased machine learning: ortogonalidad de Neyman y cross-fitting"
+description: "Cómo usar métodos de aprendizaje automático en las funciones de perturbación y aun así hacer inferencia √n sobre un parámetro de interés: el modelo parcialmente lineal, el sesgo de regularización, la ortogonalidad de Neyman, el cross-fitting, el teorema de normalidad asintótica con producto de tasas y la conexión con el estimador AIPW."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-08.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Predecir bien no es inferir bien
+
+Los métodos de **aprendizaje automático** (ML: LASSO, bosques aleatorios, redes neuronales, *boosting*) son extraordinarios para **predecir**. Pero su objetivo (minimizar el error de predicción) y el del econometrista (estimar un parámetro causal con un intervalo de confianza válido) no coinciden. Las Clases 5 y 7 mostraron los dos obstáculos: los estimadores no paramétricos y regularizados convergen **lento** (tasas menores que $\sqrt n$) y tienen **sesgo** de regularización; y la inferencia posterior a la selección es inválida.
+
+Esta clase presenta la solución actual, el **aprendizaje automático doblemente robusto o desesgado** (*double/debiased machine learning*, DML) de Chernozhukov, Chetverikov, Demirer, Duflo, Hansen, Newey y Robins (2018). La idea es **separar el problema en dos partes**: un **parámetro de interés** $\theta_0$ de dimensión baja (el efecto causal), y **funciones de perturbación** (*nuisance*) de alta complejidad (la media condicional del resultado, el propensity score) que se estiman con ML. Con dos ingredientes (una **construcción ortogonal** del estimador y el **cross-fitting**) se obtiene $\sqrt n$-normalidad para $\theta_0$ aunque las funciones de perturbación se estimen **lentamente**.
+
+# El modelo parcialmente lineal
+
+Sea $W = (Y,D,X)$ con
+$$
+Y = D\theta_0 + g_0(X) + U,\quad\mathbb{E}[U\mid D,X] = 0;\qquad D = m_0(X) + V,\quad\mathbb{E}[V\mid X] = 0.
+$$ {#eq-plm}
+$\theta_0$ es el efecto causal de $D$ sobre $Y$ (bajo insesgamiento condicional dado $X$, Clase 2), $X$ es un vector de controles de **alta dimensión** y $g_0,m_0$ son funciones **desconocidas y complejas**. Las funciones de perturbación inducen dos medias condicionales observables: $\ell_0(X) = \mathbb{E}[Y\mid X] = \theta_0m_0(X) + g_0(X)$ y la propia $m_0(X) = \mathbb{E}[D\mid X]$. Es el modelo de Robinson (Clase 5), que ya vimos que identifica $\theta_0$ por **residuos sobre residuos**:
+$$
+Y - \ell_0(X) = \theta_0\big(D - m_0(X)\big) + U\quad\Longrightarrow\quad\theta_0 = \frac{\mathbb{E}\big[(Y - \ell_0(X))(D - m_0(X))\big]}{\mathbb{E}\big[(D - m_0(X))^2\big]}.
+$$
+
+## Por qué el enfoque ingenuo falla
+
+La tentación natural es **estimar $g_0$ por ML y plug-in**: obtener $\hat g(X)$ con un bosque aleatorio o LASSO, y luego regresar $Y - \hat g(X)$ sobre $D$:
+$$
+\hat\theta_{ing} = \frac{\sum_iD_i(Y_i - \hat g(X_i))}{\sum_iD_i^2}.
+$$
+Sustituyendo $Y_i = D_i\theta_0 + g_0(X_i) + U_i$:
+$$
+\sqrt n(\hat\theta_{ing} - \theta_0) = \Big(\tfrac1n\sum D_i^2\Big)^{-1}\Big[\underbrace{\tfrac1{\sqrt n}\sum_iD_iU_i}_{\to N\text{, bien}} + \underbrace{\tfrac1{\sqrt n}\sum_iD_i\big(g_0(X_i) - \hat g(X_i)\big)}_{\text{sesgo de regularización}}\Big].
+$$ {#eq-sesgo-ing}
+El segundo término es el problema. Como $D_i = m_0(X_i) + V_i$ tiene componente **explicable por $X$**, $\mathbb{E}[D(g_0 - \hat g)(X)] = \mathbb{E}[m_0(X)(g_0 - \hat g)(X)]\ne0$ en general: la esperanza de la suma es del orden de $\sqrt n\cdot\|g_0 - \hat g\|$, un **efecto de primer orden**. Si $\hat g$ converge a una tasa $n^{-\varphi}$ con $\varphi<1/2$ (lo normal con ML), este término **diverge**. El estimador tiene **sesgo no despreciable** y el intervalo de confianza nominal cubre mal (Ejercicio 8.1). El culpable es que el momento $\mathbb{E}[D(Y - \theta D - g(X))]$ es **sensible de primer orden** a errores en $g$.
+
+# Ortogonalidad de Neyman
+
+La solución es construir un **momento insensible de primer orden** a los errores de estimación de las funciones de perturbación.
+
+::: {#def-neyman}
+## Ortogonalidad de Neyman
+Sea $\psi(W;\theta,\eta)$ un momento con $\mathbb{E}[\psi(W;\theta_0,\eta_0)] = 0$, donde $\eta$ agrupa las funciones de perturbación (con valor verdadero $\eta_0$). Se dice que $\psi$ es **ortogonal de Neyman** si su derivada de Gateaux respecto de $\eta$ en $\eta_0$ es cero:
+$$
+\partial_r\,\mathbb{E}\Big[\psi\big(W;\theta_0,\eta_0 + r(\eta - \eta_0)\big)\Big]\Big|_{r = 0} = 0\quad\text{para toda dirección }\eta.
+$$
+:::
+
+En palabras: **la esperanza del momento no cambia a primer orden cuando $\eta$ se aparta de su valor verdadero**. Los errores de estimación de $\eta$ entran solo a **segundo orden**.
+
+::: {#prp-ortog-plm}
+## El momento de residuos sobre residuos es ortogonal
+Con $\eta = (\ell,m)$ y
+$$
+\psi(W;\theta,\eta) = \big(Y - \ell(X) - \theta(D - m(X))\big)\big(D - m(X)\big),
+$$
+se tiene $\mathbb{E}[\psi(W;\theta_0,\eta_0)] = 0$ y $\psi$ es ortogonal de Neyman. En cambio, el momento ingenuo $\psi_{ing} = (Y - \theta D - g(X))D$ **no** lo es.
+:::
+
+::: {.callout-note title="Borrador"}
+Evalúo el momento en $\eta_0 + r(\eta - \eta_0)$ con $\Delta\ell = \ell - \ell_0$ y $\Delta m = m - m_0$. En el valor verdadero, el primer factor vale $U$ y el segundo $V$. Al perturbar, cada factor cambia en $O(r)$: el primero a $U - r(\Delta\ell - \theta_0\Delta m)$ y el segundo a $V - r\Delta m$. El producto es una expresión cuadrática en $r$, y la derivada en $r = 0$ es la suma de dos términos que son (función de $X$) × ($V$ o $U$). Como $V$ y $U$ tienen **media condicional cero dado $X$**, la esperanza es cero.
+:::
+
+::: {.proof}
+En $\eta_0$: $Y - \ell_0(X) - \theta_0(D - m_0(X)) = U$ (de $\ell_0 = \theta_0m_0 + g_0$ y @eq-plm) y $D - m_0(X) = V$, de modo que $\mathbb{E}[\psi(\theta_0,\eta_0)] = \mathbb{E}[UV] = \mathbb{E}\big[V\mathbb{E}[U\mid D,X]\big] = 0$. Perturbando, el primer factor es $U - r(\Delta\ell - \theta_0\Delta m)(X)$ y el segundo es $V - r\Delta m(X)$. El producto es
+$$
+UV - r\big[(\Delta\ell - \theta_0\Delta m)(X)\,V + U\,\Delta m(X)\big] + r^2(\Delta\ell - \theta_0\Delta m)(X)\Delta m(X).
+$$
+La derivada en $r = 0$ es $-\mathbb{E}\big[(\Delta\ell - \theta_0\Delta m)(X)V\big] - \mathbb{E}\big[U\Delta m(X)\big]$. El primer término es cero porque $\mathbb{E}[V\mid X] = 0$ y el segundo porque $\mathbb{E}[U\mid X] = \mathbb{E}\big[\mathbb{E}[U\mid D,X]\mid X\big] = 0$. Para el momento ingenuo, perturbando $g$ en la dirección $\Delta g$: la derivada es $-\mathbb{E}[D\,\Delta g(X)] = -\mathbb{E}[m_0(X)\Delta g(X)]$, que **no** se anula en general (por ejemplo, con $\Delta g = m_0$ vale $-\mathbb{E}[m_0^2]<0$).
+:::
+
+La diferencia es **restar la parte de $D$ explicable por $X$** ($D - m(X)$ en lugar de $D$): la perturbación en $g$ se multiplica por $V$, que es **ortogonal a toda función de $X$**. Es la misma lógica de Frisch–Waugh–Lovell (Clase 3 de Econometría 1): residualizar el regresor de interés respecto de los controles hace que el coeficiente sea insensible al ajuste de los controles.
+
+# Cross-fitting
+
+La ortogonalidad elimina el sesgo de primer orden, pero queda una segunda dificultad: el **sobreajuste**. Si se usan **las mismas observaciones** para estimar las funciones de perturbación $\hat\eta$ y para evaluar el momento, $\hat\eta$ depende de $(U_i,V_i)$ y los términos como $\frac1{\sqrt n}\sum V_ib(X_i)$ **ya no tienen media cero**: un ML flexible ajusta parte del ruido, y esos "residuos" subestiman la variación real. Una solución clásica es restringir la complejidad de $\hat\eta$ (condiciones de Donsker), que excluye bosques profundos, redes grandes y muchos métodos modernos. DML usa en cambio **división de la muestra**.
+
+::: {.callout-caution title="Algoritmo de DML con cross-fitting"}
+1. Dividir la muestra en $K$ **pliegues** $I_1,\dots,I_K$ de tamaño $n/K$ (típicamente $K = 5$).
+2. Para cada $k$, **estimar** $\hat\ell_{(k)}$ y $\hat m_{(k)}$ con ML usando **solo las observaciones fuera del pliegue $k$**, y calcular los residuos $\hat Y_i = Y_i - \hat\ell_{(k)}(X_i)$ y $\hat V_i = D_i - \hat m_{(k)}(X_i)$ **para $i\in I_k$**.
+3. Resolver el momento con todas las observaciones: $\displaystyle\hat\theta = \Big(\sum_{i = 1}^n\hat V_i^2\Big)^{-1}\sum_{i = 1}^n\hat V_i\hat Y_i$.
+4. Error estándar: $\hat\sigma^2 = \hat J^{-2}\cdot\frac1n\sum\hat V_i^2\hat U_i^2$ con $\hat U_i = \hat Y_i - \hat\theta\hat V_i$ y $\hat J = \frac1n\sum\hat V_i^2$; $\operatorname{ee}(\hat\theta) = \hat\sigma/\sqrt n$.
+:::
+
+La idea es que **los residuos de cada observación se calculan con funciones estimadas sin ella**: $\hat\eta_{(k)}$ es independiente de $\{(U_i,V_i)\}_{i\in I_k}$ condicional en $X$, lo que restituye la esperanza cero de los términos cruzados. Se pierde algo de eficiencia (cada $\hat\eta$ usa $(K - 1)/K$ de los datos), pero se gana **generalidad**: cualquier ML sirve, siempre que converja a una tasa suficiente. Una variante es **repetir** la división varias veces con semillas distintas y tomar la mediana, para reducir la aleatoriedad de la partición.
+
+# El teorema de DML
+
+::: {.callout-caution title="Supuestos"}
+1. **Identificación y momentos:** $\mathbb{E}[V^2]\ge c>0$ y momentos de orden $4$ de $(U,V)$ acotados.
+2. **Tasas de las funciones de perturbación** (en $L^2$): $\|\hat m - m_0\|_{L^2}\cdot\|\hat g - g_0\|_{L^2} = o_p(n^{-1/2})$ (con $\hat g = \hat\ell - \theta_0\hat m$), y ambos errores $\|\hat m - m_0\|_{L^2}$, $\|\hat g - g_0\|_{L^2}\to_p0$.
+3. **Cross-fitting** con $K$ fijo.
+:::
+
+La condición típica que implica el supuesto 2 es que **cada** función de perturbación se estime a una tasa $o_p(n^{-1/4})$: **mucho más débil que $\sqrt n$** (que es lo que exigiría el plug-in ingenuo), y alcanzable por muchos métodos de ML bajo supuestos estructurales (el LASSO bajo dispersión con $s^2\log^2p/n\to0$; bosques y redes bajo suavidad o dispersión).
+
+::: {#thm-dml}
+## Normalidad asintótica de DML
+Bajo los supuestos,
+$$
+\sqrt n(\hat\theta - \theta_0)\xrightarrow{d}N\big(0,\sigma^2\big),\qquad\sigma^2 = \frac{\mathbb{E}[V^2U^2]}{\mathbb{E}[V^2]^2},
+$$
+y el estimador de varianza $\hat\sigma^2$ es consistente. Es **la misma varianza** que tendría el estimador de MCO con $(\ell_0,m_0)$ conocidas (el "oráculo"): no hay pérdida de eficiencia por estimar las funciones de perturbación.
+:::
+
+::: {.proof}
+Sea $\hat V_i = V_i + \Delta m_i$ con $\Delta m_i = (m_0 - \hat m)(X_i)$ y $\hat Y_i - \theta_0\hat V_i = U_i + b_i$ con $b_i = (g_0 - \hat g)(X_i)$ (de $\hat Y - \theta_0\hat V = Y - \theta_0D - \hat\ell + \theta_0\hat m = g_0 + U - \hat g$, con $\hat g = \hat\ell - \theta_0\hat m$). Entonces
+$$
+\sqrt n(\hat\theta - \theta_0) = \hat J^{-1}\cdot\frac1{\sqrt n}\sum_i\hat V_i(\hat Y_i - \theta_0\hat V_i),\qquad\hat V_i(\hat Y_i - \theta_0\hat V_i) = (V_i + \Delta m_i)(U_i + b_i).
+$$
+Se descompone la suma en cuatro términos:
+$$
+\underbrace{\tfrac1{\sqrt n}\sum V_iU_i}_{A}\ +\ \underbrace{\tfrac1{\sqrt n}\sum V_ib_i}_{B}\ +\ \underbrace{\tfrac1{\sqrt n}\sum\Delta m_iU_i}_{C}\ +\ \underbrace{\tfrac1{\sqrt n}\sum\Delta m_ib_i}_{R}.
+$$
+*Término $A$:* suma de variables i.i.d. de media cero y varianza $\mathbb{E}[V^2U^2]$: por el TCL, $A\to_dN(0,\mathbb{E}[V^2U^2])$. *Términos $B$ y $C$:* con **cross-fitting**, para $i\in I_k$ los $b_i,\Delta m_i$ son funciones de $X_i$ y de los datos **fuera del pliegue** (independientes de $(U_i,V_i)$ condicional en $X_i$). Condicionando en esos datos y en los $X$, $B$ es una suma de términos con media condicional cero ($\mathbb{E}[V_i\mid X_i] = 0$) y varianza $\frac1n\sum b_i^2\mathbb{E}[V^2\mid X_i]\le C\|\hat g - g_0\|_{L^2}^2\to_p0$; análogamente $C$. Luego $B,C = o_p(1)$ por la desigualdad de Chebyshev. *Término $R$* (el **producto** de errores): por Cauchy–Schwarz, $|R|\le\sqrt n\big(\tfrac1n\sum\Delta m_i^2\big)^{1/2}\big(\tfrac1n\sum b_i^2\big)^{1/2}\approx\sqrt n\|\hat m - m_0\|\cdot\|\hat g - g_0\| = o_p(1)$ por el supuesto de tasas. Finalmente $\hat J\to_p\mathbb{E}[V^2]$ (porque $\hat V\to V$ en $L^2$), y por Slutsky $\sqrt n(\hat\theta - \theta_0)\to_dN(0,\mathbb{E}[V^2U^2]/\mathbb{E}[V^2]^2)$.
+:::
+
+La demostración **muestra por qué funciona**. Sin ortogonalidad, $B$ aparecería como $\frac1{\sqrt n}\sum m_0(X_i)b_i$ (el término de @eq-sesgo-ing), que **no** tiene media cero y es $O(\sqrt n\|b\|)$; con ortogonalidad se multiplica $b_i$ por $V_i$ (media cero), y el único residuo de primer orden es el **producto** $R$ de dos errores pequeños. Y sin cross-fitting, $B$ y $C$ no serían despreciables por sobreajuste.
+
+Una lectura de las tasas: si cada función de perturbación se estima a tasa $n^{-\varphi}$, el producto es $n^{-2\varphi}$ y se exige $2\varphi>1/2$, es decir $\varphi>1/4$. Es la razón de la tasa $o(n^{-1/4})$ que aparece en toda la literatura. (Con LASSO, $\|\hat g - g_0\|\approx\sqrt{s\log p/n}$ y se necesita $s\log p/\sqrt n\to0$, Ejercicio 8.6.)
+
+# Conexión con el AIPW de la Clase 2
+
+DML **no se limita** al modelo parcialmente lineal. Para el **efecto promedio** $\tau_{ATE} = \mathbb{E}[Y(1) - Y(0)]$ bajo insesgamiento condicional (Clase 2), el momento ortogonal es el del estimador **AIPW**:
+$$
+\psi(W;\theta,\eta) = \mu_1(X) - \mu_0(X) + \frac{D\big(Y - \mu_1(X)\big)}{e(X)} - \frac{(1 - D)\big(Y - \mu_0(X)\big)}{1 - e(X)} - \theta,\qquad\eta = (\mu_0,\mu_1,e).
+$$
+El sesgo del AIPW calculado en el teorema de doble robustez de la Clase 2 es $\mathbb{E}\big[(\tilde\mu_1 - \mu_1)(\tilde e - e)/\tilde e\big] - \dots$: un **producto** de los errores de $\mu$ y de $e$, la firma de la ortogonalidad (Ejercicio 8.5). Entonces **DML aplicado al ATE es el AIPW con cross-fitting y ML**: $\mu_d$ y $e$ se estiman con ML (bosques, LASSO, redes) en $K$ pliegues, y el estimador $\hat\tau = \frac1n\sum\hat\psi_i$ es $\sqrt n$-normal, con varianza **igual a la cota de eficiencia semiparamétrica** (Clase 2, ★) si ambas funciones se estiman a tasa $o_p(n^{-1/4})$. Es el resultado que une las Clases 2 y 8: la **doble robustez** (producto de errores) es **ortogonalidad**.
+
+Otras aplicaciones del mismo marco: **VI con muchos instrumentos o controles** (modelo parcialmente lineal con instrumento, ortogonalizando la primera etapa y la forma reducida); **LATE**; **diferencias en diferencias con muchas covariables** (Clase 4); **efectos heterogéneos** (CATE) con bosques causales (Athey y Wager); **derivadas promedio** y **efectos de políticas contrafactuales**.
+
+# Aspectos prácticos
+
+- **¿Qué ML usar?** El teorema es agnóstico: cualquier método que cumpla las tasas. En la práctica se compara el desempeño predictivo de varios (LASSO, bosques, boosting, redes) con validación cruzada y se usa el **mejor** para cada función de perturbación, o un **ensamble** (*stacking*). Una buena predicción de $\hat\ell$ y $\hat m$ es lo que importa; no se necesita que el ML "explique" nada.
+- **Elección de $K$ y repeticiones.** $K = 5$ es estándar; con muestras pequeñas $K = 10$. Repetir la partición (por ejemplo $50$ veces) y reportar la **mediana** de $\hat\theta$ (ajustando el error estándar) reduce la variabilidad debida al azar de la partición.
+- **Traslape.** Para ATE hay que verificar que $\hat e(X)$ no esté cerca de $0$ o $1$ (Clase 2); se recorta o se estima el efecto sobre la subpoblación con buen traslape.
+- **Límites:** DML garantiza inferencia **válida dado** el insesgamiento condicional: no resuelve la selección sobre no observables, ni sustituye el conocimiento institucional sobre qué controles son legítimos (variables previas, no mediadores). Es una herramienta de **estimación**, no de **identificación**: el ML no vuelve creíble un supuesto de identificación que no lo es.
+
+# ★ Postgrado: construir momentos ortogonales
+
+::: {.callout-important title="★ Postgrado"}
+Dado un momento **no ortogonal**, hay una receta general para **ortogonalizarlo**: agregarle el término de corrección dado por la **función de influencia del estimador de primera etapa** (Chernozhukov, Escanciano, Ichimura, Newey y Robins, 2022). Lo ilustramos con dos casos.
+:::
+
+**(1) El modelo parcialmente lineal.** El momento ingenuo $\psi_{ing} = (Y - \theta D - g(X))D$ tiene derivada $-\mathbb{E}[\Delta g(X)D] = -\mathbb{E}[\Delta g(X)m_0(X)]$ respecto de $g$: su sensibilidad pasa por el **proyector** de $D$ sobre funciones de $X$, que es $m_0(X)$. La corrección consiste en **restar** del regresor la parte de $D$ explicable por $X$, reemplazando $D$ por $D - m(X)$: $\psi = (Y - \theta D - g(X))(D - m(X))$, cuya derivada respecto de $g$ es $-\mathbb{E}[\Delta g(X)(D - m_0(X))] = -\mathbb{E}[\Delta g(X)V] = 0$, y respecto de $m$ es $\mathbb{E}[U\Delta m(X)] = 0$ (el factor $U = Y - \theta_0D - g_0$ es ortogonal a funciones de $X$): ortogonal (@prp-ortog-plm, con $g = \ell - \theta m$).
+
+**(2) El efecto promedio.** El momento de **regresión** $\psi_0 = \mu_1(X) - \mu_0(X) - \theta$ tiene derivada $\mathbb{E}[\Delta\mu_1(X) - \Delta\mu_0(X)]$, distinta de cero: **no** es ortogonal (un error en $\mu_1$ sesga $\theta$ de primer orden). La corrección es el **ponderador** $D/e(X)$ aplicado al **residuo** $Y - \mu_1(X)$: la derivada del término $D(Y - \mu_1)/e$ respecto de $\mu_1$ en la dirección $\Delta\mu_1$ es $-\mathbb{E}[D\Delta\mu_1(X)/e(X)] = -\mathbb{E}\big[\mathbb{E}[D\mid X]\Delta\mu_1(X)/e(X)\big] = -\mathbb{E}[\Delta\mu_1(X)]$, que **cancela** exactamente la de $\psi_0$. Lo mismo para $\mu_0$ con $-(1 - D)(Y - \mu_0)/(1 - e)$. Respecto de $e$: la derivada es $-\mathbb{E}\big[D(Y - \mu_1)\Delta e/e^2\big] = -\mathbb{E}\big[e(\mu_1 - \mu_1)\Delta e/e^2\big] = 0$ (condicional en $X$, $\mathbb{E}[D(Y - \mu_1)\mid X] = e(X)(\mu_1(X) - \mu_1(X)) = 0$). El AIPW es **ortogonal** (Ejercicio 8.5).
+
+El principio general: un parámetro $\theta(\eta)$ que es **suave** en una función $\eta$ estimada (una regresión, un propensity score) admite una **función de influencia** $\varphi(W;\eta)$; el momento ortogonal es $\psi_{orth} = \psi_{plug-in} + \varphi$. Es la misma idea de la teoría semiparamétrica de eficiencia (Clase 2, ★): el estimador eficiente tiene como función de influencia la **proyección** sobre el espacio tangente, y esa proyección es ortogonal a los parámetros de perturbación.
+
+# Resumen
+
+- Modelo parcialmente lineal: $Y = D\theta_0 + g_0(X) + U$, $D = m_0(X) + V$. Estimar $g_0$ por ML y hacer plug-in introduce un **sesgo de regularización de primer orden** (@eq-sesgo-ing): $\sqrt n\|g_0 - \hat g\|$ diverge si el ML converge más lento que $\sqrt n$.
+- **Ortogonalidad de Neyman** (@def-neyman): un momento cuya esperanza es insensible a primer orden a $\eta$. El de **residuos sobre residuos** lo es (@prp-ortog-plm); el ingenuo no.
+- **Cross-fitting:** estimar las funciones de perturbación en pliegues distintos del que se evalúa. Elimina el sobreajuste sin restringir la complejidad del ML.
+- **Teorema** (@thm-dml): $\sqrt n(\hat\theta - \theta_0)\to N(0,\mathbb{E}[V^2U^2]/\mathbb{E}[V^2]^2)$ si $\|\hat m - m_0\|\cdot\|\hat g - g_0\| = o_p(n^{-1/2})$ (típicamente cada error $o(n^{-1/4})$). La demostración aísla el **producto de errores**.
+- **AIPW = DML para el ATE**: doble robustez es ortogonalidad; eficiencia semiparamétrica.
+- DML mejora la **estimación**, no la **identificación**.
+
+# Ejercicios
+
+**Ejercicio 8.1.** Con $n = 10\,000$, $\|g_0 - \hat g\|_{L^2} = n^{-1/4} = 0{,}1$, y $\mathbb{E}[m_0(X)(g_0 - \hat g)(X)] = 0{,}5\|m_0\|\,\|g_0 - \hat g\|$ con $\|m_0\| = 1$, calcula el sesgo del estimador ingenuo y compáralo con su error estándar $\approx1/\sqrt n$ (con $\mathbb{E}[D^2]\approx1$). ¿Qué pasa con el estimador ortogonal si ambos errores son $n^{-1/4}$?
+
+::: {.callout-tip collapse="true" title="Solución 8.1"}
+Sesgo del ingenuo $\approx\mathbb{E}[D(g_0 - \hat g)]/\mathbb{E}[D^2] = 0{,}5\cdot1\cdot0{,}1 = 0{,}05$. Error estándar $=1/\sqrt{10\,000} = 0{,}01$: el sesgo es **5 errores estándar**: un intervalo del 95 % cubre el valor verdadero con probabilidad prácticamente nula. Ortogonal: el sesgo es el producto $\mathbb{E}[\Delta m\cdot b]\lesssim\|\hat m - m_0\|\cdot\|\hat g - g_0\| = 0{,}1\cdot0{,}1 = 0{,}01$ en el peor caso (correlación perfecta), es decir, **1 error estándar**, y en un caso típico (correlación $0{,}5$) $0{,}005$, medio error estándar. Con tasas $n^{-1/3}$ (errores de $0{,}046$ cada uno), el producto es $0{,}0022$ (la quinta parte del error estándar): despreciable. La ortogonalidad convierte un sesgo de $5$ errores estándar en uno de $\le1$ con la misma calidad de ML, y la cota $o(n^{-1/4})$ lo hace despreciable.
+:::
+
+**Ejercicio 8.2.** Con $X\sim N(0,1)$ y $m_0(X) = X$, calcula la derivada del momento ingenuo respecto de $g$ en la dirección $\Delta g = m_0$ y la del momento ortogonal. ¿Qué indica?
+
+::: {.callout-tip collapse="true" title="Solución 8.2"}
+Ingenuo: $-\mathbb{E}[D\Delta g(X)] = -\mathbb{E}[m_0(X)\cdot m_0(X)] = -\mathbb{E}[X^2] = -1\ne0$: un error en $g$ en la dirección de $m_0$ desplaza la esperanza del momento en $-1$ por unidad de error: **sensibilidad de primer orden**. Ortogonal: $-\mathbb{E}[V\Delta g(X)] = -\mathbb{E}[\Delta g(X)\mathbb{E}[V\mid X]] = 0$. Es la diferencia clave: multiplicar el error por $V$ (media condicional cero) en lugar de por $D$ (que contiene $m_0(X)$).
+:::
+
+**Ejercicio 8.3.** Describe el cross-fitting con $K = 2$ para $n = 1\,000$: ¿qué datos usa cada paso y por qué la independencia importa?
+
+::: {.callout-tip collapse="true" title="Solución 8.3"}
+Se parte la muestra en dos mitades $I_1,I_2$ de $500$. (1) Con $I_2$, se **entrenan** $\hat\ell_{(1)},\hat m_{(1)}$ (por ejemplo, bosques). (2) Con ellos se calculan los residuos $\hat Y_i,\hat V_i$ para $i\in I_1$. (3) Se intercambian los roles: se entrenan $\hat\ell_{(2)},\hat m_{(2)}$ con $I_1$ y se calculan los residuos de $I_2$. (4) Con los $1\,000$ residuos se calcula $\hat\theta = \sum\hat V_i\hat Y_i/\sum\hat V_i^2$. Cada residuo $\hat V_i$ usa una función **entrenada sin la observación $i$**: $\hat m_{(k)}$ es independiente de $(U_i,V_i)$ dado $X_i$. Si no se hiciera la división, $\hat m(X_i)$ habría "visto" $D_i$ y sería demasiado cercano a él: los residuos $\hat V_i$ serían artificialmente pequeños (sobreajuste) y $\hat J$ y el numerador, sesgados.
+:::
+
+**Ejercicio 8.4.** Con $n = 500$ y $K = 5$ se obtiene $\hat\theta = 0{,}40$, $\frac1n\sum\hat V_i^2 = 0{,}8$ y $\frac1n\sum\hat V_i^2\hat U_i^2 = 1{,}2$. Calcula $\hat\sigma^2$, el error estándar y un IC del 95 %.
+
+::: {.callout-tip collapse="true" title="Solución 8.4"}
+$\hat\sigma^2 = \hat J^{-2}\cdot1{,}2 = 1{,}2/0{,}64 = 1{,}875$. Error estándar: $\sqrt{1{,}875/500} = 0{,}0612$. IC 95 %: $0{,}40\pm1{,}96(0{,}0612) = (0{,}28;\ 0{,}52)$. Observa que la fórmula es la del **sándwich** de Econometría 1 (Clase 7) con los residuos ortogonalizados: $\hat J^{-1}$ ("curvatura") y $\frac1n\sum\hat V^2\hat U^2$ ("ruido"), con heterocedasticidad permitida.
+:::
+
+**Ejercicio 8.5.** Muestra que el momento AIPW es ortogonal respecto de $\mu_1$ y respecto de $e$ calculando las derivadas de Gateaux.
+
+::: {.callout-tip collapse="true" title="Solución 8.5"}
+Perturbando $\mu_1\to\mu_1 + r\Delta\mu_1$: el término $\mu_1(X)$ aporta $\Delta\mu_1(X)$ y el término $D(Y - \mu_1)/e$ aporta $-D\Delta\mu_1(X)/e(X)$. La esperanza de la derivada es $\mathbb{E}[\Delta\mu_1] - \mathbb{E}[D\Delta\mu_1/e] = \mathbb{E}[\Delta\mu_1] - \mathbb{E}\big[\Delta\mu_1\mathbb{E}[D\mid X]/e\big] = \mathbb{E}[\Delta\mu_1] - \mathbb{E}[\Delta\mu_1] = 0$ ✓. Perturbando $e\to e + r\Delta e$: la derivada del término $D(Y - \mu_1)/e$ es $-D(Y - \mu_1)\Delta e/e^2$, y por insesgamiento condicional $\mathbb{E}[D(Y - \mu_1)\mid X] = e(\mu_1 - \mu_1) = 0$: derivada cero ✓ (lo mismo para el término de control). Por eso el sesgo del AIPW con funciones de perturbación mal estimadas es un **producto** (teorema de doble robustez, Clase 2) y no una suma de errores.
+:::
+
+**Ejercicio 8.6.** Con LASSO, $\|\hat g - g_0\|\approx\sqrt{s\log p/n}$. Para $s = 10$ y $p = 1\,000$, ¿se cumple la condición $o(n^{-1/4})$ con $n = 10\,000$ y con $n = 2\,000$?
+
+::: {.callout-tip collapse="true" title="Solución 8.6"}
+$n = 10\,000$: $\sqrt{10\cdot6{,}91/10\,000} = \sqrt{0{,}00691} = 0{,}083$ y $n^{-1/4} = 0{,}10$: el error $0{,}083<0{,}10$ cumple **apenas** (la condición es $o(n^{-1/4})$, es decir, que el cociente tienda a cero; con $0{,}83$ no hay holgura). $n = 2\,000$: $\sqrt{69{,}1/2\,000} = 0{,}186$ y $n^{-1/4} = 0{,}149$: **no** se cumple ($0{,}186>0{,}149$). La exigencia equivale a $s\log p/\sqrt n\to0$: con $s = 10$ y $\log p = 6{,}9$, hace falta $n\gg(69)^2 = 4\,761$, y con holgura, bastante más. Con una función de perturbación **más dispersa** ($s$ mayor) o con $p$ mayor, la inferencia de DML con LASSO requiere muestras grandes.
+:::
+
+**Ejercicio 8.7 ★.** Para el momento $\psi_0 = \mu_1(X) - \mu_0(X) - \theta$, calcula la derivada respecto de $\mu_1$ y encuentra el término de corrección que la anula. Verifica que la corrección **no** cambia el valor del momento en el verdadero $\eta_0$.
+
+::: {.callout-tip collapse="true" title="Solución 8.7 ★"}
+Derivada en la dirección $\Delta\mu_1$: $\mathbb{E}[\Delta\mu_1(X)]\ne0$. Buscamos un término $c(W;\mu_1)$ que dependa de $\mu_1$ y tenga derivada $-\mathbb{E}[\Delta\mu_1(X)]$. Tomamos $c = \dfrac{D(Y - \mu_1(X))}{e(X)}$: su derivada es $-\mathbb{E}[D\Delta\mu_1/e] = -\mathbb{E}[\Delta\mu_1]$ (como $\mathbb{E}[D\mid X] = e$). La suma tiene derivada $0$ ✓. En $\eta_0$, el valor del término de corrección es $\mathbb{E}[D(Y - \mu_1(X))/e(X)] = \mathbb{E}\big[\tfrac1e\mathbb{E}[D(Y - \mu_1)\mid X]\big] = 0$, de modo que **no altera** la identificación $\mathbb{E}[\psi] = 0$ en $\theta_0$: es un "cero que no cambia el nivel pero cambia la pendiente respecto de $\eta$". Es el mecanismo general de la ortogonalización: agregar un término de **esperanza cero en el verdadero** y de derivada exactamente **opuesta** a la del momento original.
+:::

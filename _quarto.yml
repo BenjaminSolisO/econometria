@@ -90,6 +90,8 @@ website:
         - econometria-4/clase-04.qmd
         - econometria-4/clase-05.qmd
         - econometria-4/clase-06.qmd
+        - econometria-4/clase-07.qmd
+        - econometria-4/clase-08.qmd
   page-footer:
     left: "© 2026 Benjamín Solís · Econometría"
     right: "Hecho con [Quarto](https://quarto.org)"
