@@ -1,0 +1,248 @@
+---
+title: "Clase 9 · Datos de panel I"
+subtitle: "Efectos fijos, efectos aleatorios y el test de Hausman"
+description: "Heterogeneidad no observada en paneles cortos: MCO agrupado con errores por clúster, estimador intra-grupos (efectos fijos), primeras diferencias, efectos aleatorios como MCG, el test de Hausman y la equivalencia de Mundlak."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Observar lo mismo varias veces
+
+Un **panel** sigue a las mismas $N$ unidades (personas, empresas, países) durante $T$ períodos. Su gran ventaja sobre un corte transversal es que permite controlar por todo lo que **no cambia** en el tiempo y que no observamos: la habilidad innata de un trabajador, la cultura de una empresa, la geografía de un país. Eso es lo que llamamos **heterogeneidad no observada**, y es la razón de ser de la mayoría de los estudios de panel.[^panel]
+
+El modelo es
+$$
+y_{it} = x_{it}'\beta + c_i + u_{it},\qquad i = 1,\dots,N,\quad t = 1,\dots,T.
+$$ {#eq-panel}
+Aquí $c_i$ es el **efecto individual** (constante en $t$, no observado) y $u_{it}$ el error **idiosincrático**. Trabajamos con **$N$ grande y $T$ fijo** (paneles "cortos", típicos de encuestas de hogares), y todo el límite es en $N\to\infty$. Las $N$ unidades son i.i.d., pero **dentro de cada unidad** las $T$ observaciones están relacionadas por $c_i$. Para cada $i$, escribimos $y_i = (y_{i1},\dots,y_{iT})'$ ($T\times1$), $X_i$ ($T\times k$), y similarmente $u_i$.
+
+[^panel]: El panel más famoso es el PSID (*Panel Study of Income Dynamics*), que desde 1968 sigue a las mismas familias estadounidenses, y a sus hijos y a los hijos de sus hijos. Algunos de sus participantes llevan más años en la base de datos que muchos econometristas en su carrera. Un panel es, en cierto sentido, un experimento natural en el que cada individuo es su propio control.
+
+::: {.callout-caution title="Supuesto de exogeneidad estricta"}
+$\mathbb{E}\big[u_{it}\mid x_{i1},\dots,x_{iT},c_i\big] = 0$ para todo $t$. Es decir, el error de hoy es independiente de las $x$ de **todos** los períodos (pasados y futuros), dado $c_i$.
+:::
+
+La exogeneidad estricta es más fuerte que la exogeneidad contemporánea de MCO: **descarta** que el error de hoy afecte a las $x$ de mañana (por ejemplo, un regresor que sea una variable dependiente rezagada). La Clase 10 trata justo el caso en que se viola.
+
+El problema central: $c_i$ está en el error compuesto $v_{it} = c_i + u_{it}$, y puede estar **correlacionado con $x_{it}$** (la habilidad correlaciona con la educación). Dos filosofías, según qué se suponga sobre $c_i$.
+
+# MCO agrupado y errores por clúster
+
+Ignorar $c_i$ y correr MCO sobre las $NT$ observaciones (**MCO agrupado**, *pooled*) es consistente si y solo si
+$$
+\mathbb{E}\big[x_{it}(c_i + u_{it})\big] = 0\iff\mathbb{E}[x_{it}c_i] = 0,
+$$
+es decir, si $c_i$ es **no correlacionado** con los regresores. Si $c_i$ afecta a $x$, es una variable omitida clásica (Clase 8 de Econometría 1). Pero incluso si es consistente, la inferencia usual es incorrecta: **$v_{it}$ está correlacionado en el tiempo** dentro de cada $i$ (comparten $c_i$): $\operatorname{Cov}(v_{it},v_{is}) = \sigma_c^2>0$. MCO supone independencia entre observaciones; aquí hay $N$ clústeres independientes de $T$ observaciones dependientes.
+
+Es una situación de M-estimación (Clase 1) con **la unidad $i$ como observación independiente**. El score del clúster es $X_i'v_i$ (suma sobre $t$), y la varianza **robusta por clúster** (Liang–Zeger, Arellano) es el sándwich
+$$
+\widehat{\operatorname{Avar}}(\hat\beta_{\text{pool}}) = \Big(\sum_iX_i'X_i\Big)^{-1}\Big(\sum_iX_i'\hat v_i\hat v_i'X_i\Big)\Big(\sum_iX_i'X_i\Big)^{-1},
+$$
+que es válida con $N\to\infty$, sea cual sea la correlación dentro de $i$ (serial, heterocedástica). Ignorarla da errores estándar demasiado pequeños: con $T$ períodos y correlación intraclase $\rho$ del error, la varianza del promedio queda multiplicada por el **efecto de diseño** $1 + (T-1)\rho$ (Ejercicio 9.6), de modo que con $T = 5$ y $\rho = 0{,}5$ el error estándar verdadero es $\sqrt3\approx1{,}7$ veces el reportado. **En paneles, siempre se usan errores estándar agrupados por individuo.**
+
+# Efectos fijos: el estimador intra-grupos
+
+La idea de efectos fijos (FE) es **eliminar $c_i$** sin suponer nada sobre su relación con $x$. Promediando @eq-panel sobre $t$ para cada $i$: $\bar y_i = \bar x_i'\beta + c_i + \bar u_i$. Restando,
+$$
+\underbrace{y_{it} - \bar y_i}_{\ddot y_{it}} = \underbrace{(x_{it} - \bar x_i)}_{\ddot x_{it}}{}'\beta + \underbrace{(u_{it} - \bar u_i)}_{\ddot u_{it}}.
+$$ {#eq-within}
+$c_i$ **desaparece**. El estimador de efectos fijos (o **intra-grupos**, *within*) es MCO sobre @eq-within:
+$$
+\hat\beta_{FE} = \Big(\sum_{i}\sum_t\ddot x_{it}\ddot x_{it}'\Big)^{-1}\sum_i\sum_t\ddot x_{it}\ddot y_{it}.
+$$
+En notación matricial, con $Q = I_T - \frac1T\iota\iota'$ la matriz que resta la media temporal, $\hat\beta_{FE} = \big(\sum_iX_i'QX_i\big)^{-1}\sum_iX_i'Qy_i$. (Es una proyección idempotente de la Clase 1 de Econometría 1.)
+
+::: {#thm-fe}
+## Consistencia y normalidad de efectos fijos
+Bajo exogeneidad estricta, muestreo i.i.d. entre unidades, $\mathbb{E}[\ddot x_{it}\ddot x_{it}']$ sumada sobre $t$ definida positiva (rango completo: **cada regresor varía en el tiempo**) y momentos finitos, $\hat\beta_{FE}\xrightarrow{p}\beta$ y
+$$
+\sqrt N(\hat\beta_{FE} - \beta)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}[X_i'QX_i],\ B = \mathbb{E}[X_i'Qu_iu_i'QX_i].
+$$
+**No se exige ninguna restricción sobre $\operatorname{Cov}(c_i,x_{it})$.**
+:::
+
+::: {.proof}
+Reemplazando $\ddot y_{it}$, $\hat\beta_{FE} - \beta = \big(\frac1N\sum_iX_i'QX_i\big)^{-1}\frac1N\sum_iX_i'Qu_i$, porque $Qy_i = QX_i\beta + Qc_i\iota + Qu_i$ y $Q\iota = 0$ (aquí desaparece $c_i$). Los términos $X_i'QX_i$ y $X_i'Qu_i$ son i.i.d. entre $i$. Por la LGN, $\frac1N\sum X_i'QX_i\to_pA$. Para el numerador, $\mathbb{E}[X_i'Qu_i] = \sum_t\mathbb{E}[\ddot x_{it}u_{it}] = \sum_t\mathbb{E}\big[\ddot x_{it}\,\mathbb{E}[u_{it}\mid X_i,c_i]\big] = 0$ por exogeneidad estricta (la esperanza condicional de $u_{it}$ dado **todas** las $x_{is}$, que forman $\ddot x_{it}$, es cero). Por el TCL, $N^{-1/2}\sum X_i'Qu_i\to_dN(0,B)$, con $B = \mathbb{E}[X_i'Qu_iu_i'QX_i]$. El resultado sigue por Slutsky.
+:::
+
+Observa dónde se usó la exogeneidad **estricta**: $\ddot x_{it}$ contiene $\bar x_i$, que depende de las $x$ de todos los períodos. Con solo exogeneidad contemporánea ($\mathbb{E}[u_{it}\mid x_{it}] = 0$) el estimador FE sería inconsistente.
+
+## Qué se pierde y qué se paga
+
+- **Variables invariantes en el tiempo** (género, raza, país de origen) tienen $\ddot x_{it} = 0$ y **no se pueden estimar**: se absorben en $c_i$. FE identifica solo efectos de variables que cambian dentro de cada unidad. Esto es el precio de no suponer nada sobre $c_i$.
+- **Se "usa" menos variación:** solo la variación *dentro* de las unidades. Si el regresor casi no varía en el tiempo (ejemplo: una institución estable), $\ddot x$ es pequeño y el estimador es impreciso.
+- Los $c_i$ no se pueden estimar consistentemente con $T$ fijo (cada uno se estima con $T$ observaciones), pero **$\beta$ sí**. Es el famoso **problema de los parámetros incidentales**, benigno en el modelo lineal, pero grave en los no lineales (Clase 11).
+
+::: {#prp-lsdv}
+## FE es MCO con dummies
+$\hat\beta_{FE}$ coincide con el coeficiente de $x$ en la regresión de $y$ sobre $x$ y **$N$ variables dummy** (una por unidad). (Es el estimador LSDV.)
+:::
+
+::: {.proof}
+Sea $D$ la matriz $NT\times N$ de dummies de unidad. Por el teorema de Frisch–Waugh–Lovell (Clase 3 de Econometría 1), el coeficiente de $x$ en la regresión con $D$ se obtiene regresando $M_Dy$ sobre $M_DX$, donde $M_D = I - D(D'D)^{-1}D'$. Pero $D(D'D)^{-1}D'$ promedia cada variable sobre las $T$ observaciones de su unidad, así que $M_Dz$ es $z$ menos su media de unidad: la transformación intra-grupos.
+:::
+
+Un detalle práctico importante. Los programas de LSDV y de "within" dan el mismo $\hat\beta$, pero **la estimación de $\sigma_u^2$ requiere cuidado**: los residuos $\ddot{\hat u}_{it}$ suman cero dentro de cada $i$ ($T$ residuos, $T - 1$ libres), así que $\mathbb{E}\big[\sum_{it}\ddot u_{it}^2\big] = \sigma_u^2N(T-1)$. Luego
+$$
+\hat\sigma_u^2 = \frac{1}{N(T-1) - k}\sum_{i,t}\hat{\ddot u}_{it}^2,
+$$
+y **no** $1/(NT - k)$: dividir por $NT - k$ subestima $\sigma_u^2$ en un factor $(T-1)/T$ (Ejercicio 9.2). Los programas bien hechos lo corrigen; los hechos a mano, no.
+
+## Primeras diferencias
+
+Otra forma de eliminar $c_i$ es **diferenciar**: $\Delta y_{it} = \Delta x_{it}'\beta + \Delta u_{it}$ para $t = 2,\dots,T$. MCO sobre esto es el estimador de **primeras diferencias** (FD). Con $T = 2$ coincide exactamente con FE (Ejercicio 9.3). Con $T>2$ son distintos: FE es más eficiente si los $u_{it}$ son i.i.d. (porque $\Delta u_{it}$ está correlacionado serialmente de manera negativa, $\operatorname{Corr}(\Delta u_{it},\Delta u_{i,t-1}) = -\tfrac12$), y FD es más eficiente si $u_{it}$ es una caminata aleatoria. Ambos requieren exogeneidad estricta.
+
+# Efectos aleatorios
+
+Si el investigador está dispuesto a **suponer** que $c_i$ no se correlaciona con las $x$, se puede hacer mejor que FE, aprovechando **toda** la variación (también la entre unidades) y estimando variables invariantes en el tiempo.
+
+::: {.callout-caution title="Supuestos de efectos aleatorios (RE)"}
+- **RE1:** exogeneidad estricta de $u_{it}$ (como antes).
+- **RE2:** $\mathbb{E}[c_i\mid x_{i1},\dots,x_{iT}] = 0$ (el efecto individual es **no correlacionado** con los regresores de todos los períodos).
+- **RE3 (estructura de varianza):** $\operatorname{Var}(c_i) = \sigma_c^2$, $\operatorname{Var}(u_{it}) = \sigma_u^2$, $u_{it}$ no correlacionado en $t$ y con $c_i$, homocedásticos.
+:::
+
+Con RE3 el error compuesto $v_i = c_i\iota + u_i$ tiene varianza
+$$
+\Omega = \operatorname{Var}(v_i) = \sigma_u^2I_T + \sigma_c^2\iota\iota',
+$$
+(todas las covarianzas fuera de la diagonal valen $\sigma_c^2$; la diagonal, $\sigma_u^2 + \sigma_c^2$). Con $\Omega\ne\sigma^2I$ MCO agrupado es consistente (por RE2) pero **ineficiente**: la respuesta es **MCG** (Aitken, Clase 9 de Econometría 1), que se calcula así. Sea $P = \frac1T\iota\iota'$ (promedio temporal), de modo que $Q = I - P$.
+
+::: {#prp-re-gls}
+## RE es un MCG con cuasi-diferencias
+Con $\omega^2 = \sigma_u^2 + T\sigma_c^2$, $\Omega = \sigma_u^2Q + \omega^2P$ y $\Omega^{-1/2} = \sigma_u^{-1}(I_T - \theta P)$ con
+$$
+\theta = 1 - \frac{\sigma_u}{\sqrt{\sigma_u^2 + T\sigma_c^2}}\in[0,1).
+$$
+Por lo tanto el estimador RE (MCG) es MCO sobre las variables **cuasi-promediadas** $y_{it} - \theta\bar y_i$ y $x_{it} - \theta\bar x_i$.
+:::
+
+::: {.proof}
+Como $\iota\iota' = TP$, $\Omega = \sigma_u^2I + \sigma_c^2TP = \sigma_u^2(Q + P) + T\sigma_c^2P = \sigma_u^2Q + \omega^2P$. $Q$ y $P$ son proyecciones ortogonales complementarias ($QP = 0$, $Q + P = I$), así que $\Omega^{-1/2} = \sigma_u^{-1}Q + \omega^{-1}P = \sigma_u^{-1}\big[Q + (\sigma_u/\omega)P\big] = \sigma_u^{-1}\big[I - (1 - \sigma_u/\omega)P\big] = \sigma_u^{-1}(I - \theta P)$. El MCG es MCO sobre los datos transformados por $\Omega^{-1/2}$ (Aitken, Clase 9 de Econometría 1), y $(I - \theta P)z_i$ tiene componentes $z_{it} - \theta\bar z_i$.
+:::
+
+La **interpretación de $\theta$** es reveladora:
+
+- $\theta = 0$ ($\sigma_c^2 = 0$, no hay efecto individual): RE = MCO agrupado.
+- $\theta\to1$ ($T\to\infty$ o $\sigma_c^2\gg\sigma_u^2$): RE $\to$ FE (se resta la media completa).
+- Intermedio: RE sustrae **una fracción** de la media, y combina variación intra y entre unidades. De hecho, $\hat\beta_{RE}$ es un promedio matricial ponderado del estimador intra-grupos y el estimador *between* (MCO sobre las medias $\bar y_i$ y $\bar x_i$).
+
+Con $\sigma_u^2 = \sigma_c^2 = 1$ y $T = 4$: $\omega^2 = 5$, $\theta = 1 - 1/\sqrt5 = 0{,}553$ (Ejercicio 9.4).
+
+En la práctica $\sigma_u^2$ y $\sigma_c^2$ no se conocen: se estiman en un primer paso (Swamy–Arora, usando los residuos de FE y del estimador between) y se aplica **MCG factible (FGLS)**, con la misma distribución asintótica por la Clase 9 de Econometría 1.
+
+## ¿Cuál usar? El test de Hausman
+
+La elección entre FE y RE es una elección entre **robustez** (FE: consistente aun si $c_i$ correlaciona con $x$) y **eficiencia** (RE: usa más variación y estima efectos de variables invariantes, pero es inconsistente si RE2 falla). Es un contexto ideal para el test de Hausman (1978), que compara dos estimadores:
+
+- Bajo $H_0$ (RE2 cierto): $\hat\beta_{FE}$ y $\hat\beta_{RE}$ son consistentes; RE es **eficiente**.
+- Bajo $H_1$: solo $\hat\beta_{FE}$ es consistente. La diferencia $\hat\beta_{FE} - \hat\beta_{RE}$ **no tiende a cero**.
+
+::: {#thm-hausman}
+## Lema y test de Hausman
+Sea $\hat\beta_E$ un estimador asintóticamente eficiente bajo $H_0$ y $\hat\beta$ otro consistente bajo $H_0$. Entonces, bajo $H_0$, $\operatorname{Avar}(\hat\beta - \hat\beta_E) = \operatorname{Avar}(\hat\beta) - \operatorname{Avar}(\hat\beta_E)$. En consecuencia,
+$$
+H = (\hat\beta_{FE} - \hat\beta_{RE})'\Big[\widehat{\operatorname{Var}}(\hat\beta_{FE}) - \widehat{\operatorname{Var}}(\hat\beta_{RE})\Big]^{-1}(\hat\beta_{FE} - \hat\beta_{RE})\xrightarrow{d}\chi^2_k
+$$
+bajo $H_0$ (con $k$ el número de coeficientes de variables que cambian en el tiempo).
+:::
+
+::: {.callout-note title="Borrador"}
+La clave es que la covarianza entre el estimador eficiente y la *diferencia* es cero. Si no lo fuera, podría mezclar los dos estimadores con un peso pequeño y obtener algo con **menor** varianza que el eficiente, lo cual es imposible. Una vez que $\operatorname{Cov}(\hat\beta_E,\hat\beta - \hat\beta_E) = 0$, la varianza de $\hat\beta = \hat\beta_E + (\hat\beta - \hat\beta_E)$ es la suma de las varianzas, y de ahí despejo la varianza de la diferencia.
+:::
+
+::: {.proof}
+Sea $\Delta = \hat\beta - \hat\beta_E$ y, para un vector $a$ fijo y un escalar $\epsilon$, consideremos el estimador consistente $\hat\beta_E + \epsilon\Delta$ (consistente bajo $H_0$ porque ambos lo son). Su varianza asintótica para la combinación lineal $a'\cdot$ es
+$$
+a'\operatorname{Var}(\hat\beta_E)a + 2\epsilon\,a'\operatorname{Cov}(\hat\beta_E,\Delta)a + \epsilon^2a'\operatorname{Var}(\Delta)a.
+$$
+Como $\hat\beta_E$ es eficiente, esto debe ser $\ge a'\operatorname{Var}(\hat\beta_E)a$ para **todo** $\epsilon$ (positivo y negativo): $2\epsilon\,c + \epsilon^2d\ge0$ con $c = a'\operatorname{Cov}(\hat\beta_E,\Delta)a$ y $d = a'\operatorname{Var}(\Delta)a$. Para $\epsilon$ chico del signo opuesto a $c$, el término lineal domina y la desigualdad falla salvo que $c = 0$. Luego $\operatorname{Cov}(\hat\beta_E,\Delta) = 0$ (para todo $a$; con cuidado, la matriz simetrizada). Entonces $\operatorname{Var}(\hat\beta) = \operatorname{Var}(\hat\beta_E + \Delta) = \operatorname{Var}(\hat\beta_E) + \operatorname{Var}(\Delta)$, es decir, $\operatorname{Var}(\Delta) = \operatorname{Var}(\hat\beta) - \operatorname{Var}(\hat\beta_E)$. El estadístico $H$ es entonces una forma cuadrática $\chi^2$ de un vector asintóticamente normal con media cero bajo $H_0$ (lema de la $\chi^2$ con la inversa de la varianza, Clase 5 de Econometría 1).
+:::
+
+Tres advertencias prácticas. (1) El lema requiere que RE sea **eficiente** bajo $H_0$, lo que exige la estructura RE3 (homocedasticidad, sin correlación serial de $u_{it}$). **Si usas errores robustos por clúster, RE ya no es eficiente** y el test de Hausman clásico es inválido (puede incluso dar una varianza diferencia no positiva). La solución es la versión de **Mundlak** más abajo, que es robusta. (2) El test es sobre *toda* la diferencia: un rechazo dice que $\hat\beta_{FE}$ y $\hat\beta_{RE}$ difieren, no cuál coeficiente causa la diferencia. (3) Con $T$ fijo y $N$ moderado el test es poco potente.
+
+# La aproximación de Mundlak y su test robusto
+
+Mundlak (1978) propuso modelar explícitamente la correlación entre $c_i$ y las $x$: $c_i = \bar x_i'\delta + a_i$, con $a_i$ **no correlacionado** con las $x$. Sustituyendo,
+$$
+y_{it} = x_{it}'\beta + \bar x_i'\delta + a_i + u_{it}.
+$$ {#eq-mundlak}
+Esta ecuación **sí** satisface la condición de efectos aleatorios para el nuevo efecto $a_i$. Se puede estimar por MCO agrupado con errores por clúster (o por RE). Dos resultados notables:
+
+1. **$\hat\beta$ de @eq-mundlak coincide con $\hat\beta_{FE}$** (probado abajo): incluir las medias $\bar x_i$ como controles reproduce el estimador intra-grupos.
+2. **Test de Hausman robusto:** $H_0:\delta = 0$ en @eq-mundlak, con un test de Wald usando varianza por clúster. Si $\delta = 0$, $c_i$ no está correlacionado con las $x$ (RE2), y la versión es válida bajo heterocedasticidad y correlación serial, porque no usa el lema de eficiencia.
+
+# ★ Postgrado: equivalencia de Mundlak
+
+::: {#prp-mundlak}
+## MCO agrupado con medias = FE
+El coeficiente de $x_{it}$ en la regresión agrupada de $y_{it}$ sobre $(1,\,x_{it},\,\bar x_i)$ es exactamente $\hat\beta_{FE}$.
+:::
+
+::: {.proof}
+Por Frisch–Waugh–Lovell, el coeficiente de $x_{it}$ es el de la regresión de $y_{it}$ sobre los **residuos** $r_{it}$ de regresar $x_{it}$ sobre $(1,\bar x_i)$ (pooled). Como $\bar x_i$ es el promedio de $x_{it}$ en $t$, la regresión de $x_{it}$ sobre $\bar x_i$ y una constante tiene coeficiente igual a la identidad en $\bar x_i$ (y cero en la constante): en efecto $\sum_{i,t}\bar x_i(x_{it} - \bar x_i)' = \sum_i\bar x_i\sum_t(x_{it} - \bar x_i)' = 0$, de modo que $x_{it} - \bar x_i$ es ortogonal a $(1,\bar x_i)$ y $\bar x_i$ es el ajuste. Luego $r_{it} = x_{it} - \bar x_i = \ddot x_{it}$ y el coeficiente es $\big(\sum\ddot x_{it}\ddot x_{it}'\big)^{-1}\sum\ddot x_{it}y_{it} = \hat\beta_{FE}$ (usando $\sum_{it}\ddot x_{it}y_{it} = \sum_{it}\ddot x_{it}\ddot y_{it}$, porque $\sum_t\ddot x_{it} = 0$).
+:::
+
+Es una forma elegante de ver que **FE = "controlar por la media individual de cada regresor"**: la variación identificadora es la que queda tras quitar lo que se puede predecir con $\bar x_i$. Y da el puente natural al modelo de **efectos correlacionados** de Chamberlain (Clase 11), que generaliza $c_i = \bar x_i'\delta + a_i$ a $c_i = \sum_t x_{it}'\delta_t + a_i$.
+
+# Resumen
+
+- Panel: $y_{it} = x_{it}'\beta + c_i + u_{it}$; el problema es $c_i$, posiblemente correlacionado con $x_{it}$. Bajo **exogeneidad estricta** hay dos estrategias.
+- **MCO agrupado** es consistente solo si $c_i\perp x$; en cualquier caso hay que usar **errores por clúster**.
+- **Efectos fijos** (intra-grupos): resta medias por unidad, elimina $c_i$ y es consistente sin restricciones sobre $c_i$ (@thm-fe); no estima variables invariantes. Equivale a MCO con dummies (@prp-lsdv).
+- **Efectos aleatorios** (MCG con cuasi-diferencias, $\theta = 1 - \sigma_u/\sqrt{\sigma_u^2 + T\sigma_c^2}$, @prp-re-gls): más eficiente, pero exige $c_i\perp x$.
+- **Hausman** (@thm-hausman): compara FE y RE; con errores robustos hay que usar la **regresión de Mundlak** ($\hat\beta$ de @eq-mundlak coincide con FE, @prp-mundlak).
+
+# Ejercicios
+
+**Ejercicio 9.1.** Dos unidades, tres períodos. Unidad 1: $x = (1,2,3)$, $y = (1,2,6)$. Unidad 2: $x = (4,5,6)$, $y = (5,5,8)$. Calcula $\hat\beta_{FE}$ y el MCO agrupado (con constante).
+
+::: {.callout-tip collapse="true" title="Solución 9.1"}
+Medias: unidad 1, $\bar x = 2$, $\bar y = 3$; unidad 2, $\bar x = 5$, $\bar y = 6$. Desvíos de $x$: $(-1,0,1)$ en ambas. Desvíos de $y$: unidad 1 $(-2,-1,3)$; unidad 2 $(-1,-1,2)$. $\sum\ddot x^2 = 2 + 2 = 4$; $\sum\ddot x\ddot y = (2 + 3) + (1 + 2) = 8$. $\hat\beta_{FE} = 8/4 = 2$. MCO agrupado: $\bar x = 3{,}5$, $\bar y = 4{,}5$; $S_{xx} = 17{,}5$ y $S_{xy} = 21{,}5$, luego $\hat\beta_{pool} = 1{,}23$. Los dos difieren porque la relación *entre* unidades (la unidad 2 tiene $x$ e $y$ más altos, pero con pendiente ~1) pesa en el agrupado pero no en FE, que solo usa la variación dentro de cada unidad.
+:::
+
+**Ejercicio 9.2.** Con $T = 2$, $N = 500$ y $k = 3$, ¿por cuánto se subestima $\sigma_u^2$ si se divide la suma de residuos intra-grupos por $NT - k$ en lugar de $N(T-1) - k$?
+
+::: {.callout-tip collapse="true" title="Solución 9.2"}
+$\mathbb{E}[\text{SCR}_{within}]\approx\sigma_u^2[N(T-1) - k] = \sigma_u^2\cdot497$. Dividir por $NT - k = 997$ da $\sigma_u^2\cdot497/997\approx0{,}50\sigma_u^2$: **la mitad**. Con $T = 2$ el factor $(T-1)/T = \tfrac12$ es exacto en el límite. Los errores estándar (que usan $\hat\sigma_u^2$) quedarían subestimados en un factor $\sqrt{0{,}5}\approx0{,}71$. Intuición: cada unidad pierde un grado de libertad por la media estimada, y con $T = 2$ eso es la mitad de la información.
+:::
+
+**Ejercicio 9.3.** Demuestra que con $T = 2$, $\hat\beta_{FE} = \hat\beta_{FD}$.
+
+::: {.callout-tip collapse="true" title="Solución 9.3"}
+Con $T = 2$, $\ddot x_{i1} = x_{i1} - \frac{x_{i1} + x_{i2}}2 = -\tfrac12\Delta x_i$ y $\ddot x_{i2} = +\tfrac12\Delta x_i$, con $\Delta x_i = x_{i2} - x_{i1}$; análogo para $y$. Entonces $\sum_t\ddot x_{it}\ddot x_{it}' = \tfrac12\Delta x_i\Delta x_i'$ y $\sum_t\ddot x_{it}\ddot y_{it} = \tfrac12\Delta x_i\Delta y_i$. El factor $\tfrac12$ se cancela en $\hat\beta_{FE} = \big(\sum\tfrac12\Delta x\Delta x'\big)^{-1}\sum\tfrac12\Delta x\Delta y = \big(\sum\Delta x\Delta x'\big)^{-1}\sum\Delta x\Delta y = \hat\beta_{FD}$.
+:::
+
+**Ejercicio 9.4.** Calcula $\theta$ para $\sigma_u^2 = 1$, $\sigma_c^2 = 1$ con $T = 4$ y $T = 10$. ¿Qué pasa con $T\to\infty$? ¿Y si $\sigma_c^2 = 0$?
+
+::: {.callout-tip collapse="true" title="Solución 9.4"}
+$T = 4$: $\theta = 1 - 1/\sqrt{1 + 4} = 1 - 0{,}447 = 0{,}553$. $T = 10$: $\theta = 1 - 1/\sqrt{11} = 0{,}698$. $T\to\infty$: $\theta\to1$ y RE $\to$ FE: con muchos períodos la media individual $\bar y_i$ estima bien $c_i$, y restarla completa es casi óptimo. Con $\sigma_c^2 = 0$: $\theta = 0$ y RE = MCO agrupado, porque no hay efecto individual que eliminar.
+:::
+
+**Ejercicio 9.5.** En una aplicación, $\hat\beta_{FE} = 0{,}50$ con error estándar $0{,}20$ y $\hat\beta_{RE} = 0{,}30$ con error estándar $0{,}10$. Calcula el estadístico de Hausman y concluye al 5 %.
+
+::: {.callout-tip collapse="true" title="Solución 9.5"}
+$\operatorname{Var}(\hat\beta_{FE}) - \operatorname{Var}(\hat\beta_{RE}) = 0{,}04 - 0{,}01 = 0{,}03$. $H = (0{,}50 - 0{,}30)^2/0{,}03 = 0{,}04/0{,}03 = 1{,}33$. Con $\chi^2_{1,0{,}95} = 3{,}84$: **no se rechaza** $H_0$. Datos compatibles con $c_i$ no correlacionado con $x$; RE es válido y más eficiente. Nota que la diferencia (0,20) es *grande* en tamaño económico, pero FE es tan impreciso que no puede distinguirla de cero: potencia baja.
+:::
+
+**Ejercicio 9.6.** (Efecto de diseño.) Para un clúster de $T$ observaciones con varianza $\sigma^2$ y correlación $\rho$ entre cada par, muestra que $\operatorname{Var}(\bar y_i) = \dfrac{\sigma^2}{T}[1 + (T-1)\rho]$. Calcula el factor sobre el error estándar con $T = 5$ y $\rho = 0{,}5$.
+
+::: {.callout-tip collapse="true" title="Solución 9.6"}
+$\operatorname{Var}(\sum_ty_{it}) = T\sigma^2 + T(T-1)\rho\sigma^2$, así que $\operatorname{Var}(\bar y_i) = \frac1{T^2}[T\sigma^2 + T(T-1)\rho\sigma^2] = \frac{\sigma^2}T[1 + (T-1)\rho]$. Si las observaciones fueran independientes ($\rho = 0$), la varianza sería $\sigma^2/T$. El factor de varianza es $1 + (T-1)\rho = 1 + 4(0{,}5) = 3$ y el del error estándar $\sqrt3 = 1{,}73$. Ignorar la correlación intra-clúster subestima el error estándar en 42 % ($1/1{,}73 = 0{,}58$): se sobre-rechaza la nula.
+:::
+
+**Ejercicio 9.7 ★.** Demuestra que $\hat\beta_{RE}$ es un promedio ponderado de $\hat\beta_W$ (intra-grupos) y $\hat\beta_B$ (entre unidades). (Pista: usa $\Omega^{-1} = \sigma_u^{-2}Q + \omega^{-2}P$.)
+
+::: {.callout-tip collapse="true" title="Solución 9.7 ★"}
+MCG: $\hat\beta_{RE} = \big(\sum X_i'\Omega^{-1}X_i\big)^{-1}\sum X_i'\Omega^{-1}y_i$. Con $\Omega^{-1} = \sigma_u^{-2}Q + \omega^{-2}P$: $\sum X_i'\Omega^{-1}X_i = \sigma_u^{-2}S_{xx}^W + \omega^{-2}T\,S_{xx}^B$, donde $S_{xx}^W = \sum X_i'QX_i$ y $T S_{xx}^B = \sum X_i'PX_i$ (con $S^B$ la matriz de las medias). Análogo para $X_i'\Omega^{-1}y_i$. Como $\hat\beta_W = (S_{xx}^W)^{-1}S_{xy}^W$ y $\hat\beta_B = (S_{xx}^B)^{-1}S_{xy}^B$,
+$$
+\hat\beta_{RE} = \Lambda\hat\beta_W + (I - \Lambda)\hat\beta_B,\quad\Lambda = \big[\sigma_u^{-2}S_{xx}^W + \omega^{-2}TS_{xx}^B\big]^{-1}\sigma_u^{-2}S_{xx}^W.
+$$
+Cada estimador pesa según su precisión relativa: si $\sigma_c^2$ es grande, $\omega^2$ es grande, el peso de $\hat\beta_B$ cae (la variación entre unidades está contaminada por $c_i$) y RE se acerca a FE. Si $\sigma_c^2 = 0$, $\omega^2 = \sigma_u^2$ y se vuelve MCO agrupado.
+:::

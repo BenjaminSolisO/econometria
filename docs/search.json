@@ -633,7 +633,11 @@
     "href": "econometria-2/index.html",
     "title": "Econometría 2",
     "section": "",
-    "text": "PrecauciónEn preparación\n\n\n\nEste curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1 (borradores, demostraciones paso a paso, secciones ★ y ejercicios resueltos)."
+    "text": "Econometría 1 construyó la teoría del modelo lineal. Este curso la lleva más allá, con una idea que organiza todo: casi todo estimador es el máximo de un criterio muestral, y una sola demostración de consistencia y normalidad asintótica (la Clase 1) sirve para todos. Después, cada clase aplica esa maquinaria a un tipo de dato o de problema (variables binarias, conteos, duraciones, censura, paneles, cuantiles) y a una pregunta (qué se identifica, qué se puede estimar, qué se puede testear).\nComo en Econometría 1, cada resultado está demostrado o marcado como un hecho que se toma prestado, y cada demostración va precedida de un recuadro Borrador donde se piensa en voz alta cómo encontrarla. Las secciones ★ Postgrado profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).",
+    "crumbs": [
+      "Inicio",
+      "Econometría 2"
+    ]
   },
   {
     "objectID": "econometria-2/index.html#temario-tentativo",
@@ -1003,6 +1007,204 @@
     "crumbs": [
       "Inicio",
       "Clase 8 · Datos censurados y selección"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-09.html",
+    "href": "econometria-2/clase-09.html",
+    "title": "Clase 9 · Datos de panel I",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Datos de panel I"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-09.html#qué-se-pierde-y-qué-se-paga",
+    "href": "econometria-2/clase-09.html#qué-se-pierde-y-qué-se-paga",
+    "title": "Clase 9 · Datos de panel I",
+    "section": "3.1 Qué se pierde y qué se paga",
+    "text": "3.1 Qué se pierde y qué se paga\n\nVariables invariantes en el tiempo (género, raza, país de origen) tienen \\(\\ddot x_{it} = 0\\) y no se pueden estimar: se absorben en \\(c_i\\). FE identifica solo efectos de variables que cambian dentro de cada unidad. Esto es el precio de no suponer nada sobre \\(c_i\\).\nSe “usa” menos variación: solo la variación dentro de las unidades. Si el regresor casi no varía en el tiempo (ejemplo: una institución estable), \\(\\ddot x\\) es pequeño y el estimador es impreciso.\nLos \\(c_i\\) no se pueden estimar consistentemente con \\(T\\) fijo (cada uno se estima con \\(T\\) observaciones), pero \\(\\beta\\) sí. Es el famoso problema de los parámetros incidentales, benigno en el modelo lineal, pero grave en los no lineales (Clase 11).\n\n\nProposición 1 (FE es MCO con dummies) \\(\\hat\\beta_{FE}\\) coincide con el coeficiente de \\(x\\) en la regresión de \\(y\\) sobre \\(x\\) y \\(N\\) variables dummy (una por unidad). (Es el estimador LSDV.)\n\n\nDemostración. Sea \\(D\\) la matriz \\(NT\\times N\\) de dummies de unidad. Por el teorema de Frisch–Waugh–Lovell (Clase 3 de Econometría 1), el coeficiente de \\(x\\) en la regresión con \\(D\\) se obtiene regresando \\(M_Dy\\) sobre \\(M_DX\\), donde \\(M_D = I - D(D'D)^{-1}D'\\). Pero \\(D(D'D)^{-1}D'\\) promedia cada variable sobre las \\(T\\) observaciones de su unidad, así que \\(M_Dz\\) es \\(z\\) menos su media de unidad: la transformación intra-grupos.\n\nUn detalle práctico importante. Los programas de LSDV y de “within” dan el mismo \\(\\hat\\beta\\), pero la estimación de \\(\\sigma_u^2\\) requiere cuidado: los residuos \\(\\ddot{\\hat u}_{it}\\) suman cero dentro de cada \\(i\\) (\\(T\\) residuos, \\(T - 1\\) libres), así que \\(\\mathbb{E}\\big[\\sum_{it}\\ddot u_{it}^2\\big] = \\sigma_u^2N(T-1)\\). Luego \\[\n\\hat\\sigma_u^2 = \\frac{1}{N(T-1) - k}\\sum_{i,t}\\hat{\\ddot u}_{it}^2,\n\\] y no \\(1/(NT - k)\\): dividir por \\(NT - k\\) subestima \\(\\sigma_u^2\\) en un factor \\((T-1)/T\\) (Ejercicio 9.2). Los programas bien hechos lo corrigen; los hechos a mano, no.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Datos de panel I"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-09.html#primeras-diferencias",
+    "href": "econometria-2/clase-09.html#primeras-diferencias",
+    "title": "Clase 9 · Datos de panel I",
+    "section": "3.2 Primeras diferencias",
+    "text": "3.2 Primeras diferencias\nOtra forma de eliminar \\(c_i\\) es diferenciar: \\(\\Delta y_{it} = \\Delta x_{it}'\\beta + \\Delta u_{it}\\) para \\(t = 2,\\dots,T\\). MCO sobre esto es el estimador de primeras diferencias (FD). Con \\(T = 2\\) coincide exactamente con FE (Ejercicio 9.3). Con \\(T&gt;2\\) son distintos: FE es más eficiente si los \\(u_{it}\\) son i.i.d. (porque \\(\\Delta u_{it}\\) está correlacionado serialmente de manera negativa, \\(\\operatorname{Corr}(\\Delta u_{it},\\Delta u_{i,t-1}) = -\\tfrac12\\)), y FD es más eficiente si \\(u_{it}\\) es una caminata aleatoria. Ambos requieren exogeneidad estricta.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Datos de panel I"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-09.html#cuál-usar-el-test-de-hausman",
+    "href": "econometria-2/clase-09.html#cuál-usar-el-test-de-hausman",
+    "title": "Clase 9 · Datos de panel I",
+    "section": "4.1 ¿Cuál usar? El test de Hausman",
+    "text": "4.1 ¿Cuál usar? El test de Hausman\nLa elección entre FE y RE es una elección entre robustez (FE: consistente aun si \\(c_i\\) correlaciona con \\(x\\)) y eficiencia (RE: usa más variación y estima efectos de variables invariantes, pero es inconsistente si RE2 falla). Es un contexto ideal para el test de Hausman (1978), que compara dos estimadores:\n\nBajo \\(H_0\\) (RE2 cierto): \\(\\hat\\beta_{FE}\\) y \\(\\hat\\beta_{RE}\\) son consistentes; RE es eficiente.\nBajo \\(H_1\\): solo \\(\\hat\\beta_{FE}\\) es consistente. La diferencia \\(\\hat\\beta_{FE} - \\hat\\beta_{RE}\\) no tiende a cero.\n\n\nTeorema 2 (Lema y test de Hausman) Sea \\(\\hat\\beta_E\\) un estimador asintóticamente eficiente bajo \\(H_0\\) y \\(\\hat\\beta\\) otro consistente bajo \\(H_0\\). Entonces, bajo \\(H_0\\), \\(\\operatorname{Avar}(\\hat\\beta - \\hat\\beta_E) = \\operatorname{Avar}(\\hat\\beta) - \\operatorname{Avar}(\\hat\\beta_E)\\). En consecuencia, \\[\nH = (\\hat\\beta_{FE} - \\hat\\beta_{RE})'\\Big[\\widehat{\\operatorname{Var}}(\\hat\\beta_{FE}) - \\widehat{\\operatorname{Var}}(\\hat\\beta_{RE})\\Big]^{-1}(\\hat\\beta_{FE} - \\hat\\beta_{RE})\\xrightarrow{d}\\chi^2_k\n\\] bajo \\(H_0\\) (con \\(k\\) el número de coeficientes de variables que cambian en el tiempo).\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nLa clave es que la covarianza entre el estimador eficiente y la diferencia es cero. Si no lo fuera, podría mezclar los dos estimadores con un peso pequeño y obtener algo con menor varianza que el eficiente, lo cual es imposible. Una vez que \\(\\operatorname{Cov}(\\hat\\beta_E,\\hat\\beta - \\hat\\beta_E) = 0\\), la varianza de \\(\\hat\\beta = \\hat\\beta_E + (\\hat\\beta - \\hat\\beta_E)\\) es la suma de las varianzas, y de ahí despejo la varianza de la diferencia.\n\n\n\nDemostración. Sea \\(\\Delta = \\hat\\beta - \\hat\\beta_E\\) y, para un vector \\(a\\) fijo y un escalar \\(\\epsilon\\), consideremos el estimador consistente \\(\\hat\\beta_E + \\epsilon\\Delta\\) (consistente bajo \\(H_0\\) porque ambos lo son). Su varianza asintótica para la combinación lineal \\(a'\\cdot\\) es \\[\na'\\operatorname{Var}(\\hat\\beta_E)a + 2\\epsilon\\,a'\\operatorname{Cov}(\\hat\\beta_E,\\Delta)a + \\epsilon^2a'\\operatorname{Var}(\\Delta)a.\n\\] Como \\(\\hat\\beta_E\\) es eficiente, esto debe ser \\(\\ge a'\\operatorname{Var}(\\hat\\beta_E)a\\) para todo \\(\\epsilon\\) (positivo y negativo): \\(2\\epsilon\\,c + \\epsilon^2d\\ge0\\) con \\(c = a'\\operatorname{Cov}(\\hat\\beta_E,\\Delta)a\\) y \\(d = a'\\operatorname{Var}(\\Delta)a\\). Para \\(\\epsilon\\) chico del signo opuesto a \\(c\\), el término lineal domina y la desigualdad falla salvo que \\(c = 0\\). Luego \\(\\operatorname{Cov}(\\hat\\beta_E,\\Delta) = 0\\) (para todo \\(a\\); con cuidado, la matriz simetrizada). Entonces \\(\\operatorname{Var}(\\hat\\beta) = \\operatorname{Var}(\\hat\\beta_E + \\Delta) = \\operatorname{Var}(\\hat\\beta_E) + \\operatorname{Var}(\\Delta)\\), es decir, \\(\\operatorname{Var}(\\Delta) = \\operatorname{Var}(\\hat\\beta) - \\operatorname{Var}(\\hat\\beta_E)\\). El estadístico \\(H\\) es entonces una forma cuadrática \\(\\chi^2\\) de un vector asintóticamente normal con media cero bajo \\(H_0\\) (lema de la \\(\\chi^2\\) con la inversa de la varianza, Clase 5 de Econometría 1).\n\nTres advertencias prácticas. (1) El lema requiere que RE sea eficiente bajo \\(H_0\\), lo que exige la estructura RE3 (homocedasticidad, sin correlación serial de \\(u_{it}\\)). Si usas errores robustos por clúster, RE ya no es eficiente y el test de Hausman clásico es inválido (puede incluso dar una varianza diferencia no positiva). La solución es la versión de Mundlak más abajo, que es robusta. (2) El test es sobre toda la diferencia: un rechazo dice que \\(\\hat\\beta_{FE}\\) y \\(\\hat\\beta_{RE}\\) difieren, no cuál coeficiente causa la diferencia. (3) Con \\(T\\) fijo y \\(N\\) moderado el test es poco potente.",
+    "crumbs": [
+      "Inicio",
+      "Clase 9 · Datos de panel I"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-10.html",
+    "href": "econometria-2/clase-10.html",
+    "title": "Clase 10 · Datos de panel II",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Datos de panel II"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-10.html#el-estimador-de-andersonhsiao",
+    "href": "econometria-2/clase-10.html#el-estimador-de-andersonhsiao",
+    "title": "Clase 10 · Datos de panel II",
+    "section": "3.1 El estimador de Anderson–Hsiao",
+    "text": "3.1 El estimador de Anderson–Hsiao\nEl más simple: usar un solo instrumento por período, \\(y_{i,t-2}\\) (o \\(\\Delta y_{i,t-2}\\)), y estimar por MC2E/VI. Es consistente, pero poco eficiente (descarta instrumentos válidos). Sirve como valor inicial.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Datos de panel II"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-10.html#arellanobond-gmm-en-primeras-diferencias",
+    "href": "econometria-2/clase-10.html#arellanobond-gmm-en-primeras-diferencias",
+    "title": "Clase 10 · Datos de panel II",
+    "section": "3.2 Arellano–Bond: GMM en primeras diferencias",
+    "text": "3.2 Arellano–Bond: GMM en primeras diferencias\nEl estimador de Arellano–Bond (diferencias GMM) usa todas las condiciones de la Proposición 2 con GMM (Clase 4). Para cada \\(i\\), apilamos las ecuaciones \\(t = 3,\\dots,T\\) en \\(\\Delta y_i = \\Delta W_i\\theta + \\Delta u_i\\) (con \\(\\theta = (\\rho,\\beta')'\\) y \\(W_{it} = (y_{i,t-1},x_{it}')\\)) y la matriz de instrumentos diagonal por bloques \\[\nZ_i = \\begin{pmatrix}\ny_{i1} & & & \\\\\n& y_{i1},y_{i2} & & \\\\\n& & \\ddots & \\\\\n& & & y_{i1},\\dots,y_{i,T-2}\n\\end{pmatrix}\n\\] (más las \\(x\\) estrictamente exógenas, que son instrumentos de sí mismas). Los momentos son \\(\\mathbb{E}[Z_i'\\Delta u_i] = 0\\) y el estimador es \\[\n\\hat\\theta = \\Big(\\Delta W'Z\\,\\hat W\\,Z'\\Delta W\\Big)^{-1}\\Delta W'Z\\,\\hat W\\,Z'\\Delta y.\n\\] Con la ponderación óptima (Clase 4) \\(\\hat W = \\big(\\sum_iZ_i'\\Delta\\hat u_i\\Delta\\hat u_i'Z_i\\big)^{-1}\\) se obtiene el GMM de dos pasos; el primer paso usa \\(\\hat W_1 = \\big(\\sum_iZ_i'HZ_i\\big)^{-1}\\), donde \\(H\\) es la matriz tridiagonal de \\(\\operatorname{Var}(\\Delta u_i)/\\sigma^2\\) (2 en la diagonal y \\(-1\\) en las adyacentes; Ejercicio 10.4). Toda la teoría de la Clase 4 aplica: consistencia, normalidad, eficiencia y test \\(J\\).\n\n\n\n\n\n\nNotaQué instrumentos son legítimos para cada regresor\n\n\n\n\nEstrictamente exógeno (\\(\\mathbb{E}[u_{it}\\mid x_{i1},\\dots,x_{iT}] = 0\\)): toda \\(x_{is}\\) es instrumento válido.\nPredeterminado (\\(\\mathbb{E}[u_{it}\\mid x_{i1},\\dots,x_{it}] = 0\\), pero \\(x_{i,t+1}\\) puede depender de \\(u_{it}\\)): \\(x_{i,t-s}\\) con \\(s\\ge1\\) para \\(\\Delta u_{it}\\) (se pierde \\(x_{it}\\) mismo, que puede depender de \\(u_{i,t-1}\\), y por eso correlacionarse con \\(\\Delta u_{it}\\)).\nEndógeno (\\(x_{it}\\) correlacionado con \\(u_{it}\\)): \\(x_{i,t-s}\\) con \\(s\\ge2\\), igual que \\(y\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Datos de panel II"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-10.html#diagnóstico-los-tests-de-especificación",
+    "href": "econometria-2/clase-10.html#diagnóstico-los-tests-de-especificación",
+    "title": "Clase 10 · Datos de panel II",
+    "section": "3.3 Diagnóstico: los tests de especificación",
+    "text": "3.3 Diagnóstico: los tests de especificación\nDos tests acompañan siempre a Arellano–Bond:\n\nTest \\(J\\) de Hansen (Clase 4): \\(J\\to\\chi^2_{r-p}\\) bajo la validez del conjunto de instrumentos. Un rechazo es señal de que algún instrumento es inválido.\nTest de autocorrelación de los residuos en diferencias. Bajo D1, \\(\\Delta u_{it} = u_{it} - u_{i,t-1}\\) debería tener autocorrelación de primer orden (negativa: comparte \\(u_{i,t-1}\\) con \\(\\Delta u_{i,t-1}\\), correlación \\(-\\tfrac12\\)), pero ninguna de segundo orden. Se testea AR(1) (esperamos rechazar) y AR(2) (esperamos NO rechazar). Si hay autocorrelación de segundo orden, \\(u_{it}\\) tiene correlación serial y los rezagos usados como instrumentos dejan de ser válidos (Ejercicio 10.5).",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Datos de panel II"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-10.html#instrumentos-débiles-y-gmm-sistema",
+    "href": "econometria-2/clase-10.html#instrumentos-débiles-y-gmm-sistema",
+    "title": "Clase 10 · Datos de panel II",
+    "section": "3.4 Instrumentos débiles y GMM sistema",
+    "text": "3.4 Instrumentos débiles y GMM sistema\nEl método tiene dos fragilidades conocidas.\n(1) Persistencia alta. Cuando \\(\\rho\\) se acerca a 1, los niveles rezagados son instrumentos débiles para las diferencias. En el modelo AR(1), \\(\\Delta y_{i,t-1} = (\\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}\\) (de Ecuación 1), y la regresión de primera etapa de \\(\\Delta y_{i,t-1}\\) sobre \\(y_{i,t-2}\\) (limpiada de \\(c_i\\)) tiene coeficiente \\(\\rho - 1\\to0\\). Si \\(\\rho = 1\\) (caminata aleatoria), \\(\\Delta y_{i,t-1} = u_{i,t-1}\\) es independiente de todos los niveles rezagados: el instrumento es irrelevante (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.\n(2) Demasiados instrumentos. Con \\(T\\) grande el número de momentos crece como \\(T^2\\), y con \\(N\\) moderado el GMM de dos pasos sobreajusta y el test \\(J\\) pierde potencia (da \\(p\\)-valores cercanos a 1 que no significan nada). La práctica recomendada: limitar los rezagos usados o “colapsar” la matriz \\(Z_i\\) (una columna por rezago, no una por cada par \\((t,s)\\)).\nEl estimador de GMM sistema de Blundell y Bond (1998) agrega a las ecuaciones en diferencias las ecuaciones en niveles, instrumentadas con diferencias rezagadas: \\(\\mathbb{E}[\\Delta y_{i,t-1}(c_i + u_{it})] = 0\\). Esto es válido si \\(\\Delta y_{i,t-1}\\) no está correlacionado con \\(c_i\\), lo cual exige una condición sobre la condición inicial (que el proceso parta de su media estacionaria; Ejercicio 10.7). Cuando se cumple, hay mucha más información y el problema de instrumentos débiles se alivia; pero la condición adicional es un supuesto fuerte, y se testea con la diferencia de dos tests \\(J\\) (el test de Hansen del conjunto adicional).\nErrores estándar. Los de dos pasos son muy sesgados hacia abajo en muestras finitas; la corrección de Windmeijer (2005) es estándar y hay que usarla: capta la variabilidad adicional que introduce estimar la ponderación \\(\\hat W\\) con los residuos del primer paso.",
+    "crumbs": [
+      "Inicio",
+      "Clase 10 · Datos de panel II"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-11.html",
+    "href": "econometria-2/clase-11.html",
+    "title": "Clase 11 · Paneles no lineales",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · Paneles no lineales"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-11.html#efectos-marginales-promedio",
+    "href": "econometria-2/clase-11.html#efectos-marginales-promedio",
+    "title": "Clase 11 · Paneles no lineales",
+    "section": "5.1 Efectos marginales promedio",
+    "text": "5.1 Efectos marginales promedio\nAunque \\(c_i\\) no se identifica, el efecto marginal promedio sí, bajo el supuesto de Chamberlain–Mundlak. Para \\(x_{itj}\\) continua, la función de estructura promediada (Blundell y Powell, 2003) es \\(\\mathbb{E}_{c}[\\Phi(x'\\beta + c)]\\), y su derivada es el efecto promediado sobre la distribución de \\(c_i\\) (poblacional). Con Proposición 3, \\[\n\\text{AME}_j = \\mathbb{E}\\Big[\\frac{\\partial P(y_{it} = 1\\mid x_i)}{\\partial x_{itj}}\\Big] = \\beta_{a,j}\\,\\mathbb{E}\\big[\\phi\\big(x_{it}'\\beta_a + \\psi_a + \\bar x_i'\\xi_a\\big)\\big],\n\\] que se estima por el análogo muestral con los coeficientes reescalados. No hace falta identificar \\(\\beta\\) ni \\(\\sigma_a^2\\) por separado: los coeficientes con escala \\(1/\\sqrt{1+\\sigma_a^2}\\) producen directamente los AME. Es el equivalente en no lineales del hecho de que, en la Clase 5, los efectos marginales sí se pueden comparar aunque los coeficientes no.\nEste es el estándar moderno (Wooldridge, 2005, 2019): efectos correlacionados + AME. Funciona con probit, logit, tobit y otros, permite variables invariantes en el tiempo y rezagos de \\(y\\) (con cuidado), y entrega efectos en las unidades relevantes. El costo es un supuesto paramétrico sobre \\(c_i\\mid x_i\\): normalidad, y una dependencia lineal en \\(\\bar x_i\\) (más flexible: agregar términos cuadráticos o interacciones de \\(\\bar x_i\\)).",
+    "crumbs": [
+      "Inicio",
+      "Clase 11 · Paneles no lineales"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-12.html",
+    "href": "econometria-2/clase-12.html",
+    "title": "Clase 12 · Regresión cuantílica",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Regresión cuantílica"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-12.html#la-demostración",
+    "href": "econometria-2/clase-12.html#la-demostración",
+    "title": "Clase 12 · Regresión cuantílica",
+    "section": "5.1 La demostración",
+    "text": "5.1 La demostración\n\nLema 1 (Identidad de Knight) Para todo \\(u,v\\in\\mathbb{R}\\), \\[\n\\rho_\\tau(u - v) - \\rho_\\tau(u) = -v\\,\\psi_\\tau(u) + \\int_0^v\\big(\\mathbf{1}\\{u&lt;s\\} - \\mathbf{1}\\{u&lt;0\\}\\big)\\,ds.\n\\]\n\n\nDemostración. Como \\(\\rho_\\tau\\) es absolutamente continua, con derivada \\(\\psi_\\tau(w) = \\tau - \\mathbf{1}\\{w&lt;0\\}\\) salvo en \\(w = 0\\), \\(\\rho_\\tau(u - v) - \\rho_\\tau(u) = -\\int_0^v\\psi_\\tau(u - s)\\,ds = -\\int_0^v\\big(\\tau - \\mathbf{1}\\{u&lt;s\\}\\big)ds = -\\tau v + \\int_0^v\\mathbf{1}\\{u&lt;s\\}\\,ds\\). Y \\(-v\\psi_\\tau(u) = -\\tau v + v\\mathbf{1}\\{u&lt;0\\} = -\\tau v + \\int_0^v\\mathbf{1}\\{u&lt;0\\}\\,ds\\). Restando, la diferencia es \\(\\int_0^v(\\mathbf{1}\\{u&lt;s\\} - \\mathbf{1}\\{u&lt;0\\})\\,ds\\) (la derivada de \\(\\rho_\\tau\\) no existe solo en \\(w = 0\\), un conjunto de medida cero para la integral en \\(s\\)).\n\n\nDemostración. (del Teorema 2). Sea \\(u_i = y_i - x_i'\\beta_0\\) y \\(\\delta = \\sqrt n(b - \\beta_0)\\). Aplicando el Lema 1 con \\(v = x_i'\\delta/\\sqrt n\\): \\[\nZ_n(\\delta) = \\sum_i\\Big[\\rho_\\tau\\Big(u_i - \\frac{x_i'\\delta}{\\sqrt n}\\Big) - \\rho_\\tau(u_i)\\Big] = -\\delta'W_n + B_n(\\delta),\n\\] \\[\nW_n = \\frac1{\\sqrt n}\\sum_ix_i\\psi_\\tau(u_i),\\qquad B_n(\\delta) = \\sum_i\\int_0^{x_i'\\delta/\\sqrt n}\\big(\\mathbf{1}\\{u_i&lt;s\\} - \\mathbf{1}\\{u_i&lt;0\\}\\big)\\,ds.\n\\]\nEl término lineal. Los \\(x_i\\psi_\\tau(u_i)\\) son i.i.d., con media cero (\\(\\mathbb{E}[\\psi_\\tau(u)\\mid x] = 0\\)) y varianza \\(\\mathbb{E}[x\\psi_\\tau(u)^2x'] = \\tau(1-\\tau)J\\), pues \\(\\mathbb{E}[\\psi_\\tau^2\\mid x] = \\tau(1-\\tau)\\). Por el TCL, \\(W_n\\to_dN\\big(0,\\tau(1-\\tau)J\\big)\\).\nEl término cuadrático. Condicional en \\(x_i\\), \\(\\mathbb{E}\\big[\\mathbf{1}\\{u_i&lt;s\\} - \\mathbf{1}\\{u_i&lt;0\\}\\mid x_i\\big] = F(s\\mid x_i) - F(0\\mid x_i)\\approx f(0\\mid x_i)\\,s\\) para \\(s\\) chico. Integrando, \\(\\int_0^{v}f(0\\mid x)s\\,ds = \\tfrac12f(0\\mid x)v^2\\) con \\(v = x_i'\\delta/\\sqrt n\\). Entonces \\[\n\\mathbb{E}[B_n(\\delta)] \\to\\tfrac12\\,\\delta'\\,\\mathbb{E}\\big[f(0\\mid x)xx'\\big]\\,\\delta = \\tfrac12\\delta'D\\delta,\n\\] y la varianza de \\(B_n(\\delta)\\) tiende a cero: cada sumando está acotado en valor absoluto por \\(|v|\\,\\mathbf{1}\\{|u_i|\\le|v|\\}\\) con \\(v = x_i'\\delta/\\sqrt n\\), así que su cuadrado tiene esperanza de orden \\(n^{-3/2}\\), y la suma de \\(n\\) términos independientes tiene varianza de orden \\(n^{-1/2}\\). Luego \\(B_n(\\delta)\\to_p\\tfrac12\\delta'D\\delta\\) para cada \\(\\delta\\).\nConvergencia del mínimo. Entonces \\(Z_n(\\delta)\\to_d Z(\\delta) = -\\delta'W + \\tfrac12\\delta'D\\delta\\) con \\(W\\sim N(0,\\tau(1-\\tau)J)\\), y \\(Z\\) tiene un único minimizador, \\(\\delta^* = D^{-1}W\\). Como cada \\(Z_n\\) es convexa en \\(\\delta\\) (suma de funciones convexas), el lema de convexidad (Lema 2 abajo) implica que \\(\\hat\\delta = \\arg\\min Z_n\\to_d\\delta^* = D^{-1}W\\sim N\\big(0,\\tau(1-\\tau)D^{-1}JD^{-1}\\big)\\).\n\nEl lema de convexidad hace en este caso el papel de la LGN uniforme y el teorema del valor medio: reemplaza “criterio derivable” por “criterio convexo”.\n\nLema 2 (Lema de convexidad (Pollard, 1991)) Si \\(Z_n(\\delta)\\) son funciones convexas aleatorias que convergen (en distribución, puntualmente) a una función \\(Z(\\delta)\\) con un único minimizador \\(\\delta^*\\), entonces cualquier minimizador \\(\\hat\\delta_n\\) de \\(Z_n\\) converge a \\(\\delta^*\\) (en distribución, si \\(\\delta^*\\) es aleatorio).\n\nEn la sección ★ demostramos la versión determinística, que contiene la idea clave.",
+    "crumbs": [
+      "Inicio",
+      "Clase 12 · Regresión cuantílica"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-13.html",
+    "href": "econometria-2/clase-13.html",
+    "title": "Clase 13 · Estimación por simulación",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Estimación por simulación"
+    ]
+  },
+  {
+    "objectID": "econometria-2/clase-13.html#qué-hace-buena-a-una-elección-de-modelo-auxiliar",
+    "href": "econometria-2/clase-13.html#qué-hace-buena-a-una-elección-de-modelo-auxiliar",
+    "title": "Clase 13 · Estimación por simulación",
+    "section": "4.1 Qué hace buena a una elección de modelo auxiliar",
+    "text": "4.1 Qué hace buena a una elección de modelo auxiliar\n\nDimensión: \\(q\\ge p\\) (identificación). Con \\(q = p\\) el modelo está exactamente identificado, y con \\(q&gt;p\\) hay un test \\(J\\) de la bondad del modelo estructural: si el modelo simulado no reproduce los parámetros auxiliares con \\(\\hat\\theta\\), el modelo estructural es rechazado.\nInformatividad: el modelo auxiliar debe ser sensible a \\(\\theta\\) (que \\(B\\) tenga rango pleno y valores no pequeños). Un auxiliar que no cambia con \\(\\theta\\) da instrumentos débiles.\nEficiencia: si el modelo auxiliar es el verdadero modelo y \\(\\tilde\\beta\\) su MV, \\(b(\\theta) = \\theta\\), \\(B = I\\), \\(\\Omega_\\beta = \\mathcal{I}^{-1}\\), y la varianza es \\((1 + 1/S)\\mathcal{I}^{-1}\\): II alcanza la cota de Cramér–Rao cuando \\(S\\to\\infty\\) (Ejercicio 13.7). Con un auxiliar rico (que aproxime bien el modelo), II se acerca a la máxima verosimilitud. Es la idea del método eficiente de momentos de Gallant y Tauchen (1996): usar como momentos el score de un auxiliar flexible.\nRobustez: un auxiliar mal especificado está permitido (por eso se llama “indirecta”): solo importa que su estimador converja a algo que dependa de \\(\\theta\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 13 · Estimación por simulación"
+    ]
+  },
+  {
+    "objectID": "econometria-2/index.html#clases",
+    "href": "econometria-2/index.html#clases",
+    "title": "Econometría 2",
+    "section": "Clases",
+    "text": "Clases\n\n\n01Estimación por extremosM-estimadores, ley de los grandes números uniforme, consistencia, normalidad asintótica y la varianza sándwich general. ★ Demostración de la LGN uniforme.\n\n\n02Máxima verosimilitudDesigualdad de Gibbs, igualdad de la información, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud. ★ El estimador de Hodges.\n\n\n03Los tres tests de la trinidadWald, razón de verosimilitud y multiplicador de Lagrange: equivalencia asintótica, W ≥ LR ≥ LM, el LM como nR² y la no invarianza del Wald. ★ Potencia local.\n\n\n04Método generalizado de momentosCondiciones de momentos, matriz de pesos óptima, GMM en dos pasos, test J de Hansen y relación con MC2E. ★ Por qué no importa el primer paso.\n\n\n05Elección discreta IProbit y logit, variable latente, identificación de escala, concavidad del logit, efectos marginales y tres trampas de interpretación. ★ Concavidad del probit.\n\n\n06Elección discreta IIUtilidad aleatoria, logit multinomial con errores Gumbel, IIA y el bus azul, logit anidado y modelos ordenados. ★ El logsum.\n\n\n07Conteo y duraciónPoisson como QMLE, binomial negativa, función de riesgo, censura y el modelo de Cox. ★ Cox como verosimilitud perfilada.\n\n\n08Datos censurados y selecciónTobit, medias truncadas con la razón de Mills, efectos marginales, el modelo de Heckman en dos pasos y la restricción de exclusión. ★ Concavidad del tobit.\n\n\n09Datos de panel IMCO agrupado con errores por clúster, efectos fijos, primeras diferencias, efectos aleatorios como MCG, test de Hausman y la regresión de Mundlak. ★ Equivalencia de Mundlak.\n\n\n10Datos de panel IIEl sesgo de Nickell, Anderson–Hsiao, GMM de Arellano–Bond, tests de especificación e instrumentos débiles. ★ Cálculo del sesgo de Nickell.\n\n\n11Paneles no linealesParámetros incidentales, logit condicional, Poisson con efectos fijos, efectos correlacionados de Chamberlain y efectos marginales promedio. ★ El factor 2 del logit con T = 2.\n\n\n12Regresión cuantílicaLa función check, interpretación con heterogeneidad, equivarianza y normalidad asintótica sin diferenciabilidad (identidad de Knight). ★ Lema de convexidad.\n\n\n13Estimación por simulaciónMomentos simulados, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza 1 + 1/S. ★ II con el modelo auxiliar correcto.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 2"
+    ]
+  },
+  {
+    "objectID": "econometria-2/index.html#notación",
+    "href": "econometria-2/index.html#notación",
+    "title": "Econometría 2",
+    "section": "Notación",
+    "text": "Notación\nLos datos son \\(w_i\\) (\\(i = 1,\\dots,n\\)), i.i.d. salvo que se diga lo contrario; \\(\\theta\\in\\Theta\\subset\\mathbb{R}^p\\) es el parámetro y \\(\\theta_0\\) su valor verdadero. Un M-estimador maximiza \\(\\hat Q_n(\\theta) = \\frac1n\\sum_im(w_i,\\theta)\\). \\(\\nabla\\) y \\(\\nabla^2\\) son el gradiente y el hessiano en \\(\\theta\\); \\(s(w;\\theta) = \\nabla\\log f(w;\\theta)\\) es el score y \\(\\mathcal{I}(\\theta) = \\mathbb{E}[ss']\\) la información de Fisher. En GMM, \\(g(w,\\theta)\\) es el vector de momentos, \\(G = \\mathbb{E}[\\nabla g]\\) y \\(\\Omega = \\mathbb{E}[gg']\\). En paneles, \\(i\\) indexa unidades (\\(N\\) grande) y \\(t\\) períodos (\\(T\\) fijo). \\(\\phi\\) y \\(\\Phi\\) son la densidad y la distribución normal estándar, \\(\\Lambda\\) la logística.",
+    "crumbs": [
+      "Inicio",
+      "Econometría 2"
+    ]
+  },
+  {
+    "objectID": "econometria-2/index.html#bibliografía",
+    "href": "econometria-2/index.html#bibliografía",
+    "title": "Econometría 2",
+    "section": "Bibliografía",
+    "text": "Bibliografía\n\nHayashi, F. (2000). Econometrics. Princeton University Press. (GMM y asintótica con rigor.)\nWooldridge, J. (2010). Econometric Analysis of Cross Section and Panel Data, 2.ª ed. MIT Press. (Referencia principal para elección discreta, selección y paneles.)\nCameron, A. C. y Trivedi, P. (2005). Microeconometrics: Methods and Applications. Cambridge University Press. (Muy completo y práctico: conteos, duraciones, simulación.)\nNewey, W. y McFadden, D. (1994). “Large sample estimation and hypothesis testing”, en Handbook of Econometrics, vol. 4. (Teoría general de M-estimadores y GMM; la Clase 1 la sigue de cerca.)\nTrain, K. (2009). Discrete Choice Methods with Simulation, 2.ª ed. Cambridge University Press. (Clases 6 y 13.)\nKoenker, R. (2005). Quantile Regression. Cambridge University Press. (Clase 12.)\nArellano, M. (2003). Panel Data Econometrics. Oxford University Press. (Clases 9 a 11.)\nHansen, B. (2022). Econometrics. Princeton University Press. (Postgrado; marco moderno.)",
+    "crumbs": [
+      "Inicio",
+      "Econometría 2"
     ]
   }
 ]

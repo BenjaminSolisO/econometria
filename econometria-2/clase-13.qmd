@@ -1,0 +1,218 @@
+---
+title: "Clase 13 · Estimación por simulación"
+subtitle: "Método de momentos simulado, inferencia indirecta y máxima verosimilitud simulada"
+description: "Cuando la verosimilitud o los momentos no tienen forma cerrada pero el modelo se puede simular: MSM, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza (1 + 1/S)."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-13.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando sabes simular pero no sabes calcular
+
+Las Clases 1 a 4 nos dieron una máquina general: si podemos escribir la verosimilitud $f(w;\theta)$ o un conjunto de momentos $\mathbb{E}[g(w,\theta)] = 0$ en forma cerrada, sabemos estimar y hacer inferencia. Pero muchos modelos modernos no permiten ni lo uno ni lo otro:
+
+- El **probit multinomial** (Clase 6) con $J$ alternativas requiere integrar una normal en $J - 1$ dimensiones.
+- El **logit mixto** (coeficientes aleatorios) tiene probabilidades que son *integrales* del logit sobre la distribución de los coeficientes.
+- Los **modelos estructurales dinámicos** (decisiones óptimas de empresas, hogares, entrada y salida de mercados) generan datos complejos a partir de un problema de optimización cuya solución no es analítica.
+- Los **modelos de agentes** y de series de tiempo no lineales.
+
+Lo que tienen en común es que, aunque no se pueda *calcular* la probabilidad o el momento, sí se puede **simular** el modelo: dado $\theta$ y números aleatorios $\varepsilon$, se genera un dato artificial $y = g(x,\varepsilon;\theta)$. La estimación por simulación reemplaza la integral que no podemos calcular por un **promedio de simulaciones**, que sí podemos.[^mcfadden]
+
+[^mcfadden]: Daniel McFadden propuso el método de momentos simulado en 1989, motivado por el probit multinomial, donde el cálculo exacto de probabilidades era prohibitivo con las computadoras de la época. Hoy el cálculo es mucho más barato, pero la lección de fondo sigue vigente: reemplazar una integral por un promedio de simulaciones **no es gratis**, y el costo es exactamente el tema de esta clase.
+
+Hay tres métodos principales, que se distinguen por *qué* se simula y *con qué* se compara: **momentos simulados** (MSM), **verosimilitud simulada** (SML) e **inferencia indirecta** (II). Los tres son casos de la teoría de las Clases 1 y 4, con una pieza adicional: el **error de simulación**.
+
+# Método de momentos simulado (MSM)
+
+Sea el modelo $y = g(x,\varepsilon;\theta)$ con $\varepsilon\sim F_\varepsilon$ conocida (por ejemplo, $N(0,I)$), y un vector de **momentos** $m(y,x)$ cuya esperanza condicional bajo $\theta$,
+$$
+\mu(x;\theta) = \mathbb{E}\big[m(y,x)\mid x;\theta\big] = \int m\big(g(x,\varepsilon;\theta),x\big)\,dF_\varepsilon(\varepsilon),
+$$
+no tiene forma cerrada. Aproximamos la integral con $S$ **simulaciones** $\varepsilon_{i1},\dots,\varepsilon_{iS}$ por observación:
+$$
+\hat\mu_S(x_i;\theta) = \frac1S\sum_{s=1}^Sm\big(g(x_i,\varepsilon_{is};\theta),x_i\big).
+$$
+El estimador de momentos simulado minimiza la distancia entre los momentos de los datos y los simulados:
+$$
+\hat\theta_{MSM} = \arg\min_\theta\ \hat h_n(\theta)'\,\hat W\,\hat h_n(\theta),\qquad
+\hat h_n(\theta) = \frac1n\sum_{i=1}^n\big[m(y_i,x_i) - \hat\mu_S(x_i;\theta)\big].
+$$ {#eq-msm}
+Es **GMM** (Clase 4) con un momento "ruidoso": $\hat h_n$ en vez de $\bar g_n$.
+
+::: {.callout-caution title="Regla de oro: las mismas semillas en cada $\theta$"}
+Los números aleatorios $\varepsilon_{is}$ se generan **una sola vez** y se **reutilizan** para cada valor de $\theta$ que visita el optimizador. Si se redibujaran en cada evaluación, $\hat h_n(\theta)$ sería una función *ruidosa* de $\theta$ (cada evaluación con ruido distinto), el optimizador no converge y la derivada es inútil. Con $\varepsilon_{is}$ fijos, $\hat h_n(\theta)$ es una función **determinística y suave** de $\theta$ (cuando $g$ y $m$ lo son). Se llaman *números aleatorios comunes*.
+:::
+
+::: {#thm-msm}
+## MSM: consistencia con $S$ fijo y varianza $(1 + 1/S)$
+Supongamos que los datos provienen del modelo en $\theta_0$, el simulador es insesgado, $\mathbb{E}[\hat\mu_S(x;\theta)\mid x] = \mu(x;\theta)$, las simulaciones son independientes entre $i$ y de los datos, y valen las condiciones de la Clase 4 para el momento $h(w,\theta) = m - \mu(x;\theta)$ (identificación, rango de $G = -\mathbb{E}[\nabla_\theta\mu]$, momentos finitos). Entonces, para **cualquier $S\ge1$ fijo**, $\hat\theta_{MSM}\to_p\theta_0$ y
+$$
+\sqrt n(\hat\theta_{MSM} - \theta_0)\xrightarrow{d}N\Big(0,\ (G'WG)^{-1}G'W\,\Omega_S\,WG(G'WG)^{-1}\Big),
+$$
+con $\Omega_S = \Omega_{\text{datos}} + \tfrac1S\Omega_{\text{sim}}$. En el caso en que el momento no condiciona en $x$ y los datos y las simulaciones tienen la misma distribución en $\theta_0$, $\Omega_S = (1 + \tfrac1S)\Omega$, y con $W = \Omega^{-1}$, la varianza óptima es
+$$
+\Big(1 + \frac1S\Big)\big(G'\Omega^{-1}G\big)^{-1}.
+$$
+:::
+
+::: {.callout-note title="Borrador"}
+Hay dos fuentes de ruido en $\hat h_n(\theta_0)$: el momento de los datos, $m(y_i,x_i) - \mu(x_i;\theta_0)$ (variación muestral usual), y el error de simulación, $\mu(x_i;\theta_0) - \hat\mu_S(x_i;\theta_0)$. El segundo tiene **media cero** (el simulador es insesgado) y es independiente del primero. Entonces $\hat h_n(\theta_0)$ es un promedio de $n$ términos i.i.d. de media cero: la LGN da consistencia y el TCL da normalidad. La varianza es la **suma** de las dos fuentes. Y la fuente de simulación se divide por $S$ porque es el promedio de $S$ simulaciones independientes.
+:::
+
+::: {.proof}
+En $\theta_0$, el término $i$ de $\hat h_n$ se descompone como
+$$
+m_i - \hat\mu_S(x_i;\theta_0) = \underbrace{\big[m_i - \mu(x_i;\theta_0)\big]}_{a_i} + \underbrace{\big[\mu(x_i;\theta_0) - \hat\mu_S(x_i;\theta_0)\big]}_{b_i}.
+$$
+$\mathbb{E}[a_i] = 0$ (los datos vienen de $\theta_0$) y $\mathbb{E}[b_i\mid x_i] = 0$ (simulador insesgado), con $a_i$ y $b_i$ no correlacionados (las simulaciones son independientes de los datos). Las variables $a_i + b_i$ son i.i.d. con media cero y varianza $\Omega_S = \operatorname{Var}(a_i) + \operatorname{Var}(b_i)$. Como $\operatorname{Var}(b_i) = \frac1S\operatorname{Var}\big(m(g(x_i,\varepsilon;\theta_0),x_i)\mid x_i\big)$ (promedio de $S$ simulaciones independientes), $\Omega_S = \Omega_{\text{datos}} + \tfrac1S\Omega_{\text{sim}}$. Las condiciones de la Clase 4 (consistencia por LGN uniforme e identificación, y normalidad vía TCL, expansión alrededor de $\theta_0$ y Slutsky) valen para este momento, reemplazando $\Omega$ por $\Omega_S$. Cuando los datos y las simulaciones tienen la misma distribución, $\Omega_{\text{sim}} = \Omega_{\text{datos}} = \Omega$ y $\Omega_S = (1 + 1/S)\Omega$. Finalmente, con $W = \Omega_S^{-1}$ la varianza se reduce a $(G'\Omega_S^{-1}G)^{-1} = (1 + 1/S)(G'\Omega^{-1}G)^{-1}$.
+:::
+
+Tres lecciones de este teorema:
+
+1. **MSM es consistente con $S$ fijo, incluso con $S = 1$.** El error de simulación es ruido de media cero que se promedia **entre observaciones** (al ser el momento un promedio sobre $n$ datos). No hace falta que $S\to\infty$.
+2. **Pero el ruido de simulación infla la varianza** en el factor $1 + 1/S$ (en el caso más simple). Con $S = 1$, la varianza se **duplica**: los errores estándar crecen $\sqrt2\approx1{,}41$ veces. Con $S = 10$, el factor es $1{,}1$ (errores estándar 5 % mayores). Con más de $S\approx10$ hay rendimientos decrecientes: la pérdida de eficiencia es mínima.
+3. Toda la teoría de eficiencia, el test $J$ y los demás resultados de la Clase 4 valen, con $\Omega_S$ en lugar de $\Omega$.
+
+# Verosimilitud simulada (SML) y su sesgo
+
+La alternativa natural es mantener la verosimilitud como criterio y reemplazar las probabilidades por sus aproximaciones simuladas. Por ejemplo, en el logit mixto la probabilidad de que $i$ elija $j$ es una integral sobre los coeficientes aleatorios $\beta\sim F(\cdot;\theta)$:
+$$
+P_{ij}(\theta) = \int\frac{e^{x_{ij}'\beta}}{\sum_ke^{x_{ik}'\beta}}\,dF(\beta;\theta)\ \approx\ \hat P_{ij}(\theta) = \frac1S\sum_{s=1}^S\frac{e^{x_{ij}'\beta_s(\theta)}}{\sum_ke^{x_{ik}'\beta_s(\theta)}}.
+$$
+La log-verosimilitud simulada es $\hat\ell_n(\theta) = \sum_i\sum_jd_{ij}\log\hat P_{ij}(\theta)$. Aquí hay una **diferencia sutil pero fundamental** con MSM: el simulador $\hat P$ de la probabilidad es **insesgado**, pero **$\log\hat P$ no es un simulador insesgado de $\log P$** (el logaritmo es una función cóncava: Jensen).
+
+::: {#prp-sml-sesgo}
+## Sesgo de la log-verosimilitud simulada
+Si $\hat P$ es un simulador insesgado de $P$ con varianza $\sigma^2_P/S$, entonces
+$$
+\mathbb{E}\big[\log\hat P\big] = \log P - \frac{\sigma_P^2}{2SP^2} + O(S^{-2}).
+$$
+El sesgo por observación es de orden $1/S$, **no se promedia al aumentar $n$**, y es el mismo para todas las observaciones. En consecuencia, el estimador SML es consistente solo si $S\to\infty$ al crecer $n$, y es asintóticamente equivalente al MV (misma distribución límite) solo si $\sqrt n/S\to0$.
+:::
+
+::: {.proof}
+Expandimos $\log$ alrededor de $P$ con $\hat P = P + e$, donde $\mathbb{E}[e] = 0$ y $\operatorname{Var}(e) = \sigma_P^2/S$:
+$$
+\log\hat P = \log P + \frac eP - \frac{e^2}{2P^2} + O(e^3).
+$$
+Tomando esperanza, el término lineal se anula y $\mathbb{E}\big[\log\hat P\big] = \log P - \dfrac{\mathbb{E}[e^2]}{2P^2} + O(S^{-2}) = \log P - \dfrac{\sigma_P^2}{2SP^2} + O(S^{-2})$ (el término cúbico es de orden $S^{-2}$).
+
+Para la consecuencia asintótica: la log-verosimilitud simulada **promedio** tiene sesgo $\mathbb{E}[\hat\ell_n/n - \ell_n/n]\approx-\frac1S\mathbb{E}\big[\sigma_P^2/(2P^2)\big] = O(1/S)$ que se **acumula** sin promediarse (todas las observaciones sesgan en el mismo sentido), por lo que el score simulado tiene sesgo $O(1/S)$. Para que la estimación sea consistente se necesita que ese sesgo sea cero en el límite: $S\to\infty$. Y para que no afecte la distribución asintótica, el sesgo del score escalado por $\sqrt n$, que es $\sqrt n\cdot O(1/S)$, debe tender a cero: $\sqrt n/S\to0$. Si $\sqrt n/S\to c\in(0,\infty)$, $\hat\theta_{SML}$ es consistente y asintóticamente normal pero con **sesgo asintótico** (la distribución límite no está centrada en cero). Si $\sqrt n/S\to\infty$, $\hat\theta_{SML}$ no tiene la tasa de MV (el sesgo domina).
+:::
+
+La diferencia con MSM es notable: **MSM es consistente con $S$ fijo; SML exige $S\to\infty$ con $n$** (típicamente $S\propto n^{1/2+\varepsilon}$ o más). La razón es que MSM promedia errores de simulación **lineales** en el momento (cuya esperanza es cero), mientras que SML aplica una función **no lineal** ($\log$) a una cantidad ruidosa. Es la desigualdad de Jensen: $\log\hat P$ subestima sistemáticamente $\log P$. La práctica es usar $S$ grande y **simuladores suaves** (GHK para el probit multinomial, secuencias de Halton en lugar de números pseudoaleatorios para reducir $\sigma_P^2$ de manera efectiva).
+
+# Inferencia indirecta (II)
+
+A veces el modelo estructural es tan complejo que ni siquiera se sabe qué momentos son informativos. La **inferencia indirecta** (Smith, 1993; Gourieroux, Monfort y Renault, 1993) propone un truco: **elegir un modelo auxiliar simple**, que no tiene por qué ser correcto, y buscar los parámetros estructurales $\theta$ cuyo modelo simulado "se parezca" a los datos **según las lentes del modelo auxiliar**.
+
+El procedimiento:
+
+1. **Modelo auxiliar** con parámetros $\beta\in\mathbb{R}^q$ ($q\ge p$), fácil de estimar (MCO, un AR, un VAR, un probit).
+2. Estima $\hat\beta$ sobre los **datos**.
+3. Para cada $\theta$, **simula** $S$ conjuntos de datos del modelo estructural y estima el modelo auxiliar sobre ellos: $\tilde\beta_S(\theta)$ (promedio de las $S$ estimaciones, o estimación sobre los datos simulados apilados).
+4. $\hat\theta_{II} = \arg\min_\theta\big[\hat\beta - \tilde\beta_S(\theta)\big]'\,\hat W\,\big[\hat\beta - \tilde\beta_S(\theta)\big]$.
+
+El objeto central es la **función de enlace** (*binding function*) $b(\theta) = \operatorname{plim}\tilde\beta(\theta)$: lo que el modelo auxiliar estima cuando los datos vienen del modelo estructural en $\theta$. En $\theta_0$, $b(\theta_0) = \operatorname{plim}\hat\beta$.
+
+::: {#thm-ii}
+## Normalidad asintótica de inferencia indirecta
+Si $b(\theta)$ es inyectiva y diferenciable con $B = \partial b/\partial\theta'$ de rango columna $p$, y $\sqrt n(\hat\beta - b(\theta_0))\to_dN(0,\Omega_\beta)$, entonces
+$$
+\sqrt n(\hat\theta_{II} - \theta_0)\xrightarrow{d}N\Big(0,\ \big(1 + \tfrac1S\big)(B'WB)^{-1}B'W\Omega_\beta WB(B'WB)^{-1}\Big),
+$$
+y con $W = \Omega_\beta^{-1}$ la varianza es $\big(1 + \frac1S\big)\big(B'\Omega_\beta^{-1}B\big)^{-1}$.
+:::
+
+::: {.proof}
+Es GMM (Clase 4) con el "momento" $\hat h(\theta) = \hat\beta - \tilde\beta_S(\theta)$, cuyo jacobiano poblacional es $G = -B$ y cuyo valor en $\theta_0$ es $\hat\beta - \tilde\beta_S(\theta_0)$: la diferencia de dos estimadores independientes de la misma cantidad $b(\theta_0)$, con varianzas asintóticas $\Omega_\beta/n$ y $\Omega_\beta/(nS)$ (el de las simulaciones se promedia sobre $S$ réplicas). Luego $\sqrt n\,\hat h(\theta_0)\to_dN\big(0,(1 + 1/S)\Omega_\beta\big)$. El teorema de normalidad asintótica de GMM (Clase 4) con $\Omega = (1 + 1/S)\Omega_\beta$ y $G = -B$ da el resultado, y el teorema de la matriz de pesos óptima (Clase 4) da la última afirmación.
+:::
+
+::: {#exm-ma1}
+## Estimar un MA(1) con un AR(1) auxiliar
+El modelo estructural es $y_t = \varepsilon_t + \theta\varepsilon_{t-1}$, $\varepsilon_t\sim N(0,1)$, y el modelo auxiliar es el **AR(1)** $y_t = \beta y_{t-1} + e_t$. El estimador MCO $\tilde\beta$ converge a la autocorrelación de primer orden, $b(\theta) = \dfrac{\operatorname{Cov}(y_t,y_{t-1})}{\operatorname{Var}(y_t)} = \dfrac{\theta}{1 + \theta^2}$. Si en los datos $\hat\beta = 0{,}4$, el estimador de inferencia indirecta resuelve $\dfrac\theta{1 + \theta^2} = 0{,}4$, es decir, $0{,}4\theta^2 - \theta + 0{,}4 = 0$ y $\theta = \dfrac{1 \pm\sqrt{1 - 0{,}64}}{0{,}8} = \dfrac{1\pm0{,}6}{0{,}8}\in\{0{,}5,\ 2\}$. Se elige la raíz **invertible** ($|\theta|<1$): $\hat\theta = 0{,}5$. En este ejemplo $b(\theta)$ se conoce en forma cerrada y no hace falta simular, pero con modelos más complejos $b(\theta)$ se obtiene **simulando**. Observa que $b(\theta)\le\tfrac12$ para todo $\theta$ (máximo en $\theta = 1$): si $\hat\beta>0{,}5$, **no hay solución**, y eso es una señal de que un MA(1) no es el modelo correcto para esos datos.
+:::
+
+## Qué hace buena a una elección de modelo auxiliar
+
+- **Dimensión:** $q\ge p$ (identificación). Con $q = p$ el modelo está exactamente identificado, y con $q>p$ hay un test $J$ de la bondad del modelo estructural: si el modelo simulado no reproduce los parámetros auxiliares con $\hat\theta$, el modelo estructural es rechazado.
+- **Informatividad:** el modelo auxiliar debe ser **sensible** a $\theta$ (que $B$ tenga rango pleno y valores no pequeños). Un auxiliar que no cambia con $\theta$ da instrumentos débiles.
+- **Eficiencia:** si el modelo auxiliar es el **verdadero** modelo y $\tilde\beta$ su MV, $b(\theta) = \theta$, $B = I$, $\Omega_\beta = \mathcal{I}^{-1}$, y la varianza es $(1 + 1/S)\mathcal{I}^{-1}$: **II alcanza la cota de Cramér–Rao cuando $S\to\infty$** (Ejercicio 13.7). Con un auxiliar rico (que aproxime bien el modelo), II se acerca a la máxima verosimilitud. Es la idea del **método eficiente de momentos** de Gallant y Tauchen (1996): usar como momentos el *score* de un auxiliar flexible.
+- **Robustez:** un auxiliar **mal especificado** está permitido (por eso se llama "indirecta"): solo importa que su estimador converja a algo que dependa de $\theta$.
+
+# Aspectos prácticos
+
+- **Números aleatorios comunes** (misma semilla en cada $\theta$): imprescindible. Sin ellos, el criterio es ruidoso.
+- **Simuladores no suaves.** Un simulador de frecuencias de una probabilidad binaria, $\hat P(\theta) = \frac1S\sum_s\mathbf{1}\{x'\theta + \varepsilon_s>0\}$, es una **función escalonada** de $\theta$ (derivada cero casi en todas partes): los optimizadores con gradiente fracasan. Se usan simuladores **suavizados** (la indicadora se reemplaza por una logística con ancho $h$ chico, $1/[1 + e^{-(x'\theta + \varepsilon_s)/h}]$) o simuladores recursivos, como el **GHK** para el probit multinomial.
+- **Elección de $S$:** en MSM e II, $S\approx10$ ya da el factor $1{,}1$; en SML, $S$ debe crecer con $n$.
+- **Inferencia.** Los errores estándar usan $(1 + 1/S)$ o, mejor, el sándwich con $\hat\Omega_S$ y el jacobiano numérico. El **bootstrap** funciona pero cuesta una simulación completa en cada réplica.
+- **Mínimos locales y costo.** Los criterios simulados suelen tener muchos mínimos locales y cada evaluación cuesta una simulación del modelo. La práctica: múltiples puntos iniciales, optimizadores sin derivadas (Nelder–Mead) o globales como un algoritmo genético, y el tamaño de $S$ elegido en equilibrio entre ruido y tiempo.
+
+# ★ Postgrado: II con el auxiliar correcto es MV simulado
+
+::: {.callout-important title="★ Postgrado"}
+Mostramos que cuando el modelo auxiliar coincide con el verdadero y su estimador es el MV, inferencia indirecta con $S\to\infty$ es asintóticamente equivalente a MV: la simulación solo se usa para **calcular** $b(\theta)$, no para aproximar la verosimilitud.
+:::
+
+::: {.proof}
+Si el auxiliar es el modelo verdadero y $\tilde\beta$ es el MV, entonces $\tilde\beta(\theta)\to_p\theta$ para cada $\theta$ bajo el modelo con parámetro $\theta$ (consistencia del MV): $b(\theta) = \theta$ y $B = I_p$. Además $\Omega_\beta = \mathcal{I}(\theta_0)^{-1}$ (Clase 2). Por el @thm-ii con $W = \Omega_\beta^{-1} = \mathcal{I}$, la varianza es $\big(1 + \frac1S\big)(I\cdot\mathcal{I}\cdot I)^{-1} = \big(1 + \frac1S\big)\mathcal{I}^{-1}$. Cuando $S\to\infty$, es $\mathcal{I}^{-1}$: la cota de Cramér–Rao.
+
+Intuitivamente, $\hat\theta_{II}$ resuelve $\tilde\beta_S(\theta) = \hat\beta$: encuentra el $\theta$ tal que el MV de datos simulados con ese $\theta$ reproduce el MV de los datos reales. Si $S\to\infty$, $\tilde\beta_S(\theta)\to b(\theta) = \theta$ y la solución es $\hat\theta = \hat\beta$: **el propio MV**. La simulación no se usó para aproximar probabilidades sino para "invertir" la función de enlace. Por eso II **no sufre** el sesgo de la @prp-sml-sesgo: aun con $S$ finito, es consistente (el error de simulación entra de manera *lineal*, igual que en MSM) y solo pierde eficiencia por el factor $1 + 1/S$.
+:::
+
+# Resumen
+
+- Si el modelo se puede **simular** pero no calcular, se reemplaza la integral por un promedio. Tres métodos: **MSM**, **SML**, **II**.
+- **MSM** (@thm-msm): GMM con momentos simulados. **Consistente con $S$ fijo** (el error de simulación es lineal, de media cero y se promedia sobre $n$). La varianza aumenta en $1 + 1/S$.
+- **SML** (@prp-sml-sesgo): $\log\hat P$ es sesgado ($-\sigma_P^2/(2SP^2)$); solo es consistente con $S\to\infty$, y $\sqrt n/S\to0$ para igualar al MV.
+- **Inferencia indirecta** (@thm-ii): se calibra $\theta$ para que el modelo auxiliar estimado sobre datos simulados reproduzca el estimado sobre datos reales. Con auxiliar correcto, alcanza la cota de Cramér–Rao.
+- **Números aleatorios comunes**, simuladores suaves y $S\approx10$ para MSM e II.
+
+# Ejercicios
+
+**Ejercicio 13.1.** Un simulador de frecuencias estima $P = 0{,}2$ con $S = 100$ simulaciones. Calcula la varianza del simulador y el sesgo aproximado de $\log\hat P$. Repite con $S = 10$ y con $S = 1000$.
+
+::: {.callout-tip collapse="true" title="Solución 13.1"}
+$\operatorname{Var}(\hat P) = P(1-P)/S = 0{,}16/S$. Sesgo de $\log\hat P\approx-\dfrac{\operatorname{Var}(\hat P)}{2P^2} = -\dfrac{0{,}16/S}{2(0{,}04)} = -\dfrac{2}{S}$. $S = 100$: $-0{,}02$ (un sesgo de $-0{,}02$ en logaritmos por observación, es decir, una subestimación de $\log P$ de unos 2 puntos porcentuales). $S = 10$: $-0{,}20$, enorme. $S = 1000$: $-0{,}002$. Con $n = 5000$ observaciones, el sesgo acumulado en la verosimilitud es $5000\times0{,}02 = 100$ puntos de log-verosimilitud con $S = 100$; el sesgo del score que importa para $\sqrt n\cdot\text{sesgo}$ es $\sqrt{5000}\times0{,}02\approx1{,}4$: no despreciable. Con $S = 100$ y $n = 5000$, $\sqrt n/S = 0{,}7$: lejos de $0$.
+:::
+
+**Ejercicio 13.2.** Por qué MSM es consistente con $S = 1$ pero SML no. Da un argumento en una línea para cada uno.
+
+::: {.callout-tip collapse="true" title="Solución 13.2"}
+MSM: la condición poblacional es $\mathbb{E}[m_i - \hat\mu_S(x_i;\theta)] = 0$ en $\theta_0$ **para cualquier $S$** porque el simulador es insesgado y la esperanza es lineal: el ruido de simulación tiene media cero y la LGN lo promedia sobre $i$. SML: el criterio es $\mathbb{E}[\log\hat P]\ne\log P$ por Jensen, de modo que el máximo poblacional del criterio simulado **no** es $\theta_0$ (queda a una distancia $O(1/S)$); sin $S\to\infty$ el criterio maximiza algo distinto.
+:::
+
+**Ejercicio 13.3.** Calcula el factor de aumento de la varianza y del error estándar en MSM para $S = 1,\,5,\,10,\,50$.
+
+::: {.callout-tip collapse="true" title="Solución 13.3"}
+Varianza: $1 + 1/S$ = $2$, $1{,}2$, $1{,}1$, $1{,}02$. Error estándar ($\sqrt{\cdot}$): $1{,}414$, $1{,}095$, $1{,}049$, $1{,}010$. Pasar de $S = 10$ a $S = 50$ ahorra solo un 4 % del error estándar pero cuesta cinco veces más tiempo de cómputo. De ahí la regla $S\approx10$ para MSM e II.
+:::
+
+**Ejercicio 13.4.** En el @exm-ma1, encuentra $\hat\theta$ si la autocorrelación muestral de primer orden es $0{,}3$ y también si es $0{,}55$. Explica el segundo caso.
+
+::: {.callout-tip collapse="true" title="Solución 13.4"}
+$\hat\beta = 0{,}3$: $0{,}3\theta^2 - \theta + 0{,}3 = 0$, $\theta = \dfrac{1\pm\sqrt{1 - 0{,}36}}{0{,}6} = \dfrac{1\pm0{,}8}{0{,}6}\in\{0{,}333,\ 3\}$; se toma $\hat\theta = 0{,}333$. $\hat\beta = 0{,}55$: discriminante $1 - 4(0{,}55)^2 = 1 - 1{,}21<0$, **no hay solución real**: el máximo de $\theta/(1 + \theta^2)$ es $0{,}5$ (en $\theta = 1$). Una autocorrelación muestral de $0{,}55$ es incompatible con un MA(1) (puede ser variabilidad muestral si $n$ es pequeño, o señal de que el proceso necesita más rezagos o un AR). En la estimación por II con $\min$ de la distancia, el estimador se pegaría en $\theta = 1$, el borde.
+:::
+
+**Ejercicio 13.5.** Explica por qué, si se vuelven a generar $\varepsilon_{is}$ en cada evaluación del criterio, el optimizador falla incluso con $S$ grande.
+
+::: {.callout-tip collapse="true" title="Solución 13.5"}
+$\hat h_n(\theta)$ sería una función aleatoria de $\theta$ con ruido **independiente** entre evaluaciones: $\hat h_n(\theta) = h(\theta) + \xi(\theta)$ con $\xi$ ruido blanco sin continuidad. Dos evaluaciones en $\theta$ y $\theta + \delta$ muy cercanos difieren por $O(1/\sqrt S)$ aunque $h(\theta + \delta) - h(\theta)$ sea chico: el gradiente numérico $[\hat h(\theta + \delta) - \hat h(\theta)]/\delta$ es pura basura al achicar $\delta$, y los criterios de convergencia no se cumplen. Con $\varepsilon$ fijos, $\hat h_n$ es una función **determinística suave** de $\theta$, y el optimizador converge al mínimo de esa función.
+:::
+
+**Ejercicio 13.6.** Explica por qué el simulador de frecuencias de una probabilidad no es derivable en $\theta$ y cómo se arregla.
+
+::: {.callout-tip collapse="true" title="Solución 13.6"}
+$\hat P(\theta) = \frac1S\sum_s\mathbf{1}\{x'\theta + \varepsilon_s>0\}$ con $\varepsilon_s$ fijos es una **función escalonada** de $\theta$: salta en $\theta$ tal que $x'\theta = -\varepsilon_s$ y es constante entre saltos (gradiente cero casi seguramente). Los optimizadores con gradiente no avanzan; y el criterio tiene muchas "mesetas". Se arregla suavizando: $\mathbf{1}\{z>0\}\approx1/[1 + e^{-z/h}]$ con $h$ chico, que es diferenciable y converge a la indicadora si $h\to0$ (a costa de un sesgo pequeño); o con simuladores que condicionan analíticamente parte de la integral, como el GHK.
+:::
+
+**Ejercicio 13.7 ★.** Si el modelo auxiliar es el verdadero y su estimador es MV, demuestra que el estimador de II con $S$ grande coincide asintóticamente con MV, usando la función de enlace $b(\theta) = \theta$.
+
+::: {.callout-tip collapse="true" title="Solución 13.7 ★"}
+Con $b(\theta) = \theta$, $B = I_p$ y $\Omega_\beta = \mathcal{I}^{-1}$ (Clase 2). El @thm-ii con $W = \Omega_\beta^{-1} = \mathcal{I}$: $\operatorname{Avar} = (1 + 1/S)\,(I\,\mathcal{I}\,I)^{-1} = (1 + 1/S)\mathcal{I}^{-1}$, que tiende a $\mathcal{I}^{-1}$ cuando $S\to\infty$. Por otro lado, la ecuación que define $\hat\theta_{II}$ es $\tilde\beta_S(\hat\theta) = \hat\beta$ (con $q = p$ el criterio se anula); si $S\to\infty$, $\tilde\beta_S(\theta)\to b(\theta) = \theta$ uniformemente y $\hat\theta_{II}\to\hat\beta = \hat\theta_{MV}$. Con $S$ finito, $\tilde\beta_S(\theta)$ es el MV de datos simulados con parámetro $\theta$, un estimador *insesgado en primer orden* de $\theta$ que se promedia sobre $S$ réplicas, y el único costo es la varianza extra $1/S$.
+:::

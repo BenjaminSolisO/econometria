@@ -30,12 +30,12 @@ format:
 <a class="boton" href="econometria-1/index.qmd">Entrar al curso →</a>
 </div>
 
-<div class="curso pronto">
+<div class="curso">
 <div class="num">2</div>
 <h3>Econometría 2</h3>
 <p>Más allá del modelo lineal: estimación por extremos, máxima verosimilitud, método generalizado de momentos, elección discreta, conteo y duración, regresión cuantílica, datos de panel y estimación por simulación. Trece clases.</p>
-<span class="estado proximo">○ En preparación</span>
-<a class="boton" href="econometria-2/index.qmd">Ver temario →</a>
+<span class="estado activo">● Disponible · 13 clases</span>
+<a class="boton" href="econometria-2/index.qmd">Entrar al curso →</a>
 </div>
 
 <div class="curso pronto">

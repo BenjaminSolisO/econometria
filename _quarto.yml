@@ -53,6 +53,11 @@ website:
         - econometria-2/clase-06.qmd
         - econometria-2/clase-07.qmd
         - econometria-2/clase-08.qmd
+        - econometria-2/clase-09.qmd
+        - econometria-2/clase-10.qmd
+        - econometria-2/clase-11.qmd
+        - econometria-2/clase-12.qmd
+        - econometria-2/clase-13.qmd
   page-footer:
     left: "© 2026 Benjamín Solís · Econometría"
     right: "Hecho con [Quarto](https://quarto.org)"

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Cuando la verosimilitud o los momentos no tienen forma cerrada pero el modelo se puede simular: MSM, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza (1 + 1/S).">
+
+<title>Clase 13 · Estimación por simulación – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-12.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-13.html">Clase 13 · Estimación por simulación</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-sabes-simular-pero-no-sabes-calcular" id="toc-cuando-sabes-simular-pero-no-sabes-calcular" class="nav-link active" data-scroll-target="#cuando-sabes-simular-pero-no-sabes-calcular"><span class="header-section-number">1</span> Cuando sabes simular pero no sabes calcular</a></li>
+  <li><a href="#método-de-momentos-simulado-msm" id="toc-método-de-momentos-simulado-msm" class="nav-link" data-scroll-target="#método-de-momentos-simulado-msm"><span class="header-section-number">2</span> Método de momentos simulado (MSM)</a></li>
+  <li><a href="#verosimilitud-simulada-sml-y-su-sesgo" id="toc-verosimilitud-simulada-sml-y-su-sesgo" class="nav-link" data-scroll-target="#verosimilitud-simulada-sml-y-su-sesgo"><span class="header-section-number">3</span> Verosimilitud simulada (SML) y su sesgo</a></li>
+  <li><a href="#inferencia-indirecta-ii" id="toc-inferencia-indirecta-ii" class="nav-link" data-scroll-target="#inferencia-indirecta-ii"><span class="header-section-number">4</span> Inferencia indirecta (II)</a>
+  <ul class="collapse">
+  <li><a href="#qué-hace-buena-a-una-elección-de-modelo-auxiliar" id="toc-qué-hace-buena-a-una-elección-de-modelo-auxiliar" class="nav-link" data-scroll-target="#qué-hace-buena-a-una-elección-de-modelo-auxiliar"><span class="header-section-number">4.1</span> Qué hace buena a una elección de modelo auxiliar</a></li>
+  </ul></li>
+  <li><a href="#aspectos-prácticos" id="toc-aspectos-prácticos" class="nav-link" data-scroll-target="#aspectos-prácticos"><span class="header-section-number">5</span> Aspectos prácticos</a></li>
+  <li><a href="#postgrado-ii-con-el-auxiliar-correcto-es-mv-simulado" id="toc-postgrado-ii-con-el-auxiliar-correcto-es-mv-simulado" class="nav-link" data-scroll-target="#postgrado-ii-con-el-auxiliar-correcto-es-mv-simulado"><span class="header-section-number">6</span> ★ Postgrado: II con el auxiliar correcto es MV simulado</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-13.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 13 · Estimación por simulación</h1>
+<p class="subtitle lead">Método de momentos simulado, inferencia indirecta y máxima verosimilitud simulada</p>
+</div>
+
+<div>
+  <div class="description">
+    Cuando la verosimilitud o los momentos no tienen forma cerrada pero el modelo se puede simular: MSM, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza (1 + 1/S).
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-13.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-sabes-simular-pero-no-sabes-calcular" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando sabes simular pero no sabes calcular</h1>
+<p>Las Clases 1 a 4 nos dieron una máquina general: si podemos escribir la verosimilitud <span class="math inline">\(f(w;\theta)\)</span> o un conjunto de momentos <span class="math inline">\(\mathbb{E}[g(w,\theta)] = 0\)</span> en forma cerrada, sabemos estimar y hacer inferencia. Pero muchos modelos modernos no permiten ni lo uno ni lo otro:</p>
+<ul>
+<li>El <strong>probit multinomial</strong> (Clase 6) con <span class="math inline">\(J\)</span> alternativas requiere integrar una normal en <span class="math inline">\(J - 1\)</span> dimensiones.</li>
+<li>El <strong>logit mixto</strong> (coeficientes aleatorios) tiene probabilidades que son <em>integrales</em> del logit sobre la distribución de los coeficientes.</li>
+<li>Los <strong>modelos estructurales dinámicos</strong> (decisiones óptimas de empresas, hogares, entrada y salida de mercados) generan datos complejos a partir de un problema de optimización cuya solución no es analítica.</li>
+<li>Los <strong>modelos de agentes</strong> y de series de tiempo no lineales.</li>
+</ul>
+<p>Lo que tienen en común es que, aunque no se pueda <em>calcular</em> la probabilidad o el momento, sí se puede <strong>simular</strong> el modelo: dado <span class="math inline">\(\theta\)</span> y números aleatorios <span class="math inline">\(\varepsilon\)</span>, se genera un dato artificial <span class="math inline">\(y = g(x,\varepsilon;\theta)\)</span>. La estimación por simulación reemplaza la integral que no podemos calcular por un <strong>promedio de simulaciones</strong>, que sí podemos.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Daniel McFadden propuso el método de momentos simulado en 1989, motivado por el probit multinomial, donde el cálculo exacto de probabilidades era prohibitivo con las computadoras de la época. Hoy el cálculo es mucho más barato, pero la lección de fondo sigue vigente: reemplazar una integral por un promedio de simulaciones <strong>no es gratis</strong>, y el costo es exactamente el tema de esta clase.</p></div></div><p>Hay tres métodos principales, que se distinguen por <em>qué</em> se simula y <em>con qué</em> se compara: <strong>momentos simulados</strong> (MSM), <strong>verosimilitud simulada</strong> (SML) e <strong>inferencia indirecta</strong> (II). Los tres son casos de la teoría de las Clases 1 y 4, con una pieza adicional: el <strong>error de simulación</strong>.</p>
+</section>
+<section id="método-de-momentos-simulado-msm" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Método de momentos simulado (MSM)</h1>
+<p>Sea el modelo <span class="math inline">\(y = g(x,\varepsilon;\theta)\)</span> con <span class="math inline">\(\varepsilon\sim F_\varepsilon\)</span> conocida (por ejemplo, <span class="math inline">\(N(0,I)\)</span>), y un vector de <strong>momentos</strong> <span class="math inline">\(m(y,x)\)</span> cuya esperanza condicional bajo <span class="math inline">\(\theta\)</span>, <span class="math display">\[
+\mu(x;\theta) = \mathbb{E}\big[m(y,x)\mid x;\theta\big] = \int m\big(g(x,\varepsilon;\theta),x\big)\,dF_\varepsilon(\varepsilon),
+\]</span> no tiene forma cerrada. Aproximamos la integral con <span class="math inline">\(S\)</span> <strong>simulaciones</strong> <span class="math inline">\(\varepsilon_{i1},\dots,\varepsilon_{iS}\)</span> por observación: <span class="math display">\[
+\hat\mu_S(x_i;\theta) = \frac1S\sum_{s=1}^Sm\big(g(x_i,\varepsilon_{is};\theta),x_i\big).
+\]</span> El estimador de momentos simulado minimiza la distancia entre los momentos de los datos y los simulados: <span id="eq-msm"><span class="math display">\[
+\hat\theta_{MSM} = \arg\min_\theta\ \hat h_n(\theta)'\,\hat W\,\hat h_n(\theta),\qquad
+\hat h_n(\theta) = \frac1n\sum_{i=1}^n\big[m(y_i,x_i) - \hat\mu_S(x_i;\theta)\big].
+\tag{1}\]</span></span> Es <strong>GMM</strong> (Clase 4) con un momento “ruidoso”: <span class="math inline">\(\hat h_n\)</span> en vez de <span class="math inline">\(\bar g_n\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Regla de oro: las mismas semillas en cada $\theta$">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Regla de oro: las mismas semillas en cada <span class="math inline">\(\theta\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los números aleatorios <span class="math inline">\(\varepsilon_{is}\)</span> se generan <strong>una sola vez</strong> y se <strong>reutilizan</strong> para cada valor de <span class="math inline">\(\theta\)</span> que visita el optimizador. Si se redibujaran en cada evaluación, <span class="math inline">\(\hat h_n(\theta)\)</span> sería una función <em>ruidosa</em> de <span class="math inline">\(\theta\)</span> (cada evaluación con ruido distinto), el optimizador no converge y la derivada es inútil. Con <span class="math inline">\(\varepsilon_{is}\)</span> fijos, <span class="math inline">\(\hat h_n(\theta)\)</span> es una función <strong>determinística y suave</strong> de <span class="math inline">\(\theta\)</span> (cuando <span class="math inline">\(g\)</span> y <span class="math inline">\(m\)</span> lo son). Se llaman <em>números aleatorios comunes</em>.</p>
+</div>
+</div>
+<div id="thm-msm" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (MSM: consistencia con <span class="math inline">\(S\)</span> fijo y varianza <span class="math inline">\((1 + 1/S)\)</span>)</strong></span> Supongamos que los datos provienen del modelo en <span class="math inline">\(\theta_0\)</span>, el simulador es insesgado, <span class="math inline">\(\mathbb{E}[\hat\mu_S(x;\theta)\mid x] = \mu(x;\theta)\)</span>, las simulaciones son independientes entre <span class="math inline">\(i\)</span> y de los datos, y valen las condiciones de la Clase 4 para el momento <span class="math inline">\(h(w,\theta) = m - \mu(x;\theta)\)</span> (identificación, rango de <span class="math inline">\(G = -\mathbb{E}[\nabla_\theta\mu]\)</span>, momentos finitos). Entonces, para <strong>cualquier <span class="math inline">\(S\ge1\)</span> fijo</strong>, <span class="math inline">\(\hat\theta_{MSM}\to_p\theta_0\)</span> y <span class="math display">\[
+\sqrt n(\hat\theta_{MSM} - \theta_0)\xrightarrow{d}N\Big(0,\ (G'WG)^{-1}G'W\,\Omega_S\,WG(G'WG)^{-1}\Big),
+\]</span> con <span class="math inline">\(\Omega_S = \Omega_{\text{datos}} + \tfrac1S\Omega_{\text{sim}}\)</span>. En el caso en que el momento no condiciona en <span class="math inline">\(x\)</span> y los datos y las simulaciones tienen la misma distribución en <span class="math inline">\(\theta_0\)</span>, <span class="math inline">\(\Omega_S = (1 + \tfrac1S)\Omega\)</span>, y con <span class="math inline">\(W = \Omega^{-1}\)</span>, la varianza óptima es <span class="math display">\[
+\Big(1 + \frac1S\Big)\big(G'\Omega^{-1}G\big)^{-1}.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Hay dos fuentes de ruido en <span class="math inline">\(\hat h_n(\theta_0)\)</span>: el momento de los datos, <span class="math inline">\(m(y_i,x_i) - \mu(x_i;\theta_0)\)</span> (variación muestral usual), y el error de simulación, <span class="math inline">\(\mu(x_i;\theta_0) - \hat\mu_S(x_i;\theta_0)\)</span>. El segundo tiene <strong>media cero</strong> (el simulador es insesgado) y es independiente del primero. Entonces <span class="math inline">\(\hat h_n(\theta_0)\)</span> es un promedio de <span class="math inline">\(n\)</span> términos i.i.d. de media cero: la LGN da consistencia y el TCL da normalidad. La varianza es la <strong>suma</strong> de las dos fuentes. Y la fuente de simulación se divide por <span class="math inline">\(S\)</span> porque es el promedio de <span class="math inline">\(S\)</span> simulaciones independientes.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>En <span class="math inline">\(\theta_0\)</span>, el término <span class="math inline">\(i\)</span> de <span class="math inline">\(\hat h_n\)</span> se descompone como <span class="math display">\[
+m_i - \hat\mu_S(x_i;\theta_0) = \underbrace{\big[m_i - \mu(x_i;\theta_0)\big]}_{a_i} + \underbrace{\big[\mu(x_i;\theta_0) - \hat\mu_S(x_i;\theta_0)\big]}_{b_i}.
+\]</span> <span class="math inline">\(\mathbb{E}[a_i] = 0\)</span> (los datos vienen de <span class="math inline">\(\theta_0\)</span>) y <span class="math inline">\(\mathbb{E}[b_i\mid x_i] = 0\)</span> (simulador insesgado), con <span class="math inline">\(a_i\)</span> y <span class="math inline">\(b_i\)</span> no correlacionados (las simulaciones son independientes de los datos). Las variables <span class="math inline">\(a_i + b_i\)</span> son i.i.d. con media cero y varianza <span class="math inline">\(\Omega_S = \operatorname{Var}(a_i) + \operatorname{Var}(b_i)\)</span>. Como <span class="math inline">\(\operatorname{Var}(b_i) = \frac1S\operatorname{Var}\big(m(g(x_i,\varepsilon;\theta_0),x_i)\mid x_i\big)\)</span> (promedio de <span class="math inline">\(S\)</span> simulaciones independientes), <span class="math inline">\(\Omega_S = \Omega_{\text{datos}} + \tfrac1S\Omega_{\text{sim}}\)</span>. Las condiciones de la Clase 4 (consistencia por LGN uniforme e identificación, y normalidad vía TCL, expansión alrededor de <span class="math inline">\(\theta_0\)</span> y Slutsky) valen para este momento, reemplazando <span class="math inline">\(\Omega\)</span> por <span class="math inline">\(\Omega_S\)</span>. Cuando los datos y las simulaciones tienen la misma distribución, <span class="math inline">\(\Omega_{\text{sim}} = \Omega_{\text{datos}} = \Omega\)</span> y <span class="math inline">\(\Omega_S = (1 + 1/S)\Omega\)</span>. Finalmente, con <span class="math inline">\(W = \Omega_S^{-1}\)</span> la varianza se reduce a <span class="math inline">\((G'\Omega_S^{-1}G)^{-1} = (1 + 1/S)(G'\Omega^{-1}G)^{-1}\)</span>.</p>
+</div>
+<p>Tres lecciones de este teorema:</p>
+<ol type="1">
+<li><strong>MSM es consistente con <span class="math inline">\(S\)</span> fijo, incluso con <span class="math inline">\(S = 1\)</span>.</strong> El error de simulación es ruido de media cero que se promedia <strong>entre observaciones</strong> (al ser el momento un promedio sobre <span class="math inline">\(n\)</span> datos). No hace falta que <span class="math inline">\(S\to\infty\)</span>.</li>
+<li><strong>Pero el ruido de simulación infla la varianza</strong> en el factor <span class="math inline">\(1 + 1/S\)</span> (en el caso más simple). Con <span class="math inline">\(S = 1\)</span>, la varianza se <strong>duplica</strong>: los errores estándar crecen <span class="math inline">\(\sqrt2\approx1{,}41\)</span> veces. Con <span class="math inline">\(S = 10\)</span>, el factor es <span class="math inline">\(1{,}1\)</span> (errores estándar 5 % mayores). Con más de <span class="math inline">\(S\approx10\)</span> hay rendimientos decrecientes: la pérdida de eficiencia es mínima.</li>
+<li>Toda la teoría de eficiencia, el test <span class="math inline">\(J\)</span> y los demás resultados de la Clase 4 valen, con <span class="math inline">\(\Omega_S\)</span> en lugar de <span class="math inline">\(\Omega\)</span>.</li>
+</ol>
+</section>
+<section id="verosimilitud-simulada-sml-y-su-sesgo" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Verosimilitud simulada (SML) y su sesgo</h1>
+<p>La alternativa natural es mantener la verosimilitud como criterio y reemplazar las probabilidades por sus aproximaciones simuladas. Por ejemplo, en el logit mixto la probabilidad de que <span class="math inline">\(i\)</span> elija <span class="math inline">\(j\)</span> es una integral sobre los coeficientes aleatorios <span class="math inline">\(\beta\sim F(\cdot;\theta)\)</span>: <span class="math display">\[
+P_{ij}(\theta) = \int\frac{e^{x_{ij}'\beta}}{\sum_ke^{x_{ik}'\beta}}\,dF(\beta;\theta)\ \approx\ \hat P_{ij}(\theta) = \frac1S\sum_{s=1}^S\frac{e^{x_{ij}'\beta_s(\theta)}}{\sum_ke^{x_{ik}'\beta_s(\theta)}}.
+\]</span> La log-verosimilitud simulada es <span class="math inline">\(\hat\ell_n(\theta) = \sum_i\sum_jd_{ij}\log\hat P_{ij}(\theta)\)</span>. Aquí hay una <strong>diferencia sutil pero fundamental</strong> con MSM: el simulador <span class="math inline">\(\hat P\)</span> de la probabilidad es <strong>insesgado</strong>, pero <strong><span class="math inline">\(\log\hat P\)</span> no es un simulador insesgado de <span class="math inline">\(\log P\)</span></strong> (el logaritmo es una función cóncava: Jensen).</p>
+<div id="prp-sml-sesgo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Sesgo de la log-verosimilitud simulada)</strong></span> Si <span class="math inline">\(\hat P\)</span> es un simulador insesgado de <span class="math inline">\(P\)</span> con varianza <span class="math inline">\(\sigma^2_P/S\)</span>, entonces <span class="math display">\[
+\mathbb{E}\big[\log\hat P\big] = \log P - \frac{\sigma_P^2}{2SP^2} + O(S^{-2}).
+\]</span> El sesgo por observación es de orden <span class="math inline">\(1/S\)</span>, <strong>no se promedia al aumentar <span class="math inline">\(n\)</span></strong>, y es el mismo para todas las observaciones. En consecuencia, el estimador SML es consistente solo si <span class="math inline">\(S\to\infty\)</span> al crecer <span class="math inline">\(n\)</span>, y es asintóticamente equivalente al MV (misma distribución límite) solo si <span class="math inline">\(\sqrt n/S\to0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Expandimos <span class="math inline">\(\log\)</span> alrededor de <span class="math inline">\(P\)</span> con <span class="math inline">\(\hat P = P + e\)</span>, donde <span class="math inline">\(\mathbb{E}[e] = 0\)</span> y <span class="math inline">\(\operatorname{Var}(e) = \sigma_P^2/S\)</span>: <span class="math display">\[
+\log\hat P = \log P + \frac eP - \frac{e^2}{2P^2} + O(e^3).
+\]</span> Tomando esperanza, el término lineal se anula y <span class="math inline">\(\mathbb{E}\big[\log\hat P\big] = \log P - \dfrac{\mathbb{E}[e^2]}{2P^2} + O(S^{-2}) = \log P - \dfrac{\sigma_P^2}{2SP^2} + O(S^{-2})\)</span> (el término cúbico es de orden <span class="math inline">\(S^{-2}\)</span>).</p>
+<p>Para la consecuencia asintótica: la log-verosimilitud simulada <strong>promedio</strong> tiene sesgo <span class="math inline">\(\mathbb{E}[\hat\ell_n/n - \ell_n/n]\approx-\frac1S\mathbb{E}\big[\sigma_P^2/(2P^2)\big] = O(1/S)\)</span> que se <strong>acumula</strong> sin promediarse (todas las observaciones sesgan en el mismo sentido), por lo que el score simulado tiene sesgo <span class="math inline">\(O(1/S)\)</span>. Para que la estimación sea consistente se necesita que ese sesgo sea cero en el límite: <span class="math inline">\(S\to\infty\)</span>. Y para que no afecte la distribución asintótica, el sesgo del score escalado por <span class="math inline">\(\sqrt n\)</span>, que es <span class="math inline">\(\sqrt n\cdot O(1/S)\)</span>, debe tender a cero: <span class="math inline">\(\sqrt n/S\to0\)</span>. Si <span class="math inline">\(\sqrt n/S\to c\in(0,\infty)\)</span>, <span class="math inline">\(\hat\theta_{SML}\)</span> es consistente y asintóticamente normal pero con <strong>sesgo asintótico</strong> (la distribución límite no está centrada en cero). Si <span class="math inline">\(\sqrt n/S\to\infty\)</span>, <span class="math inline">\(\hat\theta_{SML}\)</span> no tiene la tasa de MV (el sesgo domina).</p>
+</div>
+<p>La diferencia con MSM es notable: <strong>MSM es consistente con <span class="math inline">\(S\)</span> fijo; SML exige <span class="math inline">\(S\to\infty\)</span> con <span class="math inline">\(n\)</span></strong> (típicamente <span class="math inline">\(S\propto n^{1/2+\varepsilon}\)</span> o más). La razón es que MSM promedia errores de simulación <strong>lineales</strong> en el momento (cuya esperanza es cero), mientras que SML aplica una función <strong>no lineal</strong> (<span class="math inline">\(\log\)</span>) a una cantidad ruidosa. Es la desigualdad de Jensen: <span class="math inline">\(\log\hat P\)</span> subestima sistemáticamente <span class="math inline">\(\log P\)</span>. La práctica es usar <span class="math inline">\(S\)</span> grande y <strong>simuladores suaves</strong> (GHK para el probit multinomial, secuencias de Halton en lugar de números pseudoaleatorios para reducir <span class="math inline">\(\sigma_P^2\)</span> de manera efectiva).</p>
+</section>
+<section id="inferencia-indirecta-ii" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Inferencia indirecta (II)</h1>
+<p>A veces el modelo estructural es tan complejo que ni siquiera se sabe qué momentos son informativos. La <strong>inferencia indirecta</strong> (Smith, 1993; Gourieroux, Monfort y Renault, 1993) propone un truco: <strong>elegir un modelo auxiliar simple</strong>, que no tiene por qué ser correcto, y buscar los parámetros estructurales <span class="math inline">\(\theta\)</span> cuyo modelo simulado “se parezca” a los datos <strong>según las lentes del modelo auxiliar</strong>.</p>
+<p>El procedimiento:</p>
+<ol type="1">
+<li><strong>Modelo auxiliar</strong> con parámetros <span class="math inline">\(\beta\in\mathbb{R}^q\)</span> (<span class="math inline">\(q\ge p\)</span>), fácil de estimar (MCO, un AR, un VAR, un probit).</li>
+<li>Estima <span class="math inline">\(\hat\beta\)</span> sobre los <strong>datos</strong>.</li>
+<li>Para cada <span class="math inline">\(\theta\)</span>, <strong>simula</strong> <span class="math inline">\(S\)</span> conjuntos de datos del modelo estructural y estima el modelo auxiliar sobre ellos: <span class="math inline">\(\tilde\beta_S(\theta)\)</span> (promedio de las <span class="math inline">\(S\)</span> estimaciones, o estimación sobre los datos simulados apilados).</li>
+<li><span class="math inline">\(\hat\theta_{II} = \arg\min_\theta\big[\hat\beta - \tilde\beta_S(\theta)\big]'\,\hat W\,\big[\hat\beta - \tilde\beta_S(\theta)\big]\)</span>.</li>
+</ol>
+<p>El objeto central es la <strong>función de enlace</strong> (<em>binding function</em>) <span class="math inline">\(b(\theta) = \operatorname{plim}\tilde\beta(\theta)\)</span>: lo que el modelo auxiliar estima cuando los datos vienen del modelo estructural en <span class="math inline">\(\theta\)</span>. En <span class="math inline">\(\theta_0\)</span>, <span class="math inline">\(b(\theta_0) = \operatorname{plim}\hat\beta\)</span>.</p>
+<div id="thm-ii" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Normalidad asintótica de inferencia indirecta)</strong></span> Si <span class="math inline">\(b(\theta)\)</span> es inyectiva y diferenciable con <span class="math inline">\(B = \partial b/\partial\theta'\)</span> de rango columna <span class="math inline">\(p\)</span>, y <span class="math inline">\(\sqrt n(\hat\beta - b(\theta_0))\to_dN(0,\Omega_\beta)\)</span>, entonces <span class="math display">\[
+\sqrt n(\hat\theta_{II} - \theta_0)\xrightarrow{d}N\Big(0,\ \big(1 + \tfrac1S\big)(B'WB)^{-1}B'W\Omega_\beta WB(B'WB)^{-1}\Big),
+\]</span> y con <span class="math inline">\(W = \Omega_\beta^{-1}\)</span> la varianza es <span class="math inline">\(\big(1 + \frac1S\big)\big(B'\Omega_\beta^{-1}B\big)^{-1}\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Es GMM (Clase 4) con el “momento” <span class="math inline">\(\hat h(\theta) = \hat\beta - \tilde\beta_S(\theta)\)</span>, cuyo jacobiano poblacional es <span class="math inline">\(G = -B\)</span> y cuyo valor en <span class="math inline">\(\theta_0\)</span> es <span class="math inline">\(\hat\beta - \tilde\beta_S(\theta_0)\)</span>: la diferencia de dos estimadores independientes de la misma cantidad <span class="math inline">\(b(\theta_0)\)</span>, con varianzas asintóticas <span class="math inline">\(\Omega_\beta/n\)</span> y <span class="math inline">\(\Omega_\beta/(nS)\)</span> (el de las simulaciones se promedia sobre <span class="math inline">\(S\)</span> réplicas). Luego <span class="math inline">\(\sqrt n\,\hat h(\theta_0)\to_dN\big(0,(1 + 1/S)\Omega_\beta\big)\)</span>. El teorema de normalidad asintótica de GMM (Clase 4) con <span class="math inline">\(\Omega = (1 + 1/S)\Omega_\beta\)</span> y <span class="math inline">\(G = -B\)</span> da el resultado, y el teorema de la matriz de pesos óptima (Clase 4) da la última afirmación.</p>
+</div>
+<div id="exm-ma1" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Estimar un MA(1) con un AR(1) auxiliar)</strong></span> El modelo estructural es <span class="math inline">\(y_t = \varepsilon_t + \theta\varepsilon_{t-1}\)</span>, <span class="math inline">\(\varepsilon_t\sim N(0,1)\)</span>, y el modelo auxiliar es el <strong>AR(1)</strong> <span class="math inline">\(y_t = \beta y_{t-1} + e_t\)</span>. El estimador MCO <span class="math inline">\(\tilde\beta\)</span> converge a la autocorrelación de primer orden, <span class="math inline">\(b(\theta) = \dfrac{\operatorname{Cov}(y_t,y_{t-1})}{\operatorname{Var}(y_t)} = \dfrac{\theta}{1 + \theta^2}\)</span>. Si en los datos <span class="math inline">\(\hat\beta = 0{,}4\)</span>, el estimador de inferencia indirecta resuelve <span class="math inline">\(\dfrac\theta{1 + \theta^2} = 0{,}4\)</span>, es decir, <span class="math inline">\(0{,}4\theta^2 - \theta + 0{,}4 = 0\)</span> y <span class="math inline">\(\theta = \dfrac{1 \pm\sqrt{1 - 0{,}64}}{0{,}8} = \dfrac{1\pm0{,}6}{0{,}8}\in\{0{,}5,\ 2\}\)</span>. Se elige la raíz <strong>invertible</strong> (<span class="math inline">\(|\theta|&lt;1\)</span>): <span class="math inline">\(\hat\theta = 0{,}5\)</span>. En este ejemplo <span class="math inline">\(b(\theta)\)</span> se conoce en forma cerrada y no hace falta simular, pero con modelos más complejos <span class="math inline">\(b(\theta)\)</span> se obtiene <strong>simulando</strong>. Observa que <span class="math inline">\(b(\theta)\le\tfrac12\)</span> para todo <span class="math inline">\(\theta\)</span> (máximo en <span class="math inline">\(\theta = 1\)</span>): si <span class="math inline">\(\hat\beta&gt;0{,}5\)</span>, <strong>no hay solución</strong>, y eso es una señal de que un MA(1) no es el modelo correcto para esos datos.</p>
+</div>
+<section id="qué-hace-buena-a-una-elección-de-modelo-auxiliar" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="qué-hace-buena-a-una-elección-de-modelo-auxiliar"><span class="header-section-number">4.1</span> Qué hace buena a una elección de modelo auxiliar</h2>
+<ul>
+<li><strong>Dimensión:</strong> <span class="math inline">\(q\ge p\)</span> (identificación). Con <span class="math inline">\(q = p\)</span> el modelo está exactamente identificado, y con <span class="math inline">\(q&gt;p\)</span> hay un test <span class="math inline">\(J\)</span> de la bondad del modelo estructural: si el modelo simulado no reproduce los parámetros auxiliares con <span class="math inline">\(\hat\theta\)</span>, el modelo estructural es rechazado.</li>
+<li><strong>Informatividad:</strong> el modelo auxiliar debe ser <strong>sensible</strong> a <span class="math inline">\(\theta\)</span> (que <span class="math inline">\(B\)</span> tenga rango pleno y valores no pequeños). Un auxiliar que no cambia con <span class="math inline">\(\theta\)</span> da instrumentos débiles.</li>
+<li><strong>Eficiencia:</strong> si el modelo auxiliar es el <strong>verdadero</strong> modelo y <span class="math inline">\(\tilde\beta\)</span> su MV, <span class="math inline">\(b(\theta) = \theta\)</span>, <span class="math inline">\(B = I\)</span>, <span class="math inline">\(\Omega_\beta = \mathcal{I}^{-1}\)</span>, y la varianza es <span class="math inline">\((1 + 1/S)\mathcal{I}^{-1}\)</span>: <strong>II alcanza la cota de Cramér–Rao cuando <span class="math inline">\(S\to\infty\)</span></strong> (Ejercicio 13.7). Con un auxiliar rico (que aproxime bien el modelo), II se acerca a la máxima verosimilitud. Es la idea del <strong>método eficiente de momentos</strong> de Gallant y Tauchen (1996): usar como momentos el <em>score</em> de un auxiliar flexible.</li>
+<li><strong>Robustez:</strong> un auxiliar <strong>mal especificado</strong> está permitido (por eso se llama “indirecta”): solo importa que su estimador converja a algo que dependa de <span class="math inline">\(\theta\)</span>.</li>
+</ul>
+</section>
+</section>
+<section id="aspectos-prácticos" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Aspectos prácticos</h1>
+<ul>
+<li><strong>Números aleatorios comunes</strong> (misma semilla en cada <span class="math inline">\(\theta\)</span>): imprescindible. Sin ellos, el criterio es ruidoso.</li>
+<li><strong>Simuladores no suaves.</strong> Un simulador de frecuencias de una probabilidad binaria, <span class="math inline">\(\hat P(\theta) = \frac1S\sum_s\mathbf{1}\{x'\theta + \varepsilon_s&gt;0\}\)</span>, es una <strong>función escalonada</strong> de <span class="math inline">\(\theta\)</span> (derivada cero casi en todas partes): los optimizadores con gradiente fracasan. Se usan simuladores <strong>suavizados</strong> (la indicadora se reemplaza por una logística con ancho <span class="math inline">\(h\)</span> chico, <span class="math inline">\(1/[1 + e^{-(x'\theta + \varepsilon_s)/h}]\)</span>) o simuladores recursivos, como el <strong>GHK</strong> para el probit multinomial.</li>
+<li><strong>Elección de <span class="math inline">\(S\)</span>:</strong> en MSM e II, <span class="math inline">\(S\approx10\)</span> ya da el factor <span class="math inline">\(1{,}1\)</span>; en SML, <span class="math inline">\(S\)</span> debe crecer con <span class="math inline">\(n\)</span>.</li>
+<li><strong>Inferencia.</strong> Los errores estándar usan <span class="math inline">\((1 + 1/S)\)</span> o, mejor, el sándwich con <span class="math inline">\(\hat\Omega_S\)</span> y el jacobiano numérico. El <strong>bootstrap</strong> funciona pero cuesta una simulación completa en cada réplica.</li>
+<li><strong>Mínimos locales y costo.</strong> Los criterios simulados suelen tener muchos mínimos locales y cada evaluación cuesta una simulación del modelo. La práctica: múltiples puntos iniciales, optimizadores sin derivadas (Nelder–Mead) o globales como un algoritmo genético, y el tamaño de <span class="math inline">\(S\)</span> elegido en equilibrio entre ruido y tiempo.</li>
+</ul>
+</section>
+<section id="postgrado-ii-con-el-auxiliar-correcto-es-mv-simulado" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: II con el auxiliar correcto es MV simulado</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mostramos que cuando el modelo auxiliar coincide con el verdadero y su estimador es el MV, inferencia indirecta con <span class="math inline">\(S\to\infty\)</span> es asintóticamente equivalente a MV: la simulación solo se usa para <strong>calcular</strong> <span class="math inline">\(b(\theta)\)</span>, no para aproximar la verosimilitud.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Si el auxiliar es el modelo verdadero y <span class="math inline">\(\tilde\beta\)</span> es el MV, entonces <span class="math inline">\(\tilde\beta(\theta)\to_p\theta\)</span> para cada <span class="math inline">\(\theta\)</span> bajo el modelo con parámetro <span class="math inline">\(\theta\)</span> (consistencia del MV): <span class="math inline">\(b(\theta) = \theta\)</span> y <span class="math inline">\(B = I_p\)</span>. Además <span class="math inline">\(\Omega_\beta = \mathcal{I}(\theta_0)^{-1}\)</span> (Clase 2). Por el <a href="#thm-ii" class="quarto-xref">Teorema&nbsp;2</a> con <span class="math inline">\(W = \Omega_\beta^{-1} = \mathcal{I}\)</span>, la varianza es <span class="math inline">\(\big(1 + \frac1S\big)(I\cdot\mathcal{I}\cdot I)^{-1} = \big(1 + \frac1S\big)\mathcal{I}^{-1}\)</span>. Cuando <span class="math inline">\(S\to\infty\)</span>, es <span class="math inline">\(\mathcal{I}^{-1}\)</span>: la cota de Cramér–Rao.</p>
+<p>Intuitivamente, <span class="math inline">\(\hat\theta_{II}\)</span> resuelve <span class="math inline">\(\tilde\beta_S(\theta) = \hat\beta\)</span>: encuentra el <span class="math inline">\(\theta\)</span> tal que el MV de datos simulados con ese <span class="math inline">\(\theta\)</span> reproduce el MV de los datos reales. Si <span class="math inline">\(S\to\infty\)</span>, <span class="math inline">\(\tilde\beta_S(\theta)\to b(\theta) = \theta\)</span> y la solución es <span class="math inline">\(\hat\theta = \hat\beta\)</span>: <strong>el propio MV</strong>. La simulación no se usó para aproximar probabilidades sino para “invertir” la función de enlace. Por eso II <strong>no sufre</strong> el sesgo de la <a href="#prp-sml-sesgo" class="quarto-xref">Proposición&nbsp;1</a>: aun con <span class="math inline">\(S\)</span> finito, es consistente (el error de simulación entra de manera <em>lineal</em>, igual que en MSM) y solo pierde eficiencia por el factor <span class="math inline">\(1 + 1/S\)</span>.</p>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Si el modelo se puede <strong>simular</strong> pero no calcular, se reemplaza la integral por un promedio. Tres métodos: <strong>MSM</strong>, <strong>SML</strong>, <strong>II</strong>.</li>
+<li><strong>MSM</strong> (<a href="#thm-msm" class="quarto-xref">Teorema&nbsp;1</a>): GMM con momentos simulados. <strong>Consistente con <span class="math inline">\(S\)</span> fijo</strong> (el error de simulación es lineal, de media cero y se promedia sobre <span class="math inline">\(n\)</span>). La varianza aumenta en <span class="math inline">\(1 + 1/S\)</span>.</li>
+<li><strong>SML</strong> (<a href="#prp-sml-sesgo" class="quarto-xref">Proposición&nbsp;1</a>): <span class="math inline">\(\log\hat P\)</span> es sesgado (<span class="math inline">\(-\sigma_P^2/(2SP^2)\)</span>); solo es consistente con <span class="math inline">\(S\to\infty\)</span>, y <span class="math inline">\(\sqrt n/S\to0\)</span> para igualar al MV.</li>
+<li><strong>Inferencia indirecta</strong> (<a href="#thm-ii" class="quarto-xref">Teorema&nbsp;2</a>): se calibra <span class="math inline">\(\theta\)</span> para que el modelo auxiliar estimado sobre datos simulados reproduzca el estimado sobre datos reales. Con auxiliar correcto, alcanza la cota de Cramér–Rao.</li>
+<li><strong>Números aleatorios comunes</strong>, simuladores suaves y <span class="math inline">\(S\approx10\)</span> para MSM e II.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 13.1.</strong> Un simulador de frecuencias estima <span class="math inline">\(P = 0{,}2\)</span> con <span class="math inline">\(S = 100\)</span> simulaciones. Calcula la varianza del simulador y el sesgo aproximado de <span class="math inline">\(\log\hat P\)</span>. Repite con <span class="math inline">\(S = 10\)</span> y con <span class="math inline">\(S = 1000\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(\hat P) = P(1-P)/S = 0{,}16/S\)</span>. Sesgo de <span class="math inline">\(\log\hat P\approx-\dfrac{\operatorname{Var}(\hat P)}{2P^2} = -\dfrac{0{,}16/S}{2(0{,}04)} = -\dfrac{2}{S}\)</span>. <span class="math inline">\(S = 100\)</span>: <span class="math inline">\(-0{,}02\)</span> (un sesgo de <span class="math inline">\(-0{,}02\)</span> en logaritmos por observación, es decir, una subestimación de <span class="math inline">\(\log P\)</span> de unos 2 puntos porcentuales). <span class="math inline">\(S = 10\)</span>: <span class="math inline">\(-0{,}20\)</span>, enorme. <span class="math inline">\(S = 1000\)</span>: <span class="math inline">\(-0{,}002\)</span>. Con <span class="math inline">\(n = 5000\)</span> observaciones, el sesgo acumulado en la verosimilitud es <span class="math inline">\(5000\times0{,}02 = 100\)</span> puntos de log-verosimilitud con <span class="math inline">\(S = 100\)</span>; el sesgo del score que importa para <span class="math inline">\(\sqrt n\cdot\text{sesgo}\)</span> es <span class="math inline">\(\sqrt{5000}\times0{,}02\approx1{,}4\)</span>: no despreciable. Con <span class="math inline">\(S = 100\)</span> y <span class="math inline">\(n = 5000\)</span>, <span class="math inline">\(\sqrt n/S = 0{,}7\)</span>: lejos de <span class="math inline">\(0\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.2.</strong> Por qué MSM es consistente con <span class="math inline">\(S = 1\)</span> pero SML no. Da un argumento en una línea para cada uno.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>MSM: la condición poblacional es <span class="math inline">\(\mathbb{E}[m_i - \hat\mu_S(x_i;\theta)] = 0\)</span> en <span class="math inline">\(\theta_0\)</span> <strong>para cualquier <span class="math inline">\(S\)</span></strong> porque el simulador es insesgado y la esperanza es lineal: el ruido de simulación tiene media cero y la LGN lo promedia sobre <span class="math inline">\(i\)</span>. SML: el criterio es <span class="math inline">\(\mathbb{E}[\log\hat P]\ne\log P\)</span> por Jensen, de modo que el máximo poblacional del criterio simulado <strong>no</strong> es <span class="math inline">\(\theta_0\)</span> (queda a una distancia <span class="math inline">\(O(1/S)\)</span>); sin <span class="math inline">\(S\to\infty\)</span> el criterio maximiza algo distinto.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.3.</strong> Calcula el factor de aumento de la varianza y del error estándar en MSM para <span class="math inline">\(S = 1,\,5,\,10,\,50\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Varianza: <span class="math inline">\(1 + 1/S\)</span> = <span class="math inline">\(2\)</span>, <span class="math inline">\(1{,}2\)</span>, <span class="math inline">\(1{,}1\)</span>, <span class="math inline">\(1{,}02\)</span>. Error estándar (<span class="math inline">\(\sqrt{\cdot}\)</span>): <span class="math inline">\(1{,}414\)</span>, <span class="math inline">\(1{,}095\)</span>, <span class="math inline">\(1{,}049\)</span>, <span class="math inline">\(1{,}010\)</span>. Pasar de <span class="math inline">\(S = 10\)</span> a <span class="math inline">\(S = 50\)</span> ahorra solo un 4 % del error estándar pero cuesta cinco veces más tiempo de cómputo. De ahí la regla <span class="math inline">\(S\approx10\)</span> para MSM e II.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.4.</strong> En el <a href="#exm-ma1" class="quarto-xref">Ejemplo&nbsp;1</a>, encuentra <span class="math inline">\(\hat\theta\)</span> si la autocorrelación muestral de primer orden es <span class="math inline">\(0{,}3\)</span> y también si es <span class="math inline">\(0{,}55\)</span>. Explica el segundo caso.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat\beta = 0{,}3\)</span>: <span class="math inline">\(0{,}3\theta^2 - \theta + 0{,}3 = 0\)</span>, <span class="math inline">\(\theta = \dfrac{1\pm\sqrt{1 - 0{,}36}}{0{,}6} = \dfrac{1\pm0{,}8}{0{,}6}\in\{0{,}333,\ 3\}\)</span>; se toma <span class="math inline">\(\hat\theta = 0{,}333\)</span>. <span class="math inline">\(\hat\beta = 0{,}55\)</span>: discriminante <span class="math inline">\(1 - 4(0{,}55)^2 = 1 - 1{,}21&lt;0\)</span>, <strong>no hay solución real</strong>: el máximo de <span class="math inline">\(\theta/(1 + \theta^2)\)</span> es <span class="math inline">\(0{,}5\)</span> (en <span class="math inline">\(\theta = 1\)</span>). Una autocorrelación muestral de <span class="math inline">\(0{,}55\)</span> es incompatible con un MA(1) (puede ser variabilidad muestral si <span class="math inline">\(n\)</span> es pequeño, o señal de que el proceso necesita más rezagos o un AR). En la estimación por II con <span class="math inline">\(\min\)</span> de la distancia, el estimador se pegaría en <span class="math inline">\(\theta = 1\)</span>, el borde.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.5.</strong> Explica por qué, si se vuelven a generar <span class="math inline">\(\varepsilon_{is}\)</span> en cada evaluación del criterio, el optimizador falla incluso con <span class="math inline">\(S\)</span> grande.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat h_n(\theta)\)</span> sería una función aleatoria de <span class="math inline">\(\theta\)</span> con ruido <strong>independiente</strong> entre evaluaciones: <span class="math inline">\(\hat h_n(\theta) = h(\theta) + \xi(\theta)\)</span> con <span class="math inline">\(\xi\)</span> ruido blanco sin continuidad. Dos evaluaciones en <span class="math inline">\(\theta\)</span> y <span class="math inline">\(\theta + \delta\)</span> muy cercanos difieren por <span class="math inline">\(O(1/\sqrt S)\)</span> aunque <span class="math inline">\(h(\theta + \delta) - h(\theta)\)</span> sea chico: el gradiente numérico <span class="math inline">\([\hat h(\theta + \delta) - \hat h(\theta)]/\delta\)</span> es pura basura al achicar <span class="math inline">\(\delta\)</span>, y los criterios de convergencia no se cumplen. Con <span class="math inline">\(\varepsilon\)</span> fijos, <span class="math inline">\(\hat h_n\)</span> es una función <strong>determinística suave</strong> de <span class="math inline">\(\theta\)</span>, y el optimizador converge al mínimo de esa función.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.6.</strong> Explica por qué el simulador de frecuencias de una probabilidad no es derivable en <span class="math inline">\(\theta\)</span> y cómo se arregla.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\hat P(\theta) = \frac1S\sum_s\mathbf{1}\{x'\theta + \varepsilon_s&gt;0\}\)</span> con <span class="math inline">\(\varepsilon_s\)</span> fijos es una <strong>función escalonada</strong> de <span class="math inline">\(\theta\)</span>: salta en <span class="math inline">\(\theta\)</span> tal que <span class="math inline">\(x'\theta = -\varepsilon_s\)</span> y es constante entre saltos (gradiente cero casi seguramente). Los optimizadores con gradiente no avanzan; y el criterio tiene muchas “mesetas”. Se arregla suavizando: <span class="math inline">\(\mathbf{1}\{z&gt;0\}\approx1/[1 + e^{-z/h}]\)</span> con <span class="math inline">\(h\)</span> chico, que es diferenciable y converge a la indicadora si <span class="math inline">\(h\to0\)</span> (a costa de un sesgo pequeño); o con simuladores que condicionan analíticamente parte de la integral, como el GHK.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 13.7 ★.</strong> Si el modelo auxiliar es el verdadero y su estimador es MV, demuestra que el estimador de II con <span class="math inline">\(S\)</span> grande coincide asintóticamente con MV, usando la función de enlace <span class="math inline">\(b(\theta) = \theta\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 13.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 13.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(b(\theta) = \theta\)</span>, <span class="math inline">\(B = I_p\)</span> y <span class="math inline">\(\Omega_\beta = \mathcal{I}^{-1}\)</span> (Clase 2). El <a href="#thm-ii" class="quarto-xref">Teorema&nbsp;2</a> con <span class="math inline">\(W = \Omega_\beta^{-1} = \mathcal{I}\)</span>: <span class="math inline">\(\operatorname{Avar} = (1 + 1/S)\,(I\,\mathcal{I}\,I)^{-1} = (1 + 1/S)\mathcal{I}^{-1}\)</span>, que tiende a <span class="math inline">\(\mathcal{I}^{-1}\)</span> cuando <span class="math inline">\(S\to\infty\)</span>. Por otro lado, la ecuación que define <span class="math inline">\(\hat\theta_{II}\)</span> es <span class="math inline">\(\tilde\beta_S(\hat\theta) = \hat\beta\)</span> (con <span class="math inline">\(q = p\)</span> el criterio se anula); si <span class="math inline">\(S\to\infty\)</span>, <span class="math inline">\(\tilde\beta_S(\theta)\to b(\theta) = \theta\)</span> uniformemente y <span class="math inline">\(\hat\theta_{II}\to\hat\beta = \hat\theta_{MV}\)</span>. Con <span class="math inline">\(S\)</span> finito, <span class="math inline">\(\tilde\beta_S(\theta)\)</span> es el MV de datos simulados con parámetro <span class="math inline">\(\theta\)</span>, un estimador <em>insesgado en primer orden</em> de <span class="math inline">\(\theta\)</span> que se promedia sobre <span class="math inline">\(S\)</span> réplicas, y el único costo es la varianza extra <span class="math inline">\(1/S\)</span>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-12.html" class="pagination-link" aria-label="Clase 12 · Regresión cuantílica">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 12 · Regresión cuantílica</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

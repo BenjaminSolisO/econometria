@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="El sesgo de Nickell de efectos fijos con rezagos de la variable dependiente, el estimador de Anderson–Hsiao, GMM en primeras diferencias (Arellano–Bond), tests de sobreidentificación y de autocorrelación, instrumentos débiles y GMM sistema.">
+
+<title>Clase 10 · Datos de panel II – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-09.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-10.html">Clase 10 · Datos de panel II</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#cuando-el-pasado-importa" id="toc-cuando-el-pasado-importa" class="nav-link active" data-scroll-target="#cuando-el-pasado-importa"><span class="header-section-number">1</span> Cuando el pasado importa</a></li>
+  <li><a href="#el-sesgo-de-nickell" id="toc-el-sesgo-de-nickell" class="nav-link" data-scroll-target="#el-sesgo-de-nickell"><span class="header-section-number">2</span> El sesgo de Nickell</a></li>
+  <li><a href="#primeras-diferencias-e-instrumentos" id="toc-primeras-diferencias-e-instrumentos" class="nav-link" data-scroll-target="#primeras-diferencias-e-instrumentos"><span class="header-section-number">3</span> Primeras diferencias e instrumentos</a>
+  <ul class="collapse">
+  <li><a href="#el-estimador-de-andersonhsiao" id="toc-el-estimador-de-andersonhsiao" class="nav-link" data-scroll-target="#el-estimador-de-andersonhsiao"><span class="header-section-number">3.1</span> El estimador de Anderson–Hsiao</a></li>
+  <li><a href="#arellanobond-gmm-en-primeras-diferencias" id="toc-arellanobond-gmm-en-primeras-diferencias" class="nav-link" data-scroll-target="#arellanobond-gmm-en-primeras-diferencias"><span class="header-section-number">3.2</span> Arellano–Bond: GMM en primeras diferencias</a></li>
+  <li><a href="#diagnóstico-los-tests-de-especificación" id="toc-diagnóstico-los-tests-de-especificación" class="nav-link" data-scroll-target="#diagnóstico-los-tests-de-especificación"><span class="header-section-number">3.3</span> Diagnóstico: los tests de especificación</a></li>
+  <li><a href="#instrumentos-débiles-y-gmm-sistema" id="toc-instrumentos-débiles-y-gmm-sistema" class="nav-link" data-scroll-target="#instrumentos-débiles-y-gmm-sistema"><span class="header-section-number">3.4</span> Instrumentos débiles y GMM sistema</a></li>
+  </ul></li>
+  <li><a href="#postgrado-cálculo-del-sesgo-de-nickell" id="toc-postgrado-cálculo-del-sesgo-de-nickell" class="nav-link" data-scroll-target="#postgrado-cálculo-del-sesgo-de-nickell"><span class="header-section-number">4</span> ★ Postgrado: cálculo del sesgo de Nickell</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">5</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">6</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-10.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 10 · Datos de panel II</h1>
+<p class="subtitle lead">Paneles dinámicos y el estimador de Arellano–Bond</p>
+</div>
+
+<div>
+  <div class="description">
+    El sesgo de Nickell de efectos fijos con rezagos de la variable dependiente, el estimador de Anderson–Hsiao, GMM en primeras diferencias (Arellano–Bond), tests de sobreidentificación y de autocorrelación, instrumentos débiles y GMM sistema.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a></p>
+<section id="cuando-el-pasado-importa" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Cuando el pasado importa</h1>
+<p>En la Clase 9 el estimador de efectos fijos eliminaba <span class="math inline">\(c_i\)</span> restando medias, con una condición: <strong>exogeneidad estricta</strong>. Pero muchos fenómenos económicos son <strong>persistentes</strong>: el empleo de una empresa depende de su empleo del año pasado, el consumo de un hogar de su hábito, el PIB de un país de su nivel previo. Eso lleva a un <strong>modelo dinámico</strong>: <span id="eq-dinamico"><span class="math display">\[
+y_{it} = \rho\,y_{i,t-1} + x_{it}'\beta + c_i + u_{it},\qquad |\rho|&lt;1.
+\tag{1}\]</span></span> Aquí <span class="math inline">\(y_{i,t-1}\)</span> es un regresor, y <strong>no puede ser estrictamente exógeno</strong>: depende de <span class="math inline">\(u_{i,t-1}\)</span>, y por lo tanto de los errores pasados. Peor, aún con <span class="math inline">\(N\to\infty\)</span> el problema persiste, porque <span class="math inline">\(c_i\)</span> afecta a todos los <span class="math inline">\(y_{it}\)</span>, incluyendo a <span class="math inline">\(y_{i,t-1}\)</span>. Dos problemas simultáneos:</p>
+<ol type="1">
+<li><strong><span class="math inline">\(c_i\)</span> correlacionado con el regresor</strong> <span class="math inline">\(y_{i,t-1}\)</span> (siempre: <span class="math inline">\(y_{i,t-1}\)</span> contiene <span class="math inline">\(c_i\)</span>). MCO agrupado queda inconsistente, con sesgo <strong>hacia arriba</strong>.</li>
+<li>Eliminar <span class="math inline">\(c_i\)</span> con efectos fijos <strong>crea otro problema</strong>, el sesgo de Nickell, que ahora veremos.</li>
+</ol>
+<p>Es el territorio de los <strong>paneles dinámicos</strong>, y la respuesta moderna es GMM (Clase 4) con instrumentos construidos con los <em>rezagos</em>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Manuel Arellano y Stephen Bond publicaron su método en 1991 en un artículo sobre el empleo en empresas británicas. Es uno de los artículos más citados de la econometría aplicada y la razón es práctica: el procedimiento está implementado en todos los paquetes y casi cualquier análisis de panel con rezagos lo usa. Arellano, además, escribió <em>Panel Data Econometrics</em> (2003), uno de los textos de referencia sobre el tema.</p></div></div></section>
+<section id="el-sesgo-de-nickell" class="level1 page-columns page-full" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El sesgo de Nickell</h1>
+<p>Consideremos el caso más simple, <span class="math inline">\(y_{it} = \rho y_{i,t-1} + c_i + u_{it}\)</span> sin otras variables, con <span class="math inline">\(u_{it}\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span> y observaciones <span class="math inline">\(t = 1,\dots,T\)</span> (más un valor inicial <span class="math inline">\(y_{i0}\)</span>). La transformación intra-grupos da <span class="math display">\[
+\ddot y_{it} = \rho\,\ddot y_{i,t-1} + \ddot u_{it},\qquad
+\ddot y_{i,t-1} = y_{i,t-1} - \frac1T\sum_{s=1}^Ty_{i,s-1},\quad\ddot u_{it} = u_{it} - \bar u_i.
+\]</span> El problema: <span class="math inline">\(\ddot y_{i,t-1}\)</span> contiene <span class="math inline">\(\bar y_{i,-1}\)</span>, que depende de <span class="math inline">\(u_{i1},\dots,u_{i,T-1}\)</span>, y <span class="math inline">\(\ddot u_{it}\)</span> contiene <span class="math inline">\(\bar u_i\)</span>, que incluye esos mismos errores. Ambos comparten términos: <strong><span class="math inline">\(\ddot y_{i,t-1}\)</span> y <span class="math inline">\(\ddot u_{it}\)</span> están correlacionados</strong> aunque <span class="math inline">\(u\)</span> sea i.i.d. y exógeno en el sentido contemporáneo.</p>
+<div id="prp-nickell" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Sesgo de Nickell)</strong></span> Con <span class="math inline">\(N\to\infty\)</span> y <span class="math inline">\(T\)</span> fijo, el estimador de efectos fijos de <span class="math inline">\(\rho\)</span> en <a href="#eq-dinamico" class="quarto-xref">Ecuación&nbsp;1</a> (sin <span class="math inline">\(x\)</span>) satisface <span class="math display">\[
+\operatorname{plim}_{N\to\infty}(\hat\rho_{FE} - \rho)\ \approx\ -\frac{1 + \rho}{T}\qquad(\text{para }T\text{ no muy chico}).
+\]</span> No desaparece con <span class="math inline">\(N\)</span>: solo con <span class="math inline">\(T\to\infty\)</span>.</p>
+</div>
+<p>Los números asustan. Con <span class="math inline">\(\rho = 0{,}5\)</span> y <span class="math inline">\(T = 5\)</span>, el sesgo es <span class="math inline">\(\approx-1{,}5/5 = -0{,}30\)</span>: el estimador de FE converge a <span class="math inline">\(0{,}20\)</span> en lugar de <span class="math inline">\(0{,}50\)</span>. Con <span class="math inline">\(T = 20\)</span> el sesgo baja a <span class="math inline">\(-0{,}075\)</span>. En paneles típicos de encuestas (<span class="math inline">\(T\)</span> de 3 a 10), el sesgo es <strong>enorme</strong>. La demostración (sección ★) calcula la covarianza entre <span class="math inline">\(\ddot y_{i,t-1}\)</span> y <span class="math inline">\(\ddot u_{it}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Stephen Nickell lo mostró en 1981 y el resultado fue una pequeña conmoción: el estimador “obvio” de panel, que todos usaban, era inconsistente en el caso más simple posible. En la jerga de la Clase 9, la exogeneidad <em>estricta</em> no vale con rezagos de <span class="math inline">\(y\)</span>. El sesgo es una de esas ideas que, una vez que las ves, no puedes dejar de ver en los artículos que ignoran el problema.</p></div></div><p>Una consecuencia práctica útil: <strong>MCO agrupado está sesgado hacia arriba</strong> (porque <span class="math inline">\(c_i\)</span> correlaciona positivamente con <span class="math inline">\(y_{i,t-1}\)</span>) y <strong>FE hacia abajo</strong> (Nickell). Un estimador consistente de <span class="math inline">\(\rho\)</span> debería caer <strong>entre los dos</strong>. Es una verificación rápida (Bond, 2002) de cualquier estimación dinámica: si tu <span class="math inline">\(\hat\rho\)</span> GMM queda fuera del intervalo [FE, MCO], algo está mal.</p>
+</section>
+<section id="primeras-diferencias-e-instrumentos" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Primeras diferencias e instrumentos</h1>
+<p>El problema del FE es que la transformación intra-grupos “contamina” <span class="math inline">\(y_{i,t-1}\)</span> con errores futuros. Una transformación más limpia es <strong>diferenciar</strong>: <span class="math display">\[
+\Delta y_{it} = \rho\,\Delta y_{i,t-1} + \Delta x_{it}'\beta + \Delta u_{it},\qquad t = 3,\dots,T.
+\]</span> <span class="math inline">\(c_i\)</span> desaparece. Pero <span class="math inline">\(\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2}\)</span> está correlacionado con <span class="math inline">\(\Delta u_{it} = u_{it} - u_{i,t-1}\)</span>, porque ambos contienen <span class="math inline">\(u_{i,t-1}\)</span>: <strong>MCO sobre las diferencias es inconsistente</strong>. Necesitamos un <strong>instrumento</strong> (Clase 10 de Econometría 1) que se correlacione con <span class="math inline">\(\Delta y_{i,t-1}\)</span> pero no con <span class="math inline">\(\Delta u_{it}\)</span>. ¿Dónde buscarlo? En el propio panel: los <em>rezagos en niveles</em>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos del panel dinámico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos del panel dinámico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>D1:</strong> <span class="math inline">\(\mathbb{E}[u_{it}] = 0\)</span> y <span class="math inline">\(u_{it}\)</span> <strong>no tiene correlación serial</strong>: <span class="math inline">\(\mathbb{E}[u_{it}u_{is}] = 0\)</span> para <span class="math inline">\(t\ne s\)</span>.</li>
+<li><strong>D2:</strong> <span class="math inline">\(\mathbb{E}[u_{it}c_i] = 0\)</span>.</li>
+<li><strong>D3 (condición inicial):</strong> <span class="math inline">\(\mathbb{E}[u_{it}y_{i1}] = 0\)</span> para <span class="math inline">\(t\ge2\)</span>.</li>
+<li>Las <span class="math inline">\(x_{it}\)</span> son <strong>estrictamente exógenas</strong> (o predeterminadas, o endógenas, ver abajo).</li>
+</ul>
+</div>
+</div>
+<div id="prp-momentos-ab" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Condiciones de momentos de Arellano–Bond)</strong></span> Bajo D1–D3, para <span class="math inline">\(t = 3,\dots,T\)</span> y <span class="math inline">\(s\ge2\)</span>, <span class="math display">\[
+\mathbb{E}\big[y_{i,t-s}\,\Delta u_{it}\big] = 0.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por la ecuación <a href="#eq-dinamico" class="quarto-xref">Ecuación&nbsp;1</a> aplicada recursivamente, <span class="math inline">\(y_{i,t-s}\)</span> es función de <span class="math inline">\(c_i\)</span>, de <span class="math inline">\(y_{i1}\)</span> y de <span class="math inline">\(u_{i2},\dots,u_{i,t-s}\)</span>. Con <span class="math inline">\(s\ge2\)</span>, el índice máximo <span class="math inline">\(t - s\le t-2\)</span>. Ahora <span class="math inline">\(\Delta u_{it} = u_{it} - u_{i,t-1}\)</span> involucra <span class="math inline">\(u_{it}\)</span> y <span class="math inline">\(u_{i,t-1}\)</span>, con <span class="math inline">\(t-1&gt;t-s\)</span>. Por D1 los <span class="math inline">\(u\)</span> de índices distintos no están correlacionados, por D2 <span class="math inline">\(c_i\)</span> no está correlacionado con <span class="math inline">\(u_{it}\)</span> ni <span class="math inline">\(u_{i,t-1}\)</span>, y por D3 tampoco <span class="math inline">\(y_{i1}\)</span>. Luego <span class="math inline">\(y_{i,t-s}\)</span> es no correlacionado con <span class="math inline">\(\Delta u_{it}\)</span>.</p>
+</div>
+<p>Esto da un <strong>sistema de instrumentos que crece con <span class="math inline">\(t\)</span></strong>. Con solo el modelo AR(1), para <span class="math inline">\(t = 3\)</span> hay un instrumento (<span class="math inline">\(y_{i1}\)</span>), para <span class="math inline">\(t = 4\)</span> hay dos (<span class="math inline">\(y_{i1}\)</span>, <span class="math inline">\(y_{i2}\)</span>), y así hasta <span class="math inline">\(t = T\)</span> con <span class="math inline">\(T - 2\)</span> instrumentos. En total <span class="math inline">\((T-1)(T-2)/2\)</span> condiciones de momentos para el único parámetro <span class="math inline">\(\rho\)</span>: <strong>mucho sobreidentificado</strong>.</p>
+<section id="el-estimador-de-andersonhsiao" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="el-estimador-de-andersonhsiao"><span class="header-section-number">3.1</span> El estimador de Anderson–Hsiao</h2>
+<p>El más simple: usar <strong>un solo</strong> instrumento por período, <span class="math inline">\(y_{i,t-2}\)</span> (o <span class="math inline">\(\Delta y_{i,t-2}\)</span>), y estimar por MC2E/VI. Es consistente, pero poco eficiente (descarta instrumentos válidos). Sirve como valor inicial.</p>
+</section>
+<section id="arellanobond-gmm-en-primeras-diferencias" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="arellanobond-gmm-en-primeras-diferencias"><span class="header-section-number">3.2</span> Arellano–Bond: GMM en primeras diferencias</h2>
+<p>El estimador de <strong>Arellano–Bond</strong> (diferencias GMM) usa <strong>todas</strong> las condiciones de la <a href="#prp-momentos-ab" class="quarto-xref">Proposición&nbsp;2</a> con GMM (Clase 4). Para cada <span class="math inline">\(i\)</span>, apilamos las ecuaciones <span class="math inline">\(t = 3,\dots,T\)</span> en <span class="math inline">\(\Delta y_i = \Delta W_i\theta + \Delta u_i\)</span> (con <span class="math inline">\(\theta = (\rho,\beta')'\)</span> y <span class="math inline">\(W_{it} = (y_{i,t-1},x_{it}')\)</span>) y la matriz de instrumentos <strong>diagonal por bloques</strong> <span class="math display">\[
+Z_i = \begin{pmatrix}
+y_{i1} &amp; &amp; &amp; \\
+&amp; y_{i1},y_{i2} &amp; &amp; \\
+&amp; &amp; \ddots &amp; \\
+&amp; &amp; &amp; y_{i1},\dots,y_{i,T-2}
+\end{pmatrix}
+\]</span> (más las <span class="math inline">\(x\)</span> estrictamente exógenas, que son instrumentos de sí mismas). Los momentos son <span class="math inline">\(\mathbb{E}[Z_i'\Delta u_i] = 0\)</span> y el estimador es <span class="math display">\[
+\hat\theta = \Big(\Delta W'Z\,\hat W\,Z'\Delta W\Big)^{-1}\Delta W'Z\,\hat W\,Z'\Delta y.
+\]</span> Con la <strong>ponderación</strong> óptima (Clase 4) <span class="math inline">\(\hat W = \big(\sum_iZ_i'\Delta\hat u_i\Delta\hat u_i'Z_i\big)^{-1}\)</span> se obtiene el GMM de dos pasos; el primer paso usa <span class="math inline">\(\hat W_1 = \big(\sum_iZ_i'HZ_i\big)^{-1}\)</span>, donde <span class="math inline">\(H\)</span> es la matriz <strong>tridiagonal</strong> de <span class="math inline">\(\operatorname{Var}(\Delta u_i)/\sigma^2\)</span> (2 en la diagonal y <span class="math inline">\(-1\)</span> en las adyacentes; Ejercicio 10.4). Toda la teoría de la Clase 4 aplica: consistencia, normalidad, eficiencia y test <span class="math inline">\(J\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Qué instrumentos son legítimos para cada regresor">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Qué instrumentos son legítimos para cada regresor
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Estrictamente exógeno</strong> (<span class="math inline">\(\mathbb{E}[u_{it}\mid x_{i1},\dots,x_{iT}] = 0\)</span>): <em>toda</em> <span class="math inline">\(x_{is}\)</span> es instrumento válido.</li>
+<li><strong>Predeterminado</strong> (<span class="math inline">\(\mathbb{E}[u_{it}\mid x_{i1},\dots,x_{it}] = 0\)</span>, pero <span class="math inline">\(x_{i,t+1}\)</span> puede depender de <span class="math inline">\(u_{it}\)</span>): <span class="math inline">\(x_{i,t-s}\)</span> con <span class="math inline">\(s\ge1\)</span> para <span class="math inline">\(\Delta u_{it}\)</span> (se pierde <span class="math inline">\(x_{it}\)</span> mismo, que puede depender de <span class="math inline">\(u_{i,t-1}\)</span>, y por eso correlacionarse con <span class="math inline">\(\Delta u_{it}\)</span>).</li>
+<li><strong>Endógeno</strong> (<span class="math inline">\(x_{it}\)</span> correlacionado con <span class="math inline">\(u_{it}\)</span>): <span class="math inline">\(x_{i,t-s}\)</span> con <span class="math inline">\(s\ge2\)</span>, igual que <span class="math inline">\(y\)</span>.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="diagnóstico-los-tests-de-especificación" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="diagnóstico-los-tests-de-especificación"><span class="header-section-number">3.3</span> Diagnóstico: los tests de especificación</h2>
+<p>Dos tests acompañan siempre a Arellano–Bond:</p>
+<ol type="1">
+<li><strong>Test <span class="math inline">\(J\)</span> de Hansen</strong> (Clase 4): <span class="math inline">\(J\to\chi^2_{r-p}\)</span> bajo la validez del conjunto de instrumentos. Un rechazo es señal de que algún instrumento es inválido.</li>
+<li><strong>Test de autocorrelación de los residuos en diferencias.</strong> Bajo D1, <span class="math inline">\(\Delta u_{it} = u_{it} - u_{i,t-1}\)</span> <strong>debería</strong> tener autocorrelación de primer orden (negativa: comparte <span class="math inline">\(u_{i,t-1}\)</span> con <span class="math inline">\(\Delta u_{i,t-1}\)</span>, correlación <span class="math inline">\(-\tfrac12\)</span>), pero <strong>ninguna de segundo orden</strong>. Se testea AR(1) (esperamos rechazar) y <strong>AR(2) (esperamos NO rechazar)</strong>. Si hay autocorrelación de segundo orden, <span class="math inline">\(u_{it}\)</span> tiene correlación serial y los rezagos usados como instrumentos dejan de ser válidos (Ejercicio 10.5).</li>
+</ol>
+</section>
+<section id="instrumentos-débiles-y-gmm-sistema" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="instrumentos-débiles-y-gmm-sistema"><span class="header-section-number">3.4</span> Instrumentos débiles y GMM sistema</h2>
+<p>El método tiene dos fragilidades conocidas.</p>
+<p><strong>(1) Persistencia alta.</strong> Cuando <span class="math inline">\(\rho\)</span> se acerca a 1, los niveles rezagados son <strong>instrumentos débiles</strong> para las diferencias. En el modelo AR(1), <span class="math inline">\(\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}\)</span> (de <a href="#eq-dinamico" class="quarto-xref">Ecuación&nbsp;1</a>), y la regresión de primera etapa de <span class="math inline">\(\Delta y_{i,t-1}\)</span> sobre <span class="math inline">\(y_{i,t-2}\)</span> (limpiada de <span class="math inline">\(c_i\)</span>) tiene coeficiente <span class="math inline">\(\rho - 1\to0\)</span>. Si <span class="math inline">\(\rho = 1\)</span> (caminata aleatoria), <span class="math inline">\(\Delta y_{i,t-1} = u_{i,t-1}\)</span> es <strong>independiente</strong> de todos los niveles rezagados: el instrumento es <strong>irrelevante</strong> (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.</p>
+<p><strong>(2) Demasiados instrumentos.</strong> Con <span class="math inline">\(T\)</span> grande el número de momentos crece como <span class="math inline">\(T^2\)</span>, y con <span class="math inline">\(N\)</span> moderado el GMM de dos pasos sobreajusta y el test <span class="math inline">\(J\)</span> <strong>pierde potencia</strong> (da <span class="math inline">\(p\)</span>-valores cercanos a 1 que no significan nada). La práctica recomendada: limitar los rezagos usados o “colapsar” la matriz <span class="math inline">\(Z_i\)</span> (una columna por rezago, no una por cada par <span class="math inline">\((t,s)\)</span>).</p>
+<p>El estimador de <strong>GMM sistema</strong> de Blundell y Bond (1998) agrega a las ecuaciones en diferencias las ecuaciones <strong>en niveles</strong>, instrumentadas con <strong>diferencias rezagadas</strong>: <span class="math inline">\(\mathbb{E}[\Delta y_{i,t-1}(c_i + u_{it})] = 0\)</span>. Esto es válido si <span class="math inline">\(\Delta y_{i,t-1}\)</span> no está correlacionado con <span class="math inline">\(c_i\)</span>, lo cual exige una condición sobre la <strong>condición inicial</strong> (que el proceso parta de su media estacionaria; Ejercicio 10.7). Cuando se cumple, hay mucha más información y el problema de instrumentos débiles se alivia; pero la condición adicional es un supuesto fuerte, y se testea con la diferencia de dos tests <span class="math inline">\(J\)</span> (el test de Hansen del conjunto adicional).</p>
+<p><strong>Errores estándar.</strong> Los de dos pasos son <em>muy</em> sesgados hacia abajo en muestras finitas; la <strong>corrección de Windmeijer</strong> (2005) es estándar y hay que usarla: capta la variabilidad adicional que introduce estimar la ponderación <span class="math inline">\(\hat W\)</span> con los residuos del primer paso.</p>
+</section>
+</section>
+<section id="postgrado-cálculo-del-sesgo-de-nickell" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> ★ Postgrado: cálculo del sesgo de Nickell</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Postgrado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Postgrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Calculamos el numerador del sesgo de FE: <span class="math inline">\(\operatorname{plim}\frac1{NT}\sum_{i,t}\ddot y_{i,t-1}\ddot u_{it}\)</span>. Supondremos estacionariedad y <span class="math inline">\(u\)</span> i.i.d.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>El sesgo de <span class="math inline">\(\hat\rho_{FE}\)</span> es el cociente <span class="math inline">\(\dfrac{\mathbb{E}[\ddot y_{i,t-1}\ddot u_{it}]\text{ (promedio en }t)}{\mathbb{E}[\ddot y_{i,t-1}^2]\text{ (promedio en }t)}\)</span>. Para el numerador, escribimos <span class="math inline">\(\ddot y_{i,t-1}\ddot u_{it} = (y_{i,t-1} - \bar y_{i,-1})(u_{it} - \bar u_i)\)</span> y expandimos en cuatro términos. En el modelo AR(1) con <span class="math inline">\(c_i\)</span>, <span class="math inline">\(y_{i,t-1} = \frac{c_i}{1-\rho} + \sum_{j\ge0}\rho^ju_{i,t-1-j}\)</span>, de modo que, para <span class="math inline">\(s\le t - 1\)</span>, <span class="math inline">\(\mathbb{E}[y_{i,t-1}u_{is}] = \rho^{t-1-s}\sigma^2\)</span> y <span class="math inline">\(=0\)</span> para <span class="math inline">\(s\ge t\)</span> (la parte <span class="math inline">\(c_i\)</span> no correlaciona con <span class="math inline">\(u\)</span>).</p>
+<ul>
+<li><span class="math inline">\(\mathbb{E}[y_{i,t-1}u_{it}] = 0\)</span>.</li>
+<li><span class="math inline">\(\mathbb{E}[y_{i,t-1}\bar u_i] = \frac{\sigma^2}T\sum_{s=1}^{t-1}\rho^{t-1-s} = \frac{\sigma^2}T\frac{1 - \rho^{t-1}}{1-\rho}\)</span>.</li>
+<li>Sumando sobre <span class="math inline">\(t = 1,\dots,T\)</span> y definiendo <span class="math inline">\(K = \sum_{t=1}^T\frac{1 - \rho^{t-1}}{1-\rho} = \frac1{1-\rho}\Big[T - \frac{1-\rho^T}{1-\rho}\Big]\)</span>, se tiene <span class="math inline">\(\sum_t\mathbb{E}[y_{i,t-1}\bar u_i] = \sigma^2K/T\)</span>.</li>
+<li>Por el mismo cálculo (relabeling), <span class="math inline">\(\sum_t\mathbb{E}[\bar y_{i,-1}u_{it}] = \sigma^2K/T\)</span> y <span class="math inline">\(\sum_t\mathbb{E}[\bar y_{i,-1}\bar u_i] = \sigma^2K/T\)</span>.</li>
+</ul>
+<p>Entonces <span class="math inline">\(\sum_t\mathbb{E}[\ddot y_{i,t-1}\ddot u_{it}] = 0 - \sigma^2K/T - \sigma^2K/T + \sigma^2K/T = -\sigma^2K/T\)</span>, y promediando sobre los <span class="math inline">\(T\)</span> períodos, el numerador es <span class="math inline">\(-\sigma^2K/T^2\approx-\dfrac{\sigma^2}{T(1-\rho)}\)</span> para <span class="math inline">\(T\)</span> grande. El denominador, para <span class="math inline">\(T\)</span> grande, es <span class="math inline">\(\mathbb{E}[\ddot y_{i,t-1}^2]\approx\sigma^2/(1-\rho^2)\)</span> (la varianza estacionaria de la parte de <span class="math inline">\(y_{i,t-1}\)</span> que no es <span class="math inline">\(c_i\)</span>). Cociente: <span class="math display">\[
+-\frac{\sigma^2}{T(1-\rho)}\cdot\frac{1-\rho^2}{\sigma^2} = -\frac{1+\rho}{T}.
+\]</span></p>
+</div>
+<p>La fórmula exacta de Nickell incluye correcciones de orden <span class="math inline">\(1/T^2\)</span>; la aproximación <span class="math inline">\(-(1+\rho)/T\)</span> es la que se usa como regla de oro. Dos lecciones: (i) el sesgo es <strong>mayor cuanto más persistente</strong> (<span class="math inline">\(\rho\)</span> alto) y <strong>cuanto más corto</strong> el panel; (ii) el sesgo es de orden <span class="math inline">\(1/T\)</span>, no <span class="math inline">\(1/N\)</span>: más individuos <strong>no</strong> lo arreglan.</p>
+</section>
+<section id="resumen" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Resumen</h1>
+<ul>
+<li>Con rezagos de <span class="math inline">\(y\)</span> no hay exogeneidad estricta. <strong>FE tiene sesgo de Nickell</strong> <span class="math inline">\(\approx-(1+\rho)/T\)</span> (<a href="#prp-nickell" class="quarto-xref">Proposición&nbsp;1</a>) y MCO agrupado está sesgado hacia arriba: un buen <span class="math inline">\(\hat\rho\)</span> cae entre ambos.</li>
+<li>Se diferencia para eliminar <span class="math inline">\(c_i\)</span> y se instrumenta <span class="math inline">\(\Delta y_{i,t-1}\)</span> con <strong>niveles rezagados</strong> <span class="math inline">\(y_{i,t-s}\)</span>, <span class="math inline">\(s\ge2\)</span> (<a href="#prp-momentos-ab" class="quarto-xref">Proposición&nbsp;2</a>). Anderson–Hsiao usa un instrumento; <strong>Arellano–Bond</strong> usa todos con GMM.</li>
+<li>Se acompaña de los tests <strong><span class="math inline">\(J\)</span> de Hansen</strong> y de <strong>autocorrelación AR(1)/AR(2)</strong> (esperar AR(1) sí, AR(2) no).</li>
+<li>Fragilidades: <strong>instrumentos débiles</strong> si <span class="math inline">\(\rho\approx1\)</span> (primera etapa con coeficiente <span class="math inline">\(\rho - 1\)</span>) y <strong>instrumentos en exceso</strong>. <strong>GMM sistema</strong> (Blundell–Bond) añade ecuaciones en niveles bajo una condición sobre el valor inicial.</li>
+<li>Errores estándar de dos pasos: usar <strong>Windmeijer</strong>.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Ejercicios</h1>
+<p><strong>Ejercicio 10.1.</strong> Con <span class="math inline">\(\rho = 0{,}5\)</span>, calcula el sesgo aproximado de Nickell para <span class="math inline">\(T = 4,\,10,\,20\)</span> y a qué converge <span class="math inline">\(\hat\rho_{FE}\)</span> en cada caso.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Sesgo <span class="math inline">\(\approx-(1+\rho)/T = -1{,}5/T\)</span>: <span class="math inline">\(T = 4\)</span>: <span class="math inline">\(-0{,}375\)</span>, <span class="math inline">\(\hat\rho_{FE}\to0{,}125\)</span>. <span class="math inline">\(T = 10\)</span>: <span class="math inline">\(-0{,}15\)</span>, <span class="math inline">\(\to0{,}35\)</span>. <span class="math inline">\(T = 20\)</span>: <span class="math inline">\(-0{,}075\)</span>, <span class="math inline">\(\to0{,}425\)</span>. (La fórmula aproximada es mala con <span class="math inline">\(T\)</span> muy chico; la exacta de Nickell da valores algo distintos, pero el orden de magnitud es el correcto.) Para que el sesgo sea menor a <span class="math inline">\(0{,}02\)</span> hace falta <span class="math inline">\(T\approx75\)</span>: en paneles de microdatos esto casi nunca ocurre.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.2.</strong> En un panel con <span class="math inline">\(T = 6\)</span> y el modelo AR(1) sin <span class="math inline">\(x\)</span>, ¿cuántas condiciones de momentos usa Arellano–Bond? ¿Y con <span class="math inline">\(T = 10\)</span>? ¿Cuántos grados de libertad tiene el test <span class="math inline">\(J\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Hay ecuaciones en diferencias para <span class="math inline">\(t = 3,\dots,T\)</span>, con <span class="math inline">\(t - 2\)</span> instrumentos en <span class="math inline">\(t\)</span>: <span class="math inline">\(\sum_{t=3}^T(t-2) = (T-2)(T-1)/2\)</span>. <span class="math inline">\(T = 6\)</span>: <span class="math inline">\(4\cdot5/2 = 10\)</span>. <span class="math inline">\(T = 10\)</span>: <span class="math inline">\(8\cdot9/2 = 36\)</span>. Con un parámetro (<span class="math inline">\(\rho\)</span>), los grados de libertad del <span class="math inline">\(J\)</span> son <span class="math inline">\(r - p = 9\)</span> y <span class="math inline">\(35\)</span>. Con <span class="math inline">\(T = 10\)</span> y <span class="math inline">\(N = 200\)</span>, 36 momentos son demasiados: el test <span class="math inline">\(J\)</span> es poco confiable y el GMM de dos pasos está sesgado. Colapsando (un instrumento por rezago), el número baja a <span class="math inline">\(T - 2 = 8\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.3.</strong> Muestra que si <span class="math inline">\(\rho = 1\)</span> (y se ignora <span class="math inline">\(c_i\)</span>) los niveles rezagados son instrumentos irrelevantes para <span class="math inline">\(\Delta y_{i,t-1}\)</span>, y que si <span class="math inline">\(\rho\)</span> es cercano a 1 son débiles.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>De <span class="math inline">\(y_{it} = \rho y_{i,t-1} + c_i + u_{it}\)</span>: <span class="math inline">\(\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}\)</span>. La <strong>primera etapa</strong> de <span class="math inline">\(\Delta y_{i,t-1}\)</span> sobre <span class="math inline">\(y_{i,t-2}\)</span> tiene coeficiente poblacional <span class="math inline">\(\rho - 1\)</span> (tras limpiar <span class="math inline">\(c_i\)</span>, que es lo que hace el efecto fijo). Si <span class="math inline">\(\rho = 1\)</span>, el coeficiente es cero: <span class="math inline">\(\Delta y_{i,t-1} = c_i + u_{i,t-1}\)</span> no depende de <span class="math inline">\(y_{i,t-2}\)</span> y el instrumento es <strong>irrelevante</strong>: la covarianza <span class="math inline">\(\operatorname{Cov}(y_{i,t-2},\Delta y_{i,t-1})\to0\)</span>. Cerca de 1 la correlación es pequeña y el estimador de VI tiene sesgo y varianza enormes (Clase 10 de Econometría 1, instrumentos débiles).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.4.</strong> Con <span class="math inline">\(u_{it}\)</span> i.i.d. <span class="math inline">\((0,\sigma^2)\)</span>, calcula <span class="math inline">\(\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-1})\)</span>, <span class="math inline">\(\operatorname{Var}(\Delta u_{it})\)</span> y escribe <span class="math inline">\(H\)</span> para <span class="math inline">\(T = 5\)</span> (ecuaciones <span class="math inline">\(t = 3,4,5\)</span>).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(\Delta u_{it}) = \operatorname{Var}(u_{it}) + \operatorname{Var}(u_{i,t-1}) = 2\sigma^2\)</span>. <span class="math inline">\(\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-1}) = \operatorname{Cov}(u_{it} - u_{i,t-1},\,u_{i,t-1} - u_{i,t-2}) = -\operatorname{Var}(u_{i,t-1}) = -\sigma^2\)</span> (único término común). Y <span class="math inline">\(\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-2}) = 0\)</span>. Entonces <span class="math inline">\(\operatorname{Var}(\Delta u_i) = \sigma^2H\)</span> con <span class="math inline">\(H = \begin{pmatrix}2&amp;-1&amp;0\\-1&amp;2&amp;-1\\0&amp;-1&amp;2\end{pmatrix}\)</span> para <span class="math inline">\(t = 3,4,5\)</span>. La correlación entre períodos consecutivos es <span class="math inline">\(-1/2\)</span>, lo que justifica esperar AR(1) negativo.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.5.</strong> Si los errores <span class="math inline">\(u_{it}\)</span> siguen un MA(1), <span class="math inline">\(u_{it} = e_{it} + \psi e_{i,t-1}\)</span>, ¿qué ocurre con el instrumento <span class="math inline">\(y_{i,t-2}\)</span> para <span class="math inline">\(\Delta u_{it}\)</span>? ¿Qué rezago sí es válido? ¿Cómo lo detecta el test AR(2)?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\Delta u_{it} = e_{it} + \psi e_{i,t-1} - e_{i,t-1} - \psi e_{i,t-2}\)</span>. <span class="math inline">\(y_{i,t-2}\)</span> contiene <span class="math inline">\(u_{i,t-2} = e_{i,t-2} + \psi e_{i,t-3}\)</span>, que correlaciona con <span class="math inline">\(e_{i,t-2}\)</span> presente en <span class="math inline">\(\Delta u_{it}\)</span> (con coeficiente <span class="math inline">\(-\psi\)</span>): <span class="math inline">\(\mathbb{E}[y_{i,t-2}\Delta u_{it}]\ne0\)</span> si <span class="math inline">\(\psi\ne0\)</span>. <strong>El rezago 2 deja de ser válido.</strong> El rezago <span class="math inline">\(s = 3\)</span> (<span class="math inline">\(y_{i,t-3}\)</span>, que contiene hasta <span class="math inline">\(e_{i,t-3}\)</span> y <span class="math inline">\(e_{i,t-4}\)</span>) no comparte shocks con <span class="math inline">\(\Delta u_{it}\)</span>: es válido. La correlación serial de <span class="math inline">\(u_{it}\)</span> aparece como <strong>autocorrelación de segundo orden</strong> de <span class="math inline">\(\Delta u_{it}\)</span> (porque <span class="math inline">\(\Delta u_{it}\)</span> y <span class="math inline">\(\Delta u_{i,t-2}\)</span> comparten <span class="math inline">\(e_{i,t-2}\)</span>), y por eso se rechaza AR(2).</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.6.</strong> Explica por qué MCO agrupado en el modelo AR(1) con efecto individual está sesgado <strong>hacia arriba</strong>. Si MCO da <span class="math inline">\(\hat\rho = 0{,}90\)</span> y FE da <span class="math inline">\(\hat\rho = 0{,}40\)</span>, ¿en qué rango debería caer un buen estimador consistente?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(y_{i,t-1} = \frac{c_i}{1-\rho} + \dots\)</span> contiene <span class="math inline">\(c_i\)</span>, y el error compuesto <span class="math inline">\(v_{it} = c_i + u_{it}\)</span> también: <span class="math inline">\(\operatorname{Cov}(y_{i,t-1},v_{it}) = \operatorname{Var}(c_i)/(1-\rho)&gt;0\)</span>. Variable omitida positivamente correlacionada con el regresor <span class="math inline">\(\Rightarrow\)</span> sesgo positivo. FE tiene sesgo negativo (Nickell). Un estimador consistente (Arellano–Bond, Blundell–Bond) debería caer <strong>entre <span class="math inline">\(0{,}40\)</span> y <span class="math inline">\(0{,}90\)</span></strong>. Si el GMM da <span class="math inline">\(0{,}20\)</span> (por debajo del FE), sospecha de instrumentos débiles o mal especificados; si da <span class="math inline">\(0{,}95\)</span>, sospecha de MCO.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 10.7 ★.</strong> (Condición inicial de Blundell–Bond.) Supón <span class="math inline">\(|\rho|&lt;1\)</span> y <span class="math inline">\(y_{i1} = \dfrac{c_i}{1-\rho} + \varepsilon_{i1}\)</span> con <span class="math inline">\(\varepsilon_{i1}\)</span> no correlacionado con <span class="math inline">\(c_i\)</span>. Muestra que <span class="math inline">\(\mathbb{E}[\Delta y_{i2}\,c_i] = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 10.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 10.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(y_{i2} = \rho y_{i1} + c_i + u_{i2}\)</span>. Entonces <span class="math inline">\(\Delta y_{i2} = y_{i2} - y_{i1} = (\rho - 1)y_{i1} + c_i + u_{i2} = (\rho - 1)\Big[\dfrac{c_i}{1-\rho} + \varepsilon_{i1}\Big] + c_i + u_{i2} = -c_i + (\rho-1)\varepsilon_{i1} + c_i + u_{i2} = (\rho - 1)\varepsilon_{i1} + u_{i2}\)</span>. Como <span class="math inline">\(\varepsilon_{i1}\)</span> y <span class="math inline">\(u_{i2}\)</span> son no correlacionados con <span class="math inline">\(c_i\)</span>, <span class="math inline">\(\mathbb{E}[\Delta y_{i2}c_i] = 0\)</span>. La condición dice que cada unidad parte de su “nivel de equilibrio” <span class="math inline">\(c_i/(1-\rho)\)</span> más una desviación no sistemática. Si el proceso no está en estado estacionario cuando se empieza a observar (por ejemplo, empresas jóvenes, lejos de su nivel de largo plazo), la condición falla y el GMM sistema es inconsistente.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-09.html" class="pagination-link" aria-label="Clase 9 · Datos de panel I">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 9 · Datos de panel I</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

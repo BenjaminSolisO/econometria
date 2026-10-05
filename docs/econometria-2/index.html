@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Temario tentativo de Econometría 2. En preparación.">
+<meta name="description" content="Trece clases teóricas: estimación por extremos, máxima verosimilitud, GMM, elección discreta, conteo y duración, censura y selección, datos de panel, regresión cuantílica y estimación por simulación.">
 
 <title>Econometría 2 – Econometría</title>
 <style>
@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-01.html" rel="next">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -46,7 +47,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-c64d0ac6b346b31fb053d1269afbdd45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -109,7 +110,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../assets/extra.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -148,10 +149,111 @@ window.Quarto = {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/index.html">Econometría 2</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 11 · Paneles no lineales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 12 · Regresión cuantílica</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 13 · Estimación por simulación</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     
 <!-- main -->
@@ -165,7 +267,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Temario tentativo de Econometría 2. En preparación.
+    Trece clases teóricas: estimación por extremos, máxima verosimilitud, GMM, elección discreta, conteo y duración, censura y selección, datos de panel, regresión cuantílica y estimación por simulación.
   </div>
 </div>
 
@@ -182,37 +284,81 @@ window.Quarto = {
 </header>
 
 
-<div class="callout callout-style-default callout-caution callout-titled" title="En preparación">
+<p>Econometría 1 construyó la teoría del modelo lineal. Este curso la lleva más allá, con una idea que organiza todo: <strong>casi todo estimador es el máximo de un criterio muestral</strong>, y una sola demostración de consistencia y normalidad asintótica (la Clase 1) sirve para todos. Después, cada clase aplica esa maquinaria a un tipo de dato o de problema (variables binarias, conteos, duraciones, censura, paneles, cuantiles) y a una pregunta (qué se identifica, qué se puede estimar, qué se puede testear).</p>
+<p>Como en Econometría 1, cada resultado está demostrado o marcado como un hecho que se toma prestado, y cada demostración va precedida de un recuadro <strong>Borrador</strong> donde se piensa en voz alta cómo encontrarla. Las secciones <strong>★ Postgrado</strong> profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Requisito">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Precaución</span>En preparación
+<span class="screen-reader-only">Precaución</span>Requisito
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Este curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1 (borradores, demostraciones paso a paso, secciones ★ y ejercicios resueltos).</p>
+<p>Este curso supone Econometría 1: los resultados de MCO, la teoría asintótica (LGN, TCL, Slutsky, método delta), la normal multivariada y las formas cuadráticas, y la teoría de variables instrumentales. Se citan por número de clase.</p>
 </div>
 </div>
-<section id="temario-tentativo" class="level2">
-<h2 class="anchored" data-anchor-id="temario-tentativo">Temario tentativo</h2>
-<ol type="1">
-<li><strong>Estimación por extremos:</strong> consistencia y normalidad asintótica de M-estimadores.</li>
-<li><strong>Máxima verosimilitud:</strong> identificación, información de Fisher, cota de Cramér–Rao, eficiencia asintótica.</li>
-<li><strong>Tests de la trinidad:</strong> Wald, razón de verosimilitud y multiplicador de Lagrange.</li>
-<li><strong>Método generalizado de momentos:</strong> matriz de pesos óptima, test <span class="math inline">\(J\)</span> de Hansen.</li>
-<li><strong>Elección discreta I:</strong> probit, logit y efectos marginales.</li>
-<li><strong>Elección discreta II:</strong> logit multinomial y ordenado, IIA, logit anidado.</li>
-<li><strong>Conteo y duración:</strong> Poisson, binomial negativa, QMLE de Poisson, función de riesgo y modelo de Cox.</li>
-<li><strong>Datos censurados y selección:</strong> tobit y el modelo de Heckman.</li>
-<li><strong>Datos de panel I:</strong> efectos fijos, efectos aleatorios y el test de Hausman.</li>
-<li><strong>Datos de panel II:</strong> paneles dinámicos, Arellano–Bond.</li>
-<li><strong>Paneles no lineales:</strong> probit y logit con efectos fijos, parámetros incidentales, enfoque de Chamberlain.</li>
-<li><strong>Regresión cuantílica:</strong> función <em>check</em>, M-estimador no suave y normalidad asintótica sin diferenciabilidad.</li>
-<li><strong>Estimación por simulación:</strong> método de momentos simulado, inferencia indirecta y máxima verosimilitud simulada.</li>
-</ol>
-<p>Mientras tanto, puedes empezar (o repasar) con <a href="../econometria-1/index.html">Econometría 1</a>.</p>
+<section id="clases" class="level2">
+<h2 class="anchored" data-anchor-id="clases">Clases</h2>
+<ul class="clases">
+<li>
+<span class="n">01</span><span><a href="../econometria-2/clase-01.html">Estimación por extremos</a><span class="d">M-estimadores, ley de los grandes números uniforme, consistencia, normalidad asintótica y la varianza sándwich general. ★ Demostración de la LGN uniforme.</span></span>
+</li>
+<li>
+<span class="n">02</span><span><a href="../econometria-2/clase-02.html">Máxima verosimilitud</a><span class="d">Desigualdad de Gibbs, igualdad de la información, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud. ★ El estimador de Hodges.</span></span>
+</li>
+<li>
+<span class="n">03</span><span><a href="../econometria-2/clase-03.html">Los tres tests de la trinidad</a><span class="d">Wald, razón de verosimilitud y multiplicador de Lagrange: equivalencia asintótica, W ≥ LR ≥ LM, el LM como nR² y la no invarianza del Wald. ★ Potencia local.</span></span>
+</li>
+<li>
+<span class="n">04</span><span><a href="../econometria-2/clase-04.html">Método generalizado de momentos</a><span class="d">Condiciones de momentos, matriz de pesos óptima, GMM en dos pasos, test J de Hansen y relación con MC2E. ★ Por qué no importa el primer paso.</span></span>
+</li>
+<li>
+<span class="n">05</span><span><a href="../econometria-2/clase-05.html">Elección discreta I</a><span class="d">Probit y logit, variable latente, identificación de escala, concavidad del logit, efectos marginales y tres trampas de interpretación. ★ Concavidad del probit.</span></span>
+</li>
+<li>
+<span class="n">06</span><span><a href="../econometria-2/clase-06.html">Elección discreta II</a><span class="d">Utilidad aleatoria, logit multinomial con errores Gumbel, IIA y el bus azul, logit anidado y modelos ordenados. ★ El logsum.</span></span>
+</li>
+<li>
+<span class="n">07</span><span><a href="../econometria-2/clase-07.html">Conteo y duración</a><span class="d">Poisson como QMLE, binomial negativa, función de riesgo, censura y el modelo de Cox. ★ Cox como verosimilitud perfilada.</span></span>
+</li>
+<li>
+<span class="n">08</span><span><a href="../econometria-2/clase-08.html">Datos censurados y selección</a><span class="d">Tobit, medias truncadas con la razón de Mills, efectos marginales, el modelo de Heckman en dos pasos y la restricción de exclusión. ★ Concavidad del tobit.</span></span>
+</li>
+<li>
+<span class="n">09</span><span><a href="../econometria-2/clase-09.html">Datos de panel I</a><span class="d">MCO agrupado con errores por clúster, efectos fijos, primeras diferencias, efectos aleatorios como MCG, test de Hausman y la regresión de Mundlak. ★ Equivalencia de Mundlak.</span></span>
+</li>
+<li>
+<span class="n">10</span><span><a href="../econometria-2/clase-10.html">Datos de panel II</a><span class="d">El sesgo de Nickell, Anderson–Hsiao, GMM de Arellano–Bond, tests de especificación e instrumentos débiles. ★ Cálculo del sesgo de Nickell.</span></span>
+</li>
+<li>
+<span class="n">11</span><span><a href="../econometria-2/clase-11.html">Paneles no lineales</a><span class="d">Parámetros incidentales, logit condicional, Poisson con efectos fijos, efectos correlacionados de Chamberlain y efectos marginales promedio. ★ El factor 2 del logit con T = 2.</span></span>
+</li>
+<li>
+<span class="n">12</span><span><a href="../econometria-2/clase-12.html">Regresión cuantílica</a><span class="d">La función check, interpretación con heterogeneidad, equivarianza y normalidad asintótica sin diferenciabilidad (identidad de Knight). ★ Lema de convexidad.</span></span>
+</li>
+<li>
+<span class="n">13</span><span><a href="../econometria-2/clase-13.html">Estimación por simulación</a><span class="d">Momentos simulados, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza 1 + 1/S. ★ II con el modelo auxiliar correcto.</span></span>
+</li>
+</ul>
+</section>
+<section id="notación" class="level2">
+<h2 class="anchored" data-anchor-id="notación">Notación</h2>
+<p>Los datos son <span class="math inline">\(w_i\)</span> (<span class="math inline">\(i = 1,\dots,n\)</span>), i.i.d. salvo que se diga lo contrario; <span class="math inline">\(\theta\in\Theta\subset\mathbb{R}^p\)</span> es el parámetro y <span class="math inline">\(\theta_0\)</span> su valor verdadero. Un M-estimador maximiza <span class="math inline">\(\hat Q_n(\theta) = \frac1n\sum_im(w_i,\theta)\)</span>. <span class="math inline">\(\nabla\)</span> y <span class="math inline">\(\nabla^2\)</span> son el gradiente y el hessiano en <span class="math inline">\(\theta\)</span>; <span class="math inline">\(s(w;\theta) = \nabla\log f(w;\theta)\)</span> es el score y <span class="math inline">\(\mathcal{I}(\theta) = \mathbb{E}[ss']\)</span> la información de Fisher. En GMM, <span class="math inline">\(g(w,\theta)\)</span> es el vector de momentos, <span class="math inline">\(G = \mathbb{E}[\nabla g]\)</span> y <span class="math inline">\(\Omega = \mathbb{E}[gg']\)</span>. En paneles, <span class="math inline">\(i\)</span> indexa unidades (<span class="math inline">\(N\)</span> grande) y <span class="math inline">\(t\)</span> períodos (<span class="math inline">\(T\)</span> fijo). <span class="math inline">\(\phi\)</span> y <span class="math inline">\(\Phi\)</span> son la densidad y la distribución normal estándar, <span class="math inline">\(\Lambda\)</span> la logística.</p>
+</section>
+<section id="bibliografía" class="level2">
+<h2 class="anchored" data-anchor-id="bibliografía">Bibliografía</h2>
+<ul>
+<li>Hayashi, F. (2000). <em>Econometrics</em>. Princeton University Press. (GMM y asintótica con rigor.)</li>
+<li>Wooldridge, J. (2010). <em>Econometric Analysis of Cross Section and Panel Data</em>, 2.ª ed.&nbsp;MIT Press. (Referencia principal para elección discreta, selección y paneles.)</li>
+<li>Cameron, A. C. y Trivedi, P. (2005). <em>Microeconometrics: Methods and Applications</em>. Cambridge University Press. (Muy completo y práctico: conteos, duraciones, simulación.)</li>
+<li>Newey, W. y McFadden, D. (1994). “Large sample estimation and hypothesis testing”, en <em>Handbook of Econometrics</em>, vol.&nbsp;4. (Teoría general de M-estimadores y GMM; la Clase 1 la sigue de cerca.)</li>
+<li>Train, K. (2009). <em>Discrete Choice Methods with Simulation</em>, 2.ª ed.&nbsp;Cambridge University Press. (Clases 6 y 13.)</li>
+<li>Koenker, R. (2005). <em>Quantile Regression</em>. Cambridge University Press. (Clase 12.)</li>
+<li>Arellano, M. (2003). <em>Panel Data Econometrics</em>. Oxford University Press. (Clases 9 a 11.)</li>
+<li>Hansen, B. (2022). <em>Econometrics</em>. Princeton University Press. (Postgrado; marco moderno.)</li>
+</ul>
 
 
 </section>
@@ -623,6 +769,15 @@ window.Quarto = {
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-01.html" class="pagination-link" aria-label="Clase 1 · Estimación por extremos">
+        <span class="nav-page-text">Clase 1 · Estimación por extremos</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

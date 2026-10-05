@@ -1,28 +1,49 @@
 ---
 title: "Econometría 2"
 subtitle: "Más allá del modelo lineal"
-description: "Temario tentativo de Econometría 2. En preparación."
+description: "Trece clases teóricas: estimación por extremos, máxima verosimilitud, GMM, elección discreta, conteo y duración, censura y selección, datos de panel, regresión cuantílica y estimación por simulación."
+format: html
+number-sections: false
 toc: false
 ---
 
-::: {.callout-caution title="En preparación"}
-Este curso todavía no está publicado. Abajo está el temario tentativo; seguirá el mismo formato de Econometría 1 (borradores, demostraciones paso a paso, secciones ★ y ejercicios resueltos).
+Econometría 1 construyó la teoría del modelo lineal. Este curso la lleva más allá, con una idea que organiza todo: **casi todo estimador es el máximo de un criterio muestral**, y una sola demostración de consistencia y normalidad asintótica (la Clase 1) sirve para todos. Después, cada clase aplica esa maquinaria a un tipo de dato o de problema (variables binarias, conteos, duraciones, censura, paneles, cuantiles) y a una pregunta (qué se identifica, qué se puede estimar, qué se puede testear).
+
+Como en Econometría 1, cada resultado está demostrado o marcado como un hecho que se toma prestado, y cada demostración va precedida de un recuadro **Borrador** donde se piensa en voz alta cómo encontrarla. Las secciones **★ Postgrado** profundizan y se pueden saltar en una primera lectura. Cada clase termina con ejercicios resueltos (con la solución plegada).
+
+::: {.callout-caution title="Requisito"}
+Este curso supone Econometría 1: los resultados de MCO, la teoría asintótica (LGN, TCL, Slutsky, método delta), la normal multivariada y las formas cuadráticas, y la teoría de variables instrumentales. Se citan por número de clase.
 :::
 
-## Temario tentativo
+## Clases
 
-1. **Estimación por extremos:** consistencia y normalidad asintótica de M-estimadores.
-2. **Máxima verosimilitud:** identificación, información de Fisher, cota de Cramér–Rao, eficiencia asintótica.
-3. **Tests de la trinidad:** Wald, razón de verosimilitud y multiplicador de Lagrange.
-4. **Método generalizado de momentos:** matriz de pesos óptima, test $J$ de Hansen.
-5. **Elección discreta I:** probit, logit y efectos marginales.
-6. **Elección discreta II:** logit multinomial y ordenado, IIA, logit anidado.
-7. **Conteo y duración:** Poisson, binomial negativa, QMLE de Poisson, función de riesgo y modelo de Cox.
-8. **Datos censurados y selección:** tobit y el modelo de Heckman.
-9. **Datos de panel I:** efectos fijos, efectos aleatorios y el test de Hausman.
-10. **Datos de panel II:** paneles dinámicos, Arellano–Bond.
-11. **Paneles no lineales:** probit y logit con efectos fijos, parámetros incidentales, enfoque de Chamberlain.
-12. **Regresión cuantílica:** función *check*, M-estimador no suave y normalidad asintótica sin diferenciabilidad.
-13. **Estimación por simulación:** método de momentos simulado, inferencia indirecta y máxima verosimilitud simulada.
+<ul class="clases">
+<li><span class="n">01</span><span><a href="clase-01.qmd">Estimación por extremos</a><span class="d">M-estimadores, ley de los grandes números uniforme, consistencia, normalidad asintótica y la varianza sándwich general. ★ Demostración de la LGN uniforme.</span></span></li>
+<li><span class="n">02</span><span><a href="clase-02.qmd">Máxima verosimilitud</a><span class="d">Desigualdad de Gibbs, igualdad de la información, cota de Cramér–Rao, eficiencia asintótica y cuasi-verosimilitud. ★ El estimador de Hodges.</span></span></li>
+<li><span class="n">03</span><span><a href="clase-03.qmd">Los tres tests de la trinidad</a><span class="d">Wald, razón de verosimilitud y multiplicador de Lagrange: equivalencia asintótica, W ≥ LR ≥ LM, el LM como nR² y la no invarianza del Wald. ★ Potencia local.</span></span></li>
+<li><span class="n">04</span><span><a href="clase-04.qmd">Método generalizado de momentos</a><span class="d">Condiciones de momentos, matriz de pesos óptima, GMM en dos pasos, test J de Hansen y relación con MC2E. ★ Por qué no importa el primer paso.</span></span></li>
+<li><span class="n">05</span><span><a href="clase-05.qmd">Elección discreta I</a><span class="d">Probit y logit, variable latente, identificación de escala, concavidad del logit, efectos marginales y tres trampas de interpretación. ★ Concavidad del probit.</span></span></li>
+<li><span class="n">06</span><span><a href="clase-06.qmd">Elección discreta II</a><span class="d">Utilidad aleatoria, logit multinomial con errores Gumbel, IIA y el bus azul, logit anidado y modelos ordenados. ★ El logsum.</span></span></li>
+<li><span class="n">07</span><span><a href="clase-07.qmd">Conteo y duración</a><span class="d">Poisson como QMLE, binomial negativa, función de riesgo, censura y el modelo de Cox. ★ Cox como verosimilitud perfilada.</span></span></li>
+<li><span class="n">08</span><span><a href="clase-08.qmd">Datos censurados y selección</a><span class="d">Tobit, medias truncadas con la razón de Mills, efectos marginales, el modelo de Heckman en dos pasos y la restricción de exclusión. ★ Concavidad del tobit.</span></span></li>
+<li><span class="n">09</span><span><a href="clase-09.qmd">Datos de panel I</a><span class="d">MCO agrupado con errores por clúster, efectos fijos, primeras diferencias, efectos aleatorios como MCG, test de Hausman y la regresión de Mundlak. ★ Equivalencia de Mundlak.</span></span></li>
+<li><span class="n">10</span><span><a href="clase-10.qmd">Datos de panel II</a><span class="d">El sesgo de Nickell, Anderson–Hsiao, GMM de Arellano–Bond, tests de especificación e instrumentos débiles. ★ Cálculo del sesgo de Nickell.</span></span></li>
+<li><span class="n">11</span><span><a href="clase-11.qmd">Paneles no lineales</a><span class="d">Parámetros incidentales, logit condicional, Poisson con efectos fijos, efectos correlacionados de Chamberlain y efectos marginales promedio. ★ El factor 2 del logit con T = 2.</span></span></li>
+<li><span class="n">12</span><span><a href="clase-12.qmd">Regresión cuantílica</a><span class="d">La función check, interpretación con heterogeneidad, equivarianza y normalidad asintótica sin diferenciabilidad (identidad de Knight). ★ Lema de convexidad.</span></span></li>
+<li><span class="n">13</span><span><a href="clase-13.qmd">Estimación por simulación</a><span class="d">Momentos simulados, el sesgo de la verosimilitud simulada, inferencia indirecta y la regla de varianza 1 + 1/S. ★ II con el modelo auxiliar correcto.</span></span></li>
+</ul>
 
-Mientras tanto, puedes empezar (o repasar) con [Econometría 1](../econometria-1/index.qmd).
+## Notación
+
+Los datos son $w_i$ ($i = 1,\dots,n$), i.i.d. salvo que se diga lo contrario; $\theta\in\Theta\subset\mathbb{R}^p$ es el parámetro y $\theta_0$ su valor verdadero. Un M-estimador maximiza $\hat Q_n(\theta) = \frac1n\sum_im(w_i,\theta)$. $\nabla$ y $\nabla^2$ son el gradiente y el hessiano en $\theta$; $s(w;\theta) = \nabla\log f(w;\theta)$ es el score y $\mathcal{I}(\theta) = \mathbb{E}[ss']$ la información de Fisher. En GMM, $g(w,\theta)$ es el vector de momentos, $G = \mathbb{E}[\nabla g]$ y $\Omega = \mathbb{E}[gg']$. En paneles, $i$ indexa unidades ($N$ grande) y $t$ períodos ($T$ fijo). $\phi$ y $\Phi$ son la densidad y la distribución normal estándar, $\Lambda$ la logística.
+
+## Bibliografía
+
+- Hayashi, F. (2000). *Econometrics*. Princeton University Press. (GMM y asintótica con rigor.)
+- Wooldridge, J. (2010). *Econometric Analysis of Cross Section and Panel Data*, 2.ª ed. MIT Press. (Referencia principal para elección discreta, selección y paneles.)
+- Cameron, A. C. y Trivedi, P. (2005). *Microeconometrics: Methods and Applications*. Cambridge University Press. (Muy completo y práctico: conteos, duraciones, simulación.)
+- Newey, W. y McFadden, D. (1994). "Large sample estimation and hypothesis testing", en *Handbook of Econometrics*, vol. 4. (Teoría general de M-estimadores y GMM; la Clase 1 la sigue de cerca.)
+- Train, K. (2009). *Discrete Choice Methods with Simulation*, 2.ª ed. Cambridge University Press. (Clases 6 y 13.)
+- Koenker, R. (2005). *Quantile Regression*. Cambridge University Press. (Clase 12.)
+- Arellano, M. (2003). *Panel Data Econometrics*. Oxford University Press. (Clases 9 a 11.)
+- Hansen, B. (2022). *Econometrics*. Princeton University Press. (Postgrado; marco moderno.)

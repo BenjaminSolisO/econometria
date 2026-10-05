@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Heterogeneidad no observada en paneles cortos: MCO agrupado con errores por clúster, estimador intra-grupos (efectos fijos), primeras diferencias, efectos aleatorios como MCG, el test de Hausman y la equivalencia de Mundlak.">
+
+<title>Clase 9 · Datos de panel I – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../econometria-2/clase-10.html" rel="next">
+<link href="../econometria-2/clase-08.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed slimcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../econometria-2/index.html" aria-current="page"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../econometria-2/clase-09.html">Clase 9 · Datos de panel I</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Econometría 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Estimación por extremos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Máxima verosimilitud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los tres tests de la trinidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Método generalizado de momentos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Elección discreta I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Elección discreta II</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 7 · Conteo y duración</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 8 · Datos censurados y selección</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 9 · Datos de panel I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../econometria-2/clase-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 10 · Datos de panel II</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#observar-lo-mismo-varias-veces" id="toc-observar-lo-mismo-varias-veces" class="nav-link active" data-scroll-target="#observar-lo-mismo-varias-veces"><span class="header-section-number">1</span> Observar lo mismo varias veces</a></li>
+  <li><a href="#mco-agrupado-y-errores-por-clúster" id="toc-mco-agrupado-y-errores-por-clúster" class="nav-link" data-scroll-target="#mco-agrupado-y-errores-por-clúster"><span class="header-section-number">2</span> MCO agrupado y errores por clúster</a></li>
+  <li><a href="#efectos-fijos-el-estimador-intra-grupos" id="toc-efectos-fijos-el-estimador-intra-grupos" class="nav-link" data-scroll-target="#efectos-fijos-el-estimador-intra-grupos"><span class="header-section-number">3</span> Efectos fijos: el estimador intra-grupos</a>
+  <ul class="collapse">
+  <li><a href="#qué-se-pierde-y-qué-se-paga" id="toc-qué-se-pierde-y-qué-se-paga" class="nav-link" data-scroll-target="#qué-se-pierde-y-qué-se-paga"><span class="header-section-number">3.1</span> Qué se pierde y qué se paga</a></li>
+  <li><a href="#primeras-diferencias" id="toc-primeras-diferencias" class="nav-link" data-scroll-target="#primeras-diferencias"><span class="header-section-number">3.2</span> Primeras diferencias</a></li>
+  </ul></li>
+  <li><a href="#efectos-aleatorios" id="toc-efectos-aleatorios" class="nav-link" data-scroll-target="#efectos-aleatorios"><span class="header-section-number">4</span> Efectos aleatorios</a>
+  <ul class="collapse">
+  <li><a href="#cuál-usar-el-test-de-hausman" id="toc-cuál-usar-el-test-de-hausman" class="nav-link" data-scroll-target="#cuál-usar-el-test-de-hausman"><span class="header-section-number">4.1</span> ¿Cuál usar? El test de Hausman</a></li>
+  </ul></li>
+  <li><a href="#la-aproximación-de-mundlak-y-su-test-robusto" id="toc-la-aproximación-de-mundlak-y-su-test-robusto" class="nav-link" data-scroll-target="#la-aproximación-de-mundlak-y-su-test-robusto"><span class="header-section-number">5</span> La aproximación de Mundlak y su test robusto</a></li>
+  <li><a href="#postgrado-equivalencia-de-mundlak" id="toc-postgrado-equivalencia-de-mundlak" class="nav-link" data-scroll-target="#postgrado-equivalencia-de-mundlak"><span class="header-section-number">6</span> ★ Postgrado: equivalencia de Mundlak</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">7</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-09.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 9 · Datos de panel I</h1>
+<p class="subtitle lead">Efectos fijos, efectos aleatorios y el test de Hausman</p>
+</div>
+
+<div>
+  <div class="description">
+    Heterogeneidad no observada en paneles cortos: MCO agrupado con errores por clúster, estimador intra-grupos (efectos fijos), primeras diferencias, efectos aleatorios como MCG, el test de Hausman y la equivalencia de Mundlak.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-09.pdf">Descargar esta clase en PDF</a></p>
+<section id="observar-lo-mismo-varias-veces" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Observar lo mismo varias veces</h1>
+<p>Un <strong>panel</strong> sigue a las mismas <span class="math inline">\(N\)</span> unidades (personas, empresas, países) durante <span class="math inline">\(T\)</span> períodos. Su gran ventaja sobre un corte transversal es que permite controlar por todo lo que <strong>no cambia</strong> en el tiempo y que no observamos: la habilidad innata de un trabajador, la cultura de una empresa, la geografía de un país. Eso es lo que llamamos <strong>heterogeneidad no observada</strong>, y es la razón de ser de la mayoría de los estudios de panel.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;El panel más famoso es el PSID (<em>Panel Study of Income Dynamics</em>), que desde 1968 sigue a las mismas familias estadounidenses, y a sus hijos y a los hijos de sus hijos. Algunos de sus participantes llevan más años en la base de datos que muchos econometristas en su carrera. Un panel es, en cierto sentido, un experimento natural en el que cada individuo es su propio control.</p></div></div><p>El modelo es <span id="eq-panel"><span class="math display">\[
+y_{it} = x_{it}'\beta + c_i + u_{it},\qquad i = 1,\dots,N,\quad t = 1,\dots,T.
+\tag{1}\]</span></span> Aquí <span class="math inline">\(c_i\)</span> es el <strong>efecto individual</strong> (constante en <span class="math inline">\(t\)</span>, no observado) y <span class="math inline">\(u_{it}\)</span> el error <strong>idiosincrático</strong>. Trabajamos con <strong><span class="math inline">\(N\)</span> grande y <span class="math inline">\(T\)</span> fijo</strong> (paneles “cortos”, típicos de encuestas de hogares), y todo el límite es en <span class="math inline">\(N\to\infty\)</span>. Las <span class="math inline">\(N\)</span> unidades son i.i.d., pero <strong>dentro de cada unidad</strong> las <span class="math inline">\(T\)</span> observaciones están relacionadas por <span class="math inline">\(c_i\)</span>. Para cada <span class="math inline">\(i\)</span>, escribimos <span class="math inline">\(y_i = (y_{i1},\dots,y_{iT})'\)</span> (<span class="math inline">\(T\times1\)</span>), <span class="math inline">\(X_i\)</span> (<span class="math inline">\(T\times k\)</span>), y similarmente <span class="math inline">\(u_i\)</span>.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuesto de exogeneidad estricta">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuesto de exogeneidad estricta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}\big[u_{it}\mid x_{i1},\dots,x_{iT},c_i\big] = 0\)</span> para todo <span class="math inline">\(t\)</span>. Es decir, el error de hoy es independiente de las <span class="math inline">\(x\)</span> de <strong>todos</strong> los períodos (pasados y futuros), dado <span class="math inline">\(c_i\)</span>.</p>
+</div>
+</div>
+<p>La exogeneidad estricta es más fuerte que la exogeneidad contemporánea de MCO: <strong>descarta</strong> que el error de hoy afecte a las <span class="math inline">\(x\)</span> de mañana (por ejemplo, un regresor que sea una variable dependiente rezagada). La Clase 10 trata justo el caso en que se viola.</p>
+<p>El problema central: <span class="math inline">\(c_i\)</span> está en el error compuesto <span class="math inline">\(v_{it} = c_i + u_{it}\)</span>, y puede estar <strong>correlacionado con <span class="math inline">\(x_{it}\)</span></strong> (la habilidad correlaciona con la educación). Dos filosofías, según qué se suponga sobre <span class="math inline">\(c_i\)</span>.</p>
+</section>
+<section id="mco-agrupado-y-errores-por-clúster" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> MCO agrupado y errores por clúster</h1>
+<p>Ignorar <span class="math inline">\(c_i\)</span> y correr MCO sobre las <span class="math inline">\(NT\)</span> observaciones (<strong>MCO agrupado</strong>, <em>pooled</em>) es consistente si y solo si <span class="math display">\[
+\mathbb{E}\big[x_{it}(c_i + u_{it})\big] = 0\iff\mathbb{E}[x_{it}c_i] = 0,
+\]</span> es decir, si <span class="math inline">\(c_i\)</span> es <strong>no correlacionado</strong> con los regresores. Si <span class="math inline">\(c_i\)</span> afecta a <span class="math inline">\(x\)</span>, es una variable omitida clásica (Clase 8 de Econometría 1). Pero incluso si es consistente, la inferencia usual es incorrecta: <strong><span class="math inline">\(v_{it}\)</span> está correlacionado en el tiempo</strong> dentro de cada <span class="math inline">\(i\)</span> (comparten <span class="math inline">\(c_i\)</span>): <span class="math inline">\(\operatorname{Cov}(v_{it},v_{is}) = \sigma_c^2&gt;0\)</span>. MCO supone independencia entre observaciones; aquí hay <span class="math inline">\(N\)</span> clústeres independientes de <span class="math inline">\(T\)</span> observaciones dependientes.</p>
+<p>Es una situación de M-estimación (Clase 1) con <strong>la unidad <span class="math inline">\(i\)</span> como observación independiente</strong>. El score del clúster es <span class="math inline">\(X_i'v_i\)</span> (suma sobre <span class="math inline">\(t\)</span>), y la varianza <strong>robusta por clúster</strong> (Liang–Zeger, Arellano) es el sándwich <span class="math display">\[
+\widehat{\operatorname{Avar}}(\hat\beta_{\text{pool}}) = \Big(\sum_iX_i'X_i\Big)^{-1}\Big(\sum_iX_i'\hat v_i\hat v_i'X_i\Big)\Big(\sum_iX_i'X_i\Big)^{-1},
+\]</span> que es válida con <span class="math inline">\(N\to\infty\)</span>, sea cual sea la correlación dentro de <span class="math inline">\(i\)</span> (serial, heterocedástica). Ignorarla da errores estándar demasiado pequeños: con <span class="math inline">\(T\)</span> períodos y correlación intraclase <span class="math inline">\(\rho\)</span> del error, la varianza del promedio queda multiplicada por el <strong>efecto de diseño</strong> <span class="math inline">\(1 + (T-1)\rho\)</span> (Ejercicio 9.6), de modo que con <span class="math inline">\(T = 5\)</span> y <span class="math inline">\(\rho = 0{,}5\)</span> el error estándar verdadero es <span class="math inline">\(\sqrt3\approx1{,}7\)</span> veces el reportado. <strong>En paneles, siempre se usan errores estándar agrupados por individuo.</strong></p>
+</section>
+<section id="efectos-fijos-el-estimador-intra-grupos" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Efectos fijos: el estimador intra-grupos</h1>
+<p>La idea de efectos fijos (FE) es <strong>eliminar <span class="math inline">\(c_i\)</span></strong> sin suponer nada sobre su relación con <span class="math inline">\(x\)</span>. Promediando <a href="#eq-panel" class="quarto-xref">Ecuación&nbsp;1</a> sobre <span class="math inline">\(t\)</span> para cada <span class="math inline">\(i\)</span>: <span class="math inline">\(\bar y_i = \bar x_i'\beta + c_i + \bar u_i\)</span>. Restando, <span id="eq-within"><span class="math display">\[
+\underbrace{y_{it} - \bar y_i}_{\ddot y_{it}} = \underbrace{(x_{it} - \bar x_i)}_{\ddot x_{it}}{}'\beta + \underbrace{(u_{it} - \bar u_i)}_{\ddot u_{it}}.
+\tag{2}\]</span></span> <span class="math inline">\(c_i\)</span> <strong>desaparece</strong>. El estimador de efectos fijos (o <strong>intra-grupos</strong>, <em>within</em>) es MCO sobre <a href="#eq-within" class="quarto-xref">Ecuación&nbsp;2</a>: <span class="math display">\[
+\hat\beta_{FE} = \Big(\sum_{i}\sum_t\ddot x_{it}\ddot x_{it}'\Big)^{-1}\sum_i\sum_t\ddot x_{it}\ddot y_{it}.
+\]</span> En notación matricial, con <span class="math inline">\(Q = I_T - \frac1T\iota\iota'\)</span> la matriz que resta la media temporal, <span class="math inline">\(\hat\beta_{FE} = \big(\sum_iX_i'QX_i\big)^{-1}\sum_iX_i'Qy_i\)</span>. (Es una proyección idempotente de la Clase 1 de Econometría 1.)</p>
+<div id="thm-fe" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (Consistencia y normalidad de efectos fijos)</strong></span> Bajo exogeneidad estricta, muestreo i.i.d. entre unidades, <span class="math inline">\(\mathbb{E}[\ddot x_{it}\ddot x_{it}']\)</span> sumada sobre <span class="math inline">\(t\)</span> definida positiva (rango completo: <strong>cada regresor varía en el tiempo</strong>) y momentos finitos, <span class="math inline">\(\hat\beta_{FE}\xrightarrow{p}\beta\)</span> y <span class="math display">\[
+\sqrt N(\hat\beta_{FE} - \beta)\xrightarrow{d}N\big(0,\ A^{-1}BA^{-1}\big),\quad A = \mathbb{E}[X_i'QX_i],\ B = \mathbb{E}[X_i'Qu_iu_i'QX_i].
+\]</span> <strong>No se exige ninguna restricción sobre <span class="math inline">\(\operatorname{Cov}(c_i,x_{it})\)</span>.</strong></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Reemplazando <span class="math inline">\(\ddot y_{it}\)</span>, <span class="math inline">\(\hat\beta_{FE} - \beta = \big(\frac1N\sum_iX_i'QX_i\big)^{-1}\frac1N\sum_iX_i'Qu_i\)</span>, porque <span class="math inline">\(Qy_i = QX_i\beta + Qc_i\iota + Qu_i\)</span> y <span class="math inline">\(Q\iota = 0\)</span> (aquí desaparece <span class="math inline">\(c_i\)</span>). Los términos <span class="math inline">\(X_i'QX_i\)</span> y <span class="math inline">\(X_i'Qu_i\)</span> son i.i.d. entre <span class="math inline">\(i\)</span>. Por la LGN, <span class="math inline">\(\frac1N\sum X_i'QX_i\to_pA\)</span>. Para el numerador, <span class="math inline">\(\mathbb{E}[X_i'Qu_i] = \sum_t\mathbb{E}[\ddot x_{it}u_{it}] = \sum_t\mathbb{E}\big[\ddot x_{it}\,\mathbb{E}[u_{it}\mid X_i,c_i]\big] = 0\)</span> por exogeneidad estricta (la esperanza condicional de <span class="math inline">\(u_{it}\)</span> dado <strong>todas</strong> las <span class="math inline">\(x_{is}\)</span>, que forman <span class="math inline">\(\ddot x_{it}\)</span>, es cero). Por el TCL, <span class="math inline">\(N^{-1/2}\sum X_i'Qu_i\to_dN(0,B)\)</span>, con <span class="math inline">\(B = \mathbb{E}[X_i'Qu_iu_i'QX_i]\)</span>. El resultado sigue por Slutsky.</p>
+</div>
+<p>Observa dónde se usó la exogeneidad <strong>estricta</strong>: <span class="math inline">\(\ddot x_{it}\)</span> contiene <span class="math inline">\(\bar x_i\)</span>, que depende de las <span class="math inline">\(x\)</span> de todos los períodos. Con solo exogeneidad contemporánea (<span class="math inline">\(\mathbb{E}[u_{it}\mid x_{it}] = 0\)</span>) el estimador FE sería inconsistente.</p>
+<section id="qué-se-pierde-y-qué-se-paga" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="qué-se-pierde-y-qué-se-paga"><span class="header-section-number">3.1</span> Qué se pierde y qué se paga</h2>
+<ul>
+<li><strong>Variables invariantes en el tiempo</strong> (género, raza, país de origen) tienen <span class="math inline">\(\ddot x_{it} = 0\)</span> y <strong>no se pueden estimar</strong>: se absorben en <span class="math inline">\(c_i\)</span>. FE identifica solo efectos de variables que cambian dentro de cada unidad. Esto es el precio de no suponer nada sobre <span class="math inline">\(c_i\)</span>.</li>
+<li><strong>Se “usa” menos variación:</strong> solo la variación <em>dentro</em> de las unidades. Si el regresor casi no varía en el tiempo (ejemplo: una institución estable), <span class="math inline">\(\ddot x\)</span> es pequeño y el estimador es impreciso.</li>
+<li>Los <span class="math inline">\(c_i\)</span> no se pueden estimar consistentemente con <span class="math inline">\(T\)</span> fijo (cada uno se estima con <span class="math inline">\(T\)</span> observaciones), pero <strong><span class="math inline">\(\beta\)</span> sí</strong>. Es el famoso <strong>problema de los parámetros incidentales</strong>, benigno en el modelo lineal, pero grave en los no lineales (Clase 11).</li>
+</ul>
+<div id="prp-lsdv" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (FE es MCO con dummies)</strong></span> <span class="math inline">\(\hat\beta_{FE}\)</span> coincide con el coeficiente de <span class="math inline">\(x\)</span> en la regresión de <span class="math inline">\(y\)</span> sobre <span class="math inline">\(x\)</span> y <strong><span class="math inline">\(N\)</span> variables dummy</strong> (una por unidad). (Es el estimador LSDV.)</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(D\)</span> la matriz <span class="math inline">\(NT\times N\)</span> de dummies de unidad. Por el teorema de Frisch–Waugh–Lovell (Clase 3 de Econometría 1), el coeficiente de <span class="math inline">\(x\)</span> en la regresión con <span class="math inline">\(D\)</span> se obtiene regresando <span class="math inline">\(M_Dy\)</span> sobre <span class="math inline">\(M_DX\)</span>, donde <span class="math inline">\(M_D = I - D(D'D)^{-1}D'\)</span>. Pero <span class="math inline">\(D(D'D)^{-1}D'\)</span> promedia cada variable sobre las <span class="math inline">\(T\)</span> observaciones de su unidad, así que <span class="math inline">\(M_Dz\)</span> es <span class="math inline">\(z\)</span> menos su media de unidad: la transformación intra-grupos.</p>
+</div>
+<p>Un detalle práctico importante. Los programas de LSDV y de “within” dan el mismo <span class="math inline">\(\hat\beta\)</span>, pero <strong>la estimación de <span class="math inline">\(\sigma_u^2\)</span> requiere cuidado</strong>: los residuos <span class="math inline">\(\ddot{\hat u}_{it}\)</span> suman cero dentro de cada <span class="math inline">\(i\)</span> (<span class="math inline">\(T\)</span> residuos, <span class="math inline">\(T - 1\)</span> libres), así que <span class="math inline">\(\mathbb{E}\big[\sum_{it}\ddot u_{it}^2\big] = \sigma_u^2N(T-1)\)</span>. Luego <span class="math display">\[
+\hat\sigma_u^2 = \frac{1}{N(T-1) - k}\sum_{i,t}\hat{\ddot u}_{it}^2,
+\]</span> y <strong>no</strong> <span class="math inline">\(1/(NT - k)\)</span>: dividir por <span class="math inline">\(NT - k\)</span> subestima <span class="math inline">\(\sigma_u^2\)</span> en un factor <span class="math inline">\((T-1)/T\)</span> (Ejercicio 9.2). Los programas bien hechos lo corrigen; los hechos a mano, no.</p>
+</section>
+<section id="primeras-diferencias" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="primeras-diferencias"><span class="header-section-number">3.2</span> Primeras diferencias</h2>
+<p>Otra forma de eliminar <span class="math inline">\(c_i\)</span> es <strong>diferenciar</strong>: <span class="math inline">\(\Delta y_{it} = \Delta x_{it}'\beta + \Delta u_{it}\)</span> para <span class="math inline">\(t = 2,\dots,T\)</span>. MCO sobre esto es el estimador de <strong>primeras diferencias</strong> (FD). Con <span class="math inline">\(T = 2\)</span> coincide exactamente con FE (Ejercicio 9.3). Con <span class="math inline">\(T&gt;2\)</span> son distintos: FE es más eficiente si los <span class="math inline">\(u_{it}\)</span> son i.i.d. (porque <span class="math inline">\(\Delta u_{it}\)</span> está correlacionado serialmente de manera negativa, <span class="math inline">\(\operatorname{Corr}(\Delta u_{it},\Delta u_{i,t-1}) = -\tfrac12\)</span>), y FD es más eficiente si <span class="math inline">\(u_{it}\)</span> es una caminata aleatoria. Ambos requieren exogeneidad estricta.</p>
+</section>
+</section>
+<section id="efectos-aleatorios" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Efectos aleatorios</h1>
+<p>Si el investigador está dispuesto a <strong>suponer</strong> que <span class="math inline">\(c_i\)</span> no se correlaciona con las <span class="math inline">\(x\)</span>, se puede hacer mejor que FE, aprovechando <strong>toda</strong> la variación (también la entre unidades) y estimando variables invariantes en el tiempo.</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="Supuestos de efectos aleatorios (RE)">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>Supuestos de efectos aleatorios (RE)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>RE1:</strong> exogeneidad estricta de <span class="math inline">\(u_{it}\)</span> (como antes).</li>
+<li><strong>RE2:</strong> <span class="math inline">\(\mathbb{E}[c_i\mid x_{i1},\dots,x_{iT}] = 0\)</span> (el efecto individual es <strong>no correlacionado</strong> con los regresores de todos los períodos).</li>
+<li><strong>RE3 (estructura de varianza):</strong> <span class="math inline">\(\operatorname{Var}(c_i) = \sigma_c^2\)</span>, <span class="math inline">\(\operatorname{Var}(u_{it}) = \sigma_u^2\)</span>, <span class="math inline">\(u_{it}\)</span> no correlacionado en <span class="math inline">\(t\)</span> y con <span class="math inline">\(c_i\)</span>, homocedásticos.</li>
+</ul>
+</div>
+</div>
+<p>Con RE3 el error compuesto <span class="math inline">\(v_i = c_i\iota + u_i\)</span> tiene varianza <span class="math display">\[
+\Omega = \operatorname{Var}(v_i) = \sigma_u^2I_T + \sigma_c^2\iota\iota',
+\]</span> (todas las covarianzas fuera de la diagonal valen <span class="math inline">\(\sigma_c^2\)</span>; la diagonal, <span class="math inline">\(\sigma_u^2 + \sigma_c^2\)</span>). Con <span class="math inline">\(\Omega\ne\sigma^2I\)</span> MCO agrupado es consistente (por RE2) pero <strong>ineficiente</strong>: la respuesta es <strong>MCG</strong> (Aitken, Clase 9 de Econometría 1), que se calcula así. Sea <span class="math inline">\(P = \frac1T\iota\iota'\)</span> (promedio temporal), de modo que <span class="math inline">\(Q = I - P\)</span>.</p>
+<div id="prp-re-gls" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (RE es un MCG con cuasi-diferencias)</strong></span> Con <span class="math inline">\(\omega^2 = \sigma_u^2 + T\sigma_c^2\)</span>, <span class="math inline">\(\Omega = \sigma_u^2Q + \omega^2P\)</span> y <span class="math inline">\(\Omega^{-1/2} = \sigma_u^{-1}(I_T - \theta P)\)</span> con <span class="math display">\[
+\theta = 1 - \frac{\sigma_u}{\sqrt{\sigma_u^2 + T\sigma_c^2}}\in[0,1).
+\]</span> Por lo tanto el estimador RE (MCG) es MCO sobre las variables <strong>cuasi-promediadas</strong> <span class="math inline">\(y_{it} - \theta\bar y_i\)</span> y <span class="math inline">\(x_{it} - \theta\bar x_i\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Como <span class="math inline">\(\iota\iota' = TP\)</span>, <span class="math inline">\(\Omega = \sigma_u^2I + \sigma_c^2TP = \sigma_u^2(Q + P) + T\sigma_c^2P = \sigma_u^2Q + \omega^2P\)</span>. <span class="math inline">\(Q\)</span> y <span class="math inline">\(P\)</span> son proyecciones ortogonales complementarias (<span class="math inline">\(QP = 0\)</span>, <span class="math inline">\(Q + P = I\)</span>), así que <span class="math inline">\(\Omega^{-1/2} = \sigma_u^{-1}Q + \omega^{-1}P = \sigma_u^{-1}\big[Q + (\sigma_u/\omega)P\big] = \sigma_u^{-1}\big[I - (1 - \sigma_u/\omega)P\big] = \sigma_u^{-1}(I - \theta P)\)</span>. El MCG es MCO sobre los datos transformados por <span class="math inline">\(\Omega^{-1/2}\)</span> (Aitken, Clase 9 de Econometría 1), y <span class="math inline">\((I - \theta P)z_i\)</span> tiene componentes <span class="math inline">\(z_{it} - \theta\bar z_i\)</span>.</p>
+</div>
+<p>La <strong>interpretación de <span class="math inline">\(\theta\)</span></strong> es reveladora:</p>
+<ul>
+<li><span class="math inline">\(\theta = 0\)</span> (<span class="math inline">\(\sigma_c^2 = 0\)</span>, no hay efecto individual): RE = MCO agrupado.</li>
+<li><span class="math inline">\(\theta\to1\)</span> (<span class="math inline">\(T\to\infty\)</span> o <span class="math inline">\(\sigma_c^2\gg\sigma_u^2\)</span>): RE <span class="math inline">\(\to\)</span> FE (se resta la media completa).</li>
+<li>Intermedio: RE sustrae <strong>una fracción</strong> de la media, y combina variación intra y entre unidades. De hecho, <span class="math inline">\(\hat\beta_{RE}\)</span> es un promedio matricial ponderado del estimador intra-grupos y el estimador <em>between</em> (MCO sobre las medias <span class="math inline">\(\bar y_i\)</span> y <span class="math inline">\(\bar x_i\)</span>).</li>
+</ul>
+<p>Con <span class="math inline">\(\sigma_u^2 = \sigma_c^2 = 1\)</span> y <span class="math inline">\(T = 4\)</span>: <span class="math inline">\(\omega^2 = 5\)</span>, <span class="math inline">\(\theta = 1 - 1/\sqrt5 = 0{,}553\)</span> (Ejercicio 9.4).</p>
+<p>En la práctica <span class="math inline">\(\sigma_u^2\)</span> y <span class="math inline">\(\sigma_c^2\)</span> no se conocen: se estiman en un primer paso (Swamy–Arora, usando los residuos de FE y del estimador between) y se aplica <strong>MCG factible (FGLS)</strong>, con la misma distribución asintótica por la Clase 9 de Econometría 1.</p>
+<section id="cuál-usar-el-test-de-hausman" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="cuál-usar-el-test-de-hausman"><span class="header-section-number">4.1</span> ¿Cuál usar? El test de Hausman</h2>
+<p>La elección entre FE y RE es una elección entre <strong>robustez</strong> (FE: consistente aun si <span class="math inline">\(c_i\)</span> correlaciona con <span class="math inline">\(x\)</span>) y <strong>eficiencia</strong> (RE: usa más variación y estima efectos de variables invariantes, pero es inconsistente si RE2 falla). Es un contexto ideal para el test de Hausman (1978), que compara dos estimadores:</p>
+<ul>
+<li>Bajo <span class="math inline">\(H_0\)</span> (RE2 cierto): <span class="math inline">\(\hat\beta_{FE}\)</span> y <span class="math inline">\(\hat\beta_{RE}\)</span> son consistentes; RE es <strong>eficiente</strong>.</li>
+<li>Bajo <span class="math inline">\(H_1\)</span>: solo <span class="math inline">\(\hat\beta_{FE}\)</span> es consistente. La diferencia <span class="math inline">\(\hat\beta_{FE} - \hat\beta_{RE}\)</span> <strong>no tiende a cero</strong>.</li>
+</ul>
+<div id="thm-hausman" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Lema y test de Hausman)</strong></span> Sea <span class="math inline">\(\hat\beta_E\)</span> un estimador asintóticamente eficiente bajo <span class="math inline">\(H_0\)</span> y <span class="math inline">\(\hat\beta\)</span> otro consistente bajo <span class="math inline">\(H_0\)</span>. Entonces, bajo <span class="math inline">\(H_0\)</span>, <span class="math inline">\(\operatorname{Avar}(\hat\beta - \hat\beta_E) = \operatorname{Avar}(\hat\beta) - \operatorname{Avar}(\hat\beta_E)\)</span>. En consecuencia, <span class="math display">\[
+H = (\hat\beta_{FE} - \hat\beta_{RE})'\Big[\widehat{\operatorname{Var}}(\hat\beta_{FE}) - \widehat{\operatorname{Var}}(\hat\beta_{RE})\Big]^{-1}(\hat\beta_{FE} - \hat\beta_{RE})\xrightarrow{d}\chi^2_k
+\]</span> bajo <span class="math inline">\(H_0\)</span> (con <span class="math inline">\(k\)</span> el número de coeficientes de variables que cambian en el tiempo).</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La clave es que la covarianza entre el estimador eficiente y la <em>diferencia</em> es cero. Si no lo fuera, podría mezclar los dos estimadores con un peso pequeño y obtener algo con <strong>menor</strong> varianza que el eficiente, lo cual es imposible. Una vez que <span class="math inline">\(\operatorname{Cov}(\hat\beta_E,\hat\beta - \hat\beta_E) = 0\)</span>, la varianza de <span class="math inline">\(\hat\beta = \hat\beta_E + (\hat\beta - \hat\beta_E)\)</span> es la suma de las varianzas, y de ahí despejo la varianza de la diferencia.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(\Delta = \hat\beta - \hat\beta_E\)</span> y, para un vector <span class="math inline">\(a\)</span> fijo y un escalar <span class="math inline">\(\epsilon\)</span>, consideremos el estimador consistente <span class="math inline">\(\hat\beta_E + \epsilon\Delta\)</span> (consistente bajo <span class="math inline">\(H_0\)</span> porque ambos lo son). Su varianza asintótica para la combinación lineal <span class="math inline">\(a'\cdot\)</span> es <span class="math display">\[
+a'\operatorname{Var}(\hat\beta_E)a + 2\epsilon\,a'\operatorname{Cov}(\hat\beta_E,\Delta)a + \epsilon^2a'\operatorname{Var}(\Delta)a.
+\]</span> Como <span class="math inline">\(\hat\beta_E\)</span> es eficiente, esto debe ser <span class="math inline">\(\ge a'\operatorname{Var}(\hat\beta_E)a\)</span> para <strong>todo</strong> <span class="math inline">\(\epsilon\)</span> (positivo y negativo): <span class="math inline">\(2\epsilon\,c + \epsilon^2d\ge0\)</span> con <span class="math inline">\(c = a'\operatorname{Cov}(\hat\beta_E,\Delta)a\)</span> y <span class="math inline">\(d = a'\operatorname{Var}(\Delta)a\)</span>. Para <span class="math inline">\(\epsilon\)</span> chico del signo opuesto a <span class="math inline">\(c\)</span>, el término lineal domina y la desigualdad falla salvo que <span class="math inline">\(c = 0\)</span>. Luego <span class="math inline">\(\operatorname{Cov}(\hat\beta_E,\Delta) = 0\)</span> (para todo <span class="math inline">\(a\)</span>; con cuidado, la matriz simetrizada). Entonces <span class="math inline">\(\operatorname{Var}(\hat\beta) = \operatorname{Var}(\hat\beta_E + \Delta) = \operatorname{Var}(\hat\beta_E) + \operatorname{Var}(\Delta)\)</span>, es decir, <span class="math inline">\(\operatorname{Var}(\Delta) = \operatorname{Var}(\hat\beta) - \operatorname{Var}(\hat\beta_E)\)</span>. El estadístico <span class="math inline">\(H\)</span> es entonces una forma cuadrática <span class="math inline">\(\chi^2\)</span> de un vector asintóticamente normal con media cero bajo <span class="math inline">\(H_0\)</span> (lema de la <span class="math inline">\(\chi^2\)</span> con la inversa de la varianza, Clase 5 de Econometría 1).</p>
+</div>
+<p>Tres advertencias prácticas. (1) El lema requiere que RE sea <strong>eficiente</strong> bajo <span class="math inline">\(H_0\)</span>, lo que exige la estructura RE3 (homocedasticidad, sin correlación serial de <span class="math inline">\(u_{it}\)</span>). <strong>Si usas errores robustos por clúster, RE ya no es eficiente</strong> y el test de Hausman clásico es inválido (puede incluso dar una varianza diferencia no positiva). La solución es la versión de <strong>Mundlak</strong> más abajo, que es robusta. (2) El test es sobre <em>toda</em> la diferencia: un rechazo dice que <span class="math inline">\(\hat\beta_{FE}\)</span> y <span class="math inline">\(\hat\beta_{RE}\)</span> difieren, no cuál coeficiente causa la diferencia. (3) Con <span class="math inline">\(T\)</span> fijo y <span class="math inline">\(N\)</span> moderado el test es poco potente.</p>
+</section>
+</section>
+<section id="la-aproximación-de-mundlak-y-su-test-robusto" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> La aproximación de Mundlak y su test robusto</h1>
+<p>Mundlak (1978) propuso modelar explícitamente la correlación entre <span class="math inline">\(c_i\)</span> y las <span class="math inline">\(x\)</span>: <span class="math inline">\(c_i = \bar x_i'\delta + a_i\)</span>, con <span class="math inline">\(a_i\)</span> <strong>no correlacionado</strong> con las <span class="math inline">\(x\)</span>. Sustituyendo, <span id="eq-mundlak"><span class="math display">\[
+y_{it} = x_{it}'\beta + \bar x_i'\delta + a_i + u_{it}.
+\tag{3}\]</span></span> Esta ecuación <strong>sí</strong> satisface la condición de efectos aleatorios para el nuevo efecto <span class="math inline">\(a_i\)</span>. Se puede estimar por MCO agrupado con errores por clúster (o por RE). Dos resultados notables:</p>
+<ol type="1">
+<li><strong><span class="math inline">\(\hat\beta\)</span> de <a href="#eq-mundlak" class="quarto-xref">Ecuación&nbsp;3</a> coincide con <span class="math inline">\(\hat\beta_{FE}\)</span></strong> (probado abajo): incluir las medias <span class="math inline">\(\bar x_i\)</span> como controles reproduce el estimador intra-grupos.</li>
+<li><strong>Test de Hausman robusto:</strong> <span class="math inline">\(H_0:\delta = 0\)</span> en <a href="#eq-mundlak" class="quarto-xref">Ecuación&nbsp;3</a>, con un test de Wald usando varianza por clúster. Si <span class="math inline">\(\delta = 0\)</span>, <span class="math inline">\(c_i\)</span> no está correlacionado con las <span class="math inline">\(x\)</span> (RE2), y la versión es válida bajo heterocedasticidad y correlación serial, porque no usa el lema de eficiencia.</li>
+</ol>
+</section>
+<section id="postgrado-equivalencia-de-mundlak" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ★ Postgrado: equivalencia de Mundlak</h1>
+<div id="prp-mundlak" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (MCO agrupado con medias = FE)</strong></span> El coeficiente de <span class="math inline">\(x_{it}\)</span> en la regresión agrupada de <span class="math inline">\(y_{it}\)</span> sobre <span class="math inline">\((1,\,x_{it},\,\bar x_i)\)</span> es exactamente <span class="math inline">\(\hat\beta_{FE}\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por Frisch–Waugh–Lovell, el coeficiente de <span class="math inline">\(x_{it}\)</span> es el de la regresión de <span class="math inline">\(y_{it}\)</span> sobre los <strong>residuos</strong> <span class="math inline">\(r_{it}\)</span> de regresar <span class="math inline">\(x_{it}\)</span> sobre <span class="math inline">\((1,\bar x_i)\)</span> (pooled). Como <span class="math inline">\(\bar x_i\)</span> es el promedio de <span class="math inline">\(x_{it}\)</span> en <span class="math inline">\(t\)</span>, la regresión de <span class="math inline">\(x_{it}\)</span> sobre <span class="math inline">\(\bar x_i\)</span> y una constante tiene coeficiente igual a la identidad en <span class="math inline">\(\bar x_i\)</span> (y cero en la constante): en efecto <span class="math inline">\(\sum_{i,t}\bar x_i(x_{it} - \bar x_i)' = \sum_i\bar x_i\sum_t(x_{it} - \bar x_i)' = 0\)</span>, de modo que <span class="math inline">\(x_{it} - \bar x_i\)</span> es ortogonal a <span class="math inline">\((1,\bar x_i)\)</span> y <span class="math inline">\(\bar x_i\)</span> es el ajuste. Luego <span class="math inline">\(r_{it} = x_{it} - \bar x_i = \ddot x_{it}\)</span> y el coeficiente es <span class="math inline">\(\big(\sum\ddot x_{it}\ddot x_{it}'\big)^{-1}\sum\ddot x_{it}y_{it} = \hat\beta_{FE}\)</span> (usando <span class="math inline">\(\sum_{it}\ddot x_{it}y_{it} = \sum_{it}\ddot x_{it}\ddot y_{it}\)</span>, porque <span class="math inline">\(\sum_t\ddot x_{it} = 0\)</span>).</p>
+</div>
+<p>Es una forma elegante de ver que <strong>FE = “controlar por la media individual de cada regresor”</strong>: la variación identificadora es la que queda tras quitar lo que se puede predecir con <span class="math inline">\(\bar x_i\)</span>. Y da el puente natural al modelo de <strong>efectos correlacionados</strong> de Chamberlain (Clase 11), que generaliza <span class="math inline">\(c_i = \bar x_i'\delta + a_i\)</span> a <span class="math inline">\(c_i = \sum_t x_{it}'\delta_t + a_i\)</span>.</p>
+</section>
+<section id="resumen" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Resumen</h1>
+<ul>
+<li>Panel: <span class="math inline">\(y_{it} = x_{it}'\beta + c_i + u_{it}\)</span>; el problema es <span class="math inline">\(c_i\)</span>, posiblemente correlacionado con <span class="math inline">\(x_{it}\)</span>. Bajo <strong>exogeneidad estricta</strong> hay dos estrategias.</li>
+<li><strong>MCO agrupado</strong> es consistente solo si <span class="math inline">\(c_i\perp x\)</span>; en cualquier caso hay que usar <strong>errores por clúster</strong>.</li>
+<li><strong>Efectos fijos</strong> (intra-grupos): resta medias por unidad, elimina <span class="math inline">\(c_i\)</span> y es consistente sin restricciones sobre <span class="math inline">\(c_i\)</span> (<a href="#thm-fe" class="quarto-xref">Teorema&nbsp;1</a>); no estima variables invariantes. Equivale a MCO con dummies (<a href="#prp-lsdv" class="quarto-xref">Proposición&nbsp;1</a>).</li>
+<li><strong>Efectos aleatorios</strong> (MCG con cuasi-diferencias, <span class="math inline">\(\theta = 1 - \sigma_u/\sqrt{\sigma_u^2 + T\sigma_c^2}\)</span>, <a href="#prp-re-gls" class="quarto-xref">Proposición&nbsp;2</a>): más eficiente, pero exige <span class="math inline">\(c_i\perp x\)</span>.</li>
+<li><strong>Hausman</strong> (<a href="#thm-hausman" class="quarto-xref">Teorema&nbsp;2</a>): compara FE y RE; con errores robustos hay que usar la <strong>regresión de Mundlak</strong> (<span class="math inline">\(\hat\beta\)</span> de <a href="#eq-mundlak" class="quarto-xref">Ecuación&nbsp;3</a> coincide con FE, <a href="#prp-mundlak" class="quarto-xref">Proposición&nbsp;3</a>).</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Ejercicios</h1>
+<p><strong>Ejercicio 9.1.</strong> Dos unidades, tres períodos. Unidad 1: <span class="math inline">\(x = (1,2,3)\)</span>, <span class="math inline">\(y = (1,2,6)\)</span>. Unidad 2: <span class="math inline">\(x = (4,5,6)\)</span>, <span class="math inline">\(y = (5,5,8)\)</span>. Calcula <span class="math inline">\(\hat\beta_{FE}\)</span> y el MCO agrupado (con constante).</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Medias: unidad 1, <span class="math inline">\(\bar x = 2\)</span>, <span class="math inline">\(\bar y = 3\)</span>; unidad 2, <span class="math inline">\(\bar x = 5\)</span>, <span class="math inline">\(\bar y = 6\)</span>. Desvíos de <span class="math inline">\(x\)</span>: <span class="math inline">\((-1,0,1)\)</span> en ambas. Desvíos de <span class="math inline">\(y\)</span>: unidad 1 <span class="math inline">\((-2,-1,3)\)</span>; unidad 2 <span class="math inline">\((-1,-1,2)\)</span>. <span class="math inline">\(\sum\ddot x^2 = 2 + 2 = 4\)</span>; <span class="math inline">\(\sum\ddot x\ddot y = (2 + 3) + (1 + 2) = 8\)</span>. <span class="math inline">\(\hat\beta_{FE} = 8/4 = 2\)</span>. MCO agrupado: <span class="math inline">\(\bar x = 3{,}5\)</span>, <span class="math inline">\(\bar y = 4{,}5\)</span>; <span class="math inline">\(S_{xx} = 17{,}5\)</span> y <span class="math inline">\(S_{xy} = 21{,}5\)</span>, luego <span class="math inline">\(\hat\beta_{pool} = 1{,}23\)</span>. Los dos difieren porque la relación <em>entre</em> unidades (la unidad 2 tiene <span class="math inline">\(x\)</span> e <span class="math inline">\(y\)</span> más altos, pero con pendiente ~1) pesa en el agrupado pero no en FE, que solo usa la variación dentro de cada unidad.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.2.</strong> Con <span class="math inline">\(T = 2\)</span>, <span class="math inline">\(N = 500\)</span> y <span class="math inline">\(k = 3\)</span>, ¿por cuánto se subestima <span class="math inline">\(\sigma_u^2\)</span> si se divide la suma de residuos intra-grupos por <span class="math inline">\(NT - k\)</span> en lugar de <span class="math inline">\(N(T-1) - k\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\mathbb{E}[\text{SCR}_{within}]\approx\sigma_u^2[N(T-1) - k] = \sigma_u^2\cdot497\)</span>. Dividir por <span class="math inline">\(NT - k = 997\)</span> da <span class="math inline">\(\sigma_u^2\cdot497/997\approx0{,}50\sigma_u^2\)</span>: <strong>la mitad</strong>. Con <span class="math inline">\(T = 2\)</span> el factor <span class="math inline">\((T-1)/T = \tfrac12\)</span> es exacto en el límite. Los errores estándar (que usan <span class="math inline">\(\hat\sigma_u^2\)</span>) quedarían subestimados en un factor <span class="math inline">\(\sqrt{0{,}5}\approx0{,}71\)</span>. Intuición: cada unidad pierde un grado de libertad por la media estimada, y con <span class="math inline">\(T = 2\)</span> eso es la mitad de la información.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.3.</strong> Demuestra que con <span class="math inline">\(T = 2\)</span>, <span class="math inline">\(\hat\beta_{FE} = \hat\beta_{FD}\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(T = 2\)</span>, <span class="math inline">\(\ddot x_{i1} = x_{i1} - \frac{x_{i1} + x_{i2}}2 = -\tfrac12\Delta x_i\)</span> y <span class="math inline">\(\ddot x_{i2} = +\tfrac12\Delta x_i\)</span>, con <span class="math inline">\(\Delta x_i = x_{i2} - x_{i1}\)</span>; análogo para <span class="math inline">\(y\)</span>. Entonces <span class="math inline">\(\sum_t\ddot x_{it}\ddot x_{it}' = \tfrac12\Delta x_i\Delta x_i'\)</span> y <span class="math inline">\(\sum_t\ddot x_{it}\ddot y_{it} = \tfrac12\Delta x_i\Delta y_i\)</span>. El factor <span class="math inline">\(\tfrac12\)</span> se cancela en <span class="math inline">\(\hat\beta_{FE} = \big(\sum\tfrac12\Delta x\Delta x'\big)^{-1}\sum\tfrac12\Delta x\Delta y = \big(\sum\Delta x\Delta x'\big)^{-1}\sum\Delta x\Delta y = \hat\beta_{FD}\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.4.</strong> Calcula <span class="math inline">\(\theta\)</span> para <span class="math inline">\(\sigma_u^2 = 1\)</span>, <span class="math inline">\(\sigma_c^2 = 1\)</span> con <span class="math inline">\(T = 4\)</span> y <span class="math inline">\(T = 10\)</span>. ¿Qué pasa con <span class="math inline">\(T\to\infty\)</span>? ¿Y si <span class="math inline">\(\sigma_c^2 = 0\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(T = 4\)</span>: <span class="math inline">\(\theta = 1 - 1/\sqrt{1 + 4} = 1 - 0{,}447 = 0{,}553\)</span>. <span class="math inline">\(T = 10\)</span>: <span class="math inline">\(\theta = 1 - 1/\sqrt{11} = 0{,}698\)</span>. <span class="math inline">\(T\to\infty\)</span>: <span class="math inline">\(\theta\to1\)</span> y RE <span class="math inline">\(\to\)</span> FE: con muchos períodos la media individual <span class="math inline">\(\bar y_i\)</span> estima bien <span class="math inline">\(c_i\)</span>, y restarla completa es casi óptimo. Con <span class="math inline">\(\sigma_c^2 = 0\)</span>: <span class="math inline">\(\theta = 0\)</span> y RE = MCO agrupado, porque no hay efecto individual que eliminar.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.5.</strong> En una aplicación, <span class="math inline">\(\hat\beta_{FE} = 0{,}50\)</span> con error estándar <span class="math inline">\(0{,}20\)</span> y <span class="math inline">\(\hat\beta_{RE} = 0{,}30\)</span> con error estándar <span class="math inline">\(0{,}10\)</span>. Calcula el estadístico de Hausman y concluye al 5 %.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(\hat\beta_{FE}) - \operatorname{Var}(\hat\beta_{RE}) = 0{,}04 - 0{,}01 = 0{,}03\)</span>. <span class="math inline">\(H = (0{,}50 - 0{,}30)^2/0{,}03 = 0{,}04/0{,}03 = 1{,}33\)</span>. Con <span class="math inline">\(\chi^2_{1,0{,}95} = 3{,}84\)</span>: <strong>no se rechaza</strong> <span class="math inline">\(H_0\)</span>. Datos compatibles con <span class="math inline">\(c_i\)</span> no correlacionado con <span class="math inline">\(x\)</span>; RE es válido y más eficiente. Nota que la diferencia (0,20) es <em>grande</em> en tamaño económico, pero FE es tan impreciso que no puede distinguirla de cero: potencia baja.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.6.</strong> (Efecto de diseño.) Para un clúster de <span class="math inline">\(T\)</span> observaciones con varianza <span class="math inline">\(\sigma^2\)</span> y correlación <span class="math inline">\(\rho\)</span> entre cada par, muestra que <span class="math inline">\(\operatorname{Var}(\bar y_i) = \dfrac{\sigma^2}{T}[1 + (T-1)\rho]\)</span>. Calcula el factor sobre el error estándar con <span class="math inline">\(T = 5\)</span> y <span class="math inline">\(\rho = 0{,}5\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\operatorname{Var}(\sum_ty_{it}) = T\sigma^2 + T(T-1)\rho\sigma^2\)</span>, así que <span class="math inline">\(\operatorname{Var}(\bar y_i) = \frac1{T^2}[T\sigma^2 + T(T-1)\rho\sigma^2] = \frac{\sigma^2}T[1 + (T-1)\rho]\)</span>. Si las observaciones fueran independientes (<span class="math inline">\(\rho = 0\)</span>), la varianza sería <span class="math inline">\(\sigma^2/T\)</span>. El factor de varianza es <span class="math inline">\(1 + (T-1)\rho = 1 + 4(0{,}5) = 3\)</span> y el del error estándar <span class="math inline">\(\sqrt3 = 1{,}73\)</span>. Ignorar la correlación intra-clúster subestima el error estándar en 42 % (<span class="math inline">\(1/1{,}73 = 0{,}58\)</span>): se sobre-rechaza la nula.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 9.7 ★.</strong> Demuestra que <span class="math inline">\(\hat\beta_{RE}\)</span> es un promedio ponderado de <span class="math inline">\(\hat\beta_W\)</span> (intra-grupos) y <span class="math inline">\(\hat\beta_B\)</span> (entre unidades). (Pista: usa <span class="math inline">\(\Omega^{-1} = \sigma_u^{-2}Q + \omega^{-2}P\)</span>.)</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 9.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 9.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>MCG: <span class="math inline">\(\hat\beta_{RE} = \big(\sum X_i'\Omega^{-1}X_i\big)^{-1}\sum X_i'\Omega^{-1}y_i\)</span>. Con <span class="math inline">\(\Omega^{-1} = \sigma_u^{-2}Q + \omega^{-2}P\)</span>: <span class="math inline">\(\sum X_i'\Omega^{-1}X_i = \sigma_u^{-2}S_{xx}^W + \omega^{-2}T\,S_{xx}^B\)</span>, donde <span class="math inline">\(S_{xx}^W = \sum X_i'QX_i\)</span> y <span class="math inline">\(T S_{xx}^B = \sum X_i'PX_i\)</span> (con <span class="math inline">\(S^B\)</span> la matriz de las medias). Análogo para <span class="math inline">\(X_i'\Omega^{-1}y_i\)</span>. Como <span class="math inline">\(\hat\beta_W = (S_{xx}^W)^{-1}S_{xy}^W\)</span> y <span class="math inline">\(\hat\beta_B = (S_{xx}^B)^{-1}S_{xy}^B\)</span>, <span class="math display">\[
+\hat\beta_{RE} = \Lambda\hat\beta_W + (I - \Lambda)\hat\beta_B,\quad\Lambda = \big[\sigma_u^{-2}S_{xx}^W + \omega^{-2}TS_{xx}^B\big]^{-1}\sigma_u^{-2}S_{xx}^W.
+\]</span> Cada estimador pesa según su precisión relativa: si <span class="math inline">\(\sigma_c^2\)</span> es grande, <span class="math inline">\(\omega^2\)</span> es grande, el peso de <span class="math inline">\(\hat\beta_B\)</span> cae (la variación entre unidades está contaminada por <span class="math inline">\(c_i\)</span>) y RE se acerca a FE. Si <span class="math inline">\(\sigma_c^2 = 0\)</span>, <span class="math inline">\(\omega^2 = \sigma_u^2\)</span> y se vuelve MCO agrupado.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../econometria-2/clase-08.html" class="pagination-link" aria-label="Clase 8 · Datos censurados y selección">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 8 · Datos censurados y selección</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../econometria-2/clase-10.html" class="pagination-link" aria-label="Clase 10 · Datos de panel II">
+        <span class="nav-page-text">Clase 10 · Datos de panel II</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

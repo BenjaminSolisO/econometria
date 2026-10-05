@@ -1,0 +1,226 @@
+---
+title: "Clase 11 · Paneles no lineales"
+subtitle: "Parámetros incidentales, logit condicional y el enfoque de Chamberlain"
+description: "Por qué los efectos fijos fallan en modelos no lineales (problema de los parámetros incidentales), el logit de efectos fijos por verosimilitud condicional, Poisson con efectos fijos, efectos correlacionados de Chamberlain–Mundlak y efectos marginales promedio."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-11.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Lo que funcionaba con MCO deja de funcionar
+
+En la Clase 9, efectos fijos era trivial: restar medias elimina $c_i$ de un modelo lineal. Con modelos no lineales (probit, logit, tobit) no hay "restar medias" que valga: $c_i$ está dentro de una función no lineal, $\Phi(x_{it}'\beta + c_i)$, y no se separa. La reacción natural es tratar los $c_i$ como **$N$ parámetros** y estimarlos junto con $\beta$ (agregando $N$ dummies, como en LSDV). Pero esto **falla**, de manera instructiva.
+
+Consideremos el modelo binario de panel
+$$
+y_{it} = \mathbf{1}\{x_{it}'\beta + c_i + u_{it}>0\},\qquad t = 1,\dots,T,
+$$
+con $u_{it}$ logístico (o normal) i.i.d. e independiente de $(x_i,c_i)$ (exogeneidad estricta). Hay tres estrategias, y la clase las recorre:
+
+1. **Tratar los $c_i$ como parámetros** (efectos fijos "ingenuos"): inconsistente con $T$ fijo.
+2. **Eliminar $c_i$ por condicionamiento** (solo para algunos modelos: logit, Poisson).
+3. **Modelar la relación entre $c_i$ y $x$** (efectos correlacionados de Chamberlain), a cambio de un supuesto paramétrico sobre $c_i$.
+
+# El problema de los parámetros incidentales
+
+El problema, nombrado por Neyman y Scott (1948), es que cuando el número de parámetros **crece con $N$** (un $c_i$ por unidad) y cada uno se estima con solo $T$ observaciones, los errores de estimación de $\hat c_i$ **no se promedian a cero** al aumentar $N$, y contaminan a $\hat\beta$. El ejemplo original es el más claro.
+
+::: {#exm-neyman-scott}
+## Neyman–Scott: la varianza con medias incidentales
+Sean $y_{it}\sim N(\mu_i,\sigma^2)$ independientes, $t = 1,\dots,T$, con una media distinta $\mu_i$ por unidad. El MV estima cada $\hat\mu_i = \bar y_i$ y
+$$
+\hat\sigma^2_{MV} = \frac1{NT}\sum_{i=1}^N\sum_{t=1}^T(y_{it} - \bar y_i)^2.
+$$
+Como $\sum_t(y_{it} - \bar y_i)^2/\sigma^2\sim\chi^2_{T-1}$, $\mathbb{E}[\hat\sigma^2_{MV}] = \sigma^2(T-1)/T$ y por la LGN (en $N$), $\hat\sigma^2_{MV}\xrightarrow{p}\sigma^2\dfrac{T-1}{T}$. Con $T = 2$, **converge a la mitad** de $\sigma^2$, por mucho que crezca $N$. Es el mismo $(T-1)/T$ de la Clase 9: usar $NT$ y no $N(T-1)$ en el denominador.
+:::
+
+En el modelo lineal este problema es trivial de corregir (cambiando el denominador) y, **para $\beta$, no existe**: el estimador intra-grupos de $\beta$ es consistente. Pero en modelos no lineales, el problema alcanza a $\beta$ mismo, y de manera grave. El caso más simple y limpio es el logit con $T = 2$.
+
+::: {#prp-incidental-logit}
+## Logit con efectos fijos "ingenuos" y $T = 2$
+Sea $T = 2$, $x_{i1} = 0$ y $x_{i2} = 1$ para todo $i$ (un indicador de "tratamiento" en el segundo período), y $u_{it}$ logístico. Si se estima el logit por MV con $N$ dummies de unidad, $\hat\beta_{MV}\xrightarrow{p}2\beta_0$ cuando $N\to\infty$.
+:::
+
+El estimador **no es consistente**: converge al *doble* del valor verdadero. La demostración está en la sección ★; la idea es que solo las unidades que **cambian** de respuesta ($y_{i1}\ne y_{i2}$) tienen información sobre $\beta$ (las que tienen $y = (0,0)$ o $(1,1)$ llevan $\hat c_i\to\mp\infty$ y no aportan), y que la estimación de $c_i$ con apenas 2 observaciones infla el efecto. En general el sesgo es de orden $1/T$ (Hahn y Newey, 2004): moderado para $T\ge10$ pero **grande** en los paneles cortos típicos de microdatos.
+
+# Logit con efectos fijos: verosimilitud condicional
+
+Para el logit existe un truco notable: hay un **estadístico suficiente** para $c_i$, la suma $S_i = \sum_ty_{it}$. Si condicionamos en $S_i$, $c_i$ **desaparece de la verosimilitud**. Esta idea es de Rasch (1960) y Andersen (1970), y fue extendida a econometría por Chamberlain (1980).
+
+::: {#thm-logit-condicional}
+## Logit condicional (Chamberlain)
+En el logit de panel con $u_{it}$ i.i.d. logístico y exogeneidad estricta, la distribución de $y_i = (y_{i1},\dots,y_{iT})$ condicional en $x_i$, $c_i$ y $S_i = s$ **no depende de $c_i$**:
+$$
+P(y_i\mid x_i,c_i,S_i = s) = \frac{\exp\big(\sum_ty_{it}x_{it}'\beta\big)}{\sum_{d\in B_s}\exp\big(\sum_td_tx_{it}'\beta\big)},\quad B_s = \Big\{d\in\{0,1\}^T:\ \sum_td_t = s\Big\}.
+$$
+Por lo tanto $\hat\beta_{CL} = \arg\max\sum_i\log P(y_i\mid x_i,S_i)$ es consistente y asintóticamente normal para $T$ fijo y $N\to\infty$, sin restricciones sobre la relación entre $c_i$ y $x_i$.
+:::
+
+::: {.callout-note title="Borrador"}
+La probabilidad de una secuencia particular es un producto de logits. En ese producto $c_i$ aparece de una forma muy específica: cada $y_{it} = 1$ aporta un factor $e^{c_i}$ en el numerador, y por lo tanto el numerador contiene $e^{c_iS_i}$. La probabilidad de que la suma sea $s$ es la suma de las probabilidades de todas las secuencias con esa suma, y **todas** comparten el mismo factor $e^{c_is}$. Al dividir, $c_i$ se cancela, y el denominador común (los $1 + e^{\cdot}$) también.
+:::
+
+::: {.proof}
+La probabilidad de una secuencia $d\in\{0,1\}^T$ es, con $\Lambda$ la logística,
+$$
+P(y_i = d\mid x_i,c_i) = \prod_t\frac{\exp\big(d_t(x_{it}'\beta + c_i)\big)}{1 + \exp(x_{it}'\beta + c_i)} = \frac{\exp\big(c_i\sum_td_t\big)\exp\big(\sum_td_tx_{it}'\beta\big)}{D_i},
+\quad D_i = \prod_t\big(1 + e^{x_{it}'\beta + c_i}\big).
+$$
+Para una secuencia con $\sum_td_t = s$, el factor $e^{c_is}$ es el mismo en todas. Entonces $P(S_i = s\mid x_i,c_i) = \dfrac{e^{c_is}}{D_i}\sum_{d\in B_s}\exp\big(\sum_td_tx_{it}'\beta\big)$ y el cociente es
+$$
+P(y_i = d\mid x_i,c_i,S_i = s) = \frac{e^{c_is}e^{\sum d_tx_{it}'\beta}/D_i}{e^{c_is}\sum_{B_s}e^{\sum d_tx_{it}'\beta}/D_i} = \frac{\exp(\sum_td_tx_{it}'\beta)}{\sum_{B_s}\exp(\sum_td_tx_{it}'\beta)},
+$$
+sin $c_i$. La log-verosimilitud condicional es la suma sobre $i$ de logs de estas probabilidades, que es un "logit condicional" estándar (una verosimilitud genuina para cada $i$) y que satisface las condiciones de la Clase 2. Los argumentos de la Clase 1 y 2 dan consistencia y normalidad (con $T$ fijo, $N\to\infty$).
+:::
+
+Observaciones importantes:
+
+- **Con $T = 2$** el estimador es simplemente un logit de $\mathbf{1}\{y_{i2} = 1\}$ sobre $\Delta x_i$, usando solo las unidades que cambian ($y_{i1}\ne y_{i2}$). En el ejemplo anterior, $\hat\beta_{CL} = \log(n_{01}/n_{10})$ (Ejercicio 11.2): **la mitad** del MV ingenuo, como debe ser.
+- **Las unidades con $S_i = 0$ o $S_i = T$ no aportan** (hay una sola secuencia posible; probabilidad condicional uno). Es la contraparte de efectos fijos en el modelo lineal, donde las unidades sin variación en $x$ no aportan.
+- **Solo vale para el logit.** La razón es que la logística tiene la propiedad algebraica de que $P(1)/P(0) = e^{x'\beta + c}$ es **log-lineal en $c$**. Con el probit, no existe estadístico suficiente para $c_i$ (Ejercicio 11.7), y por lo tanto no hay verosimilitud condicional.
+- **Limitación grave: no se pueden calcular efectos marginales.** $P(y_{it} = 1\mid x_{it},c_i) = \Lambda(x_{it}'\beta + c_i)$ y su derivada depende de $c_i$, que **no se identifica**. Solo se estima $\beta$ (la dirección del efecto y la importancia relativa de las variables), no los efectos sobre probabilidades. Tampoco hay variables invariantes en el tiempo ni rezagos de $y$ (estrictamente exógeno).
+- **Poca variación = poca información.** Si pocas unidades cambian de estado, $\hat\beta_{CL}$ es muy impreciso.
+
+# Poisson con efectos fijos: la excepción feliz
+
+En el modelo de Poisson con efectos multiplicativos, el problema de parámetros incidentales **no existe**.
+
+::: {#prp-poisson-fe}
+## Poisson con efectos fijos
+Supón $\mathbb{E}[y_{it}\mid x_i,c_i] = c_i\exp(x_{it}'\beta)$ (efecto multiplicativo, exogeneidad estricta). El estimador de Poisson con $N$ dummies para los efectos (que maximiza la verosimilitud de Poisson sobre $\beta$ y $c_i$) es **consistente para $\beta$ con $T$ fijo** y no necesita que $y$ sea Poisson. Es el MV condicional en $\sum_ty_{it}$, que es una verosimilitud **multinomial** con probabilidades $p_{it}(\beta) = \dfrac{e^{x_{it}'\beta}}{\sum_se^{x_{is}'\beta}}$.
+:::
+
+::: {.proof}
+Para $\beta$ fijo, la CPO en $c_i$ de $\sum_t[y_{it}\log(c_ie^{x_{it}'\beta}) - c_ie^{x_{it}'\beta}]$ es $\sum_ty_{it}/c_i = \sum_te^{x_{it}'\beta}$, es decir $\hat c_i(\beta) = y_{i\cdot}\big/\sum_se^{x_{is}'\beta}$, con $y_{i\cdot} = \sum_ty_{it}$. Sustituyendo en el score de $\beta$, $\sum_t(y_{it} - c_ie^{x_{it}'\beta})x_{it}$, queda
+$$
+\sum_i\sum_t\big[y_{it} - p_{it}(\beta)y_{i\cdot}\big]x_{it} = 0,\qquad p_{it} = \frac{e^{x_{it}'\beta}}{\sum_se^{x_{is}'\beta}}.
+$$
+Basta verificar que, en $\beta_0$, la esperanza condicional de cada término es cero: $\mathbb{E}[y_{it} - p_{it}y_{i\cdot}\mid x_i,c_i] = c_ie^{x_{it}'\beta_0} - p_{it}\,c_i\sum_se^{x_{is}'\beta_0} = c_ie^{x_{it}'\beta_0} - c_ie^{x_{it}'\beta_0} = 0$. Esa condición de media cero del score depende solo de la **media** condicional (como en el QMLE de Poisson, Clase 7), no de la distribución de $y$. Por la Clase 1, $\hat\beta$ es consistente y, con el sándwich, asintóticamente normal.
+:::
+
+Es un resultado afortunado: el Poisson (y cualquier modelo con media exponencial) con efectos fijos es robusto a los parámetros incidentales y a la distribución. Es el estimador estándar en paneles de conteo y de variables no negativas (por ejemplo, patentes por empresa en $T$ años, o flujos de comercio entre pares de países).
+
+# El enfoque de Chamberlain: efectos correlacionados
+
+Cuando la verosimilitud condicional no existe (probit, tobit, o cuando se quieren efectos marginales), el enfoque alternativo es **modelar la relación entre $c_i$ y los regresores**. Mundlak (1978) (Clase 9) propuso $c_i = \bar x_i'\xi + a_i$. Chamberlain (1980) lo generalizó: $c_i$ depende de **todos** los valores de $x_i$, $c_i = \psi + \sum_tx_{it}'\xi_t + a_i$, y en la versión simple de Mundlak, $c_i = \psi + \bar x_i'\xi + a_i$, con $a_i\mid x_i\sim N(0,\sigma_a^2)$.
+
+::: {#prp-cre}
+## Probit con efectos correlacionados
+Sea $y_{it} = \mathbf{1}\{x_{it}'\beta + c_i + u_{it}>0\}$ con $u_{it}\sim N(0,1)$ independiente de $(x_i,c_i)$ y $c_i = \psi + \bar x_i'\xi + a_i$ con $a_i\mid x_i\sim N(0,\sigma_a^2)$. Entonces
+$$
+P(y_{it} = 1\mid x_i) = \Phi\big(x_{it}'\beta_a + \psi_a + \bar x_i'\xi_a\big),
+$$
+con $\beta_a = \beta/\sqrt{1 + \sigma_a^2}$, y análogamente $\psi_a,\xi_a$ (todos "reescalados" por el mismo factor).
+:::
+
+::: {.proof}
+$y^*_{it} = x_{it}'\beta + \psi + \bar x_i'\xi + (a_i + u_{it})$. El error compuesto $a_i + u_{it}$ es $N(0,1 + \sigma_a^2)$ e independiente de $x_i$. Dividiendo por $\sqrt{1 + \sigma_a^2}$ se obtiene un probit con error $N(0,1)$ y coeficientes divididos por ese factor (como en la normalización de escala y la atenuación por heterogeneidad omitida de la Clase 5).
+:::
+
+La ecuación es **un probit pooled con $\bar x_i$ como regresor adicional**. Se estima por MV con errores agrupados por individuo (el score de cada $i$ es una suma sobre $t$ y las observaciones del mismo $i$ no son independientes, así que la verosimilitud "pooled" es una **cuasi-verosimilitud**; Clase 2). Alternativamente se estima un **probit de efectos aleatorios** que integra explícitamente sobre $a_i$ con cuadratura de Gauss–Hermite: $P(y_i\mid x_i) = \int\prod_t\Phi\big(q_{it}(x_{it}'\beta + \psi + \bar x_i'\xi + a)\big)\frac1{\sigma_a}\phi(a/\sigma_a)\,da$, con $q_{it} = 2y_{it} - 1$.
+
+## Efectos marginales promedio
+
+Aunque $c_i$ no se identifica, el **efecto marginal promedio** sí, bajo el supuesto de Chamberlain–Mundlak. Para $x_{itj}$ continua, la **función de estructura promediada** (Blundell y Powell, 2003) es $\mathbb{E}_{c}[\Phi(x'\beta + c)]$, y su derivada es el efecto promediado sobre la distribución de $c_i$ (poblacional). Con @prp-cre,
+$$
+\text{AME}_j = \mathbb{E}\Big[\frac{\partial P(y_{it} = 1\mid x_i)}{\partial x_{itj}}\Big] = \beta_{a,j}\,\mathbb{E}\big[\phi\big(x_{it}'\beta_a + \psi_a + \bar x_i'\xi_a\big)\big],
+$$
+que se estima por el análogo muestral con los coeficientes reescalados. **No hace falta identificar $\beta$ ni $\sigma_a^2$ por separado**: los coeficientes con escala $1/\sqrt{1+\sigma_a^2}$ producen directamente los AME. Es el equivalente en no lineales del hecho de que, en la Clase 5, los efectos marginales sí se pueden comparar aunque los coeficientes no.
+
+Este es el estándar moderno (Wooldridge, 2005, 2019): **efectos correlacionados + AME**. Funciona con probit, logit, tobit y otros, permite variables invariantes en el tiempo y rezagos de $y$ (con cuidado), y entrega efectos en las unidades relevantes. El costo es **un supuesto paramétrico** sobre $c_i\mid x_i$: normalidad, y una dependencia lineal en $\bar x_i$ (más flexible: agregar términos cuadráticos o interacciones de $\bar x_i$).
+
+# Qué enfoque elegir
+
+| Enfoque | Qué estima | $T$ fijo | Efectos marginales | Supuesto sobre $c_i$ |
+|---|---|---|---|---|
+| FE "ingenuo" (con dummies) | $\beta$ | **inconsistente** | no | ninguno |
+| Logit condicional | $\beta$ (escala logit) | sí | **no** | ninguno |
+| Poisson con FE | $\beta$ | sí | semielasticidades sí | efecto multiplicativo |
+| Corrección de sesgo ($1/T$) | $\beta$ | aproximado | parcial | ninguno ($T$ moderado) |
+| Efectos correlacionados (Chamberlain) | $\beta_a$ y AME | sí | **sí** | $c_i\mid x_i$ normal |
+| Efectos aleatorios | $\beta$, $\sigma_c$ | sí | sí | $c_i\perp x_i$ (fuerte) |
+
+La elección depende de lo que se quiere estimar. Para el **efecto sobre la probabilidad** hay que modelar $c_i$ (Chamberlain). Para **solo el signo y las magnitudes relativas** bajo una exogeneidad "sin supuestos", el logit condicional. Y para modelos de conteo, Poisson con FE.
+
+# ★ Postgrado: la demostración del factor 2
+
+::: {.callout-important title="★ Postgrado"}
+Demostramos la @prp-incidental-logit: el logit con $N$ dummies y $T = 2$ converge a $2\beta_0$.
+:::
+
+::: {.proof}
+La contribución de la unidad $i$ es $\ell_i(\beta,c_i) = \sum_{t=1}^2\big[y_{it}(\beta x_{it} + c_i) - \log(1 + e^{\beta x_{it} + c_i})\big]$ con $x_{i1} = 0$, $x_{i2} = 1$. Se maximiza en $c_i$ para cada $\beta$.
+
+*Unidades con $y_i = (0,0)$ o $(1,1)$.* La verosimilitud es creciente (o decreciente) en $c_i$ sin cota, de modo que $\hat c_i\to-\infty$ ($+\infty$) y $\ell_i\to0$ para todo $\beta$. No aportan información sobre $\beta$ en el límite.
+
+*Unidades que cambian, $y_i = (0,1)$ o $(1,0)$.* La CPO en $c_i$ es $y_{i1} + y_{i2} = 1 = \Lambda(c_i) + \Lambda(\beta + c_i)$. Con $a = e^{c_i}$ y $b = e^\beta$: $\dfrac a{1+a} + \dfrac{ab}{1+ab} = 1\Rightarrow a(1 + ab) + ab(1 + a) = (1+a)(1+ab)\Rightarrow a^2b = 1$, o sea $\hat c_i(\beta) = -\beta/2$. Sustituyendo en $\ell_i$, con $\gamma = \beta/2$:
+$$
+\ell_i^{(0,1)} = 2\gamma - 2\log(1 + e^{\gamma}),\qquad\ell_i^{(1,0)} = -2\log(1 + e^{\gamma})
+$$
+(se usa $\log(1 + e^{-\gamma}) = \log(1 + e^\gamma) - \gamma$). Sea $n_{01}$ y $n_{10}$ los números de unidades que cambian de 0 a 1 y de 1 a 0. La verosimilitud perfilada es
+$$
+\ell(\beta) = 2\gamma\,n_{01} - 2(n_{01} + n_{10})\log(1 + e^\gamma),
+$$
+y su CPO en $\gamma$ es $n_{01} = (n_{01} + n_{10})\Lambda(\gamma)$, de modo que $\Lambda(\hat\gamma) = \dfrac{n_{01}}{n_{01} + n_{10}}$ y $\hat\gamma = \log(n_{01}/n_{10})$, es decir, $\hat\beta_{MV} = 2\log(n_{01}/n_{10})$.
+
+*Límite.* Por la LGN, $n_{01}/n_{10}\to\dfrac{P(0,1)}{P(1,0)}$ (probabilidades de las secuencias, promediando sobre $c_i$). La razón $P(0,1\mid c)/P(1,0\mid c) = \dfrac{[1 - \Lambda(c)]\Lambda(\beta_0 + c)}{\Lambda(c)[1 - \Lambda(\beta_0 + c)]} = e^{\beta_0}$ no depende de $c$. Luego, promediando sobre $c_i$, $P(0,1)/P(1,0) = e^{\beta_0}$ y $\hat\beta_{MV}\to2\beta_0$.
+:::
+
+El mismo cálculo prueba que el **logit condicional** es el estimador correcto: condicional en que hay un cambio, $P(y = (0,1)\mid\text{cambio}) = e^{\beta_0}/(1 + e^{\beta_0}) = \Lambda(\beta_0)$, y su MV es $\hat\beta_{CL} = \log(n_{01}/n_{10})$, que converge a $\beta_0$.
+
+# Resumen
+
+- En modelos no lineales, estimar $c_i$ como parámetros con $T$ fijo causa el **problema de los parámetros incidentales**: $\hat\beta$ es **inconsistente** (ejemplo de Neyman–Scott, y logit $T = 2$: converge a $2\beta_0$).
+- **Logit condicional** (@thm-logit-condicional): condicionando en $S_i = \sum_ty_{it}$, $c_i$ desaparece. Consistente con $T$ fijo, pero **no da efectos marginales**, y solo existe para logit.
+- **Poisson con FE** (@prp-poisson-fe) funciona siempre: la condición de media del score no depende de la distribución.
+- **Chamberlain–Mundlak**: modelar $c_i = \psi + \bar x_i'\xi + a_i$; el probit con $\bar x_i$ entrega coeficientes reescalados y **efectos marginales promedio** (@prp-cre).
+- La elección entre enfoques depende de si se quieren efectos en probabilidades (modelar $c_i$) o sólo coeficientes (condicional).
+
+# Ejercicios
+
+**Ejercicio 11.1.** En el ejemplo de Neyman–Scott con $\sigma^2 = 4$, calcula el límite de $\hat\sigma^2_{MV}$ para $T = 2,3,5$. ¿Qué corrección da un estimador consistente?
+
+::: {.callout-tip collapse="true" title="Solución 11.1"}
+$\hat\sigma^2_{MV}\to\sigma^2(T-1)/T$: $T = 2$: $4\cdot\tfrac12 = 2$; $T = 3$: $4\cdot\tfrac23 = 2{,}67$; $T = 5$: $4\cdot\tfrac45 = 3{,}2$. La corrección es multiplicar por $T/(T-1)$ (dividir por $N(T-1)$ en lugar de $NT$): $\tilde\sigma^2 = \frac1{N(T-1)}\sum\sum(y_{it} - \bar y_i)^2$, que es el MV **condicional** (o restringido). Para $\beta$ en el modelo lineal el sesgo del MV no existe, pero la varianza lo tiene.
+:::
+
+**Ejercicio 11.2.** En un panel de $N = 1000$ individuos con $T = 2$, se observan $n_{00} = 400$, $n_{11} = 400$, $n_{01} = 120$ y $n_{10} = 80$ (indicador de tratamiento en $t = 2$). Calcula el logit condicional, su error estándar y compara con el MV ingenuo.
+
+::: {.callout-tip collapse="true" title="Solución 11.2"}
+Solo importan los que cambian: $n_{01} + n_{10} = 200$. $\hat\beta_{CL} = \log(120/80) = \log1{,}5 = 0{,}405$. Error estándar: $\sqrt{1/n_{01} + 1/n_{10}} = \sqrt{1/120 + 1/80} = \sqrt{0{,}0208} = 0{,}144$ (es el de un logit binario con 200 observaciones y $\hat p = 0{,}6$: $1/(200\cdot0{,}6\cdot0{,}4) = 0{,}0208$). El MV ingenuo (@prp-incidental-logit) da $2\times0{,}405 = 0{,}811$: **el doble**. Las 800 unidades que no cambian ($n_{00} + n_{11}$) no aportan información sobre $\beta$ en el logit condicional.
+:::
+
+**Ejercicio 11.3.** Para $T = 3$ y $S_i = 1$, escribe la probabilidad condicional de la secuencia $(1,0,0)$ y la del conjunto $B_1$.
+
+::: {.callout-tip collapse="true" title="Solución 11.3"}
+$B_1 = \{(1,0,0),(0,1,0),(0,0,1)\}$. $P\big((1,0,0)\mid S_i = 1\big) = \dfrac{e^{x_{i1}'\beta}}{e^{x_{i1}'\beta} + e^{x_{i2}'\beta} + e^{x_{i3}'\beta}}$: un **logit multinomial** donde la "alternativa" es el período en que ocurre el único $y = 1$ (Clase 6). Si $x$ no cambia entre períodos, las tres probabilidades son iguales ($\tfrac13$) y la unidad no aporta información sobre $\beta$.
+:::
+
+**Ejercicio 11.4.** Demuestra que si $y_{it}\mid c_i,x_i$ son Poisson independientes con medias $\lambda_{it} = c_ie^{x_{it}'\beta}$, entonces condicional en $y_{i\cdot} = \sum_ty_{it}$, el vector $(y_{i1},\dots,y_{iT})$ es **multinomial** con probabilidades $p_{it} = \lambda_{it}/\sum_s\lambda_{is}$, que no dependen de $c_i$.
+
+::: {.callout-tip collapse="true" title="Solución 11.4"}
+La probabilidad conjunta es $\prod_te^{-\lambda_{it}}\lambda_{it}^{y_{it}}/y_{it}!$ y la de la suma, $y_{i\cdot}\sim\text{Poisson}(\sum_t\lambda_{it})$, es $e^{-\Lambda}\Lambda^{n}/n!$ con $\Lambda = \sum_t\lambda_{it}$, $n = y_{i\cdot}$. El cociente: $\dfrac{\prod_t\lambda_{it}^{y_{it}}/y_{it}!}{\Lambda^n/n!} = \dfrac{n!}{\prod y_{it}!}\prod_t\Big(\dfrac{\lambda_{it}}{\Lambda}\Big)^{y_{it}}$, que es la función de probabilidad multinomial. Como $\lambda_{it}/\Lambda = \dfrac{c_ie^{x_{it}'\beta}}{c_i\sum_se^{x_{is}'\beta}} = p_{it}(\beta)$, $c_i$ se cancela. Es la misma verosimilitud condicional que aparece en la demostración de la @prp-poisson-fe.
+:::
+
+**Ejercicio 11.5.** En un probit con efectos correlacionados, con $\sigma_a^2 = 3$, el coeficiente reescalado es $\hat\beta_a = 0{,}30$ y el promedio de $\phi(\cdot)$ en la muestra es $0{,}32$. Calcula el AME y el coeficiente "estructural" $\beta$ implícito.
+
+::: {.callout-tip collapse="true" title="Solución 11.5"}
+$\text{AME} = \beta_a\cdot\overline{\phi} = 0{,}30\times0{,}32 = 0{,}096$: casi 10 puntos porcentuales por unidad de $x$. Como $\beta_a = \beta/\sqrt{1 + \sigma_a^2}$ y $\sqrt{1 + 3} = 2$, $\beta = 2\times0{,}30 = 0{,}60$. Pero **no necesitamos $\beta$ para obtener el AME**: los coeficientes reescalados ya producen directamente el efecto promedio. El efecto marginal en una persona *específica* con un $c_i$ dado (por ejemplo $c_i = 0$) usaría $\beta = 0{,}60$ y daría un valor distinto (más alto), pero no se identifica porque no conocemos $c_i$ de nadie.
+:::
+
+**Ejercicio 11.6.** Explica por qué un investigador que estima un logit con efectos fijos condicional **no** puede decir "un año más de educación aumenta en 5 puntos porcentuales la probabilidad de empleo".
+
+::: {.callout-tip collapse="true" title="Solución 11.6"}
+Porque el efecto sobre la probabilidad es $\partial P/\partial x = \Lambda'(x'\beta + c_i)\beta$, que **depende de $c_i$**, y el logit condicional no estima ni identifica los $c_i$ (esa fue la gracia: se eliminaron). Sin la distribución de $c_i$ no se puede promediar. Solo es lícito reportar $\hat\beta$ en términos de *log-odds* (la razón de chances condicional en $c_i$ cambia en $e^{\hat\beta}$ por unidad de $x$: eso **sí** es independiente de $c_i$) y el signo. Para el efecto en probabilidades hay que pasar a efectos correlacionados y suponer algo de $c_i\mid x_i$.
+:::
+
+**Ejercicio 11.7 ★.** Demuestra que en el probit con $T = 2$ la razón $P(y = (0,1)\mid c)/P(y = (1,0)\mid c)$ **depende de $c$** (salvo casos triviales), y concluye que $S_i$ no es suficiente para $c_i$.
+
+::: {.callout-tip collapse="true" title="Solución 11.7 ★"}
+Con $x_{i1} = 0$ y $x_{i2} = 1$: $\dfrac{P(0,1\mid c)}{P(1,0\mid c)} = \dfrac{\Phi(-c)\,\Phi(\beta + c)}{\Phi(c)\,\Phi(-\beta - c)}$. En el logit, $\Lambda(-c)/\Lambda(c) = e^{-c}$ y $\Lambda(\beta + c)/\Lambda(-\beta - c) = e^{\beta + c}$, de modo que la razón es $e^{\beta}$, **independiente de $c$**. En el probit, tomemos $\beta = 1$: con $c = 0$, la razón es $\dfrac{0{,}5\cdot\Phi(1)}{0{,}5\cdot\Phi(-1)} = \dfrac{0{,}841}{0{,}159} = 5{,}30$; con $c = -0{,}5$: $\dfrac{\Phi(0{,}5)\Phi(0{,}5)}{\Phi(-0{,}5)\Phi(-0{,}5)} = \dfrac{0{,}691^2}{0{,}309^2} = 5{,}02$. Valores distintos: la distribución condicional en el cambio depende de $c$, así que el estadístico $S_i$ **no** agota la información sobre $c_i$ y no hay verosimilitud condicional libre de $c_i$. La propiedad algebraica que usa el logit (log-linealidad de las chances en $c$) es una propiedad exclusiva de la logística.
+:::

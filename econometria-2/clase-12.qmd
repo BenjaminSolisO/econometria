@@ -1,0 +1,242 @@
+---
+title: "Clase 12 · Regresión cuantílica"
+subtitle: "La función check, un M-estimador no suave y normalidad asintótica sin diferenciabilidad"
+description: "Cuantiles como solución de un problema de minimización, regresión cuantílica de Koenker y Bassett, interpretación con heterogeneidad, equivarianza, y la distribución asintótica por la identidad de Knight y el lema de convexidad."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-12.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Más allá de la media
+
+Toda la econometría hasta aquí modeló $\mathbb{E}[y\mid x]$. Pero la media condicional resume una distribución entera en un solo número. Si queremos saber cómo la educación afecta al **salario de los más pobres** o al de los más ricos, o cómo un programa de nutrición afecta a los niños en el **extremo inferior** de la distribución de peso al nacer, la media no responde. Un efecto puede ser grande en la cola izquierda y nulo en el centro, o tener signos distintos en distintas partes de la distribución, y todo eso se pierde al promediar.
+
+La **regresión cuantílica** (Koenker y Bassett, 1978) modela directamente los cuantiles condicionales $Q_\tau(y\mid x)$, para $\tau\in(0,1)$. Y tiene una segunda virtud: es **robusta a valores extremos** (como la mediana lo es frente a la media). Su teoría es, además, un excelente ejercicio para la Clase 1, porque el criterio **no es derivable** y aun así se obtiene normalidad asintótica.
+
+# Los cuantiles como solución a un problema de optimización
+
+El cuantil $\tau$ de una variable $y$ con distribución $F$ es $q_\tau = \inf\{q:\ F(q)\ge\tau\}$. La mediana ($\tau = \tfrac12$) es el caso más conocido. Lo no tan conocido es que los cuantiles son **minimizadores**, igual que la media (que minimiza $\mathbb{E}(y - q)^2$).
+
+::: {#def-check}
+## La función check
+$\rho_\tau(u) = u\,\big(\tau - \mathbf{1}\{u<0\}\big)$, es decir, $\rho_\tau(u) = \tau u$ si $u\ge0$ y $\rho_\tau(u) = (\tau - 1)u = (1-\tau)|u|$ si $u<0$.
+:::
+
+Es una "V asimétrica": penaliza los errores positivos ($y>q$, subestimar) con peso $\tau$ y los negativos con peso $1 - \tau$. Con $\tau = \tfrac12$ es $\tfrac12|u|$, la pérdida absoluta. Con $\tau = 0{,}9$, subestimar cuesta nueve veces más que sobrestimar: el $q$ óptimo queda tan arriba que solo el 10 % de los datos lo supera.
+
+::: {#thm-cuantil}
+## El cuantil minimiza la pérdida check
+Sea $y$ con distribución $F$ y $\mathbb{E}|y|<\infty$. Entonces $q\mapsto\mathbb{E}\big[\rho_\tau(y - q)\big]$ es convexa, y $q_\tau$ (cualquier solución de $F(q^-)\le\tau\le F(q)$) la minimiza.
+:::
+
+::: {.proof}
+Escribimos $\mathbb{E}\rho_\tau(y - q) = \tau\int_{y>q}(y - q)\,dF + (1-\tau)\int_{y<q}(q - y)\,dF$. Derivando respecto de $q$ (la derivada de la parte donde $y$ cruza $q$ se anula, porque el integrando vale cero en $y = q$):
+$$
+\frac{d}{dq}\mathbb{E}\rho_\tau(y - q) = -\tau\,P(y>q) + (1-\tau)\,P(y<q) = -\tau\big(1 - F(q)\big) + (1-\tau)F(q) = F(q) - \tau.
+$$
+La derivada es no decreciente en $q$ (porque $F$ lo es), así que la función es convexa, y se anula cuando $F(q) = \tau$: el mínimo está en el cuantil $\tau$. (Si $F$ tiene saltos o zonas planas, la derivada cambia de signo en el cuantil, con el mismo resultado.)
+:::
+
+Esto sugiere el análogo de MCO. MCO: $\mathbb{E}[y\mid x] = \arg\min_g\mathbb{E}(y - g(x))^2$, y si la media condicional es lineal, $\hat\beta = \arg\min\sum(y_i - x_i'b)^2$. Cuantílica: si $Q_\tau(y\mid x) = x'\beta(\tau)$, entonces
+$$
+\hat\beta(\tau) = \arg\min_{b\in\mathbb{R}^k}\ \frac1n\sum_{i=1}^n\rho_\tau(y_i - x_i'b).
+$$ {#eq-qr}
+Es un M-estimador (Clase 1) con $m(y,x,b) = -\rho_\tau(y - x'b)$. Se resuelve por **programación lineal** (sin derivadas) y es único con probabilidad uno si $y$ es continua. Con $\tau = \tfrac12$ es **LAD** (*least absolute deviations*).
+
+# Por qué es interesante: heterogeneidad
+
+Con un modelo de MCO con errores homocedásticos todas las rectas de cuantiles serían **paralelas** (mismas pendientes, intercepto distinto). La regresión cuantílica interesa precisamente cuando **no lo son**.
+
+::: {#exm-locacion-escala}
+## Modelo de locación y escala
+Sea $y = \beta_0 + \beta_1x + (1 + \gamma x)u$ con $u\sim F_u$ independiente de $x$ y $1 + \gamma x>0$. Como $1 + \gamma x>0$ la transformación es creciente en $u$, y
+$$
+Q_\tau(y\mid x) = \beta_0 + \beta_1x + (1 + \gamma x)q_\tau(u) = \big[\beta_0 + q_\tau(u)\big] + \big[\beta_1 + \gamma\,q_\tau(u)\big]x,
+$$
+con $q_\tau(u)$ el cuantil $\tau$ de $u$. La **pendiente** depende de $\tau$: $\beta_1(\tau) = \beta_1 + \gamma\,q_\tau(u)$. Con $\beta_1 = 2$, $\gamma = 0{,}5$, $u\sim N(0,1)$: $\beta_1(0{,}1) = 2 - 0{,}5(1{,}28) = 1{,}36$, $\beta_1(0{,}5) = 2$, $\beta_1(0{,}9) = 2{,}64$. El efecto de $x$ es **el doble** de grande en la cola superior que en la inferior, y MCO (que estima el efecto en la media, $2$) no lo ve.
+:::
+
+La heterocedasticidad deja de ser una molestia de la que hay que corregirse (la Clase 9 de Econometría 1) para ser **información**: la dependencia de $\beta_1(\tau)$ en $\tau$ mide cómo $x$ cambia la dispersión de $y$.
+
+::: {.callout-warning title="Qué significa $\beta(\tau)$"}
+$\beta_j(\tau)$ es el efecto de $x_j$ sobre el cuantil $\tau$ **condicional** de $y$. No es el efecto sobre una persona que está en el percentil $\tau$ (eso exigiría suponer que el individuo mantiene su posición en la distribución al cambiar $x$: *invarianza del rango*). Y tampoco es el efecto sobre el cuantil **incondicional** de $y$: la mediana de salarios de los hombres con educación universitaria no es la del conjunto. Para efectos sobre cuantiles incondicionales existen otros métodos (regresión RIF, Firpo–Fortin–Lemieux, 2009).
+:::
+
+# Equivarianza y robustez
+
+La regresión cuantílica tiene una propiedad que MCO no tiene, y que explica su atractivo en trabajo aplicado.
+
+::: {#prp-equivarianza}
+## Equivarianza a transformaciones monótonas
+Si $h$ es **estrictamente creciente**, entonces $Q_\tau\big(h(y)\mid x\big) = h\big(Q_\tau(y\mid x)\big)$.
+:::
+
+::: {.proof}
+$P\big(h(y)\le h(q)\mid x\big) = P(y\le q\mid x)$ por la monotonía de $h$. Si $q = Q_\tau(y\mid x)$ cumple $P(y\le q\mid x) = \tau$, entonces $h(q)$ es el cuantil $\tau$ de $h(y)$.
+:::
+
+Esto contrasta con la media: $\mathbb{E}[\log y\mid x]\ne\log\mathbb{E}[y\mid x]$ (desigualdad de Jensen). Si regresas $\log$ del salario sobre $x$ por cuantiles, los coeficientes son los del cuantil del **salario** en logaritmos: puedes volver a niveles exponenciando sin sesgo. En MCO, volver de logs a niveles requiere un factor de corrección (y conocer la distribución del error, Ejercicio 7.7 de la Clase 7). También es **robusta** a valores atípicos de $y$: cambiar el valor de una observación sin cruzar el cuantil no cambia $\hat\beta(\tau)$ (la función check tiene gradiente acotado).
+
+Otra consecuencia importante: para **datos censurados**. Si $y = \max(0,y^*)$ y $Q_\tau(y^*\mid x) = x'\beta(\tau)$, por equivarianza (la función $\max(0,\cdot)$ es no decreciente) $Q_\tau(y\mid x) = \max(0,x'\beta(\tau))$. De ahí sale el estimador de **LAD censurado** de Powell (1984) mencionado en la Clase 8, **consistente sin normalidad ni homocedasticidad**: solo requiere que el cuantil (la mediana) del error sea cero. Es la alternativa robusta al tobit.
+
+# El problema técnico: un criterio sin derivadas
+
+El teorema de normalidad de la Clase 1 se apoyaba en la condición de primer orden $\nabla\hat Q_n(\hat\theta) = 0$ y en el hessiano. Aquí la función $\rho_\tau$ tiene un **quiebre** en $0$, el gradiente no existe ahí y el hessiano es cero casi en todas partes. La regresión cuantílica es el ejemplo clásico de que la derivabilidad no es necesaria.
+
+La condición poblacional correcta se obtiene derivando la **esperanza** del criterio, que **sí es suave** (porque promedia el quiebre). Sea $u = y - x'\beta(\tau)$, de modo que el cuantil $\tau$ condicional de $u$ dado $x$ es cero, y sea $f(\cdot\mid x)$ su densidad condicional. Entonces la pseudo-derivada de $\rho_\tau$ es $\psi_\tau(u) = \tau - \mathbf{1}\{u<0\}$, y
+$$
+\mathbb{E}\big[x\,\psi_\tau(u)\big] = 0,\qquad\text{con }\ \mathbb{E}\big[\psi_\tau(u)\mid x\big] = \tau - P(u<0\mid x) = 0.
+$$
+Es la condición de ortogonalidad de la regresión cuantílica, el análogo de $\mathbb{E}[xu] = 0$ de MCO. Y la varianza condicional del "score" es $\operatorname{Var}(\psi_\tau\mid x) = \tau(1-\tau)$.
+
+::: {#thm-qr-normal}
+## Normalidad asintótica de la regresión cuantílica
+Sea $(y_i,x_i)$ i.i.d., $Q_\tau(y\mid x) = x'\beta_0$, $J = \mathbb{E}[xx']\succ0$, la densidad condicional $f(\cdot\mid x)$ de $u = y - x'\beta_0$ continua y acotada cerca de $0$, y $D = \mathbb{E}\big[f(0\mid x)\,xx'\big]\succ0$. Entonces $\hat\beta(\tau)\to_p\beta_0$ y
+$$
+\sqrt n\big(\hat\beta(\tau) - \beta_0\big)\xrightarrow{d}N\Big(0,\ \tau(1-\tau)\,D^{-1}JD^{-1}\Big).
+$$
+:::
+
+Observa la **forma de sándwich** $A^{-1}BA^{-1}$ de la Clase 1, con "curvatura" $A = D$ (la densidad de $u$ en cero, ponderada por $xx'$) y "ruido" $B = \tau(1-\tau)J$. Si el error es independiente de $x$ con densidad $f_u$ en el cuantil, $D = f_u(0)J$ y $V = \dfrac{\tau(1-\tau)}{f_u(0)^2}J^{-1}$. Para la mediana de una $N(0,1)$, $f(0) = 1/\sqrt{2\pi}$, y $V = \tfrac14\cdot2\pi = \pi/2\approx1{,}57$ (Ejercicio 12.4): la mediana es $1{,}57$ veces menos eficiente que la media bajo normalidad, y más eficiente bajo colas gordas (Laplace, $t$ con pocos grados de libertad).
+
+::: {.callout-note title="Borrador"}
+No puedo expandir el gradiente porque no existe. Pero puedo hacer algo equivalente: miro el criterio **reescalado** alrededor de la solución verdadera. Defino $\delta = \sqrt n(b - \beta_0)$ y estudio $Z_n(\delta) = \sum_i[\rho_\tau(u_i - x_i'\delta/\sqrt n) - \rho_\tau(u_i)]$, cuyo mínimo es $\hat\delta = \sqrt n(\hat\beta - \beta_0)$. La clave es una **identidad algebraica** (de Knight) que separa $Z_n$ en un término lineal en $\delta$, aleatorio, que satisface un TCL, y un término cuadrático, que converge a una constante. Con un criterio "lineal más cuadrático" el mínimo se calcula de forma explícita, y como $Z_n$ es **convexo** en $\delta$, la convergencia del criterio implica la de los mínimos.
+:::
+
+## La demostración
+
+::: {#lem-knight}
+## Identidad de Knight
+Para todo $u,v\in\mathbb{R}$,
+$$
+\rho_\tau(u - v) - \rho_\tau(u) = -v\,\psi_\tau(u) + \int_0^v\big(\mathbf{1}\{u<s\} - \mathbf{1}\{u<0\}\big)\,ds.
+$$
+:::
+
+::: {.proof}
+Como $\rho_\tau$ es absolutamente continua, con derivada $\psi_\tau(w) = \tau - \mathbf{1}\{w<0\}$ salvo en $w = 0$, $\rho_\tau(u - v) - \rho_\tau(u) = -\int_0^v\psi_\tau(u - s)\,ds = -\int_0^v\big(\tau - \mathbf{1}\{u<s\}\big)ds = -\tau v + \int_0^v\mathbf{1}\{u<s\}\,ds$. Y $-v\psi_\tau(u) = -\tau v + v\mathbf{1}\{u<0\} = -\tau v + \int_0^v\mathbf{1}\{u<0\}\,ds$. Restando, la diferencia es $\int_0^v(\mathbf{1}\{u<s\} - \mathbf{1}\{u<0\})\,ds$ (la derivada de $\rho_\tau$ no existe solo en $w = 0$, un conjunto de medida cero para la integral en $s$).
+:::
+
+::: {.proof}
+**(del @thm-qr-normal).** Sea $u_i = y_i - x_i'\beta_0$ y $\delta = \sqrt n(b - \beta_0)$. Aplicando el @lem-knight con $v = x_i'\delta/\sqrt n$:
+$$
+Z_n(\delta) = \sum_i\Big[\rho_\tau\Big(u_i - \frac{x_i'\delta}{\sqrt n}\Big) - \rho_\tau(u_i)\Big] = -\delta'W_n + B_n(\delta),
+$$
+$$
+W_n = \frac1{\sqrt n}\sum_ix_i\psi_\tau(u_i),\qquad B_n(\delta) = \sum_i\int_0^{x_i'\delta/\sqrt n}\big(\mathbf{1}\{u_i<s\} - \mathbf{1}\{u_i<0\}\big)\,ds.
+$$
+
+*El término lineal.* Los $x_i\psi_\tau(u_i)$ son i.i.d., con media cero ($\mathbb{E}[\psi_\tau(u)\mid x] = 0$) y varianza $\mathbb{E}[x\psi_\tau(u)^2x'] = \tau(1-\tau)J$, pues $\mathbb{E}[\psi_\tau^2\mid x] = \tau(1-\tau)$. Por el TCL, $W_n\to_dN\big(0,\tau(1-\tau)J\big)$.
+
+*El término cuadrático.* Condicional en $x_i$, $\mathbb{E}\big[\mathbf{1}\{u_i<s\} - \mathbf{1}\{u_i<0\}\mid x_i\big] = F(s\mid x_i) - F(0\mid x_i)\approx f(0\mid x_i)\,s$ para $s$ chico. Integrando, $\int_0^{v}f(0\mid x)s\,ds = \tfrac12f(0\mid x)v^2$ con $v = x_i'\delta/\sqrt n$. Entonces
+$$
+\mathbb{E}[B_n(\delta)] \to\tfrac12\,\delta'\,\mathbb{E}\big[f(0\mid x)xx'\big]\,\delta = \tfrac12\delta'D\delta,
+$$
+y la varianza de $B_n(\delta)$ tiende a cero: cada sumando está acotado en valor absoluto por $|v|\,\mathbf{1}\{|u_i|\le|v|\}$ con $v = x_i'\delta/\sqrt n$, así que su cuadrado tiene esperanza de orden $n^{-3/2}$, y la suma de $n$ términos independientes tiene varianza de orden $n^{-1/2}$. Luego $B_n(\delta)\to_p\tfrac12\delta'D\delta$ para cada $\delta$.
+
+*Convergencia del mínimo.* Entonces $Z_n(\delta)\to_d Z(\delta) = -\delta'W + \tfrac12\delta'D\delta$ con $W\sim N(0,\tau(1-\tau)J)$, y $Z$ tiene un único minimizador, $\delta^* = D^{-1}W$. Como cada $Z_n$ es **convexa** en $\delta$ (suma de funciones convexas), el lema de convexidad (@lem-convexidad abajo) implica que $\hat\delta = \arg\min Z_n\to_d\delta^* = D^{-1}W\sim N\big(0,\tau(1-\tau)D^{-1}JD^{-1}\big)$.
+:::
+
+El lema de convexidad hace en este caso el papel de la LGN uniforme y el teorema del valor medio: reemplaza "criterio derivable" por "criterio convexo".
+
+::: {#lem-convexidad}
+## Lema de convexidad (Pollard, 1991)
+Si $Z_n(\delta)$ son funciones convexas aleatorias que convergen (en distribución, puntualmente) a una función $Z(\delta)$ con un **único** minimizador $\delta^*$, entonces cualquier minimizador $\hat\delta_n$ de $Z_n$ converge a $\delta^*$ (en distribución, si $\delta^*$ es aleatorio).
+:::
+
+En la sección ★ demostramos la versión determinística, que contiene la idea clave.
+
+# Estimación de la varianza
+
+El problema práctico es $D = \mathbb{E}[f(0\mid x)xx']$: requiere estimar la **densidad** del error en cero, un objeto no paramétrico. Tres soluciones:
+
+1. **Bootstrap por pares** (remuestrear $(y_i,x_i)$ con reemplazo y recalcular $\hat\beta(\tau)$): la más usada, simple y robusta a heterocedasticidad.
+2. **Estimador de Powell** (con kernel): $\hat D = \frac1{nh}\sum_iK(\hat u_i/h)x_ix_i'$ y $\hat V = \tau(1-\tau)\hat D^{-1}\hat J\hat D^{-1}$.
+3. **Hendricks–Koenker:** estima la *función de dispersión* $1/f(F^{-1}(\tau))$ con diferencias de cuantiles estimados en $\tau\pm h$.
+
+Para inferencia conjunta sobre varios cuantiles (¿son iguales las pendientes en $\tau = 0{,}25$ y $0{,}75$?), el bootstrap sobre todos los cuantiles a la vez es lo estándar.
+
+# Notas prácticas
+
+- **Cruce de cuantiles.** Con $\tau_1<\tau_2$ la teoría exige $Q_{\tau_1}(y\mid x)\le Q_{\tau_2}(y\mid x)$ para todo $x$, pero las rectas estimadas por separado pueden **cruzarse** en las colas de $x$ (especialmente en muestras chicas). Es señal de especificación lineal inadecuada o escasez de datos; existen correcciones por reordenamiento (Chernozhukov, Fernández-Val y Galichon, 2010).
+- **Cuantiles extremos.** Para $\tau$ cerca de $0$ o $1$, la teoría normal es mala (pocos datos en la cola); hay teoría de valores extremos (Chernozhukov, 2005).
+- **Variable endógena.** La regresión cuantílica con variables instrumentales (Chernozhukov–Hansen, 2005) permite estimar efectos heterogéneos con endogeneidad.
+- **Con paneles**, la eliminación de efectos fijos no funciona como en MCO (el cuantil de una diferencia no es la diferencia de cuantiles); ver Koenker (2004), Canay (2011).
+
+# ★ Postgrado: por qué funciona el lema de convexidad
+
+::: {.callout-important title="★ Postgrado"}
+La convexidad convierte la convergencia puntual en convergencia de los mínimos. Mostramos la versión determinística: si funciones convexas convergen puntualmente a una función estrictamente convexa, sus minimizadores convergen.
+:::
+
+::: {#prp-conv-det}
+## Convergencia de minimizadores de convexas
+Sean $Z_n:\mathbb{R}^k\to\mathbb{R}$ convexas con $Z_n(\delta)\to Z(\delta)$ para todo $\delta$, y $Z$ con un único minimizador $\delta^*$. Entonces todo minimizador $\hat\delta_n$ de $Z_n$ cumple $\hat\delta_n\to\delta^*$.
+:::
+
+::: {.proof}
+Fija $\varepsilon>0$ y sea $S = \{\delta:\|\delta - \delta^*\| = \varepsilon\}$ la esfera de radio $\varepsilon$. Como $Z$ tiene un único minimizador y es continua (límite puntual de convexas, que es convexa y por tanto continua), $\eta = \min_{S}Z - Z(\delta^*)>0$. Por convergencia puntual y convexidad, la convergencia es **uniforme en compactos** (resultado clásico de análisis convexo), así que para $n$ grande $Z_n(\delta)>Z_n(\delta^*)$ para todo $\delta\in S$ (la brecha $\eta$ no desaparece). Ahora tomemos un punto $\delta$ **fuera** de la bola, con $\|\delta - \delta^*\|>\varepsilon$. El segmento de $\delta^*$ a $\delta$ cruza la esfera en un punto $\delta_S = (1-\lambda)\delta^* + \lambda\delta$ con $\lambda\in(0,1)$. Por convexidad, $Z_n(\delta_S)\le(1-\lambda)Z_n(\delta^*) + \lambda Z_n(\delta)$, es decir
+$$
+Z_n(\delta)\ \ge\ Z_n(\delta^*) + \frac{Z_n(\delta_S) - Z_n(\delta^*)}\lambda\ >\ Z_n(\delta^*),
+$$
+pues $Z_n(\delta_S) > Z_n(\delta^*)$ y $\lambda>0$. Luego ningún punto fuera de la bola puede ser mínimo: $\|\hat\delta_n - \delta^*\|\le\varepsilon$ para $n$ grande. Como $\varepsilon$ es arbitrario, $\hat\delta_n\to\delta^*$.
+:::
+
+Esta es la misma idea del Ejercicio 1.7 de la Clase 1 (concavidad en lugar de compacidad), y es lo que permite que los M-estimadores **no suaves** tengan teoría asintótica completa. Pollard (1991) la extiende a convergencia en distribución, que es lo que se usa en la demostración.
+
+# Resumen
+
+- El cuantil $\tau$ minimiza $\mathbb{E}\rho_\tau(y - q)$ con $\rho_\tau(u) = u(\tau - \mathbf{1}\{u<0\})$ (@thm-cuantil). La **regresión cuantílica** es $\hat\beta(\tau) = \arg\min\sum\rho_\tau(y_i - x_i'b)$, un M-estimador sin derivadas, resuelto por programación lineal.
+- Interesa cuando los efectos son **heterogéneos** a lo largo de la distribución (@exm-locacion-escala); es **equivariante** a transformaciones monótonas y robusta a atípicos.
+- **Normalidad** (@thm-qr-normal): $\sqrt n(\hat\beta(\tau) - \beta_0)\to N\big(0,\tau(1-\tau)D^{-1}JD^{-1}\big)$, con $D = \mathbb{E}[f(0\mid x)xx']$. La demostración usa la **identidad de Knight** y el **lema de convexidad**, no el hessiano.
+- La varianza exige estimar la densidad del error: se usa **bootstrap**.
+- El LAD censurado de Powell generaliza al tobit sin supuestos distribucionales.
+
+# Ejercicios
+
+**Ejercicio 12.1.** Para la muestra $\{1,2,10\}$, calcula $\sum|y_i - q|$ en $q = 2$ (mediana) y en $q = 4{,}33$ (media). Verifica que la mediana minimiza la pérdida absoluta.
+
+::: {.callout-tip collapse="true" title="Solución 12.1"}
+$q = 2$: $|1-2| + |2-2| + |10-2| = 1 + 0 + 8 = 9$. $q = 13/3 = 4{,}33$: $3{,}33 + 2{,}33 + 5{,}67 = 11{,}33$. La mediana tiene menor pérdida absoluta. Además, $q\mapsto\sum|y_i - q|$ es lineal por tramos con pendiente $\#\{y_i<q\} - \#\{y_i>q\}$. Para $q<1$ la pendiente es $-3$; entre 1 y 2 es $-1$; entre 2 y 10 es $+1$; sobre 10 es $+3$. Cambia de signo justo en el dato central, $q = 2$: ahí está el mínimo.
+:::
+
+**Ejercicio 12.2.** Con $\tau = 0{,}9$, calcula $\rho_\tau(u)$ para $u = -2$ y $u = +2$. ¿Qué implica sobre dónde se coloca el ajuste?
+
+::: {.callout-tip collapse="true" title="Solución 12.2"}
+$\rho_{0,9}(2) = 0{,}9\cdot2 = 1{,}8$ y $\rho_{0,9}(-2) = (0{,}9 - 1)(-2) = 0{,}2$. Un residuo positivo ($y$ por encima del ajuste) cuesta **9 veces más** que uno negativo de igual magnitud. Para minimizar la pérdida total, el ajuste se sube hasta que dejar los puntos por arriba cuesta tanto como dejarlos por debajo: ocurre cuando solo el 10 % de los puntos queda por encima (condición de primer orden $F(q) = \tau = 0{,}9$).
+:::
+
+**Ejercicio 12.3.** En el @exm-locacion-escala con $\beta_1 = 2$, $\gamma = 0{,}5$ y $u\sim N(0,1)$, calcula la diferencia entre la pendiente en $\tau = 0{,}9$ y en $\tau = 0{,}1$. ¿Cómo testearías $H_0:\gamma = 0$ (homocedasticidad) usando regresión cuantílica?
+
+::: {.callout-tip collapse="true" title="Solución 12.3"}
+$\beta_1(0{,}9) - \beta_1(0{,}1) = \gamma[q_{0,9}(u) - q_{0,1}(u)] = 0{,}5\times2{,}56 = 1{,}28$. Si $\gamma = 0$, todas las pendientes son iguales ($\beta_1(\tau) = \beta_1$ para todo $\tau$): se testea $H_0:\beta_1(0{,}9) = \beta_1(0{,}1)$ con una prueba de Wald (bootstrap para la varianza de la diferencia). Es una prueba **de homocedasticidad más general que las de la Clase 9 de Econometría 1**, porque detecta cualquier cambio de la pendiente a lo largo de la distribución, no solo cambios de varianza.
+:::
+
+**Ejercicio 12.4.** Para un error i.i.d. $N(0,1)$, calcula la varianza asintótica de $\sqrt n(\hat m - m)$ para la mediana muestral y compárala con la de la media. ¿Y si el error es Laplace con densidad $\tfrac12e^{-|u|}$?
+
+::: {.callout-tip collapse="true" title="Solución 12.4"}
+Mediana: $V = \tau(1-\tau)/f(0)^2 = \tfrac14/f(0)^2$. Normal: $f(0) = 1/\sqrt{2\pi}$, $V = \tfrac14\cdot2\pi = \pi/2 = 1{,}571$. La media tiene varianza $1$: la mediana tiene un **57 % más** de varianza (eficiencia relativa $1/1{,}57\approx0{,}64$; bajo normalidad el MV es la media). Laplace: $f(0) = \tfrac12$, $V = \tfrac14/\tfrac14 = 1$, y su varianza es $2$ (la de Laplace con escala 1 es $2$): la mediana tiene varianza asintótica $1$ y la media $2$. **Bajo Laplace la mediana gana por factor 2** (es el MV).
+:::
+
+**Ejercicio 12.5.** Demuestra con un ejemplo que $\mathbb{E}[\log y]\ne\log\mathbb{E}[y]$ pero $\text{mediana}(\log y) = \log\text{mediana}(y)$. Usa $y$ con valores $\{1,\,e,\,e^4\}$ equiprobables.
+
+::: {.callout-tip collapse="true" title="Solución 12.5"}
+$\mathbb{E}[y] = (1 + 2{,}718 + 54{,}6)/3 = 19{,}44$ y $\log\mathbb{E}[y] = 2{,}97$. $\mathbb{E}[\log y] = (0 + 1 + 4)/3 = 1{,}67\ne2{,}97$. Mediana de $y$: $e = 2{,}718$ y su log vale $1$. Mediana de $\log y$: valores $\{0,1,4\}$, mediana $1$. **Coinciden.** La media no pasa por transformaciones no lineales; la mediana (y cualquier cuantil) sí.
+:::
+
+**Ejercicio 12.6.** Si $y = \max(0,y^*)$ y $Q_\tau(y^*\mid x) = x'\beta(\tau)$, demuestra que $Q_\tau(y\mid x) = \max\big(0,x'\beta(\tau)\big)$. ¿Cómo se estima $\beta(\tau)$ con esto?
+
+::: {.callout-tip collapse="true" title="Solución 12.6"}
+Hay dos casos. (i) Si $x'\beta(\tau)>0$: para $q>0$, $P(y\le q\mid x) = P(y^*\le q\mid x)$ (porque $y = y^*$ cuando $y^*>0$), así que el cuantil $\tau$ de $y$ coincide con el de $y^*$, que es $x'\beta(\tau)$. (ii) Si $x'\beta(\tau)\le0$: como el cuantil $\tau$ de $y^*$ es $\le0$, $P(y^*\le0\mid x)\ge\tau$, y por lo tanto $P(y = 0\mid x) = P(y^*\le0\mid x)\ge\tau$: el cuantil $\tau$ de $y$ es $0$. En ambos casos $Q_\tau(y\mid x) = \max\big(0,x'\beta(\tau)\big)$. El estimador **LAD censurado** minimiza $\sum\rho_\tau\big(y_i - \max(0,x_i'b)\big)$; no es convexo, pero es consistente sin suponer normalidad ni homocedasticidad: solo hace falta que el cuantil $\tau$ del error sea cero. Es la alternativa semiparamétrica a la Clase 8.
+:::
+
+**Ejercicio 12.7 ★.** Calcula el gradiente y el hessiano de $Q_0(b) = \mathbb{E}\,\rho_\tau(y - x'b)$ en $b = \beta_0$, y comprueba que el hessiano es $D = \mathbb{E}[f(0\mid x)xx']$.
+
+::: {.callout-tip collapse="true" title="Solución 12.7 ★"}
+Condicional en $x$, por el @thm-cuantil con $q = x'b$: $\dfrac{\partial}{\partial q}\mathbb{E}[\rho_\tau(y - q)\mid x] = F_y(q\mid x) - \tau$. Con la regla de la cadena, $\nabla Q_0(b) = \mathbb{E}\big[x\,(F_y(x'b\mid x) - \tau)\big]$. En $b = \beta_0$, $F_y(x'\beta_0\mid x) = \tau$ y el gradiente es cero. Derivando otra vez, $\nabla^2Q_0(b) = \mathbb{E}\big[f_y(x'b\mid x)\,xx'\big]$, que en $\beta_0$ es $\mathbb{E}[f(0\mid x)xx'] = D$, con $f(0\mid x)$ la densidad de $u = y - x'\beta_0$ en cero (la densidad de $y$ en $x'\beta_0$ coincide con la de $u$ en cero). Aunque el criterio *muestral* no es derivable, **su esperanza sí tiene hessiano**: ese es el $A$ del sándwich.
+:::

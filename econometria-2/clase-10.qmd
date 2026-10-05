@@ -1,0 +1,201 @@
+---
+title: "Clase 10 · Datos de panel II"
+subtitle: "Paneles dinámicos y el estimador de Arellano–Bond"
+description: "El sesgo de Nickell de efectos fijos con rezagos de la variable dependiente, el estimador de Anderson–Hsiao, GMM en primeras diferencias (Arellano–Bond), tests de sobreidentificación y de autocorrelación, instrumentos débiles y GMM sistema."
+format:
+  html: default
+  pdf:
+    include-in-header: ../assets/preambulo.tex
+---
+
+::: {.content-visible when-format="html"}
+<a class="descarga-pdf" href="clase-10.pdf">Descargar esta clase en PDF</a>
+:::
+
+# Cuando el pasado importa
+
+En la Clase 9 el estimador de efectos fijos eliminaba $c_i$ restando medias, con una condición: **exogeneidad estricta**. Pero muchos fenómenos económicos son **persistentes**: el empleo de una empresa depende de su empleo del año pasado, el consumo de un hogar de su hábito, el PIB de un país de su nivel previo. Eso lleva a un **modelo dinámico**:
+$$
+y_{it} = \rho\,y_{i,t-1} + x_{it}'\beta + c_i + u_{it},\qquad |\rho|<1.
+$$ {#eq-dinamico}
+Aquí $y_{i,t-1}$ es un regresor, y **no puede ser estrictamente exógeno**: depende de $u_{i,t-1}$, y por lo tanto de los errores pasados. Peor, aún con $N\to\infty$ el problema persiste, porque $c_i$ afecta a todos los $y_{it}$, incluyendo a $y_{i,t-1}$. Dos problemas simultáneos:
+
+1. **$c_i$ correlacionado con el regresor** $y_{i,t-1}$ (siempre: $y_{i,t-1}$ contiene $c_i$). MCO agrupado queda inconsistente, con sesgo **hacia arriba**.
+2. Eliminar $c_i$ con efectos fijos **crea otro problema**, el sesgo de Nickell, que ahora veremos.
+
+Es el territorio de los **paneles dinámicos**, y la respuesta moderna es GMM (Clase 4) con instrumentos construidos con los *rezagos*.[^ab]
+
+[^ab]: Manuel Arellano y Stephen Bond publicaron su método en 1991 en un artículo sobre el empleo en empresas británicas. Es uno de los artículos más citados de la econometría aplicada y la razón es práctica: el procedimiento está implementado en todos los paquetes y casi cualquier análisis de panel con rezagos lo usa. Arellano, además, escribió *Panel Data Econometrics* (2003), uno de los textos de referencia sobre el tema.
+
+# El sesgo de Nickell
+
+Consideremos el caso más simple, $y_{it} = \rho y_{i,t-1} + c_i + u_{it}$ sin otras variables, con $u_{it}$ i.i.d. $(0,\sigma^2)$ y observaciones $t = 1,\dots,T$ (más un valor inicial $y_{i0}$). La transformación intra-grupos da
+$$
+\ddot y_{it} = \rho\,\ddot y_{i,t-1} + \ddot u_{it},\qquad
+\ddot y_{i,t-1} = y_{i,t-1} - \frac1T\sum_{s=1}^Ty_{i,s-1},\quad\ddot u_{it} = u_{it} - \bar u_i.
+$$
+El problema: $\ddot y_{i,t-1}$ contiene $\bar y_{i,-1}$, que depende de $u_{i1},\dots,u_{i,T-1}$, y $\ddot u_{it}$ contiene $\bar u_i$, que incluye esos mismos errores. Ambos comparten términos: **$\ddot y_{i,t-1}$ y $\ddot u_{it}$ están correlacionados** aunque $u$ sea i.i.d. y exógeno en el sentido contemporáneo.
+
+::: {#prp-nickell}
+## Sesgo de Nickell
+Con $N\to\infty$ y $T$ fijo, el estimador de efectos fijos de $\rho$ en @eq-dinamico (sin $x$) satisface
+$$
+\operatorname{plim}_{N\to\infty}(\hat\rho_{FE} - \rho)\ \approx\ -\frac{1 + \rho}{T}\qquad(\text{para }T\text{ no muy chico}).
+$$
+No desaparece con $N$: solo con $T\to\infty$.
+:::
+
+Los números asustan. Con $\rho = 0{,}5$ y $T = 5$, el sesgo es $\approx-1{,}5/5 = -0{,}30$: el estimador de FE converge a $0{,}20$ en lugar de $0{,}50$. Con $T = 20$ el sesgo baja a $-0{,}075$. En paneles típicos de encuestas ($T$ de 3 a 10), el sesgo es **enorme**. La demostración (sección ★) calcula la covarianza entre $\ddot y_{i,t-1}$ y $\ddot u_{it}$.[^nickell]
+
+[^nickell]: Stephen Nickell lo mostró en 1981 y el resultado fue una pequeña conmoción: el estimador "obvio" de panel, que todos usaban, era inconsistente en el caso más simple posible. En la jerga de la Clase 9, la exogeneidad *estricta* no vale con rezagos de $y$. El sesgo es una de esas ideas que, una vez que las ves, no puedes dejar de ver en los artículos que ignoran el problema.
+
+Una consecuencia práctica útil: **MCO agrupado está sesgado hacia arriba** (porque $c_i$ correlaciona positivamente con $y_{i,t-1}$) y **FE hacia abajo** (Nickell). Un estimador consistente de $\rho$ debería caer **entre los dos**. Es una verificación rápida (Bond, 2002) de cualquier estimación dinámica: si tu $\hat\rho$ GMM queda fuera del intervalo [FE, MCO], algo está mal.
+
+# Primeras diferencias e instrumentos
+
+El problema del FE es que la transformación intra-grupos "contamina" $y_{i,t-1}$ con errores futuros. Una transformación más limpia es **diferenciar**:
+$$
+\Delta y_{it} = \rho\,\Delta y_{i,t-1} + \Delta x_{it}'\beta + \Delta u_{it},\qquad t = 3,\dots,T.
+$$
+$c_i$ desaparece. Pero $\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2}$ está correlacionado con $\Delta u_{it} = u_{it} - u_{i,t-1}$, porque ambos contienen $u_{i,t-1}$: **MCO sobre las diferencias es inconsistente**. Necesitamos un **instrumento** (Clase 10 de Econometría 1) que se correlacione con $\Delta y_{i,t-1}$ pero no con $\Delta u_{it}$. ¿Dónde buscarlo? En el propio panel: los *rezagos en niveles*.
+
+::: {.callout-caution title="Supuestos del panel dinámico"}
+- **D1:** $\mathbb{E}[u_{it}] = 0$ y $u_{it}$ **no tiene correlación serial**: $\mathbb{E}[u_{it}u_{is}] = 0$ para $t\ne s$.
+- **D2:** $\mathbb{E}[u_{it}c_i] = 0$.
+- **D3 (condición inicial):** $\mathbb{E}[u_{it}y_{i1}] = 0$ para $t\ge2$.
+- Las $x_{it}$ son **estrictamente exógenas** (o predeterminadas, o endógenas, ver abajo).
+:::
+
+::: {#prp-momentos-ab}
+## Condiciones de momentos de Arellano–Bond
+Bajo D1–D3, para $t = 3,\dots,T$ y $s\ge2$,
+$$
+\mathbb{E}\big[y_{i,t-s}\,\Delta u_{it}\big] = 0.
+$$
+:::
+
+::: {.proof}
+Por la ecuación @eq-dinamico aplicada recursivamente, $y_{i,t-s}$ es función de $c_i$, de $y_{i1}$ y de $u_{i2},\dots,u_{i,t-s}$. Con $s\ge2$, el índice máximo $t - s\le t-2$. Ahora $\Delta u_{it} = u_{it} - u_{i,t-1}$ involucra $u_{it}$ y $u_{i,t-1}$, con $t-1>t-s$. Por D1 los $u$ de índices distintos no están correlacionados, por D2 $c_i$ no está correlacionado con $u_{it}$ ni $u_{i,t-1}$, y por D3 tampoco $y_{i1}$. Luego $y_{i,t-s}$ es no correlacionado con $\Delta u_{it}$.
+:::
+
+Esto da un **sistema de instrumentos que crece con $t$**. Con solo el modelo AR(1), para $t = 3$ hay un instrumento ($y_{i1}$), para $t = 4$ hay dos ($y_{i1}$, $y_{i2}$), y así hasta $t = T$ con $T - 2$ instrumentos. En total $(T-1)(T-2)/2$ condiciones de momentos para el único parámetro $\rho$: **mucho sobreidentificado**.
+
+## El estimador de Anderson–Hsiao
+
+El más simple: usar **un solo** instrumento por período, $y_{i,t-2}$ (o $\Delta y_{i,t-2}$), y estimar por MC2E/VI. Es consistente, pero poco eficiente (descarta instrumentos válidos). Sirve como valor inicial.
+
+## Arellano–Bond: GMM en primeras diferencias
+
+El estimador de **Arellano–Bond** (diferencias GMM) usa **todas** las condiciones de la @prp-momentos-ab con GMM (Clase 4). Para cada $i$, apilamos las ecuaciones $t = 3,\dots,T$ en $\Delta y_i = \Delta W_i\theta + \Delta u_i$ (con $\theta = (\rho,\beta')'$ y $W_{it} = (y_{i,t-1},x_{it}')$) y la matriz de instrumentos **diagonal por bloques**
+$$
+Z_i = \begin{pmatrix}
+y_{i1} & & & \\
+ & y_{i1},y_{i2} & & \\
+ & & \ddots & \\
+ & & & y_{i1},\dots,y_{i,T-2}
+\end{pmatrix}
+$$
+(más las $x$ estrictamente exógenas, que son instrumentos de sí mismas). Los momentos son $\mathbb{E}[Z_i'\Delta u_i] = 0$ y el estimador es
+$$
+\hat\theta = \Big(\Delta W'Z\,\hat W\,Z'\Delta W\Big)^{-1}\Delta W'Z\,\hat W\,Z'\Delta y.
+$$
+Con la **ponderación** óptima (Clase 4) $\hat W = \big(\sum_iZ_i'\Delta\hat u_i\Delta\hat u_i'Z_i\big)^{-1}$ se obtiene el GMM de dos pasos; el primer paso usa $\hat W_1 = \big(\sum_iZ_i'HZ_i\big)^{-1}$, donde $H$ es la matriz **tridiagonal** de $\operatorname{Var}(\Delta u_i)/\sigma^2$ (2 en la diagonal y $-1$ en las adyacentes; Ejercicio 10.4). Toda la teoría de la Clase 4 aplica: consistencia, normalidad, eficiencia y test $J$.
+
+::: {.callout-note title="Qué instrumentos son legítimos para cada regresor"}
+- **Estrictamente exógeno** ($\mathbb{E}[u_{it}\mid x_{i1},\dots,x_{iT}] = 0$): *toda* $x_{is}$ es instrumento válido.
+- **Predeterminado** ($\mathbb{E}[u_{it}\mid x_{i1},\dots,x_{it}] = 0$, pero $x_{i,t+1}$ puede depender de $u_{it}$): $x_{i,t-s}$ con $s\ge1$ para $\Delta u_{it}$ (se pierde $x_{it}$ mismo, que puede depender de $u_{i,t-1}$, y por eso correlacionarse con $\Delta u_{it}$).
+- **Endógeno** ($x_{it}$ correlacionado con $u_{it}$): $x_{i,t-s}$ con $s\ge2$, igual que $y$.
+:::
+
+## Diagnóstico: los tests de especificación
+
+Dos tests acompañan siempre a Arellano–Bond:
+
+1. **Test $J$ de Hansen** (Clase 4): $J\to\chi^2_{r-p}$ bajo la validez del conjunto de instrumentos. Un rechazo es señal de que algún instrumento es inválido.
+2. **Test de autocorrelación de los residuos en diferencias.** Bajo D1, $\Delta u_{it} = u_{it} - u_{i,t-1}$ **debería** tener autocorrelación de primer orden (negativa: comparte $u_{i,t-1}$ con $\Delta u_{i,t-1}$, correlación $-\tfrac12$), pero **ninguna de segundo orden**. Se testea AR(1) (esperamos rechazar) y **AR(2) (esperamos NO rechazar)**. Si hay autocorrelación de segundo orden, $u_{it}$ tiene correlación serial y los rezagos usados como instrumentos dejan de ser válidos (Ejercicio 10.5).
+
+## Instrumentos débiles y GMM sistema
+
+El método tiene dos fragilidades conocidas.
+
+**(1) Persistencia alta.** Cuando $\rho$ se acerca a 1, los niveles rezagados son **instrumentos débiles** para las diferencias. En el modelo AR(1), $\Delta y_{i,t-1} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}$ (de @eq-dinamico), y la regresión de primera etapa de $\Delta y_{i,t-1}$ sobre $y_{i,t-2}$ (limpiada de $c_i$) tiene coeficiente $\rho - 1\to0$. Si $\rho = 1$ (caminata aleatoria), $\Delta y_{i,t-1} = u_{i,t-1}$ es **independiente** de todos los niveles rezagados: el instrumento es **irrelevante** (Clase 10 de Econometría 1). Para series muy persistentes (PIB, capital, precios) las diferencias GMM son pésimas.
+
+**(2) Demasiados instrumentos.** Con $T$ grande el número de momentos crece como $T^2$, y con $N$ moderado el GMM de dos pasos sobreajusta y el test $J$ **pierde potencia** (da $p$-valores cercanos a 1 que no significan nada). La práctica recomendada: limitar los rezagos usados o "colapsar" la matriz $Z_i$ (una columna por rezago, no una por cada par $(t,s)$).
+
+El estimador de **GMM sistema** de Blundell y Bond (1998) agrega a las ecuaciones en diferencias las ecuaciones **en niveles**, instrumentadas con **diferencias rezagadas**: $\mathbb{E}[\Delta y_{i,t-1}(c_i + u_{it})] = 0$. Esto es válido si $\Delta y_{i,t-1}$ no está correlacionado con $c_i$, lo cual exige una condición sobre la **condición inicial** (que el proceso parta de su media estacionaria; Ejercicio 10.7). Cuando se cumple, hay mucha más información y el problema de instrumentos débiles se alivia; pero la condición adicional es un supuesto fuerte, y se testea con la diferencia de dos tests $J$ (el test de Hansen del conjunto adicional).
+
+**Errores estándar.** Los de dos pasos son *muy* sesgados hacia abajo en muestras finitas; la **corrección de Windmeijer** (2005) es estándar y hay que usarla: capta la variabilidad adicional que introduce estimar la ponderación $\hat W$ con los residuos del primer paso.
+
+# ★ Postgrado: cálculo del sesgo de Nickell
+
+::: {.callout-important title="★ Postgrado"}
+Calculamos el numerador del sesgo de FE: $\operatorname{plim}\frac1{NT}\sum_{i,t}\ddot y_{i,t-1}\ddot u_{it}$. Supondremos estacionariedad y $u$ i.i.d.
+:::
+
+::: {.proof}
+El sesgo de $\hat\rho_{FE}$ es el cociente $\dfrac{\mathbb{E}[\ddot y_{i,t-1}\ddot u_{it}]\text{ (promedio en }t)}{\mathbb{E}[\ddot y_{i,t-1}^2]\text{ (promedio en }t)}$. Para el numerador, escribimos $\ddot y_{i,t-1}\ddot u_{it} = (y_{i,t-1} - \bar y_{i,-1})(u_{it} - \bar u_i)$ y expandimos en cuatro términos. En el modelo AR(1) con $c_i$, $y_{i,t-1} = \frac{c_i}{1-\rho} + \sum_{j\ge0}\rho^ju_{i,t-1-j}$, de modo que, para $s\le t - 1$, $\mathbb{E}[y_{i,t-1}u_{is}] = \rho^{t-1-s}\sigma^2$ y $=0$ para $s\ge t$ (la parte $c_i$ no correlaciona con $u$).
+
+- $\mathbb{E}[y_{i,t-1}u_{it}] = 0$.
+- $\mathbb{E}[y_{i,t-1}\bar u_i] = \frac{\sigma^2}T\sum_{s=1}^{t-1}\rho^{t-1-s} = \frac{\sigma^2}T\frac{1 - \rho^{t-1}}{1-\rho}$.
+- Sumando sobre $t = 1,\dots,T$ y definiendo $K = \sum_{t=1}^T\frac{1 - \rho^{t-1}}{1-\rho} = \frac1{1-\rho}\Big[T - \frac{1-\rho^T}{1-\rho}\Big]$, se tiene $\sum_t\mathbb{E}[y_{i,t-1}\bar u_i] = \sigma^2K/T$.
+- Por el mismo cálculo (relabeling), $\sum_t\mathbb{E}[\bar y_{i,-1}u_{it}] = \sigma^2K/T$ y $\sum_t\mathbb{E}[\bar y_{i,-1}\bar u_i] = \sigma^2K/T$.
+
+Entonces $\sum_t\mathbb{E}[\ddot y_{i,t-1}\ddot u_{it}] = 0 - \sigma^2K/T - \sigma^2K/T + \sigma^2K/T = -\sigma^2K/T$, y promediando sobre los $T$ períodos, el numerador es $-\sigma^2K/T^2\approx-\dfrac{\sigma^2}{T(1-\rho)}$ para $T$ grande. El denominador, para $T$ grande, es $\mathbb{E}[\ddot y_{i,t-1}^2]\approx\sigma^2/(1-\rho^2)$ (la varianza estacionaria de la parte de $y_{i,t-1}$ que no es $c_i$). Cociente:
+$$
+-\frac{\sigma^2}{T(1-\rho)}\cdot\frac{1-\rho^2}{\sigma^2} = -\frac{1+\rho}{T}.
+$$
+:::
+
+La fórmula exacta de Nickell incluye correcciones de orden $1/T^2$; la aproximación $-(1+\rho)/T$ es la que se usa como regla de oro. Dos lecciones: (i) el sesgo es **mayor cuanto más persistente** ($\rho$ alto) y **cuanto más corto** el panel; (ii) el sesgo es de orden $1/T$, no $1/N$: más individuos **no** lo arreglan.
+
+# Resumen
+
+- Con rezagos de $y$ no hay exogeneidad estricta. **FE tiene sesgo de Nickell** $\approx-(1+\rho)/T$ (@prp-nickell) y MCO agrupado está sesgado hacia arriba: un buen $\hat\rho$ cae entre ambos.
+- Se diferencia para eliminar $c_i$ y se instrumenta $\Delta y_{i,t-1}$ con **niveles rezagados** $y_{i,t-s}$, $s\ge2$ (@prp-momentos-ab). Anderson–Hsiao usa un instrumento; **Arellano–Bond** usa todos con GMM.
+- Se acompaña de los tests **$J$ de Hansen** y de **autocorrelación AR(1)/AR(2)** (esperar AR(1) sí, AR(2) no).
+- Fragilidades: **instrumentos débiles** si $\rho\approx1$ (primera etapa con coeficiente $\rho - 1$) y **instrumentos en exceso**. **GMM sistema** (Blundell–Bond) añade ecuaciones en niveles bajo una condición sobre el valor inicial.
+- Errores estándar de dos pasos: usar **Windmeijer**.
+
+# Ejercicios
+
+**Ejercicio 10.1.** Con $\rho = 0{,}5$, calcula el sesgo aproximado de Nickell para $T = 4,\,10,\,20$ y a qué converge $\hat\rho_{FE}$ en cada caso.
+
+::: {.callout-tip collapse="true" title="Solución 10.1"}
+Sesgo $\approx-(1+\rho)/T = -1{,}5/T$: $T = 4$: $-0{,}375$, $\hat\rho_{FE}\to0{,}125$. $T = 10$: $-0{,}15$, $\to0{,}35$. $T = 20$: $-0{,}075$, $\to0{,}425$. (La fórmula aproximada es mala con $T$ muy chico; la exacta de Nickell da valores algo distintos, pero el orden de magnitud es el correcto.) Para que el sesgo sea menor a $0{,}02$ hace falta $T\approx75$: en paneles de microdatos esto casi nunca ocurre.
+:::
+
+**Ejercicio 10.2.** En un panel con $T = 6$ y el modelo AR(1) sin $x$, ¿cuántas condiciones de momentos usa Arellano–Bond? ¿Y con $T = 10$? ¿Cuántos grados de libertad tiene el test $J$?
+
+::: {.callout-tip collapse="true" title="Solución 10.2"}
+Hay ecuaciones en diferencias para $t = 3,\dots,T$, con $t - 2$ instrumentos en $t$: $\sum_{t=3}^T(t-2) = (T-2)(T-1)/2$. $T = 6$: $4\cdot5/2 = 10$. $T = 10$: $8\cdot9/2 = 36$. Con un parámetro ($\rho$), los grados de libertad del $J$ son $r - p = 9$ y $35$. Con $T = 10$ y $N = 200$, 36 momentos son demasiados: el test $J$ es poco confiable y el GMM de dos pasos está sesgado. Colapsando (un instrumento por rezago), el número baja a $T - 2 = 8$.
+:::
+
+**Ejercicio 10.3.** Muestra que si $\rho = 1$ (y se ignora $c_i$) los niveles rezagados son instrumentos irrelevantes para $\Delta y_{i,t-1}$, y que si $\rho$ es cercano a 1 son débiles.
+
+::: {.callout-tip collapse="true" title="Solución 10.3"}
+De $y_{it} = \rho y_{i,t-1} + c_i + u_{it}$: $\Delta y_{i,t-1} = y_{i,t-1} - y_{i,t-2} = (\rho - 1)y_{i,t-2} + c_i + u_{i,t-1}$. La **primera etapa** de $\Delta y_{i,t-1}$ sobre $y_{i,t-2}$ tiene coeficiente poblacional $\rho - 1$ (tras limpiar $c_i$, que es lo que hace el efecto fijo). Si $\rho = 1$, el coeficiente es cero: $\Delta y_{i,t-1} = c_i + u_{i,t-1}$ no depende de $y_{i,t-2}$ y el instrumento es **irrelevante**: la covarianza $\operatorname{Cov}(y_{i,t-2},\Delta y_{i,t-1})\to0$. Cerca de 1 la correlación es pequeña y el estimador de VI tiene sesgo y varianza enormes (Clase 10 de Econometría 1, instrumentos débiles).
+:::
+
+**Ejercicio 10.4.** Con $u_{it}$ i.i.d. $(0,\sigma^2)$, calcula $\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-1})$, $\operatorname{Var}(\Delta u_{it})$ y escribe $H$ para $T = 5$ (ecuaciones $t = 3,4,5$).
+
+::: {.callout-tip collapse="true" title="Solución 10.4"}
+$\operatorname{Var}(\Delta u_{it}) = \operatorname{Var}(u_{it}) + \operatorname{Var}(u_{i,t-1}) = 2\sigma^2$. $\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-1}) = \operatorname{Cov}(u_{it} - u_{i,t-1},\,u_{i,t-1} - u_{i,t-2}) = -\operatorname{Var}(u_{i,t-1}) = -\sigma^2$ (único término común). Y $\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-2}) = 0$. Entonces $\operatorname{Var}(\Delta u_i) = \sigma^2H$ con $H = \begin{pmatrix}2&-1&0\\-1&2&-1\\0&-1&2\end{pmatrix}$ para $t = 3,4,5$. La correlación entre períodos consecutivos es $-1/2$, lo que justifica esperar AR(1) negativo.
+:::
+
+**Ejercicio 10.5.** Si los errores $u_{it}$ siguen un MA(1), $u_{it} = e_{it} + \psi e_{i,t-1}$, ¿qué ocurre con el instrumento $y_{i,t-2}$ para $\Delta u_{it}$? ¿Qué rezago sí es válido? ¿Cómo lo detecta el test AR(2)?
+
+::: {.callout-tip collapse="true" title="Solución 10.5"}
+$\Delta u_{it} = e_{it} + \psi e_{i,t-1} - e_{i,t-1} - \psi e_{i,t-2}$. $y_{i,t-2}$ contiene $u_{i,t-2} = e_{i,t-2} + \psi e_{i,t-3}$, que correlaciona con $e_{i,t-2}$ presente en $\Delta u_{it}$ (con coeficiente $-\psi$): $\mathbb{E}[y_{i,t-2}\Delta u_{it}]\ne0$ si $\psi\ne0$. **El rezago 2 deja de ser válido.** El rezago $s = 3$ ($y_{i,t-3}$, que contiene hasta $e_{i,t-3}$ y $e_{i,t-4}$) no comparte shocks con $\Delta u_{it}$: es válido. La correlación serial de $u_{it}$ aparece como **autocorrelación de segundo orden** de $\Delta u_{it}$ (porque $\Delta u_{it}$ y $\Delta u_{i,t-2}$ comparten $e_{i,t-2}$), y por eso se rechaza AR(2).
+:::
+
+**Ejercicio 10.6.** Explica por qué MCO agrupado en el modelo AR(1) con efecto individual está sesgado **hacia arriba**. Si MCO da $\hat\rho = 0{,}90$ y FE da $\hat\rho = 0{,}40$, ¿en qué rango debería caer un buen estimador consistente?
+
+::: {.callout-tip collapse="true" title="Solución 10.6"}
+$y_{i,t-1} = \frac{c_i}{1-\rho} + \dots$ contiene $c_i$, y el error compuesto $v_{it} = c_i + u_{it}$ también: $\operatorname{Cov}(y_{i,t-1},v_{it}) = \operatorname{Var}(c_i)/(1-\rho)>0$. Variable omitida positivamente correlacionada con el regresor $\Rightarrow$ sesgo positivo. FE tiene sesgo negativo (Nickell). Un estimador consistente (Arellano–Bond, Blundell–Bond) debería caer **entre $0{,}40$ y $0{,}90$**. Si el GMM da $0{,}20$ (por debajo del FE), sospecha de instrumentos débiles o mal especificados; si da $0{,}95$, sospecha de MCO.
+:::
+
+**Ejercicio 10.7 ★.** (Condición inicial de Blundell–Bond.) Supón $|\rho|<1$ y $y_{i1} = \dfrac{c_i}{1-\rho} + \varepsilon_{i1}$ con $\varepsilon_{i1}$ no correlacionado con $c_i$. Muestra que $\mathbb{E}[\Delta y_{i2}\,c_i] = 0$.
+
+::: {.callout-tip collapse="true" title="Solución 10.7 ★"}
+$y_{i2} = \rho y_{i1} + c_i + u_{i2}$. Entonces $\Delta y_{i2} = y_{i2} - y_{i1} = (\rho - 1)y_{i1} + c_i + u_{i2} = (\rho - 1)\Big[\dfrac{c_i}{1-\rho} + \varepsilon_{i1}\Big] + c_i + u_{i2} = -c_i + (\rho-1)\varepsilon_{i1} + c_i + u_{i2} = (\rho - 1)\varepsilon_{i1} + u_{i2}$. Como $\varepsilon_{i1}$ y $u_{i2}$ son no correlacionados con $c_i$, $\mathbb{E}[\Delta y_{i2}c_i] = 0$. La condición dice que cada unidad parte de su "nivel de equilibrio" $c_i/(1-\rho)$ más una desviación no sistemática. Si el proceso no está en estado estacionario cuando se empieza a observar (por ejemplo, empresas jóvenes, lejos de su nivel de largo plazo), la condición falla y el GMM sistema es inconsistente.
+:::
