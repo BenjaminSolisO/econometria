@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, circuitos y balance de reacciones químicas.">
+<meta name="description" content="Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, equilibrio de mercados, circuitos y balance de reacciones químicas.">
 
 <title>Clase 1 · Sistemas lineales y eliminación gaussiana – Econometría</title>
 <style>
@@ -194,14 +194,23 @@ window.Quarto = {
   </div>
 </li>
         <li class="sidebar-item">
- <span class="menu-text">algebra-matricial/clase-03.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los cuatro subespacios fundamentales</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
- <span class="menu-text">algebra-matricial/clase-04.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Determinantes</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
- <span class="menu-text">algebra-matricial/clase-05.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Ortogonalidad y factorización QR</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
  <span class="menu-text">algebra-matricial/clase-06.qmd</span>
   </li>
@@ -239,7 +248,7 @@ window.Quarto = {
     <h2 id="toc-title">Contenido</h2>
    
   <ul>
-  <li><a href="#un-circuito-dos-ecuaciones" id="toc-un-circuito-dos-ecuaciones" class="nav-link active" data-scroll-target="#un-circuito-dos-ecuaciones"><span class="header-section-number">1</span> Un circuito, dos ecuaciones</a></li>
+  <li><a href="#dos-mercados-dos-ecuaciones" id="toc-dos-mercados-dos-ecuaciones" class="nav-link active" data-scroll-target="#dos-mercados-dos-ecuaciones"><span class="header-section-number">1</span> Dos mercados, dos ecuaciones</a></li>
   <li><a href="#notación-matrices-y-vectores" id="toc-notación-matrices-y-vectores" class="nav-link" data-scroll-target="#notación-matrices-y-vectores"><span class="header-section-number">2</span> Notación: matrices y vectores</a></li>
   <li><a href="#tres-maneras-de-mirar-ax-b" id="toc-tres-maneras-de-mirar-ax-b" class="nav-link" data-scroll-target="#tres-maneras-de-mirar-ax-b"><span class="header-section-number">3</span> Tres maneras de mirar <span class="math inline">\(Ax = b\)</span></a>
   <ul class="collapse">
@@ -275,7 +284,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, circuitos y balance de reacciones químicas.
+    Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, equilibrio de mercados, circuitos y balance de reacciones químicas.
   </div>
 </div>
 
@@ -293,30 +302,47 @@ window.Quarto = {
 
 
 <p><a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a></p>
-<section id="un-circuito-dos-ecuaciones" class="level1 page-columns page-full" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Un circuito, dos ecuaciones</h1>
-<p>Empecemos con un problema de ingeniería eléctrica. El circuito de la <a href="#fig-circuito" class="quarto-xref">Figura&nbsp;1</a> tiene una batería de <span class="math inline">\(8\)</span> voltios y tres resistencias. Queremos saber qué corriente circula por cada rama.</p>
-<div id="fig-circuito" class="quarto-float quarto-figure quarto-figure-center anchored">
+<section id="dos-mercados-dos-ecuaciones" class="level1 page-columns page-full" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Dos mercados, dos ecuaciones</h1>
+<p>Empecemos con un problema de economía. Dos bienes, café (bien 1) y té (bien 2), son <strong>sustitutos</strong>: cuando sube el precio de uno, parte de los consumidores se cambia al otro. Con precios <span class="math inline">\(P_1\)</span> y <span class="math inline">\(P_2\)</span>, las demandas y ofertas de cada mercado son</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Demanda</th>
+<th>Oferta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Café</td>
+<td><span class="math inline">\(Q^d_1 = 10 - 2P_1 + P_2\)</span></td>
+<td><span class="math inline">\(Q^s_1 = 1 + P_1\)</span></td>
+</tr>
+<tr class="even">
+<td>Té</td>
+<td><span class="math inline">\(Q^d_2 = 5 + P_1 - P_2\)</span></td>
+<td><span class="math inline">\(Q^s_2 = 3 + P_2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Cada demanda baja con el precio propio y <strong>sube con el precio del otro bien</strong> (los coeficientes <span class="math inline">\(+1\)</span>), y cada oferta sube con el precio propio. Queremos los precios de <strong>equilibrio</strong>: los que hacen que en ambos mercados la cantidad demandada sea igual a la ofrecida.</p>
+<p>En el mercado del café, <span class="math inline">\(Q^d_1 = Q^s_1\)</span> y, pasando las incógnitas a la izquierda, <span class="math display">\[
+10 - 2P_1 + P_2 = 1 + P_1\quad\Longleftrightarrow\quad 3P_1 - P_2 = 9.
+\]</span> En el mercado del té, <span class="math inline">\(Q^d_2 = Q^s_2\)</span>: <span class="math display">\[
+5 + P_1 - P_2 = 3 + P_2\quad\Longleftrightarrow\quad -P_1 + 2P_2 = 2.
+\]</span> Es un <strong>sistema de dos ecuaciones lineales con dos incógnitas</strong>. Los mercados no se pueden resolver por separado: el equilibrio del café depende del precio del té, y viceversa. La segunda ecuación dice <span class="math inline">\(P_1 = 2P_2 - 2\)</span>. Reemplazando en la primera: <span class="math inline">\(3(2P_2 - 2) - P_2 = 5P_2 - 6 = 9\)</span>, así que <span class="math inline">\(P_2 = 3\)</span> y <span class="math inline">\(P_1 = 2\cdot3 - 2 = 4\)</span>. Las cantidades de equilibrio son <span class="math inline">\(Q_1 = 1 + 4 = 5\)</span> (y, por el lado de la demanda, <span class="math inline">\(10 - 8 + 3 = 5\)</span> ✓) y <span class="math inline">\(Q_2 = 3 + 3 = 6\)</span> (y <span class="math inline">\(5 + 4 - 3 = 6\)</span> ✓). La <a href="#fig-mercados" class="quarto-xref">Figura&nbsp;1</a> muestra los dos equilibrios.</p>
+<div id="fig-mercados" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-circuito-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../assets/fig/am/c01_circuito.png" class="img-fluid figure-img" style="width:80.0%">
+<div aria-describedby="fig-mercados-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c01_mercados.png" class="img-fluid figure-img" style="width:100.0%">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-circuito-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;1: Un circuito de dos mallas. Las flechas circulares son las corrientes de malla <span class="math inline">\(i_1\)</span> e <span class="math inline">\(i_2\)</span>, que suponemos en el sentido de las agujas del reloj.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mercados-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Equilibrio de los dos mercados. Izquierda: café, con la demanda evaluada en el precio del té de equilibrio, <span class="math inline">\(P_2 = 3\)</span> (queda <span class="math inline">\(Q^d_1 = 13 - 2P_1\)</span>). Derecha: té, con <span class="math inline">\(P_1 = 4\)</span> (queda <span class="math inline">\(Q^d_2 = 9 - P_2\)</span>). Si cambiara el precio de un bien, se desplazaría la curva de demanda del otro.
 </figcaption>
 </figure>
 </div>
-<p>El método de las <strong>corrientes de malla</strong> asigna una corriente a cada “ventana” del circuito: <span class="math inline">\(i_1\)</span> a la de la izquierda e <span class="math inline">\(i_2\)</span> a la de la derecha. La resistencia del medio, <span class="math inline">\(R_2\)</span>, la recorren las dos corrientes en sentidos opuestos, así que por ella pasa <span class="math inline">\(i_1 - i_2\)</span> (hacia abajo). Usamos dos leyes de la física:</p>
-<ul>
-<li><strong>Ley de Ohm:</strong> una corriente <span class="math inline">\(i\)</span> que atraviesa una resistencia <span class="math inline">\(R\)</span> produce una caída de voltaje <span class="math inline">\(Ri\)</span>.</li>
-<li><strong>Ley de voltajes de Kirchhoff:</strong> al recorrer una malla cerrada, la suma de las caídas de voltaje es igual a la suma de los voltajes de las fuentes.</li>
-</ul>
-<p>En la malla izquierda, las caídas son <span class="math inline">\(R_1i_1 = 1\cdot i_1\)</span> y <span class="math inline">\(R_2(i_1 - i_2) = 2(i_1 - i_2)\)</span>, y la fuente aporta <span class="math inline">\(8\)</span>: <span class="math display">\[
-1\cdot i_1 + 2(i_1 - i_2) = 8\quad\Longleftrightarrow\quad 3i_1 - 2i_2 = 8.
-\]</span> En la malla derecha no hay fuente; las caídas son <span class="math inline">\(R_2(i_2 - i_1) = 2(i_2 - i_1)\)</span> y <span class="math inline">\(R_3i_2 = 2i_2\)</span>: <span class="math display">\[
-2(i_2 - i_1) + 2i_2 = 0\quad\Longleftrightarrow\quad -2i_1 + 4i_2 = 0.
-\]</span> Es un <strong>sistema de dos ecuaciones lineales con dos incógnitas</strong>. La segunda ecuación dice <span class="math inline">\(4i_2 = 2i_1\)</span>, es decir <span class="math inline">\(i_2 = i_1/2\)</span>. Reemplazando en la primera: <span class="math inline">\(3i_1 - 2\cdot\tfrac{i_1}2 = 3i_1 - i_1 = 2i_1 = 8\)</span>, así que <span class="math inline">\(i_1 = 4\)</span> y <span class="math inline">\(i_2 = 2\)</span> amperes. Por la resistencia del medio pasan <span class="math inline">\(i_1 - i_2 = 2\)</span> amperes.</p>
-<p>Con dos incógnitas cualquier método sirve. Pero un circuito real tiene decenas de mallas, una estructura de acero tiene miles de nudos y un modelo del clima tiene millones de incógnitas. Hace falta un <strong>método sistemático</strong>, que funcione igual para dos o para un millón de ecuaciones, y que diga además <strong>cuándo</strong> hay solución y <strong>cuántas</strong> hay. Ese método es la <strong>eliminación gaussiana</strong>, y es el tema de esta clase.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Con dos incógnitas cualquier método sirve. Pero un modelo de equilibrio general tiene decenas de mercados interdependientes, una matriz insumo-producto de un país tiene cientos de sectores y un modelo del clima tiene millones de incógnitas. Hace falta un <strong>método sistemático</strong>, que funcione igual para dos o para un millón de ecuaciones, y que diga además <strong>cuándo</strong> hay solución y <strong>cuántas</strong> hay. Ese método es la <strong>eliminación gaussiana</strong>, y es el tema de esta clase.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;El método aparece ya en el texto chino <em>Los nueve capítulos sobre el arte matemático</em>, compilado hace unos dos mil años, donde se resuelven sistemas de hasta cinco ecuaciones disponiendo los coeficientes en una tabla. El nombre de Gauss se le asoció porque lo usó sistemáticamente a comienzos del siglo XIX para calcular la órbita de asteroides con mínimos cuadrados (Clase 6).</p></div></div></section>
 <section id="notación-matrices-y-vectores" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Notación: matrices y vectores</h1>
@@ -329,8 +355,8 @@ a_{m1}x_1 + a_{m2}x_2 + \dots + a_{mn}x_n &amp;= b_m.
 \end{aligned}
 \tag{1}\]</span></span> Los números <span class="math inline">\(a_{ij}\)</span> (el coeficiente de la incógnita <span class="math inline">\(j\)</span> en la ecuación <span class="math inline">\(i\)</span>) forman la <strong>matriz de coeficientes</strong> <span class="math inline">\(A\)</span>, de <span class="math inline">\(m\)</span> filas y <span class="math inline">\(n\)</span> columnas (<span class="math inline">\(m\times n\)</span>). Las incógnitas forman el vector <span class="math inline">\(x\)</span> y los lados derechos, el vector <span class="math inline">\(b\)</span>: <span class="math display">\[
 A = \begin{pmatrix}a_{11}&amp;a_{12}&amp;\cdots&amp;a_{1n}\\a_{21}&amp;a_{22}&amp;\cdots&amp;a_{2n}\\\vdots&amp;&amp;&amp;\vdots\\a_{m1}&amp;a_{m2}&amp;\cdots&amp;a_{mn}\end{pmatrix},\qquad x = \begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix},\qquad b = \begin{pmatrix}b_1\\\vdots\\b_m\end{pmatrix}.
-\]</span> El sistema <a href="#eq-sistema" class="quarto-xref">Ecuación&nbsp;1</a> se escribe, en forma compacta, <span class="math inline">\(Ax = b\)</span>. Para el circuito, <span class="math display">\[
-A = \begin{pmatrix}3&amp;-2\\-2&amp;4\end{pmatrix},\qquad x = \begin{pmatrix}i_1\\i_2\end{pmatrix},\qquad b = \begin{pmatrix}8\\0\end{pmatrix}.
+\]</span> El sistema <a href="#eq-sistema" class="quarto-xref">Ecuación&nbsp;1</a> se escribe, en forma compacta, <span class="math inline">\(Ax = b\)</span>. Para los dos mercados, <span class="math display">\[
+A = \begin{pmatrix}3&amp;-1\\-1&amp;2\end{pmatrix},\qquad x = \begin{pmatrix}P_1\\P_2\end{pmatrix},\qquad b = \begin{pmatrix}9\\2\end{pmatrix}.
 \]</span> Una <strong>solución</strong> es un vector <span class="math inline">\(x\)</span> que satisface las <span class="math inline">\(m\)</span> ecuaciones a la vez. El conjunto de todas las soluciones es el <strong>conjunto solución</strong>. Los vectores siempre son columnas, y escribimos <span class="math inline">\(a_j\)</span> para la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(A\)</span>.</p>
 </section>
 <section id="tres-maneras-de-mirar-ax-b" class="level1" data-number="3">
@@ -816,7 +842,9 @@ x_2 + x_3 = 2,\qquad x_1 + 2x_2 + x_3 = 4,\qquad 2x_1 + x_2 + 3x_3 = 6.
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><span class="math display">\[
-\left[\begin{array}{ccc|c}0&amp;1&amp;1&amp;2\\1&amp;2&amp;1&amp;4\\2&amp;1&amp;3&amp;6\end{array}\right]\xrightarrow{F_1\leftrightarrow F_2}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\2&amp;1&amp;3&amp;6\end{array}\right]\xrightarrow{F_3\leftarrow F_3 - 2F_1}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\0&amp;-3&amp;1&amp;-2\end{array}\right].
+\left[\begin{array}{ccc|c}0&amp;1&amp;1&amp;2\\1&amp;2&amp;1&amp;4\\2&amp;1&amp;3&amp;6\end{array}\right]\xrightarrow{F_1\leftrightarrow F_2}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\2&amp;1&amp;3&amp;6\end{array}\right]
+\]</span> <span class="math display">\[
+\xrightarrow{F_3\leftarrow F_3 - 2F_1}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\0&amp;-3&amp;1&amp;-2\end{array}\right].
 \]</span> La entrada <span class="math inline">\((1,1)\)</span> era cero y se intercambió con la fila 2. La cuenta: <span class="math inline">\(F_3 - 2F_1 = (2 - 2,\ 1 - 4,\ 3 - 2\mid6 - 8) = (0,\ -3,\ 1\mid-2)\)</span>. Columna 2, pivote <span class="math inline">\(1\)</span>, multiplicador <span class="math inline">\(\ell_3 = -3/1 = -3\)</span>: <span class="math display">\[
 \xrightarrow{F_3\leftarrow F_3 + 3F_2}\left[\begin{array}{ccc|c}1&amp;2&amp;1&amp;4\\0&amp;1&amp;1&amp;2\\0&amp;0&amp;4&amp;4\end{array}\right],
 \]</span> con <span class="math inline">\((0,\ -3 + 3,\ 1 + 3\mid-2 + 6) = (0,0,4\mid4)\)</span>. Sustitución: <span class="math inline">\(4x_3 = 4\Rightarrow x_3 = 1\)</span>; <span class="math inline">\(x_2 + 1 = 2\Rightarrow x_2 = 1\)</span>; <span class="math inline">\(x_1 + 2 + 1 = 4\Rightarrow x_1 = 1\)</span>. Solución <span class="math inline">\((1,1,1)\)</span>. Verificación en el sistema original: <span class="math inline">\(1 + 1 = 2\)</span> ✓, <span class="math inline">\(1 + 2 + 1 = 4\)</span> ✓, <span class="math inline">\(2 + 1 + 3 = 6\)</span> ✓.</p>

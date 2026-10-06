@@ -1,7 +1,7 @@
 ---
 title: "Clase 1 · Sistemas lineales y eliminación gaussiana"
 subtitle: "Tres maneras de mirar Ax = b y el algoritmo que lo resuelve"
-description: "Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, circuitos y balance de reacciones químicas."
+description: "Sistemas de ecuaciones lineales vistos por filas, por columnas y como transformación; operaciones elementales, forma escalonada, pivotes y variables libres, existencia y unicidad de soluciones, costo de la eliminación, equilibrio de mercados, circuitos y balance de reacciones químicas."
 format:
   html: default
   pdf:
@@ -12,28 +12,30 @@ format:
 <a class="descarga-pdf" href="clase-01.pdf">Descargar esta clase en PDF</a>
 :::
 
-# Un circuito, dos ecuaciones
+# Dos mercados, dos ecuaciones
 
-Empecemos con un problema de ingeniería eléctrica. El circuito de la @fig-circuito tiene una batería de $8$ voltios y tres resistencias. Queremos saber qué corriente circula por cada rama.
+Empecemos con un problema de economía. Dos bienes, café (bien 1) y té (bien 2), son **sustitutos**: cuando sube el precio de uno, parte de los consumidores se cambia al otro. Con precios $P_1$ y $P_2$, las demandas y ofertas de cada mercado son
 
-![Un circuito de dos mallas. Las flechas circulares son las corrientes de malla $i_1$ e $i_2$, que suponemos en el sentido de las agujas del reloj.](../assets/fig/am/c01_circuito.png){#fig-circuito width=80%}
+| | Demanda | Oferta |
+|---|---|---|
+| Café | $Q^d_1 = 10 - 2P_1 + P_2$ | $Q^s_1 = 1 + P_1$ |
+| Té | $Q^d_2 = 5 + P_1 - P_2$ | $Q^s_2 = 3 + P_2$ |
 
-El método de las **corrientes de malla** asigna una corriente a cada "ventana" del circuito: $i_1$ a la de la izquierda e $i_2$ a la de la derecha. La resistencia del medio, $R_2$, la recorren las dos corrientes en sentidos opuestos, así que por ella pasa $i_1 - i_2$ (hacia abajo). Usamos dos leyes de la física:
+Cada demanda baja con el precio propio y **sube con el precio del otro bien** (los coeficientes $+1$), y cada oferta sube con el precio propio. Queremos los precios de **equilibrio**: los que hacen que en ambos mercados la cantidad demandada sea igual a la ofrecida.
 
-- **Ley de Ohm:** una corriente $i$ que atraviesa una resistencia $R$ produce una caída de voltaje $Ri$.
-- **Ley de voltajes de Kirchhoff:** al recorrer una malla cerrada, la suma de las caídas de voltaje es igual a la suma de los voltajes de las fuentes.
-
-En la malla izquierda, las caídas son $R_1i_1 = 1\cdot i_1$ y $R_2(i_1 - i_2) = 2(i_1 - i_2)$, y la fuente aporta $8$:
+En el mercado del café, $Q^d_1 = Q^s_1$ y, pasando las incógnitas a la izquierda,
 $$
-1\cdot i_1 + 2(i_1 - i_2) = 8\quad\Longleftrightarrow\quad 3i_1 - 2i_2 = 8.
+10 - 2P_1 + P_2 = 1 + P_1\quad\Longleftrightarrow\quad 3P_1 - P_2 = 9.
 $$
-En la malla derecha no hay fuente; las caídas son $R_2(i_2 - i_1) = 2(i_2 - i_1)$ y $R_3i_2 = 2i_2$:
+En el mercado del té, $Q^d_2 = Q^s_2$:
 $$
-2(i_2 - i_1) + 2i_2 = 0\quad\Longleftrightarrow\quad -2i_1 + 4i_2 = 0.
+5 + P_1 - P_2 = 3 + P_2\quad\Longleftrightarrow\quad -P_1 + 2P_2 = 2.
 $$
-Es un **sistema de dos ecuaciones lineales con dos incógnitas**. La segunda ecuación dice $4i_2 = 2i_1$, es decir $i_2 = i_1/2$. Reemplazando en la primera: $3i_1 - 2\cdot\tfrac{i_1}2 = 3i_1 - i_1 = 2i_1 = 8$, así que $i_1 = 4$ y $i_2 = 2$ amperes. Por la resistencia del medio pasan $i_1 - i_2 = 2$ amperes.
+Es un **sistema de dos ecuaciones lineales con dos incógnitas**. Los mercados no se pueden resolver por separado: el equilibrio del café depende del precio del té, y viceversa. La segunda ecuación dice $P_1 = 2P_2 - 2$. Reemplazando en la primera: $3(2P_2 - 2) - P_2 = 5P_2 - 6 = 9$, así que $P_2 = 3$ y $P_1 = 2\cdot3 - 2 = 4$. Las cantidades de equilibrio son $Q_1 = 1 + 4 = 5$ (y, por el lado de la demanda, $10 - 8 + 3 = 5$ ✓) y $Q_2 = 3 + 3 = 6$ (y $5 + 4 - 3 = 6$ ✓). La @fig-mercados muestra los dos equilibrios.
 
-Con dos incógnitas cualquier método sirve. Pero un circuito real tiene decenas de mallas, una estructura de acero tiene miles de nudos y un modelo del clima tiene millones de incógnitas. Hace falta un **método sistemático**, que funcione igual para dos o para un millón de ecuaciones, y que diga además **cuándo** hay solución y **cuántas** hay. Ese método es la **eliminación gaussiana**, y es el tema de esta clase.[^gauss]
+![Equilibrio de los dos mercados. Izquierda: café, con la demanda evaluada en el precio del té de equilibrio, $P_2 = 3$ (queda $Q^d_1 = 13 - 2P_1$). Derecha: té, con $P_1 = 4$ (queda $Q^d_2 = 9 - P_2$). Si cambiara el precio de un bien, se desplazaría la curva de demanda del otro.](../assets/fig/am/c01_mercados.png){#fig-mercados width=100%}
+
+Con dos incógnitas cualquier método sirve. Pero un modelo de equilibrio general tiene decenas de mercados interdependientes, una matriz insumo-producto de un país tiene cientos de sectores y un modelo del clima tiene millones de incógnitas. Hace falta un **método sistemático**, que funcione igual para dos o para un millón de ecuaciones, y que diga además **cuándo** hay solución y **cuántas** hay. Ese método es la **eliminación gaussiana**, y es el tema de esta clase.[^gauss]
 
 [^gauss]: El método aparece ya en el texto chino *Los nueve capítulos sobre el arte matemático*, compilado hace unos dos mil años, donde se resuelven sistemas de hasta cinco ecuaciones disponiendo los coeficientes en una tabla. El nombre de Gauss se le asoció porque lo usó sistemáticamente a comienzos del siglo XIX para calcular la órbita de asteroides con mínimos cuadrados (Clase 6).
 
@@ -52,9 +54,9 @@ Los números $a_{ij}$ (el coeficiente de la incógnita $j$ en la ecuación $i$) 
 $$
 A = \begin{pmatrix}a_{11}&a_{12}&\cdots&a_{1n}\\a_{21}&a_{22}&\cdots&a_{2n}\\\vdots&&&\vdots\\a_{m1}&a_{m2}&\cdots&a_{mn}\end{pmatrix},\qquad x = \begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix},\qquad b = \begin{pmatrix}b_1\\\vdots\\b_m\end{pmatrix}.
 $$
-El sistema @eq-sistema se escribe, en forma compacta, $Ax = b$. Para el circuito,
+El sistema @eq-sistema se escribe, en forma compacta, $Ax = b$. Para los dos mercados,
 $$
-A = \begin{pmatrix}3&-2\\-2&4\end{pmatrix},\qquad x = \begin{pmatrix}i_1\\i_2\end{pmatrix},\qquad b = \begin{pmatrix}8\\0\end{pmatrix}.
+A = \begin{pmatrix}3&-1\\-1&2\end{pmatrix},\qquad x = \begin{pmatrix}P_1\\P_2\end{pmatrix},\qquad b = \begin{pmatrix}9\\2\end{pmatrix}.
 $$
 Una **solución** es un vector $x$ que satisface las $m$ ecuaciones a la vez. El conjunto de todas las soluciones es el **conjunto solución**. Los vectores siempre son columnas, y escribimos $a_j$ para la columna $j$ de $A$.
 
@@ -535,7 +537,10 @@ $$
 
 ::: {.callout-tip collapse="true" title="Solución 1.3"}
 $$
-\left[\begin{array}{ccc|c}0&1&1&2\\1&2&1&4\\2&1&3&6\end{array}\right]\xrightarrow{F_1\leftrightarrow F_2}\left[\begin{array}{ccc|c}1&2&1&4\\0&1&1&2\\2&1&3&6\end{array}\right]\xrightarrow{F_3\leftarrow F_3 - 2F_1}\left[\begin{array}{ccc|c}1&2&1&4\\0&1&1&2\\0&-3&1&-2\end{array}\right].
+\left[\begin{array}{ccc|c}0&1&1&2\\1&2&1&4\\2&1&3&6\end{array}\right]\xrightarrow{F_1\leftrightarrow F_2}\left[\begin{array}{ccc|c}1&2&1&4\\0&1&1&2\\2&1&3&6\end{array}\right]
+$$
+$$
+\xrightarrow{F_3\leftarrow F_3 - 2F_1}\left[\begin{array}{ccc|c}1&2&1&4\\0&1&1&2\\0&-3&1&-2\end{array}\right].
 $$
 La entrada $(1,1)$ era cero y se intercambió con la fila 2. La cuenta: $F_3 - 2F_1 = (2 - 2,\ 1 - 4,\ 3 - 2\mid6 - 8) = (0,\ -3,\ 1\mid-2)$. Columna 2, pivote $1$, multiplicador $\ell_3 = -3/1 = -3$:
 $$

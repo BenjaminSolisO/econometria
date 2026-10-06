@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-05.html" rel="next">
 <link href="../algebra-matricial/clase-03.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -205,8 +206,11 @@ window.Quarto = {
   </div>
 </li>
         <li class="sidebar-item">
- <span class="menu-text">algebra-matricial/clase-05.qmd</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Ortogonalidad y factorización QR</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
  <span class="menu-text">algebra-matricial/clase-06.qmd</span>
   </li>
@@ -489,9 +493,9 @@ x_j = \frac{\det B_j}{\det A},\qquad j = 1,\dots,n,
 \]</span> Si <span class="math inline">\(k\ne j\)</span>, la matriz del término <span class="math inline">\(k\)</span> tiene la columna <span class="math inline">\(a_k\)</span> repetida (en la posición <span class="math inline">\(j\)</span> y en la <span class="math inline">\(k\)</span>): su determinante es <span class="math inline">\(0\)</span>. Solo sobrevive <span class="math inline">\(k = j\)</span>, que es la matriz <span class="math inline">\(A\)</span> original: <span class="math inline">\(\det B_j = x_j\det A\)</span>. Dividiendo por <span class="math inline">\(\det A\ne0\)</span> se obtiene la fórmula.</p>
 </div>
 <div id="exm-cramer" class="theorem example">
-<p><span class="theorem-title"><strong>Ejemplo 3 (Cramer en el circuito y en el sistema <span class="math inline">\(3\times3\)</span>)</strong></span> <em>El circuito de la Clase 1:</em> <span class="math inline">\(\begin{pmatrix}3&amp;-2\\-2&amp;4\end{pmatrix}\begin{pmatrix}i_1\\i_2\end{pmatrix} = \begin{pmatrix}8\\0\end{pmatrix}\)</span>, con <span class="math inline">\(\det A = 12 - 4 = 8\)</span>: <span class="math display">\[
-i_1 = \frac{\det\begin{pmatrix}8&amp;-2\\0&amp;4\end{pmatrix}}8 = \frac{32 - 0}8 = 4,\qquad i_2 = \frac{\det\begin{pmatrix}3&amp;8\\-2&amp;0\end{pmatrix}}8 = \frac{0 + 16}8 = 2.
-\]</span> <em>El sistema de la Clase 1:</em> <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;1\\2&amp;3&amp;1\\1&amp;-1&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(b = (6,11,5)'\)</span>, <span class="math inline">\(\det A = -1\)</span>. Expandiendo cada <span class="math inline">\(B_j\)</span> por la primera fila: <span class="math display">\[
+<p><span class="theorem-title"><strong>Ejemplo 3 (Cramer en los dos mercados y en el sistema <span class="math inline">\(3\times3\)</span>)</strong></span> <em>Los mercados de café y té de la Clase 1:</em> <span class="math inline">\(\begin{pmatrix}3&amp;-1\\-1&amp;2\end{pmatrix}\begin{pmatrix}P_1\\P_2\end{pmatrix} = \begin{pmatrix}9\\2\end{pmatrix}\)</span>, con <span class="math inline">\(\det A = 6 - 1 = 5\)</span>: <span class="math display">\[
+P_1 = \frac{\det\begin{pmatrix}9&amp;-1\\2&amp;2\end{pmatrix}}5 = \frac{18 + 2}5 = 4,\qquad P_2 = \frac{\det\begin{pmatrix}3&amp;9\\-1&amp;2\end{pmatrix}}5 = \frac{6 + 9}5 = 3.
+\]</span> La fórmula muestra de un vistazo cómo responden los precios a los datos: si la demanda de café sube en una unidad (el <span class="math inline">\(9\)</span> pasa a <span class="math inline">\(10\)</span>), <span class="math inline">\(P_1\)</span> sube en <span class="math inline">\(\det\begin{pmatrix}1&amp;-1\\0&amp;2\end{pmatrix}/5 = \tfrac25\)</span> y <span class="math inline">\(P_2\)</span> en <span class="math inline">\(\det\begin{pmatrix}3&amp;1\\-1&amp;0\end{pmatrix}/5 = \tfrac15\)</span>: el precio del té también sube, porque los bienes son sustitutos. <em>El sistema de la Clase 1:</em> <span class="math inline">\(A = \begin{pmatrix}1&amp;1&amp;1\\2&amp;3&amp;1\\1&amp;-1&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(b = (6,11,5)'\)</span>, <span class="math inline">\(\det A = -1\)</span>. Expandiendo cada <span class="math inline">\(B_j\)</span> por la primera fila: <span class="math display">\[
 \begin{aligned}
 \det B_1 = \det\begin{pmatrix}6&amp;1&amp;1\\11&amp;3&amp;1\\5&amp;-1&amp;2\end{pmatrix} &amp;= 6(6 + 1) - 1(22 - 5) + 1(-11 - 15)\\
 &amp;= 42 - 17 - 26 = -1,
@@ -1264,6 +1268,9 @@ A^{-1} = \operatorname{adj}A = \begin{pmatrix}1&amp;-2&amp;0\\0&amp;1&amp;0\\-2&
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../algebra-matricial/clase-05.html" class="pagination-link" aria-label="Clase 5 · Ortogonalidad y factorización QR">
+        <span class="nav-page-text">Clase 5 · Ortogonalidad y factorización QR</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

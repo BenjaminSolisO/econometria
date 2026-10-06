@@ -131,41 +131,24 @@ for (caso in 1:2) {
 }
 dev.off()
 
-# 1e. Circuito de dos mallas
-abrir("c01_circuito.png", w = 7, h = 3.8)
-par(mar = c(0.3, 0.3, 0.3, 0.3))
-plot(NA, xlim = c(-1.2, 9.6), ylim = c(-0.7, 3.8), axes = FALSE, xlab = "", ylab = "", asp = 1)
-resistor <- function(p, q, etiqueta, lado = c(0, 0.45)) {
-  d <- q - p; L <- sqrt(sum(d^2)); u <- d / L; n <- c(-u[2], u[1])
-  a <- p + u * (L * 0.3); z <- p + u * (L * 0.7)
-  segments(p[1], p[2], a[1], a[2], lwd = 2, col = tinta)
-  segments(z[1], z[2], q[1], q[2], lwd = 2, col = tinta)
-  k <- 6; pts <- t(sapply(0:k, function(j) a + (z - a) * j / k +
-                          n * 0.22 * c(0, 1, -1, 1, -1, 1, 0)[j + 1]))
-  lines(pts, lwd = 2, col = tinta)
-  m <- (p + q) / 2 + lado
-  text(m[1], m[2], etiqueta, col = teal, cex = 1.05)
+# 1e. Equilibrio de dos mercados relacionados (café y té)
+abrir("c01_mercados.png", w = 9, h = 4.2)
+par(mfrow = c(1, 2), mar = c(4, 4.2, 2.4, 0.8))
+mercado <- function(titulo, dem, ofe, q0, p0, etiq_d, etiq_o, ylab) {
+  plot(NA, xlim = c(0, 10), ylim = c(0, 7), xlab = "Cantidad Q", ylab = ylab, las = 1)
+  abline(h = 0:7, v = seq(0, 10, 2), col = adjustcolor(gris, 0.18))
+  title(titulo, col.main = tinta, font.main = 1, cex.main = 1.15)
+  curve(dem(x), from = 0, to = 10, add = TRUE, col = teal, lwd = 2.6)
+  curve(ofe(x), from = 0, to = 10, add = TRUE, col = rojo, lwd = 2.6)
+  segments(q0, 0, q0, p0, lty = 2, col = gris); segments(0, p0, q0, p0, lty = 2, col = gris)
+  points(q0, p0, pch = 21, bg = ocre, cex = 1.8)
+  text(q0, p0, sprintf("  (Q, P) = (%d, %d)", q0, p0), adj = 0, pos = 4, col = tinta, cex = 0.95)
+  text(etiq_d[1], etiq_d[2], "demanda", col = teal); text(etiq_o[1], etiq_o[2], "oferta", col = rojo)
 }
-cable <- function(p, q) segments(p[1], p[2], q[1], q[2], lwd = 2, col = tinta)
-cable(c(0, 0), c(8, 0)); cable(c(4, 3), c(8, 3))
-resistor(c(0, 3), c(4, 3), expression(R[1] == 1 * Omega))
-resistor(c(4, 3), c(4, 0), expression(R[2] == 2 * Omega), lado = c(0.85, 0.9))
-resistor(c(8, 3), c(8, 0), expression(R[3] == 2 * Omega), lado = c(0.95, 0))
-# batería en la rama izquierda
-cable(c(0, 0), c(0, 1.3)); cable(c(0, 1.7), c(0, 3))
-segments(-0.45, 1.7, 0.45, 1.7, lwd = 3, col = tinta)
-segments(-0.22, 1.3, 0.22, 1.3, lwd = 5, col = tinta)
-text(-0.95, 1.5, "8 V", col = rojo, cex = 1.1)
-# corrientes de malla
-for (cx in c(2, 6.3)) {
-  th <- seq(0.35, 2 * pi - 0.35, length.out = 60)
-  lines(cx + 0.62 * cos(-th + pi / 2), 1.5 + 0.62 * sin(-th + pi / 2), col = ocre, lwd = 2)
-  arrows(cx + 0.62 * cos(-th[59] + pi / 2), 1.5 + 0.62 * sin(-th[59] + pi / 2),
-         cx + 0.62 * cos(-th[60] + pi / 2), 1.5 + 0.62 * sin(-th[60] + pi / 2),
-         col = ocre, lwd = 2, length = 0.1)
-}
-text(2, 1.5, expression(i[1]), col = ocre, cex = 1.3)
-text(6.3, 1.5, expression(i[2]), col = ocre, cex = 1.3)
+mercado(expression("Café, con " * P[2] == 3), function(q) (13 - q) / 2, function(q) q - 1, 5, 4,
+        c(1.6, 6.4), c(8.6, 6.5), expression("Precio " * P[1]))
+mercado(expression("Té, con " * P[1] == 4), function(q) 9 - q, function(q) q - 3, 6, 3,
+        c(3.9, 6.6), c(7.0, 6.4), expression("Precio " * P[2]))
 dev.off()
 
 # ===========================================================================

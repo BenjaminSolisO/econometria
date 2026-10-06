@@ -233,11 +233,12 @@ Si $k\ne j$, la matriz del término $k$ tiene la columna $a_k$ repetida (en la p
 :::
 
 ::: {#exm-cramer}
-## Cramer en el circuito y en el sistema $3\times3$
-*El circuito de la Clase 1:* $\begin{pmatrix}3&-2\\-2&4\end{pmatrix}\begin{pmatrix}i_1\\i_2\end{pmatrix} = \begin{pmatrix}8\\0\end{pmatrix}$, con $\det A = 12 - 4 = 8$:
+## Cramer en los dos mercados y en el sistema $3\times3$
+*Los mercados de café y té de la Clase 1:* $\begin{pmatrix}3&-1\\-1&2\end{pmatrix}\begin{pmatrix}P_1\\P_2\end{pmatrix} = \begin{pmatrix}9\\2\end{pmatrix}$, con $\det A = 6 - 1 = 5$:
 $$
-i_1 = \frac{\det\begin{pmatrix}8&-2\\0&4\end{pmatrix}}8 = \frac{32 - 0}8 = 4,\qquad i_2 = \frac{\det\begin{pmatrix}3&8\\-2&0\end{pmatrix}}8 = \frac{0 + 16}8 = 2.
+P_1 = \frac{\det\begin{pmatrix}9&-1\\2&2\end{pmatrix}}5 = \frac{18 + 2}5 = 4,\qquad P_2 = \frac{\det\begin{pmatrix}3&9\\-1&2\end{pmatrix}}5 = \frac{6 + 9}5 = 3.
 $$
+La fórmula muestra de un vistazo cómo responden los precios a los datos: si la demanda de café sube en una unidad (el $9$ pasa a $10$), $P_1$ sube en $\det\begin{pmatrix}1&-1\\0&2\end{pmatrix}/5 = \tfrac25$ y $P_2$ en $\det\begin{pmatrix}3&1\\-1&0\end{pmatrix}/5 = \tfrac15$: el precio del té también sube, porque los bienes son sustitutos.
 *El sistema de la Clase 1:* $A = \begin{pmatrix}1&1&1\\2&3&1\\1&-1&2\end{pmatrix}$, $b = (6,11,5)'$, $\det A = -1$. Expandiendo cada $B_j$ por la primera fila:
 $$
 \begin{aligned}
