@@ -8,6 +8,7 @@ Sitio publicado: <https://benjaminsoliso.github.io/econometria/>
 
 ```
 index.qmd                 Landing page
+algebra-matricial/        15 clases de álgebra matricial aplicada (en construcción; assets/figuras_algebra.R genera sus figuras)
 econometria-1/            10 clases teóricas (HTML + PDF)
 econometria-2/            13 clases teóricas (HTML + PDF)
 econometria-3/            13 clases de series de tiempo (HTML + PDF)

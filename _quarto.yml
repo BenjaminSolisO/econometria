@@ -50,6 +50,7 @@ website:
         - algebra-matricial/clase-12.qmd
         - algebra-matricial/clase-13.qmd
         - algebra-matricial/clase-14.qmd
+        - algebra-matricial/clase-15.qmd
     - id: eco1
       title: "Econometría 1"
       style: floating

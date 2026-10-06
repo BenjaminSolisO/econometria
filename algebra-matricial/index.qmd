@@ -1,7 +1,7 @@
 ---
 title: "Álgebra matricial aplicada"
 subtitle: "Matrices para resolver, ajustar, vibrar y optimizar"
-description: "Catorce clases de álgebra matricial con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, determinantes, mínimos cuadrados, valores propios, SVD, condicionamiento, matrices complejas, funciones de matrices, optimización y problemas inversos."
+description: "Quince clases de álgebra matricial con la mirada de la ingeniería y la física: sistemas lineales, factorizaciones, determinantes, mínimos cuadrados, valores propios, SVD, condicionamiento, matrices complejas, funciones de matrices, optimización, problemas inversos y la descomposición QZ aplicada a modelos de expectativas racionales."
 format: html
 number-sections: false
 toc: false
@@ -37,10 +37,11 @@ Antes de cada demostración hay un recuadro **Borrador**, donde se piensa en voz
 <li><span class="n">08</span><span><a href="clase-08.qmd">Matrices simétricas y definidas positivas</a><span class="d">Teorema espectral, formas cuadráticas y ejes principales, criterios de positividad, Cholesky, cociente de Rayleigh, modos normales de vibración y tensor de inercia. ★ Courant–Fischer.</span></span></li>
 <li><span class="n">09</span><span><a href="clase-09.qmd">Descomposición en valores singulares</a><span class="d">La SVD y su geometría, rango y subespacios, pseudoinversa, aproximación de rango bajo y componentes principales. ★ Teorema de Eckart–Young.</span></span></li>
 <li><span class="n">10</span><span><a href="clase-10.qmd">Normas, condicionamiento y métodos iterativos</a><span class="d">Normas de vectores y matrices, número de condición, estabilidad, método de la potencia, Jacobi y Gauss–Seidel, derivadas matriciales. ★ Convergencia y radio espectral.</span></span></li>
-<li><span class="n">11</span><span><a href="clase-11.qmd">Matrices complejas</a><span class="d">Producto hermitiano, matrices hermitianas y unitarias, rotaciones como números complejos, matrices de Pauli, circulantes y la transformada discreta de Fourier de tres puntos. ★ Matrices normales.</span></span></li>
+<li><span class="n">11</span><span><a href="clase-11.qmd">Matrices complejas</a><span class="d">Producto hermitiano, matrices hermitianas y unitarias, rotaciones como números complejos, matrices de Pauli, circulantes y la transformada discreta de Fourier de tres puntos. ★ La descomposición de Schur y las matrices normales.</span></span></li>
 <li><span class="n">12</span><span><a href="clase-12.qmd">Forma de Jordan y funciones de matrices</a><span class="d">Cayley–Hamilton, bloques de Jordan, la exponencial en general y el amortiguamiento crítico, raíces y logaritmos de matrices, Perron–Frobenius, Leontief y PageRank. ★ Demostración de Perron–Frobenius.</span></span></li>
 <li><span class="n">13</span><span><a href="clase-13.qmd">Optimización lineal y convexa</a><span class="d">Conjuntos y funciones convexas, programación lineal, método gráfico y simplex, dualidad, holgura complementaria, multiplicadores de Lagrange y condiciones KKT. ★ Dualidad fuerte vía Farkas.</span></span></li>
 <li><span class="n">14</span><span><a href="clase-14.qmd">Mínimos cuadrados con restricciones y problemas inversos</a><span class="d">Restricciones de igualdad y desigualdad, mínimos cuadrados no negativos, problemas mal condicionados, SVD truncada, Tikhonov y la curva L. ★ Regularización como filtro.</span></span></li>
+<li><span class="n">15</span><span><a href="clase-15.qmd">Schur generalizado, QZ y modelos de expectativas racionales</a><span class="d">El problema de valores propios generalizado $Ax = \lambda Bx$ con $B$ singular, valores propios infinitos, el teorema QZ, reordenamiento de valores propios, y la solución de modelos lineales con expectativas racionales (condiciones de Blanchard–Kahn y método de Klein). Se lee después de las Clases 11 y 12. ★ Unicidad y casos indeterminados.</span></span></li>
 </ul>
 
 ## Notación
@@ -56,3 +57,7 @@ Los vectores son columnas y se escriben en minúscula ($x$, $b$, $v$); las matri
 - Boyd, S. y Vandenberghe, L. (2004). *Convex Optimization*. Cambridge University Press. (Clase 13.)
 - Boyd, S. y Vandenberghe, L. (2018). *Introduction to Applied Linear Algebra*. Cambridge University Press. (Mínimos cuadrados con restricciones.)
 - Hansen, P. C. (2010). *Discrete Inverse Problems: Insight and Algorithms*. SIAM. (Clase 14.)
+- Golub, G. y Van Loan, C. (2013). *Matrix Computations*, 4.ª ed. Johns Hopkins University Press. (Schur y QZ, Clases 11 y 15.)
+- Blanchard, O. y Kahn, C. (1980). The solution of linear difference models under rational expectations. *Econometrica*, 48(5), 1305–1311. (Clase 15.)
+- Klein, P. (2000). Using the generalized Schur form to solve a multivariate linear rational expectations model. *Journal of Economic Dynamics and Control*, 24(10), 1405–1423. (Clase 15.)
+- Sims, C. (2002). Solving linear rational expectations models. *Computational Economics*, 20, 1–20. (Clase 15.)
