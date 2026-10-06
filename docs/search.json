@@ -2786,5 +2786,71 @@
       "Inicio",
       "Clase 5 · Ortogonalidad y factorización QR"
     ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html",
+    "href": "algebra-matricial/clase-06.html",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "",
+    "text": "Descargar esta clase en PDF",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html#la-recta-de-mínimos-cuadrados",
+    "href": "algebra-matricial/clase-06.html#la-recta-de-mínimos-cuadrados",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "3.1 La recta de mínimos cuadrados",
+    "text": "3.1 La recta de mínimos cuadrados\n\nTeorema 3 (Fórmulas de la recta) Sean \\((t_1,y_1),\\dots,(t_N,y_N)\\) datos con no todos los \\(t_i\\) iguales, y sean \\(\\bar t = \\frac1N\\sum t_i\\) y \\(\\bar y = \\frac1N\\sum y_i\\). La recta \\(y = c + mt\\) de mínimos cuadrados tiene \\[\n\\hat m = \\frac{\\sum_i(t_i - \\bar t)(y_i - \\bar y)}{\\sum_i(t_i - \\bar t)^2},\\qquad\\hat c = \\bar y - \\hat m\\,\\bar t.\n\\] En particular, pasa por el punto de promedios \\((\\bar t,\\bar y)\\).\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nEscribo las dos ecuaciones normales, \\(A'Ax = A'y\\) con \\(A = (1\\ \\ t)\\), sumas incluidas. La primera, al dividir por el número de datos \\(N\\), ya es “\\(\\bar y = c + m\\bar t\\)”. Despejo \\(c\\) y lo reemplazo en la segunda: queda una sola ecuación para \\(m\\). Las sumas se reordenan usando \\(\\sum(t_i - \\bar t) = 0\\).\n\n\n\nDemostración. La columna de unos y la columna \\(t\\) son independientes si y solo si \\(t\\) no es múltiplo de \\((1,\\dots,1)'\\), es decir, si no todos los \\(t_i\\) son iguales. Entonces el Teorema 1 da una solución única, que resuelve \\[\n\\begin{aligned}\nNc + \\Big(\\sum t_i\\Big)m &= \\sum y_i,\\\\\n\\Big(\\sum t_i\\Big)c + \\Big(\\sum t_i^2\\Big)m &= \\sum t_iy_i.\n\\end{aligned}\n\\] Dividiendo la primera por \\(N\\), \\(\\bar y = c + m\\bar t\\), es decir, \\(c = \\bar y - m\\bar t\\). Reemplazando en la segunda, con \\(\\sum t_i = N\\bar t\\): \\[\n\\begin{aligned}\nN\\bar t\\,(\\bar y - m\\bar t) + \\Big(\\sum t_i^2\\Big)m &= \\sum t_iy_i\\\\\n\\Longrightarrow\\quad m\\Big(\\sum t_i^2 - N\\bar t^2\\Big) &= \\sum t_iy_i - N\\bar t\\bar y.\n\\end{aligned}\n\\] Ahora, \\(\\sum(t_i - \\bar t)^2 = \\sum t_i^2 - 2\\bar t\\sum t_i + N\\bar t^2 = \\sum t_i^2 - N\\bar t^2\\) y, de la misma manera, \\(\\sum(t_i - \\bar t)(y_i - \\bar y) = \\sum t_iy_i - N\\bar t\\bar y\\). Como el primero es positivo (algún \\(t_i\\ne\\bar t\\)), se puede despejar la pendiente y se obtiene la fórmula.\n\n\nEjemplo 3 (La recta de las tres mediciones) Datos \\((0,6),(1,0),(2,0)\\): \\(\\bar t = 1\\), \\(\\bar y = 2\\). Entonces \\(\\sum(t_i - \\bar t)(y_i - \\bar y) = (-1)(4) + 0\\cdot(-2) + (1)(-2) = -6\\) y \\(\\sum(t_i - \\bar t)^2 = 1 + 0 + 1 = 2\\). La pendiente es \\(\\hat m = -3\\) y \\(\\hat c = 2 - (-3)(1) = 5\\): la recta \\(b = 5 - 3t\\) del Ejemplo 2. Pasa por \\((1,2)\\), el punto de promedios. Sus valores en los instantes \\(0, 1, 2\\) son \\(5, 2, -1\\), los componentes de \\(p\\), y los residuos \\(1, -2, 1\\) se ven en la Figura 2 como los segmentos verticales entre cada punto y la recta.\n\n\n\n\n\n\n\nFigura 2: La recta de mínimos cuadrados \\(b = 5 - 3t\\) para los datos \\((0,6),(1,0),(2,0)\\). Los segmentos son los residuos \\(e = (1,-2,1)\\); la recta minimiza la suma de sus cuadrados, \\(1 + 4 + 1 = 6\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html#parábolas",
+    "href": "algebra-matricial/clase-06.html#parábolas",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "3.2 Parábolas",
+    "text": "3.2 Parábolas\n\nEjemplo 4 (Una parábola por cuatro puntos) Se ajusta \\(b = x_1 + x_2t + x_3t^2\\) a los datos \\((t,b) = (-1,1),(0,4),(1,-1),(2,6)\\). Las columnas de \\(A\\) son \\(1\\), \\(t\\) y \\(t^2\\) evaluados en los cuatro instantes: \\[\nA = \\begin{pmatrix}1&-1&1\\\\1&0&0\\\\1&1&1\\\\1&2&4\\end{pmatrix},\\qquad\nA'A = \\begin{pmatrix}4&2&6\\\\2&6&8\\\\6&8&18\\end{pmatrix},\n\\] \\[\nA'b = \\begin{pmatrix}1 + 4 - 1 + 6\\\\-1 + 0 - 1 + 12\\\\1 + 0 - 1 + 24\\end{pmatrix} = \\begin{pmatrix}10\\\\10\\\\24\\end{pmatrix}.\n\\] (Las entradas de \\(A'A\\) son las sumas \\(\\sum t^k\\): \\(4\\), \\(\\sum t = 2\\), \\(\\sum t^2 = 6\\), \\(\\sum t^3 = 8\\), \\(\\sum t^4 = 18\\).) Las ecuaciones normales tienen la solución \\(\\hat x = (1,0,1)'\\), que se verifica reemplazando: \\[\n4 + 0 + 6 = 10,\\qquad2 + 0 + 8 = 10,\\qquad6 + 0 + 18 = 24\n\\] y las tres igualdades se cumplen ✓. El ajuste es la parábola \\(b = 1 + t^2\\) (Figura 3), con valores \\(2, 1, 2, 5\\) y residuos \\(e = (1 - 2,\\ 4 - 1,\\ -1 - 2,\\ 6 - 5) = (-1,3,-3,1)\\). Se comprueba la ortogonalidad: \\(\\sum e_i = 0\\), \\(\\sum t_ie_i = 1 + 0 - 3 + 2 = 0\\) y \\(\\sum t_i^2e_i = -1 + 0 - 3 + 4 = 0\\) ✓. La suma de cuadrados es \\(\\|e\\|^2 = 1 + 9 + 9 + 1 = 20\\).\n\n\n\n\n\n\n\nFigura 3: La parábola \\(b = 1 + t^2\\) de mínimos cuadrados para cuatro puntos. Sus residuos \\((-1,3,-3,1)\\) son ortogonales a \\(1\\), \\(t\\) y \\(t^2\\).",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html#exponenciales-linealizar-antes-de-ajustar",
+    "href": "algebra-matricial/clase-06.html#exponenciales-linealizar-antes-de-ajustar",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "3.3 Exponenciales: linealizar antes de ajustar",
+    "text": "3.3 Exponenciales: linealizar antes de ajustar\nEl modelo \\(y = ae^{kt}\\) no es lineal en \\(k\\), pero al tomar logaritmos, \\(\\ln y = \\ln a + kt\\), sí lo es: se ajusta una recta a los puntos \\((t_i,\\ln y_i)\\).\n\nEjemplo 5 (Crecimiento exponencial) Datos \\(t = 0, 1, 2\\) con \\(y = 1,\\ e,\\ e^3\\), de modo que \\(\\ln y = (0,1,3)\\). Es el ajuste de una recta con \\(\\bar t = 1\\), \\(\\overline{\\ln y} = \\tfrac43\\): \\[\n\\hat k = \\frac{(-1)(0 - \\frac43) + 0 + (1)(3 - \\frac43)}{2} = \\frac{\\frac43 + \\frac53}{2} = \\frac32,\n\\] \\[\n\\widehat{\\ln a} = \\frac43 - \\frac32 = -\\frac16.\n\\] El ajuste es \\(y = e^{-1/6}e^{1{,}5t}\\approx0{,}846\\,e^{1{,}5t}\\). Los residuos en la escala logarítmica son \\(\\ln y_i - (-\\tfrac16 + \\tfrac32t_i) = \\tfrac16,\\ -\\tfrac13,\\ \\tfrac16\\). Los valores ajustados en la escala original son \\(0{,}85;\\ 3{,}79;\\ 17{,}00\\), frente a los datos \\(1;\\ 2{,}72;\\ 20{,}09\\) (Figura 4).\n\n\n\n\n\n\n\nFigura 4: Ajuste exponencial. Derecha: en la escala logarítmica los puntos se ajustan con una recta (mínimos cuadrados). Izquierda: la misma curva en la escala original.\n\n\n\nAdvertencia. Este ajuste minimiza los errores en \\(\\ln y\\), no en \\(y\\): los errores relativos pesan igual, y el punto grande \\(y = 20{,}09\\) cuenta lo mismo que el chico \\(y = 1\\). Si se minimizara \\(\\sum(y_i - ae^{kt_i})^2\\) directamente (un problema no lineal, que se resuelve por iteración), se obtendría otra curva: en este ejemplo, \\(a\\approx0{,}415\\) y \\(k\\approx1{,}94\\). Cuál usar depende de cómo es el error de los datos; en la sección de pesos se ve que el ajuste logarítmico equivale, aproximadamente, a ponderar los datos.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html#mínimos-cuadrados-ponderados",
+    "href": "algebra-matricial/clase-06.html#mínimos-cuadrados-ponderados",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "5.1 Mínimos cuadrados ponderados",
+    "text": "5.1 Mínimos cuadrados ponderados\nSi algunas mediciones son más confiables que otras, conviene que sus errores pesen más. Con pesos \\(w_i&gt;0\\) se minimiza \\(\\sum w_ie_i^2 = e'We\\), con \\(W = \\operatorname{diag}(w_1,\\dots,w_m)\\).\n\nTeorema 5 (Ecuaciones normales ponderadas) El vector que minimiza \\(\\sum_iw_i\\,(b_i - a_i'x)^2\\) (con \\(a_i'\\) la fila \\(i\\) de \\(A\\)) resuelve \\[\nA'WA\\,x = A'Wb,\n\\] y es único si las columnas de \\(A\\) son independientes.\n\n\nDemostración. Sea \\(D = \\operatorname{diag}(\\sqrt{w_1},\\dots,\\sqrt{w_m})\\), de modo que \\(D'D = D^2 = W\\). Entonces \\(\\sum w_ie_i^2 = \\|De\\|^2 = \\|DAx - Db\\|^2\\), un problema de mínimos cuadrados ordinario con matriz \\(DA\\) y lado derecho \\(Db\\). Sus ecuaciones normales (Teorema 1) son \\((DA)'(DA)x = (DA)'Db\\), es decir, \\(A'D^2Ax = A'D^2b\\). Como \\(D\\) es invertible, \\(DAx = 0\\) implica \\(Ax = 0\\), así que \\(DA\\) tiene columnas independientes si \\(A\\) las tiene, y la solución es única.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
+  },
+  {
+    "objectID": "algebra-matricial/clase-06.html#regularización-de-tikhonov",
+    "href": "algebra-matricial/clase-06.html#regularización-de-tikhonov",
+    "title": "Clase 6 · Mínimos cuadrados",
+    "section": "5.2 Regularización de Tikhonov",
+    "text": "5.2 Regularización de Tikhonov\nSi las columnas de \\(A\\) son casi dependientes, o hay más incógnitas que datos, la solución de mínimos cuadrados es inestable o no es única. La regularización de Tikhonov agrega un castigo por el tamaño de la solución: \\[\n\\min_x\\ \\|Ax - b\\|^2 + \\lambda\\|x\\|^2,\\qquad\\lambda&gt;0.\n\\]\n\nTeorema 6 (Tikhonov) Para toda \\(A\\) (\\(m\\times n\\)) y \\(\\lambda&gt;0\\), la matriz \\(A'A + \\lambda I\\) es invertible y el problema tiene solución única, \\[\nx_\\lambda = (A'A + \\lambda I)^{-1}A'b.\n\\]\n\n\n\n\n\n\n\nNotaBorrador\n\n\n\nEl castigo \\(\\lambda\\|x\\|^2 = \\|\\sqrt\\lambda\\,x\\|^2\\) es otra suma de cuadrados, así que apilo debajo de \\(A\\) la matriz \\(\\sqrt\\lambda I\\) y debajo de \\(b\\) un vector de ceros: el problema se vuelve de mínimos cuadrados ordinario. La matriz apilada siempre tiene columnas independientes, por el \\(\\sqrt\\lambda I\\).\n\n\n\nDemostración. Sea \\(\\tilde A = \\begin{pmatrix}A\\\\\\sqrt\\lambda\\,I\\end{pmatrix}\\) (\\((m + n)\\times n\\)) y \\(\\tilde b = \\begin{pmatrix}b\\\\0\\end{pmatrix}\\). Entonces \\[\n\\|\\tilde Ax - \\tilde b\\|^2 = \\|Ax - b\\|^2 + \\|\\sqrt\\lambda\\,x\\|^2 = \\|Ax - b\\|^2 + \\lambda\\|x\\|^2.\n\\] Si \\(\\tilde Ax = 0\\), la segunda parte dice \\(\\sqrt\\lambda\\,x = 0\\), así que \\(x = 0\\): las columnas de \\(\\tilde A\\) son independientes. Por el Teorema 1 hay una única solución, y resuelve \\(\\tilde A'\\tilde Ax = \\tilde A'\\tilde b\\). Pero \\(\\tilde A'\\tilde A = A'A + \\lambda I\\) y \\(\\tilde A'\\tilde b = A'b\\). Por el Lema 1, \\(\\tilde A'\\tilde A\\) es invertible.\n\nCuando \\(\\lambda\\) crece, la solución se achica hacia \\(0\\) (el término \\(\\lambda\\|x\\|^2\\) domina); cuando \\(\\lambda\\to0\\) se acerca a la de mínimos cuadrados (si las columnas son independientes). Es la regresión ridge de la econometría, y cuando \\(A'A\\) es casi singular, sumar \\(\\lambda I\\) es lo que hace calculable la solución. La Clase 14 la estudia con la SVD.\n\nEjemplo 7 (Tres rectas para los mismos datos) Los datos \\((0,6),(1,0),(2,0)\\) con \\(A = \\begin{pmatrix}1&0\\\\1&1\\\\1&2\\end{pmatrix}\\), \\(b = (6,0,0)'\\) y \\(A'b = (6,0)'\\) (Figura 5):\n\nMínimos cuadrados: \\(5 - 3t\\) (Ejemplo 2).\nPonderados con \\(W = \\operatorname{diag}(1,2,1)\\) (se confía el doble en la medición del instante \\(1\\)). \\(A'WA = \\begin{pmatrix}\\sum w&\\sum wt\\\\\\sum wt&\\sum wt^2\\end{pmatrix} = \\begin{pmatrix}4&4\\\\4&6\\end{pmatrix}\\) y \\(A'Wb = (6,0)'\\). Con \\(\\det = 24 - 16 = 8\\), \\(x = \\tfrac18\\begin{pmatrix}6&-4\\\\-4&4\\end{pmatrix}\\begin{pmatrix}6\\\\0\\end{pmatrix} = (4{,}5;\\ -3)'\\). La recta es \\(4{,}5 - 3t\\): pasa más cerca del punto ponderado, \\((1,0)\\), con residuos \\(1{,}5;\\ -1{,}5;\\ 1{,}5\\), y su suma ponderada de cuadrados, \\(1{,}5^2 + 2\\cdot1{,}5^2 + 1{,}5^2 = 9\\), es menor que la de la recta ordinaria, \\(1 + 2\\cdot4 + 1 = 10\\) ✓.\nTikhonov con \\(\\lambda = 1\\). \\(A'A + I = \\begin{pmatrix}4&3\\\\3&6\\end{pmatrix}\\) y \\(\\det = 24 - 9 = 15\\): \\(x_1 = \\tfrac1{15}\\begin{pmatrix}6&-3\\\\-3&4\\end{pmatrix}\\begin{pmatrix}6\\\\0\\end{pmatrix} = (2{,}4;\\ -1{,}2)'\\). La recta \\(2{,}4 - 1{,}2t\\) tiene una pendiente mucho menor: el castigo reduce \\(\\|x\\|^2\\) de \\(34\\) a \\(7{,}2\\) a costa de subir el error de \\(6\\) a \\(14{,}4\\). El objetivo \\(\\|e\\|^2 + \\lambda\\|x\\|^2\\) vale \\(21{,}6\\) con Tikhonov, contra \\(6 + 34 = 40\\) para la recta ordinaria.\n\n\n\n\n\n\n\n\nFigura 5: Tres rectas para los mismos tres puntos: mínimos cuadrados, ponderados (confiando el doble en la medición del instante 1) y Tikhonov con \\(\\lambda = 1\\).\n\n\n\nEl ajuste logarítmico, visto como pesos. Si el ajuste \\(\\hat y_i\\) está cerca de \\(y_i\\), entonces \\(\\ln y_i - \\ln\\hat y_i = \\ln\\big(1 + \\tfrac{y_i - \\hat y_i}{\\hat y_i}\\big)\\approx\\tfrac{y_i - \\hat y_i}{y_i}\\). Por lo tanto, minimizar \\(\\sum(\\ln y_i - \\ln\\hat y_i)^2\\) equivale, aproximadamente, a minimizar \\(\\sum w_i\\,(y_i - \\hat y_i)^2\\) con pesos \\(w_i = 1/y_i^2\\): en la escala original, los datos chicos pesan más y los grandes menos. Por eso el ajuste del Ejemplo 5 queda más lejos del dato grande (\\(17{,}00\\) contra \\(20{,}09\\)) que el ajuste no lineal directo.",
+    "crumbs": [
+      "Inicio",
+      "Clase 6 · Mínimos cuadrados"
+    ]
   }
 ]
