@@ -21,7 +21,7 @@ Antes de cada demostración hay un recuadro **Borrador**, donde se piensa en voz
 :::
 
 ::: {.callout-caution title="Requisitos"}
-Álgebra de secundaria (resolver sistemas pequeños, operar con fracciones) y la idea de vector en el plano. Las Clases 7 y 12 usan derivadas y la función exponencial; la Clase 13, la idea de gradiente. Las Clases 11 y 12 usan números complejos, que se repasan donde hacen falta.
+Álgebra de secundaria (resolver sistemas pequeños, operar con fracciones) y la idea de vector en el plano. Las Clases 7 y 12 usan derivadas y la función exponencial; la Clase 13, la idea de gradiente. Las Clases 7, 11 y 12 usan números complejos, que se repasan donde hacen falta.
 :::
 
 ## Clases

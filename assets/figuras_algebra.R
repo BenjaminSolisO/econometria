@@ -570,3 +570,126 @@ legend("topright", c("mínimos cuadrados: 5 − 3t", "ponderados W = diag(1, 2, 
        "Tikhonov λ = 1: 2,4 − 1,2t"), col = c(teal, ocre, rojo), lty = c(1, 2, 4), lwd = 2.4,
        bg = fondo, box.col = gris, cex = 0.85)
 dev.off()
+
+# ---------------------------------------------------------------------------
+# Clase 7: valores propios y sistemas dinámicos
+# ---------------------------------------------------------------------------
+# Solución exacta de x' = A x con descomposición espectral (A diagonalizable, valores propios posiblemente complejos)
+sol_edo <- function(A, x0, t) {
+  e <- eigen(A); V <- e$vectors; cc <- solve(V, as.complex(x0))
+  sapply(t, function(tt) Re(V %*% (exp(e$values * tt) * cc)))
+}
+
+# 7a. A = [[4,1],[2,3]]: los vectores propios solo se estiran; los demás giran
+abrir("c07_propios_2d.png", w = 6.4, h = 4.8)
+ejes2d(c(-1.5, 5.8), c(-4.6, 5.6))
+abline(0, 1, col = adjustcolor(teal, 0.35), lty = 2, lwd = 1.5)
+abline(0, -2, col = adjustcolor(rojo, 0.35), lty = 2, lwd = 1.5)
+flecha(0, 0, 1, 1, col = teal, lwd = 3); flecha(0, 0, 5, 5, col = teal, lwd = 1.6, lty = 2)
+flecha(0, 0, 1, -2, col = rojo, lwd = 3); flecha(0, 0, 2, -4, col = rojo, lwd = 1.6, lty = 2)
+flecha(0, 0, 1, 0, col = ocre, lwd = 3); flecha(0, 0, 4, 2, col = ocre, lwd = 1.6, lty = 2)
+text(1, 1.1, "v1 = (1, 1)", pos = 2, col = teal, cex = 0.9); text(5, 5, "A v1 = 5 v1", pos = 4, col = teal, cex = 0.9)
+text(1.05, -2, "v2 = (1, −2)", pos = 4, col = rojo, cex = 0.9); text(2, -4, "A v2 = 2 v2", pos = 4, col = rojo, cex = 0.9)
+text(1, -0.35, "x = (1, 0)", pos = 1, col = ocre, cex = 0.9); text(4, 2, "A x = (4, 2)", pos = 4, col = ocre, cex = 0.9)
+dev.off()
+
+# 7b. Cadena de Markov de dos ciudades: x0 = (0, 1)
+abrir("c07_markov.png", w = 9.4, h = 4.4)
+par(mfrow = c(1, 2), mar = c(4, 4.2, 2.4, 0.8))
+Mk <- matrix(c(.9, .1, .2, .8), 2); xs <- matrix(0, 2, 13); xs[, 1] <- c(0, 1)
+for (k in 2:13) xs[, k] <- Mk %*% xs[, k - 1]
+plot(NA, xlim = c(-0.05, 1.05), ylim = c(-0.05, 1.05), xlab = "fracción en la ciudad 1", ylab = "fracción en la ciudad 2", las = 1, asp = 1)
+title("Trayectoria en el plano", col.main = tinta, font.main = 1, cex.main = 1.15)
+abline(h = pretty(c(0, 1)), v = pretty(c(0, 1)), col = adjustcolor(gris, 0.18))
+abline(1, -1, col = adjustcolor(tinta, 0.5), lty = 2)
+lines(xs[1, ], xs[2, ], col = teal, lwd = 1.8); points(xs[1, ], xs[2, ], pch = 21, bg = ocre, cex = 1.1)
+points(2/3, 1/3, pch = 24, bg = rojo, cex = 1.7)
+text(0.05, 0.93, "x0 = (0, 1)", pos = 4, col = tinta, cex = 0.9); text(2/3, 0.28, "(2/3, 1/3)", pos = 1, col = rojo, cex = 0.95)
+text(0.85, 0.28, "x1 + x2 = 1", col = tinta, cex = 0.85, srt = -45)
+plot(NA, xlim = c(0, 12), ylim = c(0, 1), xlab = "paso k", ylab = "fracción", las = 1)
+title("Cada ciudad en el tiempo", col.main = tinta, font.main = 1, cex.main = 1.15)
+abline(h = pretty(c(0, 1)), v = pretty(c(0, 12)), col = adjustcolor(gris, 0.18))
+abline(h = c(1/3, 2/3), col = adjustcolor(tinta, 0.5), lty = 2)
+lines(0:12, xs[1, ], col = teal, lwd = 2); points(0:12, xs[1, ], pch = 21, bg = teal, cex = 0.9)
+lines(0:12, xs[2, ], col = rojo, lwd = 2); points(0:12, xs[2, ], pch = 21, bg = rojo, cex = 0.9)
+text(9.5, 0.78, "ciudad 1 → 2/3", col = teal, cex = 0.95); text(9.5, 0.22, "ciudad 2 → 1/3", col = rojo, cex = 0.95)
+dev.off()
+
+# 7c. Retratos de fase
+retrato <- function(A, titulo, lim = 3, n0 = 8, vp = TRUE) {
+  plot(NA, xlim = c(-lim, lim), ylim = c(-lim, lim), xlab = expression(x[1]), ylab = expression(x[2]), las = 1, asp = 1)
+  title(titulo, col.main = tinta, font.main = 1, cex.main = 1.1)
+  abline(h = 0, v = 0, col = adjustcolor(tinta, 0.4))
+  e <- eigen(A)
+  if (vp && all(abs(Im(e$values)) < 1e-12)) for (j in 1:2) { v <- Re(e$vectors[, j]); abline(0, v[2] / v[1], col = adjustcolor(rojo, 0.55), lty = 2, lwd = 1.5) }
+  tt <- seq(0, 6, length.out = 1500)
+  ang <- seq(0, 2 * pi, length.out = n0 + 1)[-1] + 0.3
+  for (r in c(0.8, 1.9)) for (a in ang) {
+    x0 <- r * c(cos(a), sin(a)); S <- sol_edo(A, x0, tt)
+    fuera <- abs(S[1, ]) > lim | abs(S[2, ]) > lim
+    if (any(fuera)) S[, which(fuera)[1]:ncol(S)] <- NA
+    ok <- which(!is.na(S[1, ]))
+    if (length(ok) > 10) {
+      lines(S[1, ], S[2, ], col = adjustcolor(teal, 0.8), lwd = 1.3)
+      m <- ok[min(length(ok) - 3, 40)]
+      arrows(S[1, m], S[2, m], S[1, m + 3], S[2, m + 3], col = teal, length = 0.07, lwd = 1.3)
+    }
+  }
+  points(0, 0, pch = 21, bg = ocre, cex = 1.2)
+}
+abrir("c07_retratos.png", w = 8.6, h = 8.2)
+par(mfrow = c(2, 2), mar = c(4, 4, 2.6, 0.8))
+retrato(matrix(c(-3, 2, 1, -2), 2), "Nodo estable: λ = −1, −4")
+retrato(matrix(c(1, 2, 2, 1), 2), "Silla: λ = 3, −1")
+retrato(matrix(c(0, -2, 1, -2), 2), "Foco estable: λ = −1 ± i", n0 = 6)
+retrato(matrix(c(0, -4, 1, 0), 2), "Centro: λ = ±2i", n0 = 5)
+dev.off()
+
+# 7d. Plano traza-determinante
+abrir("c07_traza_det.png", w = 7, h = 4.8)
+plot(NA, xlim = c(-5, 5), ylim = c(-3.5, 6.5), xlab = "traza  τ", ylab = "determinante  Δ", las = 1)
+abline(h = 0, v = 0, col = adjustcolor(tinta, 0.5))
+tx <- seq(-5, 5, length.out = 300)
+polygon(c(tx, rev(tx)), c(tx^2 / 4, rep(7, length(tx))), col = adjustcolor(azul, 0.16), border = NA)
+polygon(c(-5, 5, 5, -5), c(0, 0, -3.5, -3.5), col = adjustcolor(rojo, 0.14), border = NA)
+polygon(c(tx, rev(tx)), c(pmin(tx^2 / 4, 7), rep(0, length(tx))), col = adjustcolor(ocre, 0.14), border = NA)
+lines(tx, tx^2 / 4, col = tinta, lwd = 1.8)
+text(-3.4, 1.0, "nodo estable", col = tinta, cex = 0.9); text(3.4, 1.0, "nodo inestable", col = tinta, cex = 0.9)
+text(-3.4, 4.6, "foco estable", col = tinta, cex = 0.9); text(3.4, 4.6, "foco inestable", col = tinta, cex = 0.9)
+text(0, 5.6, "centro (τ = 0)", col = tinta, cex = 0.9); text(0, -2, "silla (siempre inestable)", col = tinta, cex = 0.95)
+text(2.9, 3.0, "Δ = τ²/4", col = tinta, cex = 0.8, adj = 0)
+pts <- rbind(c(-5, 4), c(2, -3), c(-2, 2), c(0, 4))
+points(pts[, 1], pts[, 2], pch = 21, bg = rojo, cex = 1.3)
+text(pts[1, 1] + 0.1, pts[1, 2] - 0.55, "(−5, 4)", cex = 0.8, col = rojo, adj = 0); text(pts[2, 1] + 0.1, pts[2, 2] - 0.4, "(2, −3)", cex = 0.8, col = rojo, adj = 0)
+text(pts[3, 1] + 0.1, pts[3, 2] - 0.45, "(−2, 2)", cex = 0.8, col = rojo, adj = 0); text(pts[4, 1] + 0.1, pts[4, 2] - 0.45, "(0, 4)", cex = 0.8, col = rojo, adj = 0)
+dev.off()
+
+# 7e. Euler: R = R1 R3 es la rotación de 120 grados alrededor de (1, -1, 1)
+abrir("c07_euler.png", w = 6.6, h = 5.4)
+ax <- c(1, -1, 1); u0 <- c(1, 1, 0); u1 <- c(-1, 0, 1); u2 <- c(0, -1, -1)
+pm <- marco3d(c(-1.6, 1.6), c(-1.6, 1.6), c(-1.6, 1.6), theta = -35, phi = 22)
+B1 <- c(1, 1, 0) / sqrt(2); B2 <- c(1, -1, -2) / sqrt(6)   # base ortonormal del plano perpendicular al eje
+pl <- t(sapply(list(c(-1.5, -1.5), c(1.5, -1.5), c(1.5, 1.5), c(-1.5, 1.5)), function(s) s[1] * B1 + s[2] * B2))
+poli3(pm, pl, col = adjustcolor(teal, 0.16), border = adjustcolor(teal, 0.5))
+seg3(pm, -1.4 * ax, 1.4 * ax, col = rojo, lwd = 1.6, lty = 2)
+flecha3(pm, c(0, 0, 0), 1.2 * ax, col = rojo, lwd = 2.6)
+flecha3(pm, c(0, 0, 0), u0, col = tinta); flecha3(pm, c(0, 0, 0), u1, col = ocre); flecha3(pm, c(0, 0, 0), u2, col = azul)
+seg3(pm, u0, u1, col = gris, lty = 3); seg3(pm, u1, u2, col = gris, lty = 3); seg3(pm, u2, u0, col = gris, lty = 3)
+text(p3(pm, 0.55, -0.55, 0.55), "eje (1, −1, 1)", pos = 3, col = rojo, cex = 0.9)
+text(p3(pm, 1, 1, 0), "u", pos = 4, col = tinta); text(p3(pm, -1, 0, 1), "Ru", pos = 2, col = ocre); text(p3(pm, 0, -1, -1), "R²u", pos = 1, col = azul)
+dev.off()
+
+# 7f. Matriz defectuosa A = [[3,1],[0,3]]: un solo vector propio, nodo degenerado
+abrir("c07_defectivo.png", w = 6, h = 4.8)
+ejes2d(c(-3, 3), c(-3, 3))
+abline(h = 0, col = adjustcolor(rojo, 0.55), lwd = 1.8, lty = 2)
+tt <- seq(-4, 1.2, length.out = 800)
+for (cc in c(-2.2, -1.2, -0.5, 0.5, 1.2, 2.2)) for (c1 in c(0, 1.5, -1.5)) {
+  x1 <- exp(3 * tt) * (c1 + cc * tt); x2 <- exp(3 * tt) * cc
+  ok <- abs(x1) < 3 & abs(x2) < 3
+  lines(x1[ok], x2[ok], col = adjustcolor(teal, 0.8), lwd = 1.2)
+  nr <- sqrt(x1^2 + x2^2); nr[!ok] <- Inf; m <- which.min(abs(nr - 1.6)); if (is.finite(nr[m]) && m < 797) arrows(x1[m], x2[m], x1[m + 3], x2[m + 3], col = teal, length = 0.08, lwd = 1.3)
+}
+points(0, 0, pch = 21, bg = ocre, cex = 1.3)
+text(2.9, 0.2, "único vector propio (1, 0)", pos = 2, col = rojo, cex = 0.85)
+dev.off()

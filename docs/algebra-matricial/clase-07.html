@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Valores y vectores propios, polinomio característico, traza y determinante, independencia de vectores propios, diagonalización y potencias de matrices, sistemas dinámicos discretos (Fibonacci), cadenas de Markov, la ecuación x’ = Ax, la exponencial de una matriz, retratos de fase en el plano y el eje de una rotación (teorema de Euler).">
+
+<title>Clase 7 · Valores propios y sistemas dinámicos – Econometría</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../algebra-matricial/clase-06.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-6f4c31e05982fe9d7c1d5110dfef5365.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fc4397ca801b8bb30a1dc0105eb00baf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../assets/extra.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Econometría</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../algebra-matricial/index.html" aria-current="page"> 
+<span class="menu-text">Álgebra matricial</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-1/index.html"> 
+<span class="menu-text">Econometría 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-2/index.html"> 
+<span class="menu-text">Econometría 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-3/index.html"> 
+<span class="menu-text">Econometría 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../econometria-4/index.html"> 
+<span class="menu-text">Econometría 4</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../algebra-matricial/clase-07.html">Clase 7 · Valores propios y sistemas dinámicos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Álgebra matricial aplicada</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 1 · Sistemas lineales y eliminación gaussiana</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 2 · Factorización LU, inversas y matrices por bloques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 3 · Los cuatro subespacios fundamentales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 4 · Determinantes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 5 · Ortogonalidad y factorización QR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clase 6 · Mínimos cuadrados</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../algebra-matricial/clase-07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Clase 7 · Valores propios y sistemas dinámicos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-08.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-09.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-10.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-11.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-12.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-13.qmd</span>
+  </li>
+        <li class="sidebar-item">
+ <span class="menu-text">algebra-matricial/clase-14.qmd</span>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#un-sistema-que-se-repite" id="toc-un-sistema-que-se-repite" class="nav-link active" data-scroll-target="#un-sistema-que-se-repite"><span class="header-section-number">1</span> Un sistema que se repite</a></li>
+  <li><a href="#un-repaso-de-números-complejos" id="toc-un-repaso-de-números-complejos" class="nav-link" data-scroll-target="#un-repaso-de-números-complejos"><span class="header-section-number">2</span> Un repaso de números complejos</a></li>
+  <li><a href="#valores-propios-y-vectores-propios" id="toc-valores-propios-y-vectores-propios" class="nav-link" data-scroll-target="#valores-propios-y-vectores-propios"><span class="header-section-number">3</span> Valores propios y vectores propios</a></li>
+  <li><a href="#diagonalización" id="toc-diagonalización" class="nav-link" data-scroll-target="#diagonalización"><span class="header-section-number">4</span> Diagonalización</a></li>
+  <li><a href="#sistemas-dinámicos-discretos" id="toc-sistemas-dinámicos-discretos" class="nav-link" data-scroll-target="#sistemas-dinámicos-discretos"><span class="header-section-number">5</span> Sistemas dinámicos discretos</a></li>
+  <li><a href="#cadenas-de-markov" id="toc-cadenas-de-markov" class="nav-link" data-scroll-target="#cadenas-de-markov"><span class="header-section-number">6</span> Cadenas de Markov</a></li>
+  <li><a href="#ecuaciones-diferenciales-x-ax" id="toc-ecuaciones-diferenciales-x-ax" class="nav-link" data-scroll-target="#ecuaciones-diferenciales-x-ax"><span class="header-section-number">7</span> Ecuaciones diferenciales: <span class="math inline">\(x' = Ax\)</span></a>
+  <ul class="collapse">
+  <li><a href="#valores-propios-complejos" id="toc-valores-propios-complejos" class="nav-link" data-scroll-target="#valores-propios-complejos"><span class="header-section-number">7.1</span> Valores propios complejos</a></li>
+  <li><a href="#retratos-de-fase-en-el-plano" id="toc-retratos-de-fase-en-el-plano" class="nav-link" data-scroll-target="#retratos-de-fase-en-el-plano"><span class="header-section-number">7.2</span> Retratos de fase en el plano</a></li>
+  </ul></li>
+  <li><a href="#una-aplicación-el-eje-de-una-rotación" id="toc-una-aplicación-el-eje-de-una-rotación" class="nav-link" data-scroll-target="#una-aplicación-el-eje-de-una-rotación"><span class="header-section-number">8</span> Una aplicación: el eje de una rotación</a></li>
+  <li><a href="#para-ir-más-allá-cuando-no-hay-suficientes-vectores-propios" id="toc-para-ir-más-allá-cuando-no-hay-suficientes-vectores-propios" class="nav-link" data-scroll-target="#para-ir-más-allá-cuando-no-hay-suficientes-vectores-propios"><span class="header-section-number">9</span> ★ Para ir más allá: cuando no hay suficientes vectores propios</a></li>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link" data-scroll-target="#resumen"><span class="header-section-number">10</span> Resumen</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">11</span> Ejercicios</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="clase-07.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 7 · Valores propios y sistemas dinámicos</h1>
+<p class="subtitle lead">Las direcciones que una matriz no tuerce</p>
+</div>
+
+<div>
+  <div class="description">
+    Valores y vectores propios, polinomio característico, traza y determinante, independencia de vectores propios, diagonalización y potencias de matrices, sistemas dinámicos discretos (Fibonacci), cadenas de Markov, la ecuación x’ = Ax, la exponencial de una matriz, retratos de fase en el plano y el eje de una rotación (teorema de Euler).
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a class="descarga-pdf" href="clase-07.pdf">Descargar esta clase en PDF</a></p>
+<section id="un-sistema-que-se-repite" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Un sistema que se repite</h1>
+<p>Dos ciudades se reparten una población fija. Cada año, el 10 % de los habitantes de la ciudad 1 se muda a la ciudad 2, y el 20 % de los de la ciudad 2 se muda a la 1. Si <span class="math inline">\(x_k = (a_k,b_k)'\)</span> son las fracciones de la población en cada ciudad en el año <span class="math inline">\(k\)</span>, entonces <span class="math display">\[
+\begin{pmatrix}a_{k+1}\\b_{k+1}\end{pmatrix} = \underbrace{\begin{pmatrix}0{,}9&amp;0{,}2\\0{,}1&amp;0{,}8\end{pmatrix}}_{A}\begin{pmatrix}a_k\\b_k\end{pmatrix},\qquad\text{es decir}\qquad x_{k+1} = Ax_k.
+\]</span> Después de <span class="math inline">\(k\)</span> años, <span class="math inline">\(x_k = A^kx_0\)</span>. ¿Hacia dónde va la población? Calcular <span class="math inline">\(A^{10}\)</span> multiplicando diez veces es posible, pero no dice nada sobre el largo plazo. Hay un camino mejor. Fíjate en lo que hace <span class="math inline">\(A\)</span> con dos vectores especiales: <span class="math display">\[
+A\begin{pmatrix}2\\1\end{pmatrix} = \begin{pmatrix}1{,}8 + 0{,}2\\0{,}2 + 0{,}8\end{pmatrix} = 1\cdot\begin{pmatrix}2\\1\end{pmatrix},\qquad
+A\begin{pmatrix}1\\-1\end{pmatrix} = \begin{pmatrix}0{,}9 - 0{,}2\\0{,}1 - 0{,}8\end{pmatrix} = 0{,}7\cdot\begin{pmatrix}1\\-1\end{pmatrix}.
+\]</span> Sobre esos dos vectores la matriz <strong>no cambia la dirección</strong>: solo estira. Y cada aplicación posterior de <span class="math inline">\(A\)</span> vuelve a multiplicar por el mismo número, de modo que <span class="math inline">\(A^k(2,1)' = 1^k(2,1)'\)</span> y <span class="math inline">\(A^k(1,-1)' = 0{,}7^k(1,-1)'\)</span>. Si el vector inicial se escribe como combinación de ellos, <span class="math inline">\(x_0 = c_1(2,1)' + c_2(1,-1)'\)</span>, entonces <span class="math display">\[
+x_k = c_1\cdot1^k\begin{pmatrix}2\\1\end{pmatrix} + c_2\cdot0{,}7^k\begin{pmatrix}1\\-1\end{pmatrix},
+\]</span> y el segundo término se apaga: el sistema converge a un reparto fijo, que es un múltiplo de <span class="math inline">\((2,1)'\)</span>. Eso es lo que hacen los <strong>valores y vectores propios</strong>: encuentran las direcciones en que una matriz se comporta como un número. Esta clase los construye, los usa para calcular potencias, y los aplica a cuatro problemas: sucesiones (Fibonacci), cadenas de Markov, ecuaciones diferenciales y rotaciones en el espacio.</p>
+</section>
+<section id="un-repaso-de-números-complejos" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Un repaso de números complejos</h1>
+<p>Una matriz real puede tener valores propios complejos (una rotación del plano no deja ninguna dirección fija: ¿cómo podría tener valores propios reales?). Por eso trabajamos con números complejos. Lo que se necesita:</p>
+<ul>
+<li>Un número complejo es <span class="math inline">\(z = a + bi\)</span> con <span class="math inline">\(a,b\)</span> reales e <span class="math inline">\(i^2 = -1\)</span>. Su <strong>conjugado</strong> es <span class="math inline">\(\bar z = a - bi\)</span>, y su <strong>módulo</strong> <span class="math inline">\(|z| = \sqrt{a^2 + b^2}\)</span> cumple <span class="math inline">\(|z|^2 = z\bar z\)</span> y <span class="math inline">\(|zw| = |z||w|\)</span>.</li>
+<li>La <strong>fórmula de Euler</strong>: <span class="math inline">\(e^{i\theta} = \cos\theta + i\sin\theta\)</span>. Todo complejo no nulo se escribe <span class="math inline">\(z = re^{i\theta}\)</span> con <span class="math inline">\(r = |z|\)</span> y <span class="math inline">\(\theta\)</span> el ángulo. Entonces <span class="math inline">\(z^k = r^ke^{ik\theta}\)</span>: elevar a <span class="math inline">\(k\)</span> multiplica el módulo <span class="math inline">\(k\)</span> veces y suma el ángulo <span class="math inline">\(k\)</span> veces. Además <span class="math inline">\(|e^{(\alpha + i\beta)t}| = e^{\alpha t}\)</span> para <span class="math inline">\(t\)</span> real.</li>
+<li><strong>Teorema fundamental del álgebra</strong> (se usa sin demostración): todo polinomio de grado <span class="math inline">\(n\)</span> con coeficientes complejos tiene <span class="math inline">\(n\)</span> raíces complejas, contadas con multiplicidad, y se factoriza como <span class="math inline">\(c\prod(\lambda - \lambda_i)\)</span>. Si los coeficientes son reales, las raíces no reales vienen en pares conjugados.</li>
+</ul>
+<p>Todo lo que se demuestra en esta clase para valores propios vale en <span class="math inline">\(\mathbb{C}\)</span>: los vectores pueden tener entradas complejas y las combinaciones lineales usan escalares complejos.</p>
+</section>
+<section id="valores-propios-y-vectores-propios" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Valores propios y vectores propios</h1>
+<div id="def-propio" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 1 (Valor propio y vector propio)</strong></span> Sea <span class="math inline">\(A\)</span> una matriz <span class="math inline">\(n\times n\)</span>. Un número <span class="math inline">\(\lambda\)</span> (real o complejo) es un <strong>valor propio</strong> de <span class="math inline">\(A\)</span> si existe un vector <span class="math inline">\(v\ne0\)</span> con <span class="math display">\[
+Av = \lambda v.
+\]</span> Ese <span class="math inline">\(v\)</span> es un <strong>vector propio</strong> asociado a <span class="math inline">\(\lambda\)</span>. El conjunto <span class="math inline">\(E_\lambda = N(A - \lambda I)\)</span> (los vectores propios más el cero) es el <strong>espacio propio</strong> de <span class="math inline">\(\lambda\)</span>.</p>
+</div>
+<p>Un vector propio no puede ser cero (así cualquier <span class="math inline">\(\lambda\)</span> serviría), pero <span class="math inline">\(\lambda = 0\)</span> sí puede ser valor propio. Si <span class="math inline">\(v\)</span> es vector propio, también lo es <span class="math inline">\(cv\)</span> para todo <span class="math inline">\(c\ne0\)</span>: lo que importa es la <strong>dirección</strong>.</p>
+<div id="thm-caracteristico" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 1 (El polinomio característico)</strong></span> <span class="math inline">\(\lambda\)</span> es un valor propio de <span class="math inline">\(A\)</span> si y solo si <span class="math inline">\(\det(\lambda I - A) = 0\)</span>. La función <span class="math inline">\(p(\lambda) = \det(\lambda I - A)\)</span> es un polinomio <strong>mónico de grado <span class="math inline">\(n\)</span></strong> en <span class="math inline">\(\lambda\)</span>, el <strong>polinomio característico</strong> de <span class="math inline">\(A\)</span>, así que <span class="math inline">\(A\)</span> tiene <span class="math inline">\(n\)</span> valores propios en <span class="math inline">\(\mathbb{C}\)</span> (contados con multiplicidad).</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(Av = \lambda v\)</span> con <span class="math inline">\(v\ne0\)</span> equivale a <span class="math inline">\((\lambda I - A)v = 0\)</span> con <span class="math inline">\(v\ne0\)</span>, es decir, a que <span class="math inline">\(N(\lambda I - A)\ne\{0\}\)</span>. Para una matriz cuadrada, tener un espacio nulo no trivial equivale a ser singular (Clase 3) y esto a tener determinante cero (Clase 4).</p>
+<p>Por la fórmula de Leibniz (Clase 4, sección ★), <span class="math inline">\(\det(\lambda I - A)\)</span> es una suma de productos de <span class="math inline">\(n\)</span> entradas de <span class="math inline">\(\lambda I - A\)</span>, una por fila y columna. Cada entrada es un polinomio de grado a lo sumo <span class="math inline">\(1\)</span> en <span class="math inline">\(\lambda\)</span> (es <span class="math inline">\(\lambda - a_{ii}\)</span> en la diagonal y <span class="math inline">\(-a_{ij}\)</span> fuera), así que <span class="math inline">\(p\)</span> es un polinomio de grado a lo sumo <span class="math inline">\(n\)</span>. El único término de grado <span class="math inline">\(n\)</span> viene del producto de la diagonal, <span class="math inline">\(\prod(\lambda - a_{ii})\)</span>, que tiene coeficiente principal <span class="math inline">\(1\)</span>. Por el teorema fundamental del álgebra, <span class="math inline">\(p(\lambda) = \prod_{i=1}^n(\lambda - \lambda_i)\)</span>.</p>
+</div>
+<p>Para <span class="math inline">\(2\times2\)</span>, con <span class="math inline">\(\tau = \operatorname{tr}A = a_{11} + a_{22}\)</span> la <strong>traza</strong> y <span class="math inline">\(\Delta = \det A\)</span>: <span class="math display">\[
+p(\lambda) = (\lambda - a_{11})(\lambda - a_{22}) - a_{12}a_{21} = \lambda^2 - \tau\lambda + \Delta.
+\]</span> Para <span class="math inline">\(3\times3\)</span> aparece una fórmula análoga.</p>
+<div id="prp-polinomio-3x3" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 1 (Polinomio característico de una matriz <span class="math inline">\(3\times3\)</span>)</strong></span> <span class="math display">\[
+p(\lambda) = \lambda^3 - (\operatorname{tr}A)\,\lambda^2 + (M_{11} + M_{22} + M_{33})\,\lambda - \det A,
+\]</span> donde <span class="math inline">\(M_{ii}\)</span> es el determinante de la matriz <span class="math inline">\(2\times2\)</span> que queda al borrar la fila <span class="math inline">\(i\)</span> y la columna <span class="math inline">\(i\)</span> de <span class="math inline">\(A\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(B = \lambda I - A\)</span>, con <span class="math inline">\(b_{ii} = \lambda - a_{ii}\)</span> y <span class="math inline">\(b_{ij} = -a_{ij}\)</span> si <span class="math inline">\(i\ne j\)</span>. La regla de Sarrus (Clase 4) da <span class="math display">\[
+\begin{aligned}
+\det B &amp;= b_{11}b_{22}b_{33} + b_{12}b_{23}b_{31} + b_{13}b_{21}b_{32}\\
+&amp;\quad - b_{13}b_{22}b_{31} - b_{12}b_{21}b_{33} - b_{11}b_{23}b_{32}.
+\end{aligned}
+\]</span> Sustituyendo, y observando que en los términos con tres entradas no diagonales salen tres signos menos, que se multiplican: <span class="math display">\[
+\begin{aligned}
+\det B &amp;= \prod_i(\lambda - a_{ii}) - a_{12}a_{23}a_{31} - a_{13}a_{21}a_{32}\\
+&amp;\quad - a_{13}a_{31}(\lambda - a_{22}) - a_{12}a_{21}(\lambda - a_{33}) - a_{23}a_{32}(\lambda - a_{11}).
+\end{aligned}
+\]</span> El producto <span class="math inline">\(\prod(\lambda - a_{ii})\)</span> es <span class="math inline">\(\lambda^3 - (a_{11} + a_{22} + a_{33})\lambda^2 + (a_{11}a_{22} + a_{11}a_{33} + a_{22}a_{33})\lambda - a_{11}a_{22}a_{33}\)</span>. Reuniendo el coeficiente de <span class="math inline">\(\lambda\)</span>: <span class="math display">\[
+\begin{aligned}
+&amp;a_{11}a_{22} + a_{11}a_{33} + a_{22}a_{33} - a_{13}a_{31} - a_{12}a_{21} - a_{23}a_{32}\\
+&amp;\qquad= (a_{11}a_{22} - a_{12}a_{21}) + (a_{11}a_{33} - a_{13}a_{31}) + (a_{22}a_{33} - a_{23}a_{32}),
+\end{aligned}
+\]</span> la suma de los tres menores <span class="math inline">\(M_{33}\)</span>, <span class="math inline">\(M_{22}\)</span> y <span class="math inline">\(M_{11}\)</span>. El término constante es <span class="math display">\[
+\begin{aligned}
+&amp;-a_{11}a_{22}a_{33} - a_{12}a_{23}a_{31} - a_{13}a_{21}a_{32}\\
+&amp;\qquad + a_{13}a_{31}a_{22} + a_{12}a_{21}a_{33} + a_{23}a_{32}a_{11} = -\det A,
+\end{aligned}
+\]</span> por la regla de Sarrus aplicada a <span class="math inline">\(A\)</span>.</p>
+</div>
+<div id="thm-traza-det" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 2 (Suma y producto de los valores propios)</strong></span> Si <span class="math inline">\(\lambda_1,\dots,\lambda_n\)</span> son los valores propios de <span class="math inline">\(A\)</span> (con multiplicidad), entonces <span class="math display">\[
+\lambda_1 + \dots + \lambda_n = \operatorname{tr}A,\qquad\lambda_1\cdots\lambda_n = \det A.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Escribo <span class="math inline">\(p(\lambda)\)</span> de dos maneras: como <span class="math inline">\(\prod(\lambda - \lambda_i)\)</span>, y como el determinante <span class="math inline">\(\det(\lambda I - A)\)</span> expandido. Comparo el coeficiente de <span class="math inline">\(\lambda^{n-1}\)</span> y el término constante. En el determinante, solo la permutación identidad tiene suficientes factores <span class="math inline">\(\lambda\)</span> para aportar a <span class="math inline">\(\lambda^{n-1}\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>De la factorización, <span class="math inline">\(p(\lambda) = \lambda^n - (\sum_i\lambda_i)\lambda^{n-1} + \dots + (-1)^n\prod_i\lambda_i\)</span>.</p>
+<p>Por Leibniz, <span class="math inline">\(p(\lambda) = \sum_\sigma\operatorname{sgn}(\sigma)\prod_i(\lambda I - A)_{i,\sigma(i)}\)</span> (suma sobre las permutaciones <span class="math inline">\(\sigma\)</span> de <span class="math inline">\(\{1,\dots,n\}\)</span>). Una permutación distinta de la identidad mueve al menos dos índices, así que tiene a lo sumo <span class="math inline">\(n - 2\)</span> factores diagonales <span class="math inline">\((\lambda - a_{ii})\)</span>; los demás factores son constantes <span class="math inline">\(-a_{ij}\)</span>. Entonces su término tiene grado <span class="math inline">\(\le n - 2\)</span> en <span class="math inline">\(\lambda\)</span>. Los términos de grado <span class="math inline">\(n\)</span> y <span class="math inline">\(n - 1\)</span> vienen solo de la identidad: <span class="math display">\[
+\prod_i(\lambda - a_{ii}) = \lambda^n - (\textstyle\sum_ia_{ii})\lambda^{n-1} + \dots
+\]</span> Comparando los coeficientes de <span class="math inline">\(\lambda^{n-1}\)</span>: <span class="math inline">\(\sum\lambda_i = \sum a_{ii} = \operatorname{tr}A\)</span>.</p>
+<p>Para el término constante, <span class="math inline">\(p(0) = \det(-A) = (-1)^n\det A\)</span> (cada una de las <span class="math inline">\(n\)</span> filas se multiplica por <span class="math inline">\(-1\)</span>, Clase 4), y de la factorización <span class="math inline">\(p(0) = \prod(-\lambda_i) = (-1)^n\prod\lambda_i\)</span>. Por lo tanto, <span class="math inline">\(\det A = \prod\lambda_i\)</span>.</p>
+</div>
+<p>Para una matriz <span class="math inline">\(2\times2\)</span>, esto dice que los valores propios son las raíces de <span class="math inline">\(\lambda^2 - \tau\lambda + \Delta\)</span>: suman <span class="math inline">\(\tau\)</span> y multiplican <span class="math inline">\(\Delta\)</span>. En particular, <strong><span class="math inline">\(A\)</span> es invertible si y solo si <span class="math inline">\(0\)</span> no es un valor propio</strong> (porque <span class="math inline">\(\det A = \prod\lambda_i\)</span>).</p>
+<div id="prp-propiedades-propios" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 2 (Propiedades elementales)</strong></span> Sea <span class="math inline">\(Av = \lambda v\)</span> con <span class="math inline">\(v\ne0\)</span>.</p>
+<ol type="1">
+<li><span class="math inline">\(A^kv = \lambda^kv\)</span> para todo <span class="math inline">\(k\ge0\)</span>, y <span class="math inline">\((A + cI)v = (\lambda + c)v\)</span>.</li>
+<li>Si <span class="math inline">\(A\)</span> es invertible, <span class="math inline">\(\lambda\ne0\)</span> y <span class="math inline">\(A^{-1}v = \lambda^{-1}v\)</span>.</li>
+<li><span class="math inline">\(A\)</span> y <span class="math inline">\(A'\)</span> tienen el mismo polinomio característico, luego los mismos valores propios.</li>
+<li>Si <span class="math inline">\(A\)</span> es triangular, sus valores propios son las entradas de la diagonal.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span></p>
+<ol type="1">
+<li>Por inducción: <span class="math inline">\(A^{k+1}v = A(\lambda^kv) = \lambda^kAv = \lambda^{k+1}v\)</span>. Y <span class="math inline">\((A + cI)v = \lambda v + cv\)</span>. (2) Si <span class="math inline">\(A\)</span> es invertible y <span class="math inline">\(Av = \lambda v\)</span>, entonces <span class="math inline">\(\lambda\ne0\)</span> (si fuera <span class="math inline">\(0\)</span>, <span class="math inline">\(Av = 0\)</span> con <span class="math inline">\(v\ne0\)</span> contradice la invertibilidad), y multiplicando por <span class="math inline">\(A^{-1}\)</span> queda <span class="math inline">\(v = \lambda A^{-1}v\)</span>, es decir, <span class="math inline">\(A^{-1}v = \lambda^{-1}v\)</span>. (3) <span class="math inline">\(\det(\lambda I - A') = \det\big((\lambda I - A)'\big) = \det(\lambda I - A)\)</span> (Clase 4). (4) Si <span class="math inline">\(A\)</span> es triangular, <span class="math inline">\(\lambda I - A\)</span> también, y su determinante es el producto de la diagonal (Clase 4): <span class="math inline">\(p(\lambda) = \prod(\lambda - a_{ii})\)</span>.</li>
+</ol>
+</div>
+<p>Los valores propios de <span class="math inline">\(A^k\)</span> son <span class="math inline">\(\lambda^k\)</span>: esa es la razón por la que sirven para calcular potencias.</p>
+<div id="thm-independientes" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 3 (Vectores propios de valores propios distintos son independientes)</strong></span> Si <span class="math inline">\(v_1,\dots,v_k\)</span> son vectores propios de <span class="math inline">\(A\)</span> asociados a valores propios <strong>distintos</strong> <span class="math inline">\(\lambda_1,\dots,\lambda_k\)</span>, entonces <span class="math inline">\(v_1,\dots,v_k\)</span> son linealmente independientes. En particular, si <span class="math inline">\(A\)</span> tiene <span class="math inline">\(n\)</span> valores propios distintos, tiene <span class="math inline">\(n\)</span> vectores propios independientes.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si fueran dependientes, tomo una dependencia con el menor número de vectores. Multiplico la relación por <span class="math inline">\(A\)</span> y, por otro lado, por <span class="math inline">\(\lambda_r\)</span>; restando elimino un vector y obtengo una dependencia más corta, que contradice la minimalidad.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Supongamos que son dependientes. Entre todas las relaciones de dependencia de subconjuntos, elegimos una con el menor número <span class="math inline">\(r\)</span> de vectores; renumerando, <span class="math inline">\(c_1v_1 + \dots + c_rv_r = 0\)</span> con todos los <span class="math inline">\(c_i\ne0\)</span> (si algún coeficiente fuera cero, habría una dependencia más corta). Como <span class="math inline">\(v_1\ne0\)</span>, necesariamente <span class="math inline">\(r\ge2\)</span>. Multiplicando por <span class="math inline">\(A\)</span>: <span class="math display">\[
+c_1\lambda_1v_1 + \dots + c_r\lambda_rv_r = 0.
+\]</span> Multiplicando la relación original por <span class="math inline">\(\lambda_r\)</span> y restando: <span class="math display">\[
+c_1(\lambda_1 - \lambda_r)v_1 + \dots + c_{r-1}(\lambda_{r-1} - \lambda_r)v_{r-1} = 0.
+\]</span> Los coeficientes son no nulos (los <span class="math inline">\(c_i\ne0\)</span> y los <span class="math inline">\(\lambda_i\)</span> son distintos), así que es una dependencia con <span class="math inline">\(r - 1\)</span> vectores. Contradice la minimalidad de <span class="math inline">\(r\)</span>.</p>
+</div>
+<div id="exm-propios-2x2" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 1 (Valores propios de una matriz <span class="math inline">\(2\times2\)</span>)</strong></span> <span class="math inline">\(A = \begin{pmatrix}4&amp;1\\2&amp;3\end{pmatrix}\)</span> tiene <span class="math inline">\(\tau = 7\)</span> y <span class="math inline">\(\Delta = 12 - 2 = 10\)</span>, así que <span class="math inline">\(p(\lambda) = \lambda^2 - 7\lambda + 10 = (\lambda - 5)(\lambda - 2)\)</span> y los valores propios son <span class="math inline">\(5\)</span> y <span class="math inline">\(2\)</span> (suman <span class="math inline">\(7\)</span> y multiplican <span class="math inline">\(10\)</span> ✓). Los vectores propios son el espacio nulo de <span class="math inline">\(A - \lambda I\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\lambda = 5\)</span>: <span class="math inline">\(A - 5I = \begin{pmatrix}-1&amp;1\\2&amp;-2\end{pmatrix}\)</span>, la ecuación <span class="math inline">\(-x_1 + x_2 = 0\)</span> da <span class="math inline">\(v_1 = (1,1)'\)</span>. Verificación: <span class="math inline">\(A(1,1)' = (5,5)' = 5v_1\)</span> ✓.</li>
+<li><span class="math inline">\(\lambda = 2\)</span>: <span class="math inline">\(A - 2I = \begin{pmatrix}2&amp;1\\2&amp;1\end{pmatrix}\)</span>, la ecuación <span class="math inline">\(2x_1 + x_2 = 0\)</span> da <span class="math inline">\(v_2 = (1,-2)'\)</span>. Verificación: <span class="math inline">\(A(1,-2)' = (2,-4)' = 2v_2\)</span> ✓.</li>
+</ul>
+<p>La <a href="#fig-propios-2d" class="quarto-xref">Figura&nbsp;1</a> muestra la diferencia con un vector cualquiera: <span class="math inline">\(x = (1,0)'\)</span> se transforma en <span class="math inline">\(Ax = (4,2)'\)</span>, que <strong>cambió de dirección</strong>, mientras que <span class="math inline">\(v_1\)</span> y <span class="math inline">\(v_2\)</span> solo cambian de largo.</p>
+</div>
+<div id="fig-propios-2d" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-propios-2d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_propios_2d.png" class="img-fluid figure-img" style="width:66.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-propios-2d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: La matriz <span class="math inline">\(A = \begin{pmatrix}4&amp;1\\2&amp;3\end{pmatrix}\)</span>. Los vectores propios <span class="math inline">\(v_1\)</span> y <span class="math inline">\(v_2\)</span> quedan en su propia recta (se multiplican por <span class="math inline">\(5\)</span> y por <span class="math inline">\(2\)</span>); un vector cualquiera, como <span class="math inline">\(x = (1,0)\)</span>, cambia de dirección.
+</figcaption>
+</figure>
+</div>
+<div id="exm-propios-3x3" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 2 (Valores propios de una matriz <span class="math inline">\(3\times3\)</span>)</strong></span> <span class="math display">\[
+A = \begin{pmatrix}1&amp;-2&amp;2\\1&amp;3&amp;-1\\1&amp;0&amp;2\end{pmatrix}.
+\]</span> La traza es <span class="math inline">\(1 + 3 + 2 = 6\)</span>. Los menores <span class="math inline">\(2\times2\)</span> de la diagonal son <span class="math inline">\(M_{11} = 3\cdot2 - (-1)\cdot0 = 6\)</span>, <span class="math inline">\(M_{22} = 1\cdot2 - 2\cdot1 = 0\)</span> y <span class="math inline">\(M_{33} = 1\cdot3 - (-2)\cdot1 = 5\)</span>, que suman <span class="math inline">\(11\)</span>. El determinante, por Sarrus, es <span class="math inline">\((6 + 2 + 0) - (6 + 0 - 4) = 8 - 2 = 6\)</span>. Entonces (<a href="#prp-polinomio-3x3" class="quarto-xref">Proposición&nbsp;1</a>) <span class="math display">\[
+p(\lambda) = \lambda^3 - 6\lambda^2 + 11\lambda - 6 = (\lambda - 1)(\lambda - 2)(\lambda - 3),
+\]</span> como se comprueba probando <span class="math inline">\(\lambda = 1\)</span> (<span class="math inline">\(1 - 6 + 11 - 6 = 0\)</span>) y dividiendo: <span class="math inline">\(\lambda^3 - 6\lambda^2 + 11\lambda - 6 = (\lambda - 1)(\lambda^2 - 5\lambda + 6)\)</span>. Los valores propios son <span class="math inline">\(1, 2, 3\)</span> (suman <span class="math inline">\(6 = \operatorname{tr}A\)</span> y multiplican <span class="math inline">\(6 = \det A\)</span> ✓). Vectores propios:</p>
+<ul>
+<li><span class="math inline">\(\lambda = 1\)</span>: <span class="math inline">\(A - I = \begin{pmatrix}0&amp;-2&amp;2\\1&amp;2&amp;-1\\1&amp;0&amp;1\end{pmatrix}\)</span>. La primera fila da <span class="math inline">\(x_2 = x_3\)</span> y la tercera, <span class="math inline">\(x_1 = -x_3\)</span>: <span class="math inline">\(v_1 = (1,-1,-1)'\)</span>. Verificación: <span class="math inline">\(A v_1 = (1 + 2 - 2,\ 1 - 3 + 1,\ 1 - 2) = (1,-1,-1)\)</span> ✓.</li>
+<li><span class="math inline">\(\lambda = 2\)</span>: <span class="math inline">\(A - 2I = \begin{pmatrix}-1&amp;-2&amp;2\\1&amp;1&amp;-1\\1&amp;0&amp;0\end{pmatrix}\)</span>. La tercera fila da <span class="math inline">\(x_1 = 0\)</span>, y la segunda <span class="math inline">\(x_2 = x_3\)</span>: <span class="math inline">\(v_2 = (0,1,1)'\)</span>. Verificación: <span class="math inline">\(Av_2 = (-2 + 2,\ 3 - 1,\ 2) = (0,2,2) = 2v_2\)</span> ✓.</li>
+<li><span class="math inline">\(\lambda = 3\)</span>: <span class="math inline">\(A - 3I = \begin{pmatrix}-2&amp;-2&amp;2\\1&amp;0&amp;-1\\1&amp;0&amp;-1\end{pmatrix}\)</span>. La segunda fila da <span class="math inline">\(x_1 = x_3\)</span> y la primera, <span class="math inline">\(-2x_1 - 2x_2 + 2x_1 = 0\)</span>, o sea <span class="math inline">\(x_2 = 0\)</span>: <span class="math inline">\(v_3 = (1,0,1)'\)</span>. Verificación: <span class="math inline">\(Av_3 = (1 + 2,\ 1 - 1,\ 1 + 2) = (3,0,3) = 3v_3\)</span> ✓.</li>
+</ul>
+</div>
+<div id="exm-rotacion-complejos" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 3 (Una rotación no tiene direcciones fijas)</strong></span> La rotación del plano <span class="math inline">\(R(\theta)\)</span> (Clase 5) tiene <span class="math inline">\(\tau = 2\cos\theta\)</span> y <span class="math inline">\(\Delta = \cos^2\theta + \sin^2\theta = 1\)</span>, así que <span class="math inline">\(p(\lambda) = \lambda^2 - 2\cos\theta\,\lambda + 1\)</span>, con raíces <span class="math display">\[
+\lambda = \cos\theta\pm\sqrt{\cos^2\theta - 1} = \cos\theta\pm i\sin\theta = e^{\pm i\theta}.
+\]</span> Son reales solo si <span class="math inline">\(\sin\theta = 0\)</span> (<span class="math inline">\(\theta = 0\)</span> o <span class="math inline">\(\pi\)</span>): para cualquier otro ángulo, la rotación no deja ninguna recta fija, y sus valores propios son complejos de módulo <span class="math inline">\(1\)</span>. Por ejemplo, con <span class="math inline">\(\theta = 90°\)</span>, <span class="math inline">\(R = \begin{pmatrix}0&amp;-1\\1&amp;0\end{pmatrix}\)</span> y <span class="math inline">\(p(\lambda) = \lambda^2 + 1\)</span>, con raíces <span class="math inline">\(\pm i\)</span>; un vector propio de <span class="math inline">\(\lambda = i\)</span> es <span class="math inline">\(v = (1,-i)'\)</span>: <span class="math inline">\(Rv = (i,\ 1) = i\,(1,-i)\)</span> ✓.</p>
+</div>
+</section>
+<section id="diagonalización" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Diagonalización</h1>
+<div id="thm-diagonalizacion" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 4 (Diagonalización)</strong></span> Una matriz <span class="math inline">\(A\)</span> (<span class="math inline">\(n\times n\)</span>) es <strong>diagonalizable</strong> si existen <span class="math inline">\(P\)</span> invertible y <span class="math inline">\(D\)</span> diagonal con <span class="math display">\[
+A = PDP^{-1}.
+\]</span> Esto ocurre si y solo si <span class="math inline">\(A\)</span> tiene <span class="math inline">\(n\)</span> vectores propios linealmente independientes. En ese caso, las columnas de <span class="math inline">\(P\)</span> son esos vectores propios <span class="math inline">\(v_1,\dots,v_n\)</span> y <span class="math inline">\(D = \operatorname{diag}(\lambda_1,\dots,\lambda_n)\)</span> tiene los valores propios correspondientes.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(A = PDP^{-1}\)</span> equivale a <span class="math inline">\(AP = PD\)</span> (con <span class="math inline">\(P\)</span> invertible). Por columnas, la columna <span class="math inline">\(j\)</span> de <span class="math inline">\(AP\)</span> es <span class="math inline">\(Ap_j\)</span> y la de <span class="math inline">\(PD\)</span> es <span class="math inline">\(d_jp_j\)</span> (el producto de <span class="math inline">\(P\)</span> por una matriz diagonal escala sus columnas, Clase 2). Entonces <span class="math inline">\(AP = PD\)</span> dice exactamente <span class="math inline">\(Ap_j = d_jp_j\)</span> para cada <span class="math inline">\(j\)</span>: las columnas de <span class="math inline">\(P\)</span> son vectores propios con valores propios <span class="math inline">\(d_j\)</span>. Y <span class="math inline">\(P\)</span> es invertible si y solo si sus columnas son independientes (Clase 3).</p>
+<p>Si existen <span class="math inline">\(n\)</span> vectores propios independientes <span class="math inline">\(v_1,\dots,v_n\)</span>, formamos <span class="math inline">\(P = (v_1\ \cdots\ v_n)\)</span> (invertible) y <span class="math inline">\(D\)</span> con los <span class="math inline">\(\lambda_j\)</span>; entonces <span class="math inline">\(AP = PD\)</span> y <span class="math inline">\(A = PDP^{-1}\)</span>. Recíprocamente, si <span class="math inline">\(A = PDP^{-1}\)</span>, las columnas de <span class="math inline">\(P\)</span> son <span class="math inline">\(n\)</span> vectores propios independientes.</p>
+</div>
+<p>Por el <a href="#thm-independientes" class="quarto-xref">Teorema&nbsp;3</a>, <strong>si los <span class="math inline">\(n\)</span> valores propios son distintos, <span class="math inline">\(A\)</span> es diagonalizable</strong>. (Lo contrario es falso: la identidad es diagonal y tiene un solo valor propio.)</p>
+<div id="thm-potencias" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 5 (Potencias de una matriz diagonalizable)</strong></span> Si <span class="math inline">\(A = PDP^{-1}\)</span>, entonces <span class="math inline">\(A^k = PD^kP^{-1}\)</span> para todo <span class="math inline">\(k\ge0\)</span>, con <span class="math inline">\(D^k = \operatorname{diag}(\lambda_1^k,\dots,\lambda_n^k)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Por inducción. Para <span class="math inline">\(k = 0\)</span> es <span class="math inline">\(PP^{-1} = I\)</span>. Si <span class="math inline">\(A^k = PD^kP^{-1}\)</span>, entonces <span class="math inline">\(A^{k+1} = A^kA = PD^kP^{-1}\,PDP^{-1} = PD^kIDP^{-1} = PD^{k+1}P^{-1}\)</span>. Y la potencia de una matriz diagonal eleva cada entrada de la diagonal.</p>
+</div>
+<p>El costo de calcular <span class="math inline">\(A^k\)</span> deja de crecer con <span class="math inline">\(k\)</span>: una vez que se tiene <span class="math inline">\(P\)</span> y <span class="math inline">\(D\)</span>, cada potencia son dos productos de matrices.</p>
+<div id="exm-potencias" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 4 (Potencias de matrices <span class="math inline">\(2\times2\)</span> y <span class="math inline">\(3\times3\)</span>)</strong></span> <em>En el plano.</em> Para <span class="math inline">\(A = \begin{pmatrix}4&amp;1\\2&amp;3\end{pmatrix}\)</span> (<a href="#exm-propios-2x2" class="quarto-xref">Ejemplo&nbsp;1</a>), <span class="math inline">\(P = \begin{pmatrix}1&amp;1\\1&amp;-2\end{pmatrix}\)</span> y <span class="math inline">\(D = \operatorname{diag}(5,2)\)</span>. Como <span class="math inline">\(\det P = -2 - 1 = -3\)</span>, <span class="math inline">\(P^{-1} = \tfrac1{-3}\begin{pmatrix}-2&amp;-1\\-1&amp;1\end{pmatrix} = \tfrac13\begin{pmatrix}2&amp;1\\1&amp;-1\end{pmatrix}\)</span>, y <span class="math display">\[
+A^k = \frac13\begin{pmatrix}1&amp;1\\1&amp;-2\end{pmatrix}\begin{pmatrix}5^k&amp;0\\0&amp;2^k\end{pmatrix}\begin{pmatrix}2&amp;1\\1&amp;-1\end{pmatrix} = \frac13\begin{pmatrix}2\cdot5^k + 2^k&amp;5^k - 2^k\\2\cdot5^k - 2\cdot2^k&amp;5^k + 2\cdot2^k\end{pmatrix}.
+\]</span> Para <span class="math inline">\(k = 1\)</span> da <span class="math inline">\(\tfrac13\begin{pmatrix}12&amp;3\\6&amp;9\end{pmatrix} = A\)</span> ✓; para <span class="math inline">\(k = 3\)</span>, <span class="math inline">\(\tfrac13\begin{pmatrix}258&amp;117\\234&amp;141\end{pmatrix} = \begin{pmatrix}86&amp;39\\78&amp;47\end{pmatrix}\)</span>, que coincide con <span class="math inline">\(A\cdot A\cdot A\)</span>. Con <span class="math inline">\(k = 10\)</span>: <span class="math inline">\(A^{10}_{11} = (2\cdot5^{10} + 2^{10})/3 = 6\,510\,758\)</span>.</p>
+<p><em>En el espacio.</em> Para la matriz del <a href="#exm-propios-3x3" class="quarto-xref">Ejemplo&nbsp;2</a>, <span class="math inline">\(P = (v_1\ v_2\ v_3) = \begin{pmatrix}1&amp;0&amp;1\\-1&amp;1&amp;0\\-1&amp;1&amp;1\end{pmatrix}\)</span> tiene <span class="math inline">\(\det P = 1\cdot(1 - 0) - 0 + 1\cdot(-1 + 1) = 1\)</span> y <span class="math inline">\(P^{-1} = \begin{pmatrix}1&amp;1&amp;-1\\1&amp;2&amp;-1\\0&amp;-1&amp;1\end{pmatrix}\)</span> (se verifica multiplicando). Entonces <span class="math inline">\(A^k = P\operatorname{diag}(1,2^k,3^k)P^{-1}\)</span>. Para <span class="math inline">\(k = 2\)</span>: <span class="math display">\[
+A^2 = P\operatorname{diag}(1,4,9)P^{-1} = \begin{pmatrix}1&amp;-8&amp;8\\3&amp;7&amp;-3\\3&amp;-2&amp;6\end{pmatrix},
+\]</span> que es el producto <span class="math inline">\(A\cdot A\)</span> (por ejemplo, la entrada <span class="math inline">\((1,2)\)</span> de <span class="math inline">\(A^2\)</span> es la fila <span class="math inline">\((1,-2,2)\)</span> por la columna <span class="math inline">\((-2,3,0)'\)</span>: <span class="math inline">\(-2 - 6 + 0 = -8\)</span> ✓).</p>
+</div>
+</section>
+<section id="sistemas-dinámicos-discretos" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Sistemas dinámicos discretos</h1>
+<div id="thm-discreto" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 6 (Solución de <span class="math inline">\(x_{k+1} = Ax_k\)</span>)</strong></span> Si <span class="math inline">\(A = PDP^{-1}\)</span> con vectores propios <span class="math inline">\(v_1,\dots,v_n\)</span> y valores propios <span class="math inline">\(\lambda_1,\dots,\lambda_n\)</span>, la solución de <span class="math inline">\(x_{k+1} = Ax_k\)</span> con <span class="math inline">\(x_0\)</span> dado es <span class="math display">\[
+x_k = c_1\lambda_1^kv_1 + \dots + c_n\lambda_n^kv_n,\qquad c = P^{-1}x_0.
+\]</span> Además:</p>
+<ol type="1">
+<li>Si <span class="math inline">\(|\lambda_i|&lt;1\)</span> para todo <span class="math inline">\(i\)</span>, entonces <span class="math inline">\(x_k\to0\)</span> para todo <span class="math inline">\(x_0\)</span>.</li>
+<li>Si algún <span class="math inline">\(|\lambda_j|&gt;1\)</span>, existe un <span class="math inline">\(x_0\)</span> real para el cual <span class="math inline">\(\|x_k\|\)</span> no está acotada.</li>
+<li>Si <span class="math inline">\(|\lambda_1|&gt;|\lambda_i|\)</span> para <span class="math inline">\(i\ge2\)</span> y <span class="math inline">\(c_1\ne0\)</span>, entonces <span class="math inline">\(x_k/\lambda_1^k\to c_1v_1\)</span>: a largo plazo, el sistema se alinea con <span class="math inline">\(v_1\)</span> y crece (o decrece) como <span class="math inline">\(\lambda_1^k\)</span>.</li>
+</ol>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(x_k = A^kx_0 = PD^kP^{-1}x_0 = PD^kc = \sum c_i\lambda_i^kv_i\)</span>, porque <span class="math inline">\(Pw\)</span> es la combinación de las columnas de <span class="math inline">\(P\)</span> con los coeficientes de <span class="math inline">\(w\)</span> (Clase 2).</p>
+<ol type="1">
+<li><p><span class="math inline">\(|\lambda_i^k| = |\lambda_i|^k\to0\)</span> para cada <span class="math inline">\(i\)</span>, luego cada término tiende a <span class="math inline">\(0\)</span>.</p></li>
+<li><p><span class="math inline">\(x_k/\lambda_1^k = c_1v_1 + \sum_{i\ge2}c_i(\lambda_i/\lambda_1)^kv_i\)</span> y <span class="math inline">\(|\lambda_i/\lambda_1|&lt;1\)</span>, así que los términos de la suma tienden a <span class="math inline">\(0\)</span>.</p></li>
+<li><p>Si <span class="math inline">\(\lambda_j\)</span> es real, <span class="math inline">\(v_j\)</span> puede elegirse real (es una solución no nula del sistema real <span class="math inline">\((A - \lambda_jI)v = 0\)</span>) y con <span class="math inline">\(x_0 = v_j\)</span> queda <span class="math inline">\(\|x_k\| = |\lambda_j|^k\|v_j\|\to\infty\)</span>. Si <span class="math inline">\(\lambda_j\)</span> no es real, escribimos <span class="math inline">\(v_j = u + iw\)</span> con <span class="math inline">\(u,w\)</span> reales y consideramos las soluciones reales con <span class="math inline">\(x_0 = u\)</span> y <span class="math inline">\(x_0 = w\)</span>: sus normas cumplen <span class="math inline">\(\|A^ku\| + \|A^kw\|\ge\|A^ku + iA^kw\| = \|A^kv_j\| = |\lambda_j|^k\|v_j\|\to\infty\)</span>, así que al menos una de las dos no está acotada.</p></li>
+</ol>
+</div>
+<p>El número que decide todo es <span class="math inline">\(\rho(A) = \max|\lambda_i|\)</span>, el <strong>radio espectral</strong>: si es menor que <span class="math inline">\(1\)</span>, el sistema se apaga; si es mayor que <span class="math inline">\(1\)</span>, estalla. La Clase 10 demuestra esto para toda matriz, diagonalizable o no.</p>
+<div id="exm-fibonacci" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 5 (Fibonacci)</strong></span> La sucesión <span class="math inline">\(F_0 = 0\)</span>, <span class="math inline">\(F_1 = 1\)</span>, <span class="math inline">\(F_{k+2} = F_{k+1} + F_k\)</span> se vuelve un sistema de primer orden con <span class="math inline">\(x_k = (F_{k+1},F_k)'\)</span>: <span class="math display">\[
+\begin{pmatrix}F_{k+2}\\F_{k+1}\end{pmatrix} = \begin{pmatrix}1&amp;1\\1&amp;0\end{pmatrix}\begin{pmatrix}F_{k+1}\\F_k\end{pmatrix},\qquad x_0 = \begin{pmatrix}1\\0\end{pmatrix}.
+\]</span> Aquí <span class="math inline">\(\tau = 1\)</span> y <span class="math inline">\(\Delta = -1\)</span>, así que <span class="math inline">\(p(\lambda) = \lambda^2 - \lambda - 1\)</span> y los valores propios son <span class="math display">\[
+\varphi = \frac{1 + \sqrt5}2\approx1{,}618,\qquad\psi = \frac{1 - \sqrt5}2\approx-0{,}618,
+\]</span> con <span class="math inline">\(\varphi + \psi = 1\)</span> y <span class="math inline">\(\varphi\psi = -1\)</span>. Un vector propio de <span class="math inline">\(\lambda\)</span> es <span class="math inline">\((\lambda,1)'\)</span>: <span class="math inline">\(A(\lambda,1)' = (\lambda + 1,\ \lambda)' = (\lambda^2,\ \lambda)' = \lambda\,(\lambda,1)'\)</span>, porque <span class="math inline">\(\lambda^2 = \lambda + 1\)</span>. El vector inicial se descompone como <span class="math inline">\(x_0 = (1,0)' = \tfrac1{\sqrt5}\big[(\varphi,1)' - (\psi,1)'\big]\)</span> (la primera componente es <span class="math inline">\((\varphi - \psi)/\sqrt5 = 1\)</span> y la segunda, <span class="math inline">\(0\)</span>). Por el <a href="#thm-discreto" class="quarto-xref">Teorema&nbsp;6</a>, <span class="math display">\[
+x_k = \frac1{\sqrt5}\Big[\varphi^k\begin{pmatrix}\varphi\\1\end{pmatrix} - \psi^k\begin{pmatrix}\psi\\1\end{pmatrix}\Big],
+\]</span> y la segunda componente es la <strong>fórmula de Binet</strong>: <span class="math display">\[
+F_k = \frac{\varphi^k - \psi^k}{\sqrt5}.
+\]</span> Como <span class="math inline">\(|\psi|&lt;1\)</span>, el segundo término se apaga: <span class="math inline">\(F_k\)</span> es el entero más cercano a <span class="math inline">\(\varphi^k/\sqrt5\)</span>. Por ejemplo, <span class="math inline">\(\varphi^{30}/\sqrt5 = 832\,040{,}0000002\)</span> y <span class="math inline">\(|\psi|^{30}/\sqrt5\approx2{,}4\times10^{-7}&lt;\tfrac12\)</span>, de modo que <span class="math inline">\(F_{30} = 832\,040\)</span>. Y <span class="math inline">\(F_{k+1}/F_k\to\varphi\)</span>, el valor propio dominante (parte 3 del teorema): <span class="math inline">\(F_{10}/F_9 = 55/34 = 1{,}6176\)</span>, <span class="math inline">\(F_{20}/F_{19} = 6765/4181 = 1{,}61803\)</span>.</p>
+</div>
+<div id="exm-espiral" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 6 (Valores propios complejos: una espiral)</strong></span> <span class="math inline">\(A = \begin{pmatrix}1&amp;-1\\1&amp;1\end{pmatrix}\)</span> tiene <span class="math inline">\(\tau = 2\)</span>, <span class="math inline">\(\Delta = 2\)</span> y <span class="math inline">\(p(\lambda) = \lambda^2 - 2\lambda + 2\)</span>, con raíces <span class="math inline">\(\lambda = 1\pm i = \sqrt2\,e^{\pm i\pi/4}\)</span>. Por el repaso de complejos, <span class="math inline">\(\lambda^k = (\sqrt2)^ke^{ik\pi/4}\)</span>: cada paso <strong>gira <span class="math inline">\(45°\)</span> y multiplica la longitud por <span class="math inline">\(\sqrt2\)</span></strong> (la matriz es <span class="math inline">\(\sqrt2\)</span> por la rotación <span class="math inline">\(R(45°)\)</span>). Como <span class="math inline">\(|\lambda|&gt;1\)</span>, el sistema se aleja del origen en espiral. En efecto, <span class="math inline">\(A^2 = \begin{pmatrix}0&amp;-2\\2&amp;0\end{pmatrix}\)</span> (giro de <span class="math inline">\(90°\)</span> y longitud <span class="math inline">\(\times2\)</span>), <span class="math inline">\(A^4 = -4I\)</span> (giro de <span class="math inline">\(180°\)</span> y longitud <span class="math inline">\(\times4\)</span>) y <span class="math inline">\(A^8 = 16I\)</span> (vuelta completa, longitud <span class="math inline">\(\times16 = (\sqrt2)^8\)</span>). ✓</p>
+</div>
+</section>
+<section id="cadenas-de-markov" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Cadenas de Markov</h1>
+<p>Un sistema como el de las dos ciudades, donde cada columna de <span class="math inline">\(A\)</span> reparte el 100 % de un estado entre los estados siguientes, se llama cadena de Markov.</p>
+<div id="def-estocastica" class="theorem definition">
+<p><span class="theorem-title"><strong>Definición 2 (Matriz estocástica)</strong></span> Una matriz <span class="math inline">\(A\)</span> (<span class="math inline">\(n\times n\)</span>) es <strong>estocástica</strong> (por columnas) si <span class="math inline">\(a_{ij}\ge0\)</span> y cada columna suma <span class="math inline">\(1\)</span>: <span class="math inline">\(\sum_ia_{ij} = 1\)</span>. Un <strong>vector de probabilidades</strong> <span class="math inline">\(x\)</span> tiene <span class="math inline">\(x_i\ge0\)</span> y <span class="math inline">\(\sum x_i = 1\)</span>.</p>
+</div>
+<p>Si <span class="math inline">\(x_k\)</span> es un vector de probabilidades (la fracción de la población en cada estado), <span class="math inline">\(x_{k+1} = Ax_k\)</span> también lo es. En efecto, las entradas son no negativas, y con <span class="math inline">\(\mathbf 1 = (1,\dots,1)'\)</span>, <span class="math inline">\(\mathbf 1'A = \mathbf 1'\)</span> (la fila de unos por <span class="math inline">\(A\)</span> suma las columnas), luego <span class="math display">\[
+\mathbf 1'x_{k+1} = \mathbf 1'Ax_k = \mathbf 1'x_k = 1.
+\]</span> La población total se <strong>conserva</strong>.</p>
+<div id="thm-markov" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 7 (Valores propios de una matriz estocástica)</strong></span> Sea <span class="math inline">\(A\)</span> estocástica. Entonces <span class="math inline">\(1\)</span> es un valor propio de <span class="math inline">\(A\)</span>, y todo valor propio <span class="math inline">\(\lambda\)</span> (real o complejo) cumple <span class="math inline">\(|\lambda|\le1\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Que <span class="math inline">\(1\)</span> es valor propio se lee de <span class="math inline">\(\mathbf 1'A = \mathbf 1'\)</span>: es un vector propio de <span class="math inline">\(A'\)</span>, y <span class="math inline">\(A'\)</span> tiene los mismos valores propios que <span class="math inline">\(A\)</span>. Para la cota, sumo los valores absolutos de <span class="math inline">\(Av = \lambda v\)</span> y uso que las columnas suman <span class="math inline">\(1\)</span>.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>De <span class="math inline">\(\mathbf 1'A = \mathbf 1'\)</span>, trasponiendo, <span class="math inline">\(A'\mathbf 1 = \mathbf 1\)</span>. Entonces <span class="math inline">\(1\)</span> es valor propio de <span class="math inline">\(A'\)</span> y, por la <a href="#prp-propiedades-propios" class="quarto-xref">Proposición&nbsp;2</a>, de <span class="math inline">\(A\)</span>.</p>
+<p>Sea <span class="math inline">\(Av = \lambda v\)</span> con <span class="math inline">\(v\ne0\)</span> (posiblemente complejo). Tomando valor absoluto en la componente <span class="math inline">\(i\)</span> y usando <span class="math inline">\(a_{ij}\ge0\)</span>: <span class="math display">\[
+|\lambda||v_i| = \Big|\sum_ja_{ij}v_j\Big|\le\sum_ja_{ij}|v_j|.
+\]</span> Sumando sobre <span class="math inline">\(i\)</span> e intercambiando las sumas, <span class="math display">\[
+|\lambda|\sum_i|v_i|\le\sum_j|v_j|\Big(\sum_ia_{ij}\Big) = \sum_j|v_j|.
+\]</span> Como <span class="math inline">\(\sum|v_i|&gt;0\)</span>, dividimos y queda <span class="math inline">\(|\lambda|\le1\)</span>.</p>
+</div>
+<div id="thm-markov-limite" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 8 (Convergencia a la distribución de equilibrio)</strong></span> Sea <span class="math inline">\(A\)</span> estocástica y diagonalizable, con <span class="math inline">\(1\)</span> como valor propio <strong>simple</strong> y todos los demás con <span class="math inline">\(|\lambda_i|&lt;1\)</span>. Entonces el vector propio de <span class="math inline">\(\lambda_1 = 1\)</span> puede normalizarse con <span class="math inline">\(\mathbf 1'v_1 = 1\)</span> (la <strong>distribución de equilibrio</strong>), y para todo <span class="math inline">\(x_0\)</span> vector de probabilidades, <span class="math display">\[
+x_k\longrightarrow v_1.
+\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(w\)</span> un vector propio de <span class="math inline">\(\lambda_1 = 1\)</span> y <span class="math inline">\(x_0\)</span> un vector de probabilidades. Por el <a href="#thm-discreto" class="quarto-xref">Teorema&nbsp;6</a>, <span class="math inline">\(x_k = c_1w + \sum_{i\ge2}c_i\lambda_i^kv_i\to c_1w\)</span>. Aplicando <span class="math inline">\(\mathbf 1'\)</span> y usando que la suma se conserva, <span class="math inline">\(1 = \mathbf 1'x_k\to c_1\,\mathbf 1'w\)</span>. Entonces <span class="math inline">\(c_1\,\mathbf 1'w = 1\)</span>, y en particular <span class="math inline">\(\mathbf 1'w\ne0\)</span>: se puede normalizar <span class="math inline">\(v_1 = w/(\mathbf 1'w)\)</span>, con <span class="math inline">\(\mathbf 1'v_1 = 1\)</span>. Y el límite es <span class="math inline">\(c_1w = c_1(\mathbf 1'w)\,v_1 = v_1\)</span>.</p>
+</div>
+<p>(Las hipótesis del teorema se cumplen automáticamente si <span class="math inline">\(A\)</span> tiene todas sus entradas positivas, el teorema de Perron–Frobenius de la Clase 12.)</p>
+<div id="exm-markov-2" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 7 (Las dos ciudades)</strong></span> <span class="math inline">\(A = \begin{pmatrix}0{,}9&amp;0{,}2\\0{,}1&amp;0{,}8\end{pmatrix}\)</span> es estocástica: <span class="math inline">\(\tau = 1{,}7\)</span> y <span class="math inline">\(\Delta = 0{,}72 - 0{,}02 = 0{,}7\)</span>, así que <span class="math inline">\(p(\lambda) = \lambda^2 - 1{,}7\lambda + 0{,}7 = (\lambda - 1)(\lambda - 0{,}7)\)</span>, con valores propios <span class="math inline">\(1\)</span> y <span class="math inline">\(0{,}7\)</span> y vectores propios <span class="math inline">\((2,1)'\)</span> y <span class="math inline">\((1,-1)'\)</span> (los de la introducción). El equilibrio es <span class="math inline">\(v_1 = \tfrac13(2,1)'\)</span> (para que sume <span class="math inline">\(1\)</span>): <strong>dos tercios de la población en la ciudad 1 y un tercio en la 2, sin importar el reparto inicial</strong>. Si toda la población parte en la ciudad 2, <span class="math inline">\(x_0 = (0,1)' = c_1(2,1)' + c_2(1,-1)'\)</span> da <span class="math inline">\(2c_1 + c_2 = 0\)</span> y <span class="math inline">\(c_1 - c_2 = 1\)</span>, así que <span class="math inline">\(c_1 = \tfrac13\)</span> y <span class="math inline">\(c_2 = -\tfrac23\)</span>: <span class="math display">\[
+x_k = \frac13\begin{pmatrix}2\\1\end{pmatrix} - \frac23\,0{,}7^k\begin{pmatrix}1\\-1\end{pmatrix}.
+\]</span> Para <span class="math inline">\(k = 1\)</span>: <span class="math inline">\(\tfrac13(2,1) - \tfrac23\cdot0{,}7(1,-1) = (0{,}2;\ 0{,}8)\)</span>, que es <span class="math inline">\(Ax_0\)</span> ✓. El error respecto del equilibrio se reduce un 30 % por año (<a href="#fig-markov" class="quarto-xref">Figura&nbsp;2</a>): después de <span class="math inline">\(k\)</span> años, la diferencia es <span class="math inline">\(\tfrac23\,0{,}7^k\)</span>.</p>
+</div>
+<div id="fig-markov" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-markov-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_markov.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-markov-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Las dos ciudades con <span class="math inline">\(x_0 = (0,1)\)</span>. Izquierda: la trayectoria en el plano permanece sobre la recta <span class="math inline">\(x_1 + x_2 = 1\)</span> (la población se conserva) y converge al equilibrio <span class="math inline">\((2/3,1/3)\)</span> siguiendo la dirección <span class="math inline">\((1,-1)\)</span>. Derecha: cada fracción en el tiempo.
+</figcaption>
+</figure>
+</div>
+<div id="exm-markov-3" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 8 (Una partícula en tres posiciones)</strong></span> Una partícula salta cada segundo entre tres posiciones en fila: desde la <span class="math inline">\(1\)</span> se queda con probabilidad <span class="math inline">\(\tfrac12\)</span> o pasa a la <span class="math inline">\(2\)</span> con <span class="math inline">\(\tfrac12\)</span>; desde la <span class="math inline">\(2\)</span> pasa a la <span class="math inline">\(1\)</span> con <span class="math inline">\(\tfrac14\)</span>, se queda con <span class="math inline">\(\tfrac12\)</span> o pasa a la <span class="math inline">\(3\)</span> con <span class="math inline">\(\tfrac14\)</span>; desde la <span class="math inline">\(3\)</span> se queda con <span class="math inline">\(\tfrac12\)</span> o pasa a la <span class="math inline">\(2\)</span> con <span class="math inline">\(\tfrac12\)</span>. La matriz (cada columna es lo que ocurre desde una posición) es <span class="math display">\[
+A = \begin{pmatrix}\tfrac12&amp;\tfrac14&amp;0\\\tfrac12&amp;\tfrac12&amp;\tfrac12\\0&amp;\tfrac14&amp;\tfrac12\end{pmatrix}.
+\]</span> Se comprueba, multiplicando, que <span class="math display">\[
+A\begin{pmatrix}1\\2\\1\end{pmatrix} = \begin{pmatrix}\tfrac12 + \tfrac12\\\tfrac12 + 1 + \tfrac12\\\tfrac12 + \tfrac12\end{pmatrix} = 1\cdot\begin{pmatrix}1\\2\\1\end{pmatrix},
+\]</span> <span class="math display">\[
+A\begin{pmatrix}1\\0\\-1\end{pmatrix} = \begin{pmatrix}\tfrac12\\0\\-\tfrac12\end{pmatrix} = \tfrac12\begin{pmatrix}1\\0\\-1\end{pmatrix},\qquad
+A\begin{pmatrix}1\\-2\\1\end{pmatrix} = \begin{pmatrix}0\\0\\0\end{pmatrix}.
+\]</span> Los valores propios son <span class="math inline">\(1\)</span>, <span class="math inline">\(\tfrac12\)</span> y <span class="math inline">\(0\)</span> (distintos, así que <span class="math inline">\(A\)</span> es diagonalizable; suman <span class="math inline">\(\tfrac32 = \operatorname{tr}A\)</span> ✓). El equilibrio es <span class="math inline">\(v_1 = \tfrac14(1,2,1)'\)</span>. Si la partícula parte en la posición <span class="math inline">\(1\)</span>, <span class="math inline">\(x_0 = (1,0,0)'\)</span>, se descompone como <span class="math inline">\(x_0 = c_1(1,2,1)' + c_2(1,0,-1)' + c_3(1,-2,1)'\)</span>: la suma de componentes da <span class="math inline">\(4c_1 = 1\)</span>, así que <span class="math inline">\(c_1 = \tfrac14\)</span>, y de la segunda componente, <span class="math inline">\(2c_1 - 2c_3 = 0\)</span>, así que <span class="math inline">\(c_3 = \tfrac14\)</span>, y de la primera, <span class="math inline">\(c_2 = 1 - \tfrac12 = \tfrac12\)</span>. Entonces <span class="math display">\[
+x_k = \frac14\begin{pmatrix}1\\2\\1\end{pmatrix} + \frac12\Big(\frac12\Big)^k\begin{pmatrix}1\\0\\-1\end{pmatrix}\qquad(k\ge1),
+\]</span> porque el tercer término lleva <span class="math inline">\(0^k = 0\)</span> y desaparece después del primer paso. Verificación: <span class="math inline">\(x_1 = \tfrac14(1,2,1) + \tfrac14(1,0,-1) = (\tfrac12,\tfrac12,0)\)</span>, que es la primera columna de <span class="math inline">\(A\)</span> ✓, y <span class="math inline">\(x_2 = \tfrac14(1,2,1) + \tfrac18(1,0,-1) = (\tfrac38,\tfrac12,\tfrac18) = Ax_1\)</span> ✓. A largo plazo la partícula pasa la mitad del tiempo en la posición central y un cuarto en cada extremo.</p>
+</div>
+</section>
+<section id="ecuaciones-diferenciales-x-ax" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ecuaciones diferenciales: <span class="math inline">\(x' = Ax\)</span></h1>
+<p>Cuando el tiempo es continuo, en lugar de <span class="math inline">\(x_{k+1} = Ax_k\)</span> aparece <span class="math inline">\(x'(t) = Ax(t)\)</span>: la tasa de cambio del vector es una función lineal de sí mismo (concentraciones en tanques conectados, circuitos, poblaciones que compiten). En una dimensión, <span class="math inline">\(x' = \lambda x\)</span> tiene solución <span class="math inline">\(x(t) = x(0)e^{\lambda t}\)</span>. La idea es la misma: en las direcciones propias, la ecuación se desacopla.</p>
+<div id="thm-edo" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 9 (Solución de <span class="math inline">\(x' = Ax\)</span>)</strong></span> Si <span class="math inline">\(A = PDP^{-1}\)</span> con vectores propios <span class="math inline">\(v_1,\dots,v_n\)</span> y valores propios <span class="math inline">\(\lambda_1,\dots,\lambda_n\)</span>, entonces el problema <span class="math inline">\(x'(t) = Ax(t)\)</span>, <span class="math inline">\(x(0) = x_0\)</span>, tiene una <strong>única</strong> solución: <span class="math display">\[
+x(t) = c_1e^{\lambda_1t}v_1 + \dots + c_ne^{\lambda_nt}v_n,\qquad c = P^{-1}x_0.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cambio de variables <span class="math inline">\(y = P^{-1}x\)</span>: la ecuación queda <span class="math inline">\(y' = Dy\)</span>, que son <span class="math inline">\(n\)</span> ecuaciones escalares independientes. Cada una se resuelve y se vuelve a <span class="math inline">\(x = Py\)</span>. La unicidad sale de que el cambio de variables es invertible.</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(y(t) = P^{-1}x(t)\)</span>. Como <span class="math inline">\(P^{-1}\)</span> es constante, <span class="math inline">\(y' = P^{-1}x'\)</span>, y <span class="math inline">\(x' = Ax\)</span> equivale a <span class="math display">\[
+y' = P^{-1}APy = Dy,\qquad\text{es decir}\qquad y_i' = \lambda_iy_i\quad(i = 1,\dots,n).
+\]</span> Para cada <span class="math inline">\(i\)</span>, <span class="math inline">\(\frac{d}{dt}\big(e^{-\lambda_it}y_i\big) = e^{-\lambda_it}(y_i' - \lambda_iy_i) = 0\)</span>, así que <span class="math inline">\(e^{-\lambda_it}y_i\)</span> es constante, igual a su valor en <span class="math inline">\(t = 0\)</span>, y <span class="math inline">\(y_i(t) = y_i(0)e^{\lambda_it}\)</span> con <span class="math inline">\(y(0) = P^{-1}x_0 = c\)</span>. Esto prueba existencia y unicidad de <span class="math inline">\(y\)</span>, y entonces de <span class="math inline">\(x = Py = \sum_ic_ie^{\lambda_it}v_i\)</span> (otra vez, <span class="math inline">\(Py\)</span> es la combinación de las columnas de <span class="math inline">\(P\)</span> con coeficientes <span class="math inline">\(y_i\)</span>).</p>
+</div>
+<p>La <strong>exponencial de una matriz</strong> reúne esto en una sola fórmula. Se define, como en el caso escalar, por la serie <span class="math display">\[
+e^{At} = I + At + \frac{(At)^2}{2!} + \frac{(At)^3}{3!} + \dots
+\]</span> Si <span class="math inline">\(A = PDP^{-1}\)</span>, entonces <span class="math inline">\(A^k = PD^kP^{-1}\)</span> (<a href="#thm-potencias" class="quarto-xref">Teorema&nbsp;5</a>) y la serie se vuelve <span class="math display">\[
+e^{At} = P\Big(\sum_k\frac{(Dt)^k}{k!}\Big)P^{-1} = P\operatorname{diag}\big(e^{\lambda_1t},\dots,e^{\lambda_nt}\big)P^{-1},
+\]</span> porque cada entrada de la serie diagonal es la serie escalar de <span class="math inline">\(e^{\lambda_it}\)</span>. La solución del teorema es <span class="math inline">\(x(t) = e^{At}x_0\)</span>. (Para matrices no diagonalizables, la serie sigue valiendo; se calcula en la Clase 12.)</p>
+<p><strong>Estabilidad.</strong> Como <span class="math inline">\(|e^{\lambda t}| = e^{\operatorname{Re}(\lambda)\,t}\)</span>, cada término <span class="math inline">\(c_ie^{\lambda_it}v_i\)</span> se apaga si <span class="math inline">\(\operatorname{Re}\lambda_i&lt;0\)</span> y crece si <span class="math inline">\(\operatorname{Re}\lambda_i&gt;0\)</span>. Si todos los valores propios tienen parte real negativa, <span class="math inline">\(x(t)\to0\)</span> para todo <span class="math inline">\(x_0\)</span>: el sistema es <strong>estable</strong>. (En el caso discreto la condición es <span class="math inline">\(|\lambda|&lt;1\)</span>; la frontera es el eje imaginario en lugar del círculo unitario.)</p>
+<section id="valores-propios-complejos" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="valores-propios-complejos"><span class="header-section-number">7.1</span> Valores propios complejos</h2>
+<p>Si <span class="math inline">\(A\)</span> es real y <span class="math inline">\(\lambda = \alpha + i\beta\)</span> (<span class="math inline">\(\beta\ne0\)</span>) es valor propio con vector propio <span class="math inline">\(v = u + iw\)</span> (<span class="math inline">\(u,w\)</span> reales), las soluciones complejas <span class="math inline">\(e^{\lambda t}v\)</span> se separan en dos soluciones <strong>reales</strong>.</p>
+<div id="prp-complejos-edo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 3 (Soluciones reales con valores propios complejos)</strong></span> Con <span class="math inline">\(A\)</span> real de <span class="math inline">\(2\times2\)</span>, <span class="math inline">\(\lambda = \alpha + i\beta\)</span> con <span class="math inline">\(\beta\ne0\)</span> y <span class="math inline">\(v = u + iw\)</span> un vector propio, los vectores <span class="math inline">\(u,w\)</span> son independientes y las funciones <span class="math display">\[
+x_1(t) = e^{\alpha t}\big(u\cos\beta t - w\sin\beta t\big),\qquad x_2(t) = e^{\alpha t}\big(u\sin\beta t + w\cos\beta t\big)
+\]</span> son soluciones reales de <span class="math inline">\(x' = Ax\)</span> con <span class="math inline">\(x_1(0) = u\)</span> y <span class="math inline">\(x_2(0) = w\)</span>. Por lo tanto, la solución con <span class="math inline">\(x(0) = au + bw\)</span> es <span class="math inline">\(ax_1(t) + bx_2(t)\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>La función compleja <span class="math inline">\(e^{\lambda t}v\)</span> cumple <span class="math inline">\(\frac{d}{dt}(e^{\lambda t}v) = \lambda e^{\lambda t}v = A\,(e^{\lambda t}v)\)</span>. Por Euler, <span class="math inline">\(e^{\lambda t}v = e^{\alpha t}(\cos\beta t + i\sin\beta t)(u + iw)\)</span>, y separando parte real e imaginaria queda <span class="math inline">\(x_1 + ix_2\)</span> con <span class="math inline">\(x_1,x_2\)</span> las funciones del enunciado. Como <span class="math inline">\(A\)</span> es real, derivar y multiplicar por <span class="math inline">\(A\)</span> conservan las partes real e imaginaria, de modo que <span class="math inline">\(x_1' = Ax_1\)</span> y <span class="math inline">\(x_2' = Ax_2\)</span>.</p>
+<p>Independencia: <span class="math inline">\(\bar v = u - iw\)</span> es vector propio de <span class="math inline">\(\bar\lambda\ne\lambda\)</span> (conjugamos <span class="math inline">\(Av = \lambda v\)</span> con <span class="math inline">\(A\)</span> real), así que <span class="math inline">\(v\)</span> y <span class="math inline">\(\bar v\)</span> son independientes (<a href="#thm-independientes" class="quarto-xref">Teorema&nbsp;3</a>), y <span class="math inline">\(u = \tfrac12(v + \bar v)\)</span>, <span class="math inline">\(w = \tfrac1{2i}(v - \bar v)\)</span>. Si <span class="math inline">\(au + bw = 0\)</span> con <span class="math inline">\(a,b\)</span> reales, la combinación <span class="math inline">\(\tfrac{a}2(v + \bar v) + \tfrac{b}{2i}(v - \bar v) = 0\)</span> obliga a que los coeficientes de <span class="math inline">\(v\)</span> y <span class="math inline">\(\bar v\)</span> sean cero, y entonces <span class="math inline">\(a = b = 0\)</span>. Como <span class="math inline">\(u,w\)</span> son una base de <span class="math inline">\(\mathbb{R}^2\)</span>, toda condición inicial real es <span class="math inline">\(au + bw\)</span>, y la unicidad (aplicando el <a href="#thm-edo" class="quarto-xref">Teorema&nbsp;9</a> a <span class="math inline">\(v,\bar v\)</span>) da la última afirmación.</p>
+</div>
+<p>El factor <span class="math inline">\(e^{\alpha t}\)</span> es una <strong>envolvente</strong> que crece o decrece, y <span class="math inline">\(\cos\beta t\)</span>, <span class="math inline">\(\sin\beta t\)</span> giran con frecuencia <span class="math inline">\(\beta\)</span>. Si <span class="math inline">\(\alpha&lt;0\)</span> es una espiral que cae hacia el origen (<strong>foco estable</strong>); si <span class="math inline">\(\alpha&gt;0\)</span>, una espiral que se aleja; si <span class="math inline">\(\alpha = 0\)</span>, una curva cerrada (<strong>centro</strong>).</p>
+</section>
+<section id="retratos-de-fase-en-el-plano" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="retratos-de-fase-en-el-plano"><span class="header-section-number">7.2</span> Retratos de fase en el plano</h2>
+<p>El <strong>retrato de fase</strong> de <span class="math inline">\(x' = Ax\)</span> en <span class="math inline">\(\mathbb{R}^2\)</span> dibuja las trayectorias <span class="math inline">\(x(t)\)</span> para varias condiciones iniciales. Su forma depende solo de los valores propios, que están determinados por la traza <span class="math inline">\(\tau\)</span> y el determinante <span class="math inline">\(\Delta\)</span>: <span class="math display">\[
+\lambda = \frac{\tau\pm\sqrt{\tau^2 - 4\Delta}}2.
+\]</span></p>
+<div id="thm-clasificacion" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 10 (Clasificación en el plano)</strong></span> Sea <span class="math inline">\(A\)</span> real de <span class="math inline">\(2\times2\)</span> con <span class="math inline">\(\Delta\ne0\)</span> y <span class="math inline">\(\tau^2\ne4\Delta\)</span>.</p>
+<ul>
+<li>Si <span class="math inline">\(\Delta&lt;0\)</span>: los valores propios son reales de signos opuestos: <strong>silla</strong> (inestable).</li>
+<li>Si <span class="math inline">\(\Delta&gt;0\)</span> y <span class="math inline">\(\tau^2&gt;4\Delta\)</span>: valores propios reales del mismo signo, el de <span class="math inline">\(\tau\)</span>: <strong>nodo</strong> estable si <span class="math inline">\(\tau&lt;0\)</span>, inestable si <span class="math inline">\(\tau&gt;0\)</span>.</li>
+<li>Si <span class="math inline">\(\tau^2&lt;4\Delta\)</span>: valores propios complejos <span class="math inline">\(\tfrac\tau2\pm i\beta\)</span>: <strong>foco</strong> estable si <span class="math inline">\(\tau&lt;0\)</span>, inestable si <span class="math inline">\(\tau&gt;0\)</span>, y <strong>centro</strong> si <span class="math inline">\(\tau = 0\)</span>.</li>
+</ul>
+<p>En particular, <span class="math inline">\(x' = Ax\)</span> es estable (todo <span class="math inline">\(\operatorname{Re}\lambda&lt;0\)</span>) si y solo si <span class="math inline">\(\tau&lt;0\)</span> y <span class="math inline">\(\Delta&gt;0\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Los valores propios son las raíces de <span class="math inline">\(\lambda^2 - \tau\lambda + \Delta\)</span>, con <span class="math inline">\(\lambda_1 + \lambda_2 = \tau\)</span> y <span class="math inline">\(\lambda_1\lambda_2 = \Delta\)</span>.</p>
+<p>Si <span class="math inline">\(\tau^2&gt;4\Delta\)</span> las raíces son reales y distintas. Si <span class="math inline">\(\Delta&lt;0\)</span>, su producto es negativo: tienen signos opuestos. Si <span class="math inline">\(\Delta&gt;0\)</span>, su producto es positivo: tienen el mismo signo, y ese signo es el de su suma <span class="math inline">\(\tau\)</span>. Si <span class="math inline">\(\tau^2&lt;4\Delta\)</span>, las raíces son complejas conjugadas, y su parte real común es <span class="math inline">\(\tau/2\)</span> (la suma es <span class="math inline">\(\tau\)</span>). Eso da las tres filas de la clasificación según el <a href="#thm-edo" class="quarto-xref">Teorema&nbsp;9</a> y la <a href="#prp-complejos-edo" class="quarto-xref">Proposición&nbsp;3</a>.</p>
+<p>Estabilidad: si <span class="math inline">\(\tau&lt;0\)</span> y <span class="math inline">\(\Delta&gt;0\)</span>, en el caso real ambos valores propios son negativos, y en el complejo la parte real es <span class="math inline">\(\tau/2&lt;0\)</span>. Recíprocamente, si ambos valores propios tienen parte real negativa, su suma <span class="math inline">\(\tau\)</span> es negativa y su producto, que es positivo (<span class="math inline">\(\lambda_1\lambda_2&gt;0\)</span> si son reales del mismo signo, <span class="math inline">\(|\lambda_1|^2&gt;0\)</span> si son complejos conjugados), es <span class="math inline">\(\Delta&gt;0\)</span>.</p>
+</div>
+<p>La <a href="#fig-traza-det" class="quarto-xref">Figura&nbsp;3</a> muestra el plano <span class="math inline">\((\tau,\Delta)\)</span> dividido por la parábola <span class="math inline">\(\Delta = \tau^2/4\)</span> (donde los valores propios coinciden), y la <a href="#fig-retratos" class="quarto-xref">Figura&nbsp;4</a> los cuatro retratos principales.</p>
+<div id="fig-traza-det" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-traza-det-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_traza_det.png" class="img-fluid figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-traza-det-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: El plano traza–determinante. La parábola <span class="math inline">\(\Delta = \tau^2/4\)</span> separa los valores propios reales (abajo) de los complejos (arriba). Los cuatro puntos son los ejemplos de esta clase. Todo el semiplano <span class="math inline">\(\Delta&lt;0\)</span> son sillas.
+</figcaption>
+</figure>
+</div>
+<div id="fig-retratos" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-retratos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_retratos.png" class="img-fluid figure-img" style="width:96.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-retratos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: Retratos de fase de <span class="math inline">\(x' = Ax\)</span>. Las rectas punteadas son las direcciones propias. Los puntos iniciales están en dos círculos de radio <span class="math inline">\(0{,}8\)</span> y <span class="math inline">\(1{,}9\)</span> (las trayectorias se cortan al salir de la ventana).
+</figcaption>
+</figure>
+</div>
+<div id="exm-nodo" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 9 (Un nodo estable)</strong></span> <span class="math inline">\(A = \begin{pmatrix}-3&amp;1\\2&amp;-2\end{pmatrix}\)</span> tiene <span class="math inline">\(\tau = -5\)</span>, <span class="math inline">\(\Delta = 6 - 2 = 4\)</span> y <span class="math inline">\(\tau^2 - 4\Delta = 25 - 16 = 9&gt;0\)</span>: nodo estable. Los valores propios son <span class="math inline">\(\tfrac{-5\pm3}2 = -1\)</span> y <span class="math inline">\(-4\)</span>. Para <span class="math inline">\(\lambda = -1\)</span>: <span class="math inline">\(A + I = \begin{pmatrix}-2&amp;1\\2&amp;-1\end{pmatrix}\)</span>, <span class="math inline">\(x_2 = 2x_1\)</span>, <span class="math inline">\(v_1 = (1,2)'\)</span>. Para <span class="math inline">\(\lambda = -4\)</span>: <span class="math inline">\(A + 4I = \begin{pmatrix}1&amp;1\\2&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(x_2 = -x_1\)</span>, <span class="math inline">\(v_2 = (1,-1)'\)</span>. Con <span class="math inline">\(x(0) = (3,0)'\)</span>: <span class="math inline">\(c_1(1,2) + c_2(1,-1) = (3,0)\)</span> da <span class="math inline">\(c_1 + c_2 = 3\)</span> y <span class="math inline">\(2c_1 - c_2 = 0\)</span>, así que <span class="math inline">\(c_1 = 1\)</span>, <span class="math inline">\(c_2 = 2\)</span> y <span class="math display">\[
+x(t) = e^{-t}\begin{pmatrix}1\\2\end{pmatrix} + 2e^{-4t}\begin{pmatrix}1\\-1\end{pmatrix}.
+\]</span> Verificación: <span class="math inline">\(x(0) = (3,0)'\)</span> y <span class="math inline">\(x'(0) = -(1,2)' - 8(1,-1)' = (-9,6)'\)</span>, que debe ser <span class="math inline">\(Ax(0) = (-9,6)'\)</span> ✓. La componente en <span class="math inline">\(v_2\)</span> se apaga cuatro veces más rápido: después de un rato, la trayectoria es <span class="math inline">\(\approx e^{-t}(1,2)'\)</span> y <strong>entra al origen tangente a la recta de <span class="math inline">\(v_1\)</span></strong>, el valor propio más lento (<a href="#fig-retratos" class="quarto-xref">Figura&nbsp;4</a>, arriba a la izquierda).</p>
+</div>
+<div id="exm-centro" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 10 (Un centro: el oscilador)</strong></span> <span class="math inline">\(A = \begin{pmatrix}0&amp;1\\-4&amp;0\end{pmatrix}\)</span> corresponde a <span class="math inline">\(x_1' = x_2\)</span>, <span class="math inline">\(x_2' = -4x_1\)</span>, es decir, a <span class="math inline">\(x_1'' = -4x_1\)</span> (un resorte). Tiene <span class="math inline">\(\tau = 0\)</span> y <span class="math inline">\(\Delta = 4\)</span>: centro. Los valores propios son <span class="math inline">\(\pm2i\)</span>. Para <span class="math inline">\(\lambda = 2i\)</span>: <span class="math inline">\(A - 2iI = \begin{pmatrix}-2i&amp;1\\-4&amp;-2i\end{pmatrix}\)</span>, la primera fila da <span class="math inline">\(x_2 = 2ix_1\)</span> y <span class="math inline">\(v = (1,2i)' = u + iw\)</span> con <span class="math inline">\(u = (1,0)'\)</span> y <span class="math inline">\(w = (0,2)'\)</span>. Con <span class="math inline">\(\alpha = 0\)</span> y <span class="math inline">\(\beta = 2\)</span> (<a href="#prp-complejos-edo" class="quarto-xref">Proposición&nbsp;3</a>), la solución con <span class="math inline">\(x(0) = (1,0)' = u\)</span> es <span class="math display">\[
+x(t) = u\cos2t - w\sin2t = \begin{pmatrix}\cos2t\\-2\sin2t\end{pmatrix}.
+\]</span> Verificación: <span class="math inline">\(x'(t) = (-2\sin2t,\ -4\cos2t)' = Ax(t) = (-2\sin2t,\ -4\cos2t)'\)</span> ✓. La trayectoria es la elipse <span class="math inline">\(4x_1^2 + x_2^2 = 4\)</span> (porque <span class="math inline">\(4\cos^22t + 4\sin^22t = 4\)</span>), recorrida con período <span class="math inline">\(2\pi/2 = \pi\)</span>: <strong>no se acerca ni se aleja</strong>. Esa cantidad se conserva, pues <span class="math inline">\(\frac{d}{dt}(4x_1^2 + x_2^2) = 8x_1x_2 + 2x_2(-4x_1) = 0\)</span>: es la energía del resorte.</p>
+</div>
+</section>
+</section>
+<section id="una-aplicación-el-eje-de-una-rotación" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Una aplicación: el eje de una rotación</h1>
+<p>En la Clase 5 se mostró que las rotaciones del espacio no conmutan, y se enunció que <strong>toda matriz ortogonal <span class="math inline">\(3\times3\)</span> de determinante <span class="math inline">\(1\)</span> es una rotación alrededor de algún eje</strong>. Ahora tenemos las herramientas para demostrarlo: el eje es un vector propio de valor propio <span class="math inline">\(1\)</span>.</p>
+<div id="thm-euler" class="theorem">
+<p><span class="theorem-title"><strong>Teorema 11 (Teorema de Euler)</strong></span> Sea <span class="math inline">\(Q\)</span> una matriz ortogonal <span class="math inline">\(3\times3\)</span> con <span class="math inline">\(\det Q = 1\)</span>. Entonces <span class="math inline">\(1\)</span> es un valor propio de <span class="math inline">\(Q\)</span>: existe un vector unitario <span class="math inline">\(u\)</span> con <span class="math inline">\(Qu = u\)</span> (el <strong>eje</strong>), y <span class="math inline">\(Q\)</span> es la rotación en un ángulo <span class="math inline">\(\theta\)</span> alrededor de <span class="math inline">\(u\)</span>, con <span class="math inline">\(\operatorname{tr}Q = 1 + 2\cos\theta\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tres cosas por hacer. Primero, ver que <span class="math inline">\(\det(Q - I) = 0\)</span> usando <span class="math inline">\(Q' = Q^{-1}\)</span> y la dimensión impar (<span class="math inline">\(3\)</span>). Segundo, tomar el vector propio <span class="math inline">\(u\)</span> y completar una base ortonormal. Tercero, ver que <span class="math inline">\(Q\)</span> lleva el plano perpendicular a <span class="math inline">\(u\)</span> en sí mismo y que allí actúa como una matriz ortogonal <span class="math inline">\(2\times2\)</span> con determinante <span class="math inline">\(1\)</span>, es decir, una rotación (Clase 5).</p>
+</div>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span><em>El valor propio <span class="math inline">\(1\)</span>.</em> Como <span class="math inline">\(Q'Q = I\)</span>, <span class="math inline">\(Q - I = Q - QQ' = Q(I - Q')\)</span>. Entonces <span class="math display">\[
+\begin{aligned}
+\det(Q - I) &amp;= \det Q\,\det(I - Q') = \det\big((I - Q)'\big)\\
+&amp;= \det(I - Q) = (-1)^3\det(Q - I) = -\det(Q - I),
+\end{aligned}
+\]</span> usando <span class="math inline">\(\det Q = 1\)</span>, que una matriz y su transpuesta tienen el mismo determinante, y que <span class="math inline">\(I - Q = -(Q - I)\)</span> con <span class="math inline">\(n = 3\)</span> filas (<span class="math inline">\(\det(-M) = (-1)^3\det M\)</span>, Clase 4). Luego <span class="math inline">\(2\det(Q - I) = 0\)</span> y <span class="math inline">\(Q - I\)</span> es singular: existe <span class="math inline">\(u\ne0\)</span> con <span class="math inline">\(Qu = u\)</span>, que se puede tomar real y unitario (es una solución de un sistema real, que se puede normalizar).</p>
+<p><em>Una base ortonormal.</em> Por Gram–Schmidt (Clase 5) existe una base ortonormal <span class="math inline">\(u,w_1,w_2\)</span> de <span class="math inline">\(\mathbb{R}^3\)</span>. Sea <span class="math inline">\(S = (u\ w_1\ w_2)\)</span>, ortogonal. Para <span class="math inline">\(w\)</span> perpendicular a <span class="math inline">\(u\)</span>, <span class="math inline">\(Qw\cdot u = Qw\cdot Qu = w\cdot u = 0\)</span> (las matrices ortogonales conservan productos internos): <span class="math inline">\(Q\)</span> lleva el plano <span class="math inline">\(u^\perp\)</span> en sí mismo. Por lo tanto, la primera columna de <span class="math inline">\(S'QS\)</span> es <span class="math inline">\(S'Qu = S'u = (1,0,0)'\)</span>, y la fila <span class="math inline">\(1\)</span> es <span class="math inline">\((1,0,0)\)</span> (porque <span class="math inline">\(u'Qw_j = (Q'u)\cdot w_j = u\cdot w_j = 0\)</span>, con <span class="math inline">\(Q'u = Q^{-1}u = u\)</span>). Así, <span class="math display">\[
+S'QS = \begin{pmatrix}1&amp;0\\0&amp;B\end{pmatrix}\qquad\text{con }B\text{ de }2\times2.
+\]</span> <em>El plano perpendicular.</em> <span class="math inline">\(S'QS\)</span> es ortogonal (producto de ortogonales), luego <span class="math inline">\(B\)</span> lo es, y <span class="math inline">\(1 = \det Q = \det(S'QS) = 1\cdot\det B\)</span> (por la Clase 4, el determinante de <span class="math inline">\(S'\)</span>, <span class="math inline">\(Q\)</span>, <span class="math inline">\(S\)</span> se multiplica y <span class="math inline">\(\det S'\det S = \det(S'S) = 1\)</span>). Por el Ejercicio 5.5, una matriz ortogonal <span class="math inline">\(2\times2\)</span> con determinante <span class="math inline">\(1\)</span> es una rotación <span class="math inline">\(B = R(\theta)\)</span>. Es decir, <span class="math inline">\(Q\)</span> es la rotación en <span class="math inline">\(\theta\)</span> del plano <span class="math inline">\(u^\perp\)</span> y deja fijo el eje <span class="math inline">\(u\)</span>.</p>
+<p><em>La traza.</em> <span class="math inline">\(\operatorname{tr}(XY) = \sum_{i,j}x_{ij}y_{ji} = \operatorname{tr}(YX)\)</span>, así que <span class="math inline">\(\operatorname{tr}Q = \operatorname{tr}(QSS') = \operatorname{tr}(S'QS) = 1 + 2\cos\theta\)</span>.</p>
+</div>
+<div id="exm-euler" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 11 (El eje y el ángulo de <span class="math inline">\(R_1R_3\)</span>)</strong></span> En la Clase 5 se calculó <span class="math inline">\(R = R_1R_3 = \begin{pmatrix}0&amp;-1&amp;0\\0&amp;0&amp;-1\\1&amp;0&amp;0\end{pmatrix}\)</span> (giro de <span class="math inline">\(90°\)</span> alrededor de <span class="math inline">\(x_3\)</span> y luego de <span class="math inline">\(90°\)</span> alrededor de <span class="math inline">\(x_1\)</span>). Es ortogonal con <span class="math inline">\(\det = 1\)</span>, así que es una rotación alrededor de algún eje. El eje es el vector propio de <span class="math inline">\(\lambda = 1\)</span>: <span class="math inline">\(Rv = (-v_2,\ -v_3,\ v_1) = (v_1,v_2,v_3)\)</span> da <span class="math inline">\(v_1 = -v_2\)</span>, <span class="math inline">\(v_2 = -v_3\)</span> y <span class="math inline">\(v_3 = v_1\)</span>, así que <span class="math inline">\(v = (1,-1,1)'\)</span> (y se verifica, <span class="math inline">\(Rv = (1,-1,1)'\)</span> ✓). El ángulo sale de la traza: <span class="math inline">\(\operatorname{tr}R = 0 = 1 + 2\cos\theta\)</span>, de modo que <span class="math inline">\(\cos\theta = -\tfrac12\)</span> y <span class="math inline">\(\theta = 120°\)</span>. Se puede verificar con un vector perpendicular al eje, <span class="math inline">\(u = (1,1,0)'\)</span> (<span class="math inline">\(u\cdot v = 1 - 1 + 0 = 0\)</span>): <span class="math inline">\(Ru = (-1,0,1)'\)</span> y <span class="math inline">\(R^2u = R(-1,0,1)' = (0,-1,-1)'\)</span>. Los tres vectores tienen longitud <span class="math inline">\(\sqrt2\)</span>, son perpendiculares al eje y forman entre sí ángulos de <span class="math inline">\(120°\)</span> (por ejemplo, <span class="math inline">\(u\cdot Ru = -1\)</span> y <span class="math inline">\(\cos\theta = -1/2\)</span> ✓, <a href="#fig-euler" class="quarto-xref">Figura&nbsp;5</a>). Y <span class="math inline">\(R^3u = R(0,-1,-1)' = (1,1,0)' = u\)</span>: tres giros de <span class="math inline">\(120°\)</span> dan la vuelta completa. Los otros dos valores propios son <span class="math inline">\(e^{\pm i\theta} = -\tfrac12\pm\tfrac{\sqrt3}2i\)</span>: la suma <span class="math inline">\(1 + 2\cos\theta = \operatorname{tr}R\)</span> y el producto <span class="math inline">\(1\)</span> son los del <a href="#thm-traza-det" class="quarto-xref">Teorema&nbsp;2</a>.</p>
+</div>
+<div id="fig-euler" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-euler-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_euler.png" class="img-fluid figure-img" style="width:66.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-euler-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5: La rotación <span class="math inline">\(R = R_1R_3\)</span> es un giro de <span class="math inline">\(120°\)</span> alrededor del eje <span class="math inline">\((1,-1,1)\)</span>. Los vectores <span class="math inline">\(u\)</span>, <span class="math inline">\(Ru\)</span>, <span class="math inline">\(R^2u\)</span> están en el plano perpendicular al eje y forman ángulos de <span class="math inline">\(120°\)</span>.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="para-ir-más-allá-cuando-no-hay-suficientes-vectores-propios" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> ★ Para ir más allá: cuando no hay suficientes vectores propios</h1>
+<div class="callout callout-style-default callout-important callout-titled" title="★ Para ir más allá">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>★ Para ir más allá
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No toda matriz es diagonalizable. Cuando un valor propio se repite, puede ocurrir que el espacio propio sea más chico que la multiplicidad, y entonces faltan vectores propios. La matriz más simple donde pasa es <span class="math inline">\(\begin{pmatrix}\lambda&amp;1\\0&amp;\lambda\end{pmatrix}\)</span>, y las consecuencias aparecen en las potencias y en las ecuaciones diferenciales.</p>
+</div>
+</div>
+<div id="prp-doble" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposición 4 (Un valor propio doble en <span class="math inline">\(2\times2\)</span>)</strong></span> Sea <span class="math inline">\(A\)</span> de <span class="math inline">\(2\times2\)</span> con un único valor propio <span class="math inline">\(\lambda\)</span>, de multiplicidad <span class="math inline">\(2\)</span> (<span class="math inline">\(p(x) = (x - \lambda)^2\)</span>). Entonces <span class="math inline">\(A\)</span> es diagonalizable si y solo si <span class="math inline">\(A = \lambda I\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Demostración</em>. </span>Si <span class="math inline">\(A = \lambda I\)</span>, ya es diagonal. Recíprocamente, si <span class="math inline">\(A = PDP^{-1}\)</span>, los valores propios de <span class="math inline">\(D\)</span> son los de <span class="math inline">\(A\)</span>: <span class="math inline">\(\det(\lambda I - A) = \det\big(P(\lambda I - D)P^{-1}\big) = \det(\lambda I - D)\)</span> por la regla del determinante de un producto (Clase 4). Como <span class="math inline">\(D\)</span> es diagonal, sus valores propios son sus entradas diagonales (<a href="#prp-propiedades-propios" class="quarto-xref">Proposición&nbsp;2</a>), y ambas valen <span class="math inline">\(\lambda\)</span>: <span class="math inline">\(D = \lambda I\)</span> y <span class="math inline">\(A = P(\lambda I)P^{-1} = \lambda PP^{-1} = \lambda I\)</span>.</p>
+</div>
+<div id="exm-defectuosa" class="theorem example">
+<p><span class="theorem-title"><strong>Ejemplo 12 (Una matriz que no se puede diagonalizar)</strong></span> <span class="math inline">\(A = \begin{pmatrix}3&amp;1\\0&amp;3\end{pmatrix}\)</span> es triangular, con valor propio <span class="math inline">\(3\)</span> doble (<span class="math inline">\(p(\lambda) = (\lambda - 3)^2\)</span>). Como <span class="math inline">\(A\ne3I\)</span>, la <a href="#prp-doble" class="quarto-xref">Proposición&nbsp;4</a> dice que <strong>no es diagonalizable</strong>. Directamente: <span class="math inline">\(A - 3I = \begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}\)</span> tiene espacio nulo generado por <span class="math inline">\((1,0)'\)</span>: un solo vector propio independiente, y no dos.</p>
+<p><em>Potencias.</em> Escribimos <span class="math inline">\(A = 3I + N\)</span> con <span class="math inline">\(N = \begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}\)</span>, <span class="math inline">\(N^2 = 0\)</span>. Por inducción, <span class="math inline">\(A^k = \begin{pmatrix}3^k&amp;k\,3^{k-1}\\0&amp;3^k\end{pmatrix}\)</span>: para <span class="math inline">\(k = 1\)</span> es <span class="math inline">\(A\)</span>, y si vale para <span class="math inline">\(k\)</span>, <span class="math display">\[
+\begin{aligned}
+A^{k+1} = A^kA &amp;= \begin{pmatrix}3^k&amp;k\,3^{k-1}\\0&amp;3^k\end{pmatrix}\begin{pmatrix}3&amp;1\\0&amp;3\end{pmatrix}\\
+&amp;= \begin{pmatrix}3^{k+1}&amp;3^k + k\,3^k\\0&amp;3^{k+1}\end{pmatrix} = \begin{pmatrix}3^{k+1}&amp;(k + 1)\,3^k\\0&amp;3^{k+1}\end{pmatrix}.
+\end{aligned}
+\]</span> (Por ejemplo, <span class="math inline">\(A^4 = \begin{pmatrix}81&amp;108\\0&amp;81\end{pmatrix}\)</span>, con <span class="math inline">\(4\cdot27 = 108\)</span>.) El sistema <span class="math inline">\(x_{k+1} = Ax_k\)</span> crece como <span class="math inline">\(k\,3^k\)</span>, un factor <strong>polinomial</strong> <span class="math inline">\(k\)</span> más rápido que <span class="math inline">\(3^k\)</span>: eso no puede salir de una fórmula <span class="math inline">\(\sum c_i\lambda_i^kv_i\)</span>.</p>
+<p><em>Ecuación diferencial.</em> <span class="math inline">\(x' = Ax\)</span> son <span class="math inline">\(x_1' = 3x_1 + x_2\)</span> y <span class="math inline">\(x_2' = 3x_2\)</span>. La segunda da <span class="math inline">\(x_2 = c_2e^{3t}\)</span>; la primera queda <span class="math inline">\((e^{-3t}x_1)' = e^{-3t}x_2 = c_2\)</span>, así que <span class="math inline">\(e^{-3t}x_1 = c_1 + c_2t\)</span> y <span class="math display">\[
+x(t) = e^{3t}\begin{pmatrix}c_1 + c_2t\\c_2\end{pmatrix},\qquad c = x(0).
+\]</span> Aparece el factor <span class="math inline">\(t\,e^{3t}\)</span> que no está en el teorema de la clase: es la firma de un valor propio con “faltante” de vectores propios (la <a href="#fig-defectivo" class="quarto-xref">Figura&nbsp;6</a> muestra el <strong>nodo degenerado</strong>: todas las trayectorias salen del origen tangentes a la única recta propia). Verificación con <span class="math inline">\(x(0) = (0,1)'\)</span>: <span class="math inline">\(x(t) = e^{3t}(t,1)'\)</span> y <span class="math inline">\(x' = 3e^{3t}(t,1)' + e^{3t}(1,0)' = e^{3t}(3t + 1,\ 3)' = Ax\)</span> ✓.</p>
+</div>
+<div id="fig-defectivo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-defectivo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../assets/fig/am/c07_defectivo.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-defectivo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6: El nodo degenerado de <span class="math inline">\(x' = Ax\)</span> con <span class="math inline">\(A = \begin{pmatrix}3&amp;1\\0&amp;3\end{pmatrix}\)</span> (inestable: <span class="math inline">\(\lambda = 3\)</span>). Hay un solo vector propio, <span class="math inline">\((1,0)\)</span>, y las trayectorias salen tangentes a esa recta.
+</figcaption>
+</figure>
+</div>
+<p>En general, un valor propio tiene una <strong>multiplicidad algebraica</strong> (cuántas veces es raíz de <span class="math inline">\(p\)</span>) y una <strong>multiplicidad geométrica</strong> (la dimensión de su espacio propio <span class="math inline">\(E_\lambda\)</span>); siempre la segunda es <span class="math inline">\(\le\)</span> la primera, y <span class="math inline">\(A\)</span> es diagonalizable si y solo si coinciden para todos los valores propios. Cuando no coinciden, la forma canónica de Jordan reemplaza a la diagonal (Clase 12), y la exponencial <span class="math inline">\(e^{At}\)</span> incluye términos <span class="math inline">\(t^je^{\lambda t}\)</span> (amortiguamiento crítico en un resorte con roce).</p>
+<div class="callout callout-style-default callout-caution callout-titled" title="En más dimensiones">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Precaución</span>En más dimensiones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todo lo de esta clase vale para <span class="math inline">\(n\times n\)</span> con las mismas demostraciones: el polinomio característico, <span class="math inline">\(\sum\lambda_i = \operatorname{tr}A\)</span> y <span class="math inline">\(\prod\lambda_i = \det A\)</span>, la diagonalización, las potencias, el teorema discreto y el de las ecuaciones diferenciales. Lo que cambia con <span class="math inline">\(n\)</span> grande es el cálculo: no se hallan los valores propios factorizando <span class="math inline">\(p(\lambda)\)</span> (no hay fórmula para grados <span class="math inline">\(\ge5\)</span>), sino con métodos iterativos como la iteración de potencias y el algoritmo QR (Clase 10). La clasificación en nodos, sillas y focos se vuelve más rica en <span class="math inline">\(\mathbb{R}^3\)</span>, donde hay trayectorias en espiral que suben o bajan a lo largo de un eje; el criterio de estabilidad, en cambio, no cambia: todas las partes reales negativas (continuo) o todos los módulos menores que <span class="math inline">\(1\)</span> (discreto).</p>
+</div>
+</div>
+</section>
+<section id="resumen" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Resumen</h1>
+<ul>
+<li><strong>Valor propio:</strong> <span class="math inline">\(Av = \lambda v\)</span> con <span class="math inline">\(v\ne0\)</span>. Son las raíces de <span class="math inline">\(p(\lambda) = \det(\lambda I - A)\)</span>, polinomio de grado <span class="math inline">\(n\)</span> (<a href="#thm-caracteristico" class="quarto-xref">Teorema&nbsp;1</a>). <span class="math inline">\(\sum\lambda_i = \operatorname{tr}A\)</span> y <span class="math inline">\(\prod\lambda_i = \det A\)</span> (<a href="#thm-traza-det" class="quarto-xref">Teorema&nbsp;2</a>). Para <span class="math inline">\(2\times2\)</span>: <span class="math inline">\(\lambda^2 - \tau\lambda + \Delta = 0\)</span>.</li>
+<li><strong>Vectores propios de valores propios distintos son independientes</strong> (<a href="#thm-independientes" class="quarto-xref">Teorema&nbsp;3</a>); con <span class="math inline">\(n\)</span> valores distintos, <span class="math inline">\(A\)</span> es diagonalizable.</li>
+<li><strong>Diagonalización:</strong> <span class="math inline">\(A = PDP^{-1}\)</span> si y solo si hay <span class="math inline">\(n\)</span> vectores propios independientes (<a href="#thm-diagonalizacion" class="quarto-xref">Teorema&nbsp;4</a>), y <span class="math inline">\(A^k = PD^kP^{-1}\)</span> (<a href="#thm-potencias" class="quarto-xref">Teorema&nbsp;5</a>).</li>
+<li><strong>Sistemas discretos</strong> <span class="math inline">\(x_{k+1} = Ax_k\)</span>: <span class="math inline">\(x_k = \sum c_i\lambda_i^kv_i\)</span>; se apagan si todos <span class="math inline">\(|\lambda_i|&lt;1\)</span> y estallan si alguno es <span class="math inline">\(&gt;1\)</span> (<a href="#thm-discreto" class="quarto-xref">Teorema&nbsp;6</a>). Fibonacci: <span class="math inline">\(F_k = (\varphi^k - \psi^k)/\sqrt5\)</span>.</li>
+<li><strong>Markov:</strong> <span class="math inline">\(1\)</span> siempre es valor propio y <span class="math inline">\(|\lambda|\le1\)</span> (<a href="#thm-markov" class="quarto-xref">Teorema&nbsp;7</a>); la distribución converge al vector propio de <span class="math inline">\(1\)</span> (<a href="#thm-markov-limite" class="quarto-xref">Teorema&nbsp;8</a>).</li>
+<li><strong>Sistemas continuos</strong> <span class="math inline">\(x' = Ax\)</span>: <span class="math inline">\(x(t) = \sum c_ie^{\lambda_it}v_i = e^{At}x_0\)</span> (<a href="#thm-edo" class="quarto-xref">Teorema&nbsp;9</a>); estable si todo <span class="math inline">\(\operatorname{Re}\lambda&lt;0\)</span>. Valores propios complejos <span class="math inline">\(\alpha\pm i\beta\)</span>: espirales (<span class="math inline">\(\alpha\ne0\)</span>) o elipses (<span class="math inline">\(\alpha = 0\)</span>).</li>
+<li><strong>Plano <span class="math inline">\(2\times2\)</span>:</strong> silla (<span class="math inline">\(\Delta&lt;0\)</span>), nodo, foco o centro según <span class="math inline">\(\tau\)</span> y <span class="math inline">\(\tau^2 - 4\Delta\)</span> (<a href="#thm-clasificacion" class="quarto-xref">Teorema&nbsp;10</a>).</li>
+<li><strong>Euler:</strong> una matriz ortogonal <span class="math inline">\(3\times3\)</span> con <span class="math inline">\(\det = 1\)</span> es una rotación alrededor de un eje, que es el vector propio de <span class="math inline">\(\lambda = 1\)</span>; <span class="math inline">\(\operatorname{tr} = 1 + 2\cos\theta\)</span> (<a href="#thm-euler" class="quarto-xref">Teorema&nbsp;11</a>).</li>
+<li><strong>★</strong> Si faltan vectores propios (valor propio doble con <span class="math inline">\(A\ne\lambda I\)</span>), aparecen términos <span class="math inline">\(k\lambda^{k-1}\)</span> y <span class="math inline">\(t\,e^{\lambda t}\)</span>.</li>
+</ul>
+</section>
+<section id="ejercicios" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Ejercicios</h1>
+<p><strong>Ejercicio 7.1.</strong> Para <span class="math inline">\(A = \begin{pmatrix}1&amp;2\\3&amp;0\end{pmatrix}\)</span>, (a) calcula los valores propios y verifica la suma y el producto; (b) calcula los vectores propios; (c) escribe <span class="math inline">\(A = PDP^{-1}\)</span> y una fórmula para <span class="math inline">\(A^k\)</span>; (d) comprueba la fórmula con <span class="math inline">\(k = 4\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.1">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(\tau = 1\)</span>, <span class="math inline">\(\Delta = -6\)</span>, <span class="math inline">\(p(\lambda) = \lambda^2 - \lambda - 6 = (\lambda - 3)(\lambda + 2)\)</span>. Valores propios <span class="math inline">\(3\)</span> y <span class="math inline">\(-2\)</span>: suman <span class="math inline">\(1 = \tau\)</span> y multiplican <span class="math inline">\(-6 = \Delta\)</span> ✓.</p></li>
+<li><p><span class="math inline">\(\lambda = 3\)</span>: <span class="math inline">\(A - 3I = \begin{pmatrix}-2&amp;2\\3&amp;-3\end{pmatrix}\)</span>, <span class="math inline">\(x_1 = x_2\)</span>, <span class="math inline">\(v_1 = (1,1)'\)</span>. <span class="math inline">\(\lambda = -2\)</span>: <span class="math inline">\(A + 2I = \begin{pmatrix}3&amp;2\\3&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(3x_1 + 2x_2 = 0\)</span>, <span class="math inline">\(v_2 = (2,-3)'\)</span>. Verificación: <span class="math inline">\(A(2,-3)' = (2 - 6,\ 6)' = (-4,6)' = -2(2,-3)'\)</span> ✓.</p></li>
+<li><p><span class="math inline">\(P = \begin{pmatrix}1&amp;2\\1&amp;-3\end{pmatrix}\)</span>, <span class="math inline">\(\det P = -5\)</span>, <span class="math inline">\(P^{-1} = \tfrac15\begin{pmatrix}3&amp;2\\1&amp;-1\end{pmatrix}\)</span>, <span class="math inline">\(D = \operatorname{diag}(3,-2)\)</span>. Entonces <span class="math display">\[
+A^k = \frac15\begin{pmatrix}3\cdot3^k + 2(-2)^k&amp;2\cdot3^k - 2(-2)^k\\3\cdot3^k - 3(-2)^k&amp;2\cdot3^k + 3(-2)^k\end{pmatrix}.
+\]</span></p></li>
+<li><p>Para <span class="math inline">\(k = 4\)</span>: <span class="math inline">\(3^4 = 81\)</span> y <span class="math inline">\((-2)^4 = 16\)</span>: <span class="math inline">\(A^4 = \tfrac15\begin{pmatrix}243 + 32&amp;162 - 32\\243 - 48&amp;162 + 48\end{pmatrix} = \begin{pmatrix}55&amp;26\\39&amp;42\end{pmatrix}\)</span>. Directamente, <span class="math inline">\(A^2 = \begin{pmatrix}7&amp;2\\3&amp;6\end{pmatrix}\)</span> y <span class="math inline">\(A^4 = (A^2)^2 = \begin{pmatrix}49 + 6&amp;14 + 12\\21 + 18&amp;6 + 36\end{pmatrix} = \begin{pmatrix}55&amp;26\\39&amp;42\end{pmatrix}\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.2.</strong> Sea <span class="math inline">\(A = \begin{pmatrix}0&amp;-3&amp;3\\1&amp;2&amp;-1\\1&amp;-1&amp;2\end{pmatrix}\)</span>. (a) Calcula su polinomio característico con la <a href="#prp-polinomio-3x3" class="quarto-xref">Proposición&nbsp;1</a>. (b) Encuentra los vectores propios. (c) ¿Es <span class="math inline">\(A\)</span> invertible? (d) Escribe <span class="math inline">\((1,1,1)'\)</span> como combinación de vectores propios y calcula <span class="math inline">\(A^5(1,1,1)'\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.2">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(\operatorname{tr}A = 4\)</span>. <span class="math inline">\(M_{11} = 2\cdot2 - (-1)(-1) = 3\)</span>, <span class="math inline">\(M_{22} = 0\cdot2 - 3\cdot1 = -3\)</span>, <span class="math inline">\(M_{33} = 0\cdot2 - (-3)\cdot1 = 3\)</span>: suman <span class="math inline">\(3\)</span>. <span class="math inline">\(\det A = 0\cdot(4 - 1) - (-3)(2 + 1) + 3(-1 - 2) = 9 - 9 = 0\)</span>. Entonces <span class="math inline">\(p(\lambda) = \lambda^3 - 4\lambda^2 + 3\lambda = \lambda(\lambda - 1)(\lambda - 3)\)</span>: valores propios <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, <span class="math inline">\(3\)</span> (suman <span class="math inline">\(4\)</span> ✓).</p></li>
+<li><p><span class="math inline">\(\lambda = 0\)</span>: <span class="math inline">\(Ax = 0\)</span>: la primera fila da <span class="math inline">\(x_2 = x_3\)</span> y la segunda, <span class="math inline">\(x_1 + 2x_2 - x_3 = 0\)</span>, o sea <span class="math inline">\(x_1 = -x_2\)</span>: <span class="math inline">\(v_0 = (1,-1,-1)'\)</span>. <span class="math inline">\(\lambda = 1\)</span>: <span class="math inline">\(A - I = \begin{pmatrix}-1&amp;-3&amp;3\\1&amp;1&amp;-1\\1&amp;-1&amp;1\end{pmatrix}\)</span>; las filas 2 y 3 dan <span class="math inline">\(x_1 + x_2 - x_3 = 0\)</span> y <span class="math inline">\(x_1 - x_2 + x_3 = 0\)</span>, que sumadas dan <span class="math inline">\(x_1 = 0\)</span> y entonces <span class="math inline">\(x_2 = x_3\)</span>: <span class="math inline">\(v_1 = (0,1,1)'\)</span> (y la fila 1 se cumple: <span class="math inline">\(-3 + 3 = 0\)</span> ✓). <span class="math inline">\(\lambda = 3\)</span>: <span class="math inline">\(A - 3I = \begin{pmatrix}-3&amp;-3&amp;3\\1&amp;-1&amp;-1\\1&amp;-1&amp;-1\end{pmatrix}\)</span>; <span class="math inline">\(x_1 - x_2 - x_3 = 0\)</span> y <span class="math inline">\(-x_1 - x_2 + x_3 = 0\)</span> (primera fila dividida por <span class="math inline">\(3\)</span>) sumadas dan <span class="math inline">\(x_2 = 0\)</span> y entonces <span class="math inline">\(x_1 = x_3\)</span>: <span class="math inline">\(v_3 = (1,0,1)'\)</span>.</p></li>
+<li><p>No: <span class="math inline">\(0\)</span> es valor propio (<span class="math inline">\(\det A = 0\)</span>), y <span class="math inline">\(v_0\)</span> está en <span class="math inline">\(N(A)\)</span>.</p></li>
+<li><p><span class="math inline">\((1,1,1)' = av_0 + bv_1 + cv_3\)</span>: primera componente <span class="math inline">\(a + c = 1\)</span>, segunda <span class="math inline">\(-a + b = 1\)</span>, tercera <span class="math inline">\(-a + b + c = 1\)</span>. De las dos últimas, <span class="math inline">\(c = 0\)</span>; entonces <span class="math inline">\(a = 1\)</span> y <span class="math inline">\(b = 2\)</span>. Así <span class="math inline">\((1,1,1)' = v_0 + 2v_1\)</span> y <span class="math display">\[
+A^5\begin{pmatrix}1\\1\\1\end{pmatrix} = 0^5v_0 + 2\cdot1^5v_1 = \begin{pmatrix}0\\2\\2\end{pmatrix}.
+\]</span> Comprobación: <span class="math inline">\(A(1,1,1)' = (-3 + 3,\ 1 + 2 - 1,\ 1 - 1 + 2)' = (0,2,2)'\)</span>, y <span class="math inline">\((0,2,2)' = 2v_1\)</span> queda fijo por <span class="math inline">\(A\)</span> porque su valor propio es <span class="math inline">\(1\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.3.</strong> La sucesión <span class="math inline">\(a_0 = 0\)</span>, <span class="math inline">\(a_1 = 3\)</span>, <span class="math inline">\(a_{k+2} = a_{k+1} + 2a_k\)</span> se escribe <span class="math inline">\(x_{k+1} = Ax_k\)</span> con <span class="math inline">\(x_k = (a_{k+1},a_k)'\)</span>. Encuentra una fórmula cerrada para <span class="math inline">\(a_k\)</span> y calcula <span class="math inline">\(a_9\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.3">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(A = \begin{pmatrix}1&amp;2\\1&amp;0\end{pmatrix}\)</span>, <span class="math inline">\(\tau = 1\)</span>, <span class="math inline">\(\Delta = -2\)</span>: <span class="math inline">\(p(\lambda) = \lambda^2 - \lambda - 2 = (\lambda - 2)(\lambda + 1)\)</span>. Vectores propios <span class="math inline">\((\lambda,1)'\)</span> (como en Fibonacci: <span class="math inline">\(A(\lambda,1)' = (\lambda + 2,\ \lambda)' = \lambda(\lambda,1)'\)</span> porque <span class="math inline">\(\lambda^2 = \lambda + 2\)</span>): <span class="math inline">\(v_1 = (2,1)'\)</span> para <span class="math inline">\(\lambda = 2\)</span> y <span class="math inline">\(v_2 = (-1,1)'\)</span> para <span class="math inline">\(\lambda = -1\)</span>. Condición inicial <span class="math inline">\(x_0 = (3,0)' = c_1(2,1)' + c_2(-1,1)'\)</span>: <span class="math inline">\(c_1 + c_2 = 0\)</span> y <span class="math inline">\(2c_1 - c_2 = 3\)</span>, así que <span class="math inline">\(c_1 = 1\)</span>, <span class="math inline">\(c_2 = -1\)</span>. Entonces <span class="math inline">\(x_k = 2^k(2,1)' - (-1)^k(-1,1)'\)</span> y la segunda componente es <span class="math display">\[
+a_k = 2^k - (-1)^k.
+\]</span> Verificación: <span class="math inline">\(a_0 = 1 - 1 = 0\)</span>, <span class="math inline">\(a_1 = 2 + 1 = 3\)</span>, <span class="math inline">\(a_2 = 4 - 1 = 3 = a_1 + 2a_0\)</span> ✓, <span class="math inline">\(a_3 = 8 + 1 = 9 = 3 + 6\)</span> ✓. <span class="math inline">\(a_9 = 512 + 1 = 513\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.4.</strong> Dos marcas se reparten un mercado. Cada mes, el 20 % de los clientes de la marca 1 pasa a la marca 2, y el 30 % de los de la 2 pasa a la 1. (a) Escribe la matriz estocástica. (b) Calcula valores propios y la cuota de mercado de equilibrio. (c) Si al comienzo toda la clientela es de la marca 1, da la cuota después de <span class="math inline">\(k\)</span> meses y verifica con <span class="math inline">\(k = 2\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.4">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(A = \begin{pmatrix}0{,}8&amp;0{,}3\\0{,}2&amp;0{,}7\end{pmatrix}\)</span> (columnas suman <span class="math inline">\(1\)</span>).</p></li>
+<li><p><span class="math inline">\(\tau = 1{,}5\)</span>, <span class="math inline">\(\Delta = 0{,}56 - 0{,}06 = 0{,}5\)</span>: <span class="math inline">\(p = \lambda^2 - 1{,}5\lambda + 0{,}5 = (\lambda - 1)(\lambda - 0{,}5)\)</span>. Para <span class="math inline">\(\lambda = 1\)</span>: <span class="math inline">\(A - I = \begin{pmatrix}-0{,}2&amp;0{,}3\\0{,}2&amp;-0{,}3\end{pmatrix}\)</span>, <span class="math inline">\(-2x_1 + 3x_2 = 0\)</span>, <span class="math inline">\(v = (3,2)'\)</span>, y normalizado a suma <span class="math inline">\(1\)</span>: <span class="math inline">\((0{,}6;\ 0{,}4)\)</span>. Para <span class="math inline">\(\lambda = 0{,}5\)</span>: <span class="math inline">\(A - 0{,}5I = \begin{pmatrix}0{,}3&amp;0{,}3\\0{,}2&amp;0{,}2\end{pmatrix}\)</span>, <span class="math inline">\(v = (1,-1)'\)</span>. El equilibrio es 60 % y 40 % (por el <a href="#thm-markov-limite" class="quarto-xref">Teorema&nbsp;8</a>).</p></li>
+<li><p><span class="math inline">\(x_0 = (1,0)' = (0{,}6;\ 0{,}4)' + c\,(1,-1)'\)</span> da <span class="math inline">\(c = 0{,}4\)</span>. Entonces <span class="math inline">\(x_k = (0{,}6;\ 0{,}4)' + 0{,}4\cdot0{,}5^k(1,-1)'\)</span>. Para <span class="math inline">\(k = 2\)</span>: <span class="math inline">\((0{,}6 + 0{,}1;\ 0{,}4 - 0{,}1) = (0{,}7;\ 0{,}3)\)</span>. Directamente: <span class="math inline">\(Ax_0 = (0{,}8;\ 0{,}2)\)</span> y <span class="math inline">\(A(0{,}8;0{,}2) = (0{,}64 + 0{,}06;\ 0{,}16 + 0{,}14) = (0{,}7;\ 0{,}3)\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.5.</strong> Resuelve <span class="math inline">\(x' = Ax\)</span> con <span class="math inline">\(A = \begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}\)</span> y <span class="math inline">\(x(0) = (2,0)'\)</span>. Clasifica el origen. ¿Hay alguna condición inicial no nula para la que <span class="math inline">\(x(t)\to0\)</span>?</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.5">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\tau = 2\)</span>, <span class="math inline">\(\Delta = 1 - 4 = -3&lt;0\)</span>: <strong>silla</strong>. <span class="math inline">\(p = \lambda^2 - 2\lambda - 3 = (\lambda - 3)(\lambda + 1)\)</span>. Para <span class="math inline">\(\lambda = 3\)</span>: <span class="math inline">\(A - 3I = \begin{pmatrix}-2&amp;2\\2&amp;-2\end{pmatrix}\)</span>, <span class="math inline">\(v_1 = (1,1)'\)</span>. Para <span class="math inline">\(\lambda = -1\)</span>: <span class="math inline">\(A + I = \begin{pmatrix}2&amp;2\\2&amp;2\end{pmatrix}\)</span>, <span class="math inline">\(v_2 = (1,-1)'\)</span>. <span class="math inline">\(x(0) = (2,0)' = c_1(1,1)' + c_2(1,-1)'\)</span> da <span class="math inline">\(c_1 + c_2 = 2\)</span> y <span class="math inline">\(c_1 - c_2 = 0\)</span>, o sea <span class="math inline">\(c_1 = c_2 = 1\)</span>: <span class="math display">\[
+x(t) = e^{3t}\begin{pmatrix}1\\1\end{pmatrix} + e^{-t}\begin{pmatrix}1\\-1\end{pmatrix}.
+\]</span> Verificación: <span class="math inline">\(x'(0) = 3(1,1)' - (1,-1)' = (2,4)'\)</span> y <span class="math inline">\(Ax(0) = (2,4)'\)</span> ✓. Para tiempos grandes, <span class="math inline">\(x(t)\approx e^{3t}(1,1)'\)</span>: se va al infinito siguiendo la diagonal. Hay condiciones iniciales que <strong>sí</strong> tienden a <span class="math inline">\(0\)</span>: las de la forma <span class="math inline">\(x_0 = c_2(1,-1)'\)</span> (con <span class="math inline">\(c_1 = 0\)</span>), que se quedan en la recta de <span class="math inline">\(v_2\)</span> y se apagan como <span class="math inline">\(e^{-t}\)</span>. Esa recta es la dirección estable de la silla; cualquier otra condición inicial tiene <span class="math inline">\(c_1\ne0\)</span> y termina dominada por <span class="math inline">\(e^{3t}\)</span>.</p>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.6.</strong> Para <span class="math inline">\(A = \begin{pmatrix}0&amp;1\\-2&amp;-2\end{pmatrix}\)</span>: (a) clasifica el origen con <span class="math inline">\(\tau\)</span> y <span class="math inline">\(\Delta\)</span>; (b) calcula los valores propios y un vector propio complejo; (c) resuelve <span class="math inline">\(x' = Ax\)</span> con <span class="math inline">\(x(0) = (1,0)'\)</span> con soluciones reales y verifica que <span class="math inline">\(x'(0) = Ax(0)\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.6">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.6
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(\tau = -2\)</span>, <span class="math inline">\(\Delta = 2\)</span>, <span class="math inline">\(\tau^2 - 4\Delta = 4 - 8 = -4&lt;0\)</span> y <span class="math inline">\(\tau&lt;0\)</span>: <strong>foco estable</strong>.</p></li>
+<li><p><span class="math inline">\(p = \lambda^2 + 2\lambda + 2\)</span>, <span class="math inline">\(\lambda = \tfrac{-2\pm\sqrt{-4}}2 = -1\pm i\)</span>. Para <span class="math inline">\(\lambda = -1 + i\)</span>: <span class="math inline">\(A - \lambda I = \begin{pmatrix}1 - i&amp;1\\-2&amp;-1 - i\end{pmatrix}\)</span>; la primera fila da <span class="math inline">\((1 - i)v_1 + v_2 = 0\)</span>, y con <span class="math inline">\(v_1 = 1\)</span>, <span class="math inline">\(v_2 = -1 + i\)</span>. Entonces <span class="math inline">\(v = (1,\ -1 + i)' = u + iw\)</span> con <span class="math inline">\(u = (1,-1)'\)</span> y <span class="math inline">\(w = (0,1)'\)</span>. Verificación con la segunda fila: <span class="math inline">\(-2\cdot1 + (-1 - i)(-1 + i) = -2 + (1 + 1) = 0\)</span> ✓.</p></li>
+<li><p>Con <span class="math inline">\(\alpha = -1\)</span> y <span class="math inline">\(\beta = 1\)</span> (<a href="#prp-complejos-edo" class="quarto-xref">Proposición&nbsp;3</a>): <span class="math inline">\(x_1(t) = e^{-t}(u\cos t - w\sin t) = e^{-t}(\cos t,\ -\cos t - \sin t)'\)</span> y <span class="math inline">\(x_2(t) = e^{-t}(u\sin t + w\cos t) = e^{-t}(\sin t,\ -\sin t + \cos t)'\)</span>. Como <span class="math inline">\((1,0)' = u + w\)</span>, la solución es <span class="math inline">\(x = x_1 + x_2\)</span>: <span class="math display">\[
+x(t) = e^{-t}\begin{pmatrix}\cos t + \sin t\\-2\sin t\end{pmatrix}.
+\]</span> Verificación: <span class="math inline">\(x(0) = (1,0)'\)</span>. Derivando la primera componente, <span class="math inline">\(e^{-t}\big[-(\cos t + \sin t) + (-\sin t + \cos t)\big] = -2e^{-t}\sin t\)</span>, que en <span class="math inline">\(t = 0\)</span> vale <span class="math inline">\(0\)</span>; la segunda, <span class="math inline">\(-2e^{-t}(\cos t - \sin t)\)</span>, vale <span class="math inline">\(-2\)</span> en <span class="math inline">\(t = 0\)</span>. Entonces <span class="math inline">\(x'(0) = (0,-2)'\)</span> y <span class="math inline">\(Ax(0) = (0,\ -2)'\)</span> ✓. La trayectoria es una espiral que gira y se apaga con la envolvente <span class="math inline">\(e^{-t}\)</span>.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p><strong>Ejercicio 7.7 ★.</strong> (a) Demuestra que <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\0&amp;2\end{pmatrix}\)</span> no es diagonalizable. (b) Encuentra <span class="math inline">\(A^k\)</span> y calcula <span class="math inline">\(A^5\)</span>. (c) Resuelve <span class="math inline">\(x' = Ax\)</span> con <span class="math inline">\(x(0) = (1,1)'\)</span> y verifica la ecuación en <span class="math inline">\(t = 0\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Solución 7.7 ★">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución 7.7 ★
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="a">
+<li><p><span class="math inline">\(p(\lambda) = (\lambda - 2)^2\)</span>: un valor propio doble. Como <span class="math inline">\(A\ne2I\)</span>, la <a href="#prp-doble" class="quarto-xref">Proposición&nbsp;4</a> dice que no es diagonalizable. Directamente: <span class="math inline">\(A - 2I = \begin{pmatrix}0&amp;1\\0&amp;0\end{pmatrix}\)</span>, espacio nulo generado por <span class="math inline">\((1,0)'\)</span>, un solo vector propio independiente.</p></li>
+<li><p><span class="math inline">\(A = 2I + N\)</span> con <span class="math inline">\(N^2 = 0\)</span>. Por inducción (como en el <a href="#exm-defectuosa" class="quarto-xref">Ejemplo&nbsp;12</a>), <span class="math inline">\(A^k = \begin{pmatrix}2^k&amp;k\,2^{k-1}\\0&amp;2^k\end{pmatrix}\)</span>: si vale para <span class="math inline">\(k\)</span>, <span class="math inline">\(A^{k+1} = \begin{pmatrix}2^k&amp;k\,2^{k-1}\\0&amp;2^k\end{pmatrix}\begin{pmatrix}2&amp;1\\0&amp;2\end{pmatrix} = \begin{pmatrix}2^{k+1}&amp;2^k + k\,2^k\\0&amp;2^{k+1}\end{pmatrix}\)</span> ✓. Para <span class="math inline">\(k = 5\)</span>: <span class="math inline">\(A^5 = \begin{pmatrix}32&amp;80\\0&amp;32\end{pmatrix}\)</span> (porque <span class="math inline">\(5\cdot2^4 = 80\)</span>).</p></li>
+<li><p><span class="math inline">\(x_2' = 2x_2\)</span> da <span class="math inline">\(x_2 = c_2e^{2t}\)</span>; <span class="math inline">\(x_1' = 2x_1 + x_2\)</span> da <span class="math inline">\((e^{-2t}x_1)' = c_2\)</span>, <span class="math inline">\(x_1 = (c_1 + c_2t)e^{2t}\)</span>. Con <span class="math inline">\(x(0) = (1,1)'\)</span>: <span class="math inline">\(c_1 = c_2 = 1\)</span> y <span class="math display">\[
+x(t) = e^{2t}\begin{pmatrix}1 + t\\1\end{pmatrix}.
+\]</span> En <span class="math inline">\(t = 0\)</span>: <span class="math inline">\(x'(0) = 2(1,1)' + (1,0)' = (3,2)'\)</span> (derivando, <span class="math inline">\(x' = 2e^{2t}(1 + t,1)' + e^{2t}(1,0)'\)</span>) y <span class="math inline">\(Ax(0) = (2 + 1,\ 2)' = (3,2)'\)</span> ✓.</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/benjaminsoliso\.github\.io\/econometria\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../algebra-matricial/clase-06.html" class="pagination-link" aria-label="Clase 6 · Mínimos cuadrados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Clase 6 · Mínimos cuadrados</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Benjamín Solís · Econometría</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Hecho con <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
