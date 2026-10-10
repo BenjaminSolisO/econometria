@@ -6,3 +6,7 @@
 !assets/*.tex
 
 **/*.quarto_ipynb
+
+# Claude Code: configuración local y worktrees
+.claude/settings.local.json
+.claude/worktrees/
