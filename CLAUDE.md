@@ -8,6 +8,17 @@
 3. **Al terminar, revisar:** que `check_clase.R` diga `TODO OK`, que haya hecho push y que `git status` quede limpio. Segunda mirada (gasta uso, solo en clases importantes): `Lanza el agente revisor-clase sobre algebra-matricial/clase-NN.qmd`.
 4. **Si se corta la sesión:** abrir otra en esta carpeta y decir `retoma la clase N`; el estado está en git y en la tabla de abajo.
 
+## Medición por clase (llenar al cerrar cada clase)
+
+Sirve para saber si el flujo (skill + lint + check + revisor) mejora costo, tiempo y calidad. Medir con **una sola sesión abierta**. `/usage` al inicio y al final (anotar lo que muestre, la resta es el costo) y `/cost` al final.
+
+| Clase | Uso al inicio | Uso al final | Tiempo total | Renders hasta `TODO OK` | Errores del lint / detector | Revisor (modelo): errores que halló | Errores hallados después de publicar | Notas |
+|---|---|---|---|---|---|---|---|---|
+| 8 (primera con el flujo; sin medir uso ni tiempo) | — | — | — | 4 (falló 3 veces) | 5 desbordes de ecuación; 2 refs a otra clase | no corrido | — | Escrita en modo autónomo; usuario aún no la revisa |
+| 9 | | | | | | | | |
+
+Qué mirar al comparar: ¿bajó el uso o el tiempo respecto de la clase anterior?, ¿el revisor halló algo que el lint y los scripts no atraparon (si no halla nada de fondo, no vale su costo)?, ¿hubo que repetirle alguna regla a Claude (si sí, falta ponerla en este archivo)?
+
 Repo público `BenjaminSolisO/econometria`, rama `main`, Pages desde `main:/docs`.
 URL: https://benjaminsoliso.github.io/econometria/. Idioma: español. Contenido teórico y matemático (pregrado + postgrado), demostraciones paso a paso, ejercicios resueltos.
 
