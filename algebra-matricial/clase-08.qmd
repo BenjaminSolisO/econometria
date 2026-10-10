@@ -57,6 +57,10 @@ porque $A$ es real ($A^* = A'$) y simétrica ($A' = A$). Un número igual a su c
 Si $A' = A$, $Av = \lambda v$, $Aw = \mu w$ y $\lambda\ne\mu$, entonces $v\cdot w = 0$.
 :::
 
+::: {.callout-note title="Borrador"}
+Calculo $(Av)\cdot w$ de dos maneras: usando $Av = \lambda v$ y pasando $A$ al otro vector con la simetría. Las dos expresiones difieren por el factor $\lambda - \mu\ne0$.
+:::
+
 ::: {.proof}
 Por una parte, $(Av)\cdot w = \lambda\,v\cdot w$. Por otra, $(Av)\cdot w = v'A'w = v'Aw = v\cdot(Aw) = \mu\,v\cdot w$. Restando, $(\lambda - \mu)\,v\cdot w = 0$, y como $\lambda\ne\mu$, $v\cdot w = 0$.
 :::
@@ -113,6 +117,10 @@ Si $A = Q\Lambda Q'$ como en el @thm-espectral, entonces:
 3. $\operatorname{tr}A = \sum_i\lambda_i$, $\det A = \prod_i\lambda_i$, y $\operatorname{rango}A$ es el número de valores propios no nulos.
 :::
 
+::: {.callout-note title="Borrador"}
+Todo sale de $A = Q\Lambda Q'$ y de $Q'Q = I$: (1) es el producto columna por fila, (2) se obtiene al cancelar $Q'Q$ en el medio, y (3) usa que $Q$ es invertible.
+:::
+
 ::: {.proof}
 (1) $Q\Lambda$ tiene columnas $\lambda_iq_i$, y el producto de una matriz por $Q'$ es la suma de (columna $i$)(fila $i$ de $Q'$): $Q\Lambda Q' = \sum_i(\lambda_iq_i)q_i'$. Cada $q_iq_i'$ es la proyección sobre la recta de $q_i$ porque $\|q_i\| = 1$ (Clase 6, con $a = q_i$). Además $P_iP_j = q_i(q_i'q_j)q_j' = 0$ si $i\ne j$, y $\sum P_i = QQ' = I$.
 
@@ -161,6 +169,10 @@ Una **forma cuadrática** en $x\in\mathbb{R}^n$ es una función $q(x) = x'Ax$. S
 Para toda matriz cuadrada $B$, $x'Bx = x'Sx$ con $S = \tfrac12(B + B')$ simétrica, y la matriz simétrica de una forma cuadrática es única.
 :::
 
+::: {.callout-note title="Borrador"}
+Un escalar es igual a su transpuesta, así que $x'Bx$ es el promedio de $x'Bx$ y $x'B'x$. Para la unicidad, evalúo una diferencia simétrica en $e_i$ y en $e_i + e_j$ para ver que todas sus entradas son cero.
+:::
+
 ::: {.proof}
 $x'Bx$ es un escalar, igual a su transpuesta $x'B'x$; entonces $x'Bx = \tfrac12(x'Bx + x'B'x) = x'Sx$. Unicidad: si $S$ y $T$ son simétricas con $x'Sx = x'Tx$ para todo $x$, $D = S - T$ es simétrica con $x'Dx = 0$ siempre. Con $x = e_i$: $d_{ii} = 0$. Con $x = e_i + e_j$: $0 = d_{ii} + d_{jj} + 2d_{ij} = 2d_{ij}$. Luego $D = 0$.
 :::
@@ -175,6 +187,10 @@ x'Ax = \lambda_1y_1^2 + \dots + \lambda_ny_n^2,\qquad\text{con}\qquad \|y\| = \|
 $$
 :::
 
+::: {.callout-note title="Borrador"}
+Sustituyo $x = Qy$ en $x'Ax$: aparece $Q'AQ = \Lambda$. La longitud se conserva porque $Q$ es ortogonal.
+:::
+
 ::: {.proof}
 $x = Qy$ (porque $QQ' = I$), así que $x'Ax = y'Q'AQy = y'\Lambda y = \sum\lambda_iy_i^2$. Y $\|y\|^2 = x'QQ'x = x'x = \|x\|^2$.
 :::
@@ -183,7 +199,7 @@ Como $y\mapsto Qy$ conserva distancias (es una rotación, quizá con reflexión)
 
 - **Todos los $\lambda_i>0$:** una **elipse** (en $\mathbb{R}^2$) o un **elipsoide** (en $\mathbb{R}^3$) con semiejes $1/\sqrt{\lambda_i}$ a lo largo de $q_i$. Cuanto *mayor* es el valor propio, *más corto* es el semieje.
 - **Valores propios de ambos signos:** una **hipérbola** o un **hiperboloide**.
-- **Algún $\lambda_i = 0$:** la figura se estira sin límite en la dirección de $q_i$: **rectas paralelas** en $\mathbb{R}^2$ (o un cilindro en $\mathbb{R}^3$).
+- **Algún $\lambda_i = 0$ (y los demás $\lambda_j>0$):** la figura se estira sin límite en la dirección de $q_i$: **rectas paralelas** en $\mathbb{R}^2$ (o un cilindro en $\mathbb{R}^3$).
 
 ![Los tres casos de $x'Ax = 1$ en el plano. **Izquierda:** $A = \begin{pmatrix}2&1\\1&2\end{pmatrix}$, valores propios $1$ y $3$: elipse con semiejes $1$ (a lo largo de $(1,-1)$) y $1/\sqrt3$ (a lo largo de $(1,1)$). **Centro:** $A = \begin{pmatrix}1&2\\2&1\end{pmatrix}$, valores propios $-1$ y $3$: hipérbola ($3y_1^2 - y_2^2 = 1$). **Derecha:** $A = \begin{pmatrix}1&1\\1&1\end{pmatrix}$, valores propios $0$ y $2$: las rectas $x + y = \pm1$, porque $x'Ax = (x + y)^2$.](../assets/fig/am/c08_cuadricas_2d.png){#fig-cuadricas width=98%}
 
@@ -240,7 +256,7 @@ Demuestro un ciclo de implicaciones. (a)$\Leftrightarrow$(b) sale del teorema de
 
 *(e)$\Rightarrow$(d).* Si $\det A_k>0$ para todo $k$, todas las submatrices principales son invertibles y, por el teorema de la sección ★ de la Clase 2, $A = LU$ existe sin intercambio de filas, con $L$ unitriangular inferior. Al multiplicar por bloques, la esquina $k\times k$ de $LU$ es $L_kU_k$ (el producto de las esquinas, porque los bloques fuera de la esquina no aportan a ella: $L$ es triangular inferior y $U$, triangular superior). Entonces $\det A_k = \det L_k\det U_k = u_{11}\cdots u_{kk}$, y el $k$-ésimo pivote es $u_{kk} = \det A_k/\det A_{k-1}$ (con $\det A_0 = 1$), positivo.
 
-*(d)$\Rightarrow$(a).* Con pivotes $d_1,\dots,d_n>0$ escribimos $A = LU = LD\tilde U$, con $D = \operatorname{diag}(d_i)$ y $\tilde U$ unitriangular superior. Como $A$ es simétrica, $A = A' = \tilde U'DL'$ es otra factorización de la forma (unitriangular inferior)(diagonal)(unitriangular superior), y por la unicidad de la Clase 2, $\tilde U' = L$. Así $A = LDL'$. Para $x\ne0$, sea $z = L'x\ne0$ ($L'$ es invertible); entonces
+*(d)$\Rightarrow$(a).* Con pivotes $d_1,\dots,d_n>0$ escribimos $A = LU = LD\tilde U$, con $D = \operatorname{diag}(d_i)$ y $\tilde U$ unitriangular superior. Como $A$ es simétrica, $A = A' = \tilde U'DL' = \tilde U'(DL')$. Así $A = L\,(D\tilde U)$ y $A = \tilde U'\,(DL')$ son dos factorizaciones de la misma matriz, ambas de la forma (unitriangular inferior)(triangular superior), y $A$ es invertible (sus pivotes son no nulos). Por la unicidad de la LU (Clase 2), $\tilde U' = L$ y, de $D\tilde U = DL'$, $\tilde U = L'$. Así $A = LDL'$. Para $x\ne0$, sea $z = L'x\ne0$ ($L'$ es invertible); entonces
 $$
 x'Ax = x'LDL'x = z'Dz = d_1z_1^2 + \dots + d_nz_n^2>0.
 $$
@@ -271,9 +287,15 @@ Una matriz simétrica $A$ es semidefinida positiva si y solo si todos sus valore
 
 La demostración es la misma que la de (a)$\Leftrightarrow$(b)$\Leftrightarrow$(c), cambiando $>$ por $\ge$ ($R = \Lambda^{1/2}Q'$ sirve, y $x'R'Rx = \|Rx\|^2\ge0$ siempre). Ojo: para semidefinidas **no** basta que los menores *líderes* $\det A_k$ sean $\ge0$. La matriz $\begin{pmatrix}0&0\\0&-1\end{pmatrix}$ tiene menores líderes $0$ y $0$, pero $x'Ax = -x_2^2$ es negativa en $(0,1)$. (El criterio correcto para semidefinidas exige **todos** los menores principales, no solo los de la esquina.)
 
+En $3\times3$, $S = \begin{pmatrix}2&1&3\\1&2&3\\3&3&6\end{pmatrix}$ ($= B'B$ de arriba) cumple $S(1,-1,0)' = (1,-1,0)'$, $S(1,1,2)' = (9,9,18)' = 9(1,1,2)'$ y $S(1,1,-1)' = 0$: valores propios $1$, $9$ y $0$ (suman $10 = \operatorname{tr}S$), todos $\ge0$ y uno nulo. Es semidefinida positiva y, con el valor propio $0$, no definida. Sus menores líderes son $2$, $3$ y $\det S = 0$, consistentes.
+
 ::: {#prp-ata}
 ## Matrices de la forma $A'A$
 Para cualquier matriz $A$ de $m\times n$, $A'A$ es simétrica y semidefinida positiva. Es definida positiva si y solo si las columnas de $A$ son independientes.
+:::
+
+::: {.callout-note title="Borrador"}
+La forma cuadrática de $A'A$ es $\|Ax\|^2$, que es $\ge0$. Se anula exactamente cuando $Ax = 0$, y eso depende de si el espacio nulo de $A$ tiene solo el vector cero.
 :::
 
 ::: {.proof}
@@ -281,6 +303,16 @@ $(A'A)' = A'A$ y $x'A'Ax = \|Ax\|^2\ge0$. Es $0$ solo si $Ax = 0$; con columnas 
 :::
 
 Esto explica por qué las ecuaciones normales de mínimos cuadrados (Clase 6) tienen solución única exactamente cuando las columnas son independientes: la matriz $G = A'A$ de ese sistema es definida positiva. Por ejemplo, $A = \begin{pmatrix}1&0\\1&1\\0&1\end{pmatrix}$ (columnas independientes) da $A'A = \begin{pmatrix}2&1\\1&2\end{pmatrix}$, la matriz definida positiva de arriba.
+
+En $3\times3$: la matriz $A = \begin{pmatrix}1&0&0\\1&1&0\\1&1&1\\1&1&1\end{pmatrix}$ ($4\times3$, columnas independientes) da
+$$
+A'A = \begin{pmatrix}4&3&2\\3&3&2\\2&2&2\end{pmatrix},
+$$
+con menores $4$, $4\cdot3 - 3\cdot3 = 3$ y $\det = 4(6 - 4) - 3(6 - 4) + 2(6 - 6) = 2$, todos positivos (pivotes $4$, $\tfrac34$, $\tfrac23$): definida positiva. En cambio, $B = \begin{pmatrix}1&0&1\\0&1&1\\1&1&2\end{pmatrix}$ tiene la tercera columna igual a la suma de las dos primeras, así que $B(1,1,-1)' = 0$, y
+$$
+B'B = \begin{pmatrix}2&1&3\\1&2&3\\3&3&6\end{pmatrix}
+$$
+cumple $x'B'Bx = \|Bx\|^2 = 0$ en $x = (1,1,-1)'$: es semidefinida y **no** definida (sus valores propios son $9$, $1$ y $0$).
 
 # La factorización de Cholesky
 
@@ -317,7 +349,7 @@ El cálculo de $L$ sale de comparar entradas en $A = LL'$. Como $a_{ij} = \sum_{
 3. $\quad$ Para $i = j + 1,\dots,n$: $l_{ij} = \bigl(a_{ij} - \sum_{k<j}l_{ik}l_{jk}\bigr)/l_{jj}$.
 4. Para resolver $Ax = b$: resolver $Ly = b$ hacia adelante y $L'x = y$ hacia atrás (Clase 2).
 
-**Costo:** unas $n^3/3$ multiplicaciones, **la mitad** que la LU, porque se aprovecha la simetría. No requiere pivoteo y es estable. **Cuándo falla:** si en el paso 2 el radicando es $\le0$, $A$ **no** es definida positiva (por el teorema, si lo fuera la raíz existiría). Por eso Cholesky es la forma práctica de comprobar la definición positiva.
+**Costo:** unos $n^3/3$ flops, **la mitad** de los $2n^3/3$ de la LU (Clase 2), porque se aprovecha la simetría. No requiere pivoteo y es estable. **Cuándo falla:** si en el paso 2 el radicando es $\le0$, $A$ **no** es definida positiva (por el teorema, si lo fuera la raíz existiría). Por eso Cholesky es la forma práctica de comprobar la definición positiva.
 :::
 
 ::: {#exm-cholesky2}
@@ -352,6 +384,10 @@ $$
 con $R(q_1) = \lambda_1$ y $R(q_n) = \lambda_n$. En consecuencia, $\lambda_n = \max_{\|x\| = 1}x'Ax$ y $\lambda_1 = \min_{\|x\| = 1}x'Ax$.
 :::
 
+::: {.callout-note title="Borrador"}
+En las coordenadas $y = Q'x$, el cociente es un promedio ponderado de los valores propios con pesos $\ge0$ que suman $1$. Un promedio no sale del intervalo entre el menor y el mayor de sus datos.
+:::
+
 ::: {.proof}
 Con $y = Q'x$ y el @thm-ejes, $R(x) = \dfrac{\sum\lambda_iy_i^2}{\sum y_i^2} = \sum_iw_i\lambda_i$ con $w_i = y_i^2/\|y\|^2\ge0$ y $\sum w_i = 1$. Es un **promedio ponderado** de los valores propios, y un promedio ponderado está entre el menor y el mayor: $\lambda_1 = \sum w_i\lambda_1\le\sum w_i\lambda_i\le\sum w_i\lambda_n = \lambda_n$. Para $x = q_1$, $y = e_1$ y $R = \lambda_1$; para $x = q_n$, $R = \lambda_n$.
 :::
@@ -384,6 +420,10 @@ $$
 Si $A$ tiene un valor propio negativo, $f$ no está acotada inferiormente.
 :::
 
+::: {.callout-note title="Borrador"}
+Escribo $x = x^* + h$ y expando: el término lineal en $h$ es $h'(Ax^* - b)$ y se anula en $x^*$, así que queda $f(x^*) + \tfrac12h'Ah$. Si $A$ es definida positiva, eso es $>f(x^*)$ para $h\ne0$. Si tiene un valor propio negativo, avanzo por ese vector propio.
+:::
+
 ::: {.proof}
 Sea $x = x^* + h$ con $Ax^* = b$. Expandiendo,
 $$
@@ -392,7 +432,7 @@ f(x^* + h) &= \tfrac12x^{*\prime}Ax^* + \tfrac12\bigl(x^{*\prime}Ah + h'Ax^*\big
 &= f(x^*) + h'(Ax^* - b) + \tfrac12h'Ah,
 \end{aligned}
 $$
-donde se usó $x^{*\prime}Ah = h'Ax^*$ (simetría). Como $Ax^* = b$, el término lineal desaparece y $f(x^* + h) = f(x^*) + \tfrac12h'Ah>f(x^*)$ para $h\ne0$. Si $Aq = \lambda q$ con $\lambda<0$ y $\|q\| = 1$, entonces $f(x^* + tq) = f(x^*) + \tfrac12\lambda t^2\to-\infty$ cuando $t\to\infty$.
+donde se usó $x^{*\prime}Ah = h'Ax^*$ (simetría). Como $Ax^* = b$, el término lineal desaparece y $f(x^* + h) = f(x^*) + \tfrac12h'Ah>f(x^*)$ para $h\ne0$. Para la segunda afirmación no se necesita $x^*$ (con $A$ singular puede no existir): si $Aq = \lambda q$ con $\lambda<0$ y $\|q\| = 1$, entonces $f(tq) = \tfrac12\lambda t^2 - (b'q)\,t + c\to-\infty$ cuando $t\to\infty$, porque el término cuadrático, negativo, domina al lineal.
 :::
 
 Para una función general $f$ de clase $C^2$, en un punto crítico $x^*$ ($\nabla f(x^*) = 0$) el desarrollo de Taylor de segundo orden dice $f(x^* + h) = f(x^*) + \tfrac12h'Hh + o(\|h\|^2)$, donde $H$ es el Hessiano en $x^*$ (esto se usa sin demostración, es cálculo). Con él se obtiene el criterio.
@@ -406,6 +446,10 @@ Sea $x^*$ un punto crítico y $H$ el Hessiano ahí, con valores propios $\lambda
 3. Si $H$ es indefinida ($\lambda_1<0<\lambda_n$), $x^*$ es un **punto silla**.
 :::
 
+::: {.callout-note title="Borrador"}
+Con $\nabla f(x^*) = 0$, la función cerca de $x^*$ se parece a $f(x^*) + \tfrac12h'Hh$. El cociente de Rayleigh acota $h'Hh$ por abajo con $\lambda_1\|h\|^2$ (caso 1); en el caso 3 miro la función a lo largo de dos vectores propios de signos opuestos.
+:::
+
 ::: {.proof}
 (1) Por el @thm-rayleigh, $h'Hh\ge\lambda_1\|h\|^2$, así que $f(x^* + h) - f(x^*)\ge\tfrac12\lambda_1\|h\|^2 + o(\|h\|^2)>0$ para $h\ne0$ chico. (2) Es (1) aplicado a $-f$. (3) Con $Hq = \lambda q$ y $\|q\| = 1$, $f(x^* + tq) - f(x^*) = \tfrac12\lambda t^2 + o(t^2)$, que es negativo para $t$ chico si $\lambda<0$ y positivo si $\lambda>0$: baja en una dirección y sube en otra.
 :::
@@ -416,14 +460,18 @@ Si $H$ es solo semidefinida, el criterio no decide (hay que mirar términos de o
 ## Un mínimo cuadrático, y un mínimo con una silla
 **Cuadrática.** $f(x,y) = x^2 + xy + y^2 - 3x - 3y = \tfrac12x'Ax - b'x$ con $A = \begin{pmatrix}2&1\\1&2\end{pmatrix}$ y $b = (3,3)'$. $A$ es definida positiva, y $x^* = A^{-1}b$ resuelve $2x + y = 3$, $x + 2y = 3$: $x^* = (1,1)'$, con $f(1,1) = 3 - 6 = -3$. Por el @thm-cuadratica, $f(x) = -3 + \tfrac12(x - x^*)'A(x - x^*)\ge-3$ ✓.
 
+**Cuadrática $3\times3$.** Sea $f(x) = \tfrac12x'Kx - x_1$, con $K$ la matriz de la @exm-criterios (definida positiva) y $b = (1,0,0)'$. La inversa es $K^{-1} = \tfrac14\begin{pmatrix}3&2&1\\2&4&2\\1&2&3\end{pmatrix}$ (se comprueba: la primera columna de $K\cdot K^{-1}$ es $\tfrac14(6 - 2,\ -3 + 4 - 1,\ -2 + 2)' = (1,0,0)'$, y análogamente las otras), de modo que $x^* = K^{-1}b = (\tfrac34,\tfrac12,\tfrac14)'$ y $f(x^*) = \tfrac12b'x^* - b'x^* = -\tfrac12b'x^* = -\tfrac38$. Para $h = (0{,}1,\,-0{,}2,\,0{,}3)'$: $\tfrac12h'Kh = \tfrac12(2\cdot0{,}01 + 2\cdot0{,}04 + 2\cdot0{,}09 + 2\cdot0{,}02 + 2\cdot0{,}06) = 0{,}22$ y $f(x^* + h) = -0{,}375 + 0{,}22 = -0{,}155$. Si en cambio $A = \operatorname{diag}(1,1,-1)$ y $b = 0$, entonces $f(te_3) = -\tfrac12t^2\to-\infty$: sin mínimo.
+
 **No cuadrática.** $f(x,y) = x^3 - 3x + y^2$ tiene $\nabla f = (3x^2 - 3,\ 2y)$, que se anula en $(1,0)$ y $(-1,0)$. El Hessiano es $H = \begin{pmatrix}6x&0\\0&2\end{pmatrix}$. En $(1,0)$: $H = \operatorname{diag}(6,2)$, definido positivo, **mínimo local** con $f = -2$. En $(-1,0)$: $H = \operatorname{diag}(-6,2)$, indefinido, **silla** ($f = 2$): a lo largo de $x$ la derivada segunda es $-6<0$ (la función baja al alejarse del punto) y a lo largo de $y$ es $2>0$ (sube) (@fig-hessiano, izquierda).
+
+**No cuadrática $3\times3$.** $f(x,y,z) = x^3 - 3x + y^2 + z^2 + yz$ tiene $\nabla f = (3x^2 - 3,\ 2y + z,\ y + 2z)$, que se anula solo en $(\pm1,0,0)$ (el sistema $2y + z = 0$, $y + 2z = 0$ tiene determinante $3\ne0$, luego $y = z = 0$). El Hessiano es $H = \begin{pmatrix}6x&0&0\\0&2&1\\0&1&2\end{pmatrix}$, con valores propios $6x$, $1$ y $3$ (los dos últimos, los del bloque $\begin{pmatrix}2&1\\1&2\end{pmatrix}$). En $(1,0,0)$: $6,1,3>0$, **mínimo local** con $f = -2$. En $(-1,0,0)$: $-6,1,3$, **silla** con $f = 2$.
 :::
 
 ![Curvas de nivel de dos funciones con sus puntos críticos. **Izquierda:** $f = x^3 - 3x + y^2$ tiene un mínimo en $(1,0)$ y una silla en $(-1,0)$. **Derecha:** $g = x^3 + y^3 - 3xy$ (Ejercicio 8.5) tiene una silla en el origen y un mínimo local en $(1,1)$.](../assets/fig/am/c08_hessiano.png){#fig-hessiano width=96%}
 
 # Modos normales de vibración
 
-Tres masas iguales (de masa $1$) se mueven sobre una recta, unidas entre sí y a dos paredes por resortes iguales de constante $1$. Sea $x_i$ el desplazamiento de la masa $i$ desde su posición de reposo, con $x_0 = x_{n+1} = 0$ (las paredes). La ley de Hooke dice que cada resorte tira con fuerza igual a su estiramiento; sobre la masa $i$ actúan el resorte de la izquierda, que está estirado en $x_i - x_{i-1}$, y el de la derecha, estirado en $x_{i+1} - x_i$, así que la ley de Newton da
+Tres masas iguales (de masa $1$) se mueven sobre una recta, unidas entre sí y a dos paredes por resortes iguales de constante $1$. Sea $x_i$ el desplazamiento de la masa $i$ desde su posición de reposo, con $x_0 = x_{n+1} = 0$ (las paredes, que no se mueven). La ley de Hooke dice que cada resorte tira con fuerza igual a su estiramiento; sobre la masa $i$ actúan el resorte de la izquierda, que está estirado en $x_i - x_{i-1}$, y el de la derecha, estirado en $x_{i+1} - x_i$, así que la ley de Newton da
 $$
 x_i'' = -(x_i - x_{i-1}) + (x_{i+1} - x_i) = x_{i-1} - 2x_i + x_{i+1},
 $$
@@ -435,11 +483,11 @@ así que $V = \tfrac12x'Kx$. Esta suma es $\ge0$, y es $0$ solo si $x_1 = 0$, $x
 
 ::: {#thm-modos}
 ## Modos normales
-Sea $K = Q\Lambda Q'$ simétrica y definida positiva, $\omega_i = \sqrt{\lambda_i}$. La solución de $x'' = -Kx$ con $x(0) = x_0$ y $x'(0) = v_0$ es
+Sea $K = Q\Lambda Q'$ simétrica y definida positiva, $\omega_i = \sqrt{\lambda_i}$. La solución de $x'' = -Kx$ con $x(0) = \xi$ y $x'(0) = \eta$ es
 $$
-x(t) = \sum_{i=1}^nq_i\left(a_i\cos\omega_it + b_i\sin\omega_it\right),\qquad a_i = q_i'x_0,\quad b_i = \frac{q_i'v_0}{\omega_i}.
+x(t) = \sum_{i=1}^nq_i\left(a_i\cos\omega_it + b_i\sin\omega_it\right),\qquad a_i = q_i'\xi,\quad b_i = \frac{q_i'\eta}{\omega_i}.
 $$
-Cada $q_i$ es un **modo normal**: si el sistema parte de $x_0 = q_i$ (con $v_0 = 0$), todas las masas oscilan en fase con la misma frecuencia $\omega_i$.
+Cada $q_i$ es un **modo normal**: si el sistema parte de $\xi = q_i$ (con $\eta = 0$), todas las masas oscilan en fase con la misma frecuencia $\omega_i$.
 :::
 
 ::: {.callout-note title="Borrador"}
@@ -447,14 +495,14 @@ En las coordenadas $y = Q'x$ el sistema se desacopla: la matriz $K$ se vuelve di
 :::
 
 ::: {.proof}
-Sea $y = Q'x$, con $Q$ constante. Entonces $y'' = Q'x'' = -Q'Kx = -Q'KQy = -\Lambda y$, es decir, $y_i'' = -\omega_i^2y_i$ para cada $i$, con $y_i(0) = q_i'x_0 = a_i$ y $y_i'(0) = q_i'v_0$. La función $y_i = a_i\cos\omega_it + (q_i'v_0/\omega_i)\sin\omega_it$ cumple la ecuación (derivando dos veces cada término se obtiene $-\omega_i^2$ por el término) y las condiciones iniciales. Es la única: si $z$ es la diferencia de dos soluciones, $z'' = -\omega^2z$ con $z(0) = z'(0) = 0$, y $\frac{d}{dt}(z'^2 + \omega^2z^2) = 2z'(z'' + \omega^2z) = 0$, así que $z'^2 + \omega^2z^2$ es constante e igual a $0$ en $t = 0$; luego $z\equiv0$. Finalmente $x = Qy = \sum_iy_iq_i$.
+Sea $y = Q'x$, con $Q$ constante. Entonces $y'' = Q'x'' = -Q'Kx = -Q'KQy = -\Lambda y$, es decir, $y_i'' = -\omega_i^2y_i$ para cada $i$, con $y_i(0) = q_i'\xi = a_i$ y $y_i'(0) = q_i'\eta$. La función $y_i = a_i\cos\omega_it + (q_i'\eta/\omega_i)\sin\omega_it$ cumple la ecuación (derivando dos veces cada término se obtiene $-\omega_i^2$ por el término) y las condiciones iniciales. Es la única: si $z$ es la diferencia de dos soluciones, $z'' = -\omega^2z$ con $z(0) = z'(0) = 0$, y $\frac{d}{dt}(z'^2 + \omega^2z^2) = 2z'(z'' + \omega^2z) = 0$, así que $z'^2 + \omega^2z^2$ es constante e igual a $0$ en $t = 0$; luego $z\equiv0$. Finalmente $x = Qy = \sum_iy_iq_i$.
 :::
 
 Si $K$ tuviera un valor propio negativo, $\omega$ sería imaginario y aparecerían exponenciales crecientes (Clase 7): un sistema inestable. La definición positiva de $K$ es lo que garantiza la oscilación.
 
 ::: {#exm-2masas}
 ## Dos masas
-$K = \begin{pmatrix}2&-1\\-1&2\end{pmatrix}$ tiene valores propios $1$ y $3$ (traza $4$, determinante $3$) y vectores propios $q_1 = \tfrac1{\sqrt2}(1,1)'$ (las masas se mueven **juntas**, con $\omega_1 = 1$) y $q_2 = \tfrac1{\sqrt2}(1,-1)'$ (se mueven en **sentidos opuestos**, con $\omega_2 = \sqrt3$; el resorte del medio se estira más, por eso la frecuencia es mayor). Si se tira de la masa 1 hasta $x_0 = (1,0)'$ y se suelta ($v_0 = 0$): $a_1 = q_1'x_0 = 1/\sqrt2$ y $a_2 = 1/\sqrt2$, así que
+$K = \begin{pmatrix}2&-1\\-1&2\end{pmatrix}$ tiene valores propios $1$ y $3$ (traza $4$, determinante $3$) y vectores propios $q_1 = \tfrac1{\sqrt2}(1,1)'$ (las masas se mueven **juntas**, con $\omega_1 = 1$) y $q_2 = \tfrac1{\sqrt2}(1,-1)'$ (se mueven en **sentidos opuestos**, con $\omega_2 = \sqrt3$; el resorte del medio se estira más, por eso la frecuencia es mayor). Si se tira de la masa 1 hasta $\xi = (1,0)'$ y se suelta ($\eta = 0$): $a_1 = q_1'\xi = 1/\sqrt2$ y $a_2 = 1/\sqrt2$, así que
 $$
 x(t) = \tfrac1{\sqrt2}\,q_1\cos t + \tfrac1{\sqrt2}\,q_2\cos\sqrt3t = \tfrac12\begin{pmatrix}1\\1\end{pmatrix}\cos t + \tfrac12\begin{pmatrix}1\\-1\end{pmatrix}\cos\sqrt3t,
 $$
@@ -469,7 +517,7 @@ v_1 = \begin{pmatrix}1\\\sqrt2\\1\end{pmatrix},\quad v_2 = \begin{pmatrix}1\\0\\
 $$
 Verificación de $v_2$: $Kv_2 = (2\cdot1 - 0,\ -1 + 0 + 1,\ 0 - 2)' = (2,0,-2)' = 2v_2$ ✓. De $v_1$: $Kv_1 = (2 - \sqrt2,\ -1 + 2\sqrt2 - 1,\ -\sqrt2 + 2)' = (2 - \sqrt2,\ 2\sqrt2 - 2,\ 2 - \sqrt2)' = (2 - \sqrt2)(1,\sqrt2,1)'$ ✓ (porque $(2 - \sqrt2)\sqrt2 = 2\sqrt2 - 2$). Las frecuencias son $\omega_1 = \sqrt{2 - \sqrt2}\approx0{,}765$, $\omega_2 = \sqrt2\approx1{,}414$ y $\omega_3 = \sqrt{2 + \sqrt2}\approx1{,}848$. En el modo 1 las tres masas van juntas, con la del medio más lejos; en el modo 2 la del medio queda quieta y las de los extremos van en sentidos opuestos; en el modo 3 la del medio va contra las otras dos (@fig-modos).
 
-Si solo se desplaza la masa 1 ($x_0 = (1,0,0)'$, $v_0 = 0$), los coeficientes son $a_i = q_i'x_0$ con $q_1 = v_1/2$, $q_2 = v_2/\sqrt2$, $q_3 = v_3/2$: $a_1 = \tfrac12$, $a_2 = \tfrac1{\sqrt2}$, $a_3 = \tfrac12$, y
+Si solo se desplaza la masa 1 ($\xi = (1,0,0)'$, $\eta = 0$), los coeficientes son $a_i = q_i'\xi$ con $q_1 = v_1/2$, $q_2 = v_2/\sqrt2$, $q_3 = v_3/2$: $a_1 = \tfrac12$, $a_2 = \tfrac1{\sqrt2}$, $a_3 = \tfrac12$, y
 $$
 x(t) = \tfrac14v_1\cos\omega_1t + \tfrac12v_2\cos\omega_2t + \tfrac14v_3\cos\omega_3t.
 $$
@@ -484,14 +532,18 @@ Un cuerpo rígido formado por masas puntuales $m_i$ en las posiciones $r_i\in\ma
 
 ::: {#prp-inercia}
 ## Energía y momento angular
-Sea $I = \sum_im_i\bigl(\|r_i\|^2\,\mathrm{Id} - r_ir_i'\bigr)$ (el **tensor de inercia**, simétrico $3\times3$, donde $\mathrm{Id}$ es la identidad). Entonces la energía cinética es $T = \tfrac12\omega'I\omega$ y el momento angular, $L = \sum m_i\,r_i\times v_i = I\omega$. Además $I$ es semidefinida positiva, y definida positiva si y solo si las masas no están todas sobre una misma recta por el origen.
+Con masas $m_i>0$, sea $I = \sum_im_i\bigl(\|r_i\|^2\,\mathrm{Id} - r_ir_i'\bigr)$ (el **tensor de inercia**, simétrico $3\times3$, donde $\mathrm{Id}$ es la identidad). Entonces la energía cinética es $T = \tfrac12\omega'I\omega$ y el momento angular, $L = \sum m_i\,r_i\times v_i = I\omega$. Además $I$ es semidefinida positiva, y definida positiva si y solo si las masas no están todas sobre una misma recta por el origen.
+:::
+
+::: {.callout-note title="Borrador"}
+La identidad de Lagrange convierte $\|\omega\times r\|^2$ en la forma cuadrática $\omega'(\|r\|^2\mathrm{Id} - rr')\omega$, que da $T$ y la semidefinición. El momento angular sale del triple producto vectorial.
 :::
 
 ::: {.proof}
 Por la identidad de Lagrange, $\|\omega\times r\|^2 = \|\omega\|^2\|r\|^2 - (\omega\cdot r)^2 = \omega'(\|r\|^2\mathrm{Id} - rr')\omega$. Entonces $T = \tfrac12\sum m_i\|v_i\|^2 = \tfrac12\omega'I\omega$. Para el momento angular, $r\times(\omega\times r) = \omega\|r\|^2 - r(r\cdot\omega)$ (identidad del triple producto vectorial), y sumando, $L = \sum m_i(\|r_i\|^2\omega - r_i(r_i\cdot\omega)) = I\omega$. Como $x'Ix = \sum m_i\|x\times r_i\|^2\ge0$ (misma identidad), $I$ es semidefinida positiva; vale $0$ para $x\ne0$ si y solo si $x\times r_i = 0$ para todo $i$, es decir, si todos los $r_i$ son paralelos a $x$.
 :::
 
-Los **momentos de inercia** son los valores propios de $I$ y los **ejes principales** son sus vectores propios. Si el cuerpo gira alrededor de un eje principal ($\omega = \omega_0q$, $Iq = \lambda q$), entonces $L = \lambda\omega$ es paralelo a $\omega$ y el giro es estable; alrededor de cualquier otro eje, $L$ **no** es paralelo a $\omega$, y el eje de giro se bambolea. Por el @thm-rayleigh, la inercia alrededor de un eje unitario $u$ es $u'Iu = R(u)$, con extremos $\lambda_1$ y $\lambda_3$.
+Los **momentos de inercia** son los valores propios de $I$ y los **ejes principales** son sus vectores propios. Si el cuerpo gira alrededor de un eje principal ($\omega = \omega_0q$, $Iq = \lambda q$), entonces $L = \lambda\omega$ es paralelo a $\omega$ y el giro es estacionario (el eje no se bambolea; es además estable si el eje es el de mayor o el de menor inercia, pero no el de inercia intermedia, como muestra una raqueta de tenis lanzada al aire); alrededor de cualquier otro eje, $L$ **no** es paralelo a $\omega$, y el eje de giro se bambolea. Por el @thm-rayleigh, la inercia alrededor de un eje unitario $u$ es $u'Iu = R(u)$, con extremos $\lambda_1$ y $\lambda_3$.
 
 ::: {#exm-inercia}
 ## Una mancuerna
@@ -534,6 +586,10 @@ Para "$\le$": el subespacio generado por los primeros $k$ vectores propios tiene
 Si $A$ es simétrica y $B$ es simétrica semidefinida positiva, entonces $\lambda_k(A + B)\ge\lambda_k(A)$ para todo $k$.
 :::
 
+::: {.callout-note title="Borrador"}
+Sumar $B$ semidefinida no puede bajar el cociente de Rayleigh en ningún vector. Esa desigualdad pasa al máximo sobre cada subespacio y luego al mínimo sobre los subespacios, que es $\lambda_k$ por Courant–Fischer.
+:::
+
 ::: {.proof}
 Para todo $x\ne0$, $R_{A+B}(x) = R_A(x) + x'Bx/x'x\ge R_A(x)$. Por lo tanto $\max_SR_{A+B}\ge\max_SR_A$ para cada subespacio $S$, y al tomar el mínimo sobre los $S$ de dimensión $k$ se conserva la desigualdad; por el @thm-courant, $\lambda_k(A + B)\ge\lambda_k(A)$.
 :::
@@ -547,7 +603,7 @@ Todo lo de esta clase vale para $n\times n$ con las mismas demostraciones: el te
 # Resumen
 
 - **Teorema espectral:** una matriz real simétrica tiene valores propios **reales** y una base **ortonormal** de vectores propios: $A = Q\Lambda Q' = \sum\lambda_iq_iq_i'$ (@thm-espectral, @cor-espectral). Es simétrica si y solo si se diagonaliza con una base ortonormal.
-- **Ejes principales:** con $y = Q'x$, $x'Ax = \sum\lambda_iy_i^2$ (@thm-ejes). El conjunto $x'Ax = 1$ es una elipse o un elipsoide de semiejes $1/\sqrt{\lambda_i}$ si todos los $\lambda_i>0$; hipérbola si hay signos mixtos; rectas o cilindro si hay un $\lambda_i = 0$.
+- **Ejes principales:** con $y = Q'x$, $x'Ax = \sum\lambda_iy_i^2$ (@thm-ejes). El conjunto $x'Ax = 1$ es una elipse o un elipsoide de semiejes $1/\sqrt{\lambda_i}$ si todos los $\lambda_i>0$; hipérbola si hay signos mixtos; rectas o cilindro si hay un $\lambda_i = 0$ y los demás son positivos.
 - **Definida positiva** (@thm-criterios): equivale a todos los $\lambda_i>0$, a $A = R'R$ con $R$ invertible, a todos los pivotes $>0$ y a todos los menores principales $>0$. $A'A$ es definida positiva si y solo si las columnas de $A$ son independientes (@prp-ata).
 - **Cholesky:** $A = LL'$, única con diagonal positiva (@thm-cholesky); cuesta $n^3/3$, sin pivoteo, y falla exactamente cuando $A$ no es definida positiva.
 - **Rayleigh:** $\lambda_1\le R(x)\le\lambda_n$ y los extremos se alcanzan en los vectores propios (@thm-rayleigh).
@@ -620,10 +676,10 @@ En $(1,1)$: $H = \begin{pmatrix}6&-3\\-3&6\end{pmatrix}$, con menores $6$ y $36 
 No es mínimo global: $g(-t,-t) = -2t^3 - 3t^2\to-\infty$ cuando $t\to\infty$.
 :::
 
-**Ejercicio 8.6.** En el sistema de tres masas, tira de la masa 1 hasta $x_0 = (1,0,0)'$ y suéltala. (a) Calcula los coeficientes $a_i = q_i'x_0$. (b) Escribe $x(t)$. (c) Verifica la ecuación de movimiento en $t = 0$: $x''(0) = -Kx(0)$.
+**Ejercicio 8.6.** En el sistema de tres masas, tira de la masa 1 hasta $\xi = (1,0,0)'$ y suéltala. (a) Calcula los coeficientes $a_i = q_i'\xi$. (b) Escribe $x(t)$. (c) Verifica la ecuación de movimiento en $t = 0$: $x''(0) = -Kx(0)$.
 
 ::: {.callout-tip collapse="true" title="Solución 8.6"}
-(a) Los vectores propios unitarios son $q_1 = \tfrac12(1,\sqrt2,1)'$, $q_2 = \tfrac1{\sqrt2}(1,0,-1)'$, $q_3 = \tfrac12(1,-\sqrt2,1)'$. Con $x_0 = e_1$: $a_1 = \tfrac12$, $a_2 = \tfrac1{\sqrt2}$, $a_3 = \tfrac12$. Como $v_0 = 0$, todos los $b_i = 0$.
+(a) Los vectores propios unitarios son $q_1 = \tfrac12(1,\sqrt2,1)'$, $q_2 = \tfrac1{\sqrt2}(1,0,-1)'$, $q_3 = \tfrac12(1,-\sqrt2,1)'$. Con $\xi = e_1$: $a_1 = \tfrac12$, $a_2 = \tfrac1{\sqrt2}$, $a_3 = \tfrac12$. Como $\eta = 0$, todos los $b_i = 0$.
 
 (b) $x(t) = \tfrac14(1,\sqrt2,1)'\cos\omega_1t + \tfrac12(1,0,-1)'\cos\sqrt2\,t + \tfrac14(1,-\sqrt2,1)'\cos\omega_3t$, con $\omega_1 = \sqrt{2 - \sqrt2}$ y $\omega_3 = \sqrt{2 + \sqrt2}$ (se obtiene de $a_iq_i$ con los vectores sin normalizar).
 

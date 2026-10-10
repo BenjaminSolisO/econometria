@@ -14,7 +14,7 @@ Sirve para saber si el flujo (skill + lint + check + revisor) mejora costo, tiem
 
 | Clase | Uso al inicio | Uso al final | Tiempo total | Renders hasta `TODO OK` | Errores del lint / detector | Revisor (modelo): errores que halló | Errores hallados después de publicar | Notas |
 |---|---|---|---|---|---|---|---|---|
-| 8 (primera con el flujo; sin medir uso ni tiempo) | — | — | — | 4 (falló 3 veces) | 5 desbordes de ecuación; 2 refs a otra clase | no corrido | — | Escrita en modo autónomo; usuario aún no la revisa |
+| 8 (primera con el flujo; sin medir uso ni tiempo) | — | — | — | 4 (falló 3 veces) | 5 desbordes de ecuación; 2 refs a otra clase | Sonnet 5.5, 1 pasada (~90k tokens, ~3 min): 2 medios (unidades del costo de Cholesky, estabilidad del giro), 6 menores (cota con A singular, notación x_0, casos λ=0, unicidad LDU, m_i>0, faltaban 3×3 y Borradores); números todos OK | 8 (los halló el revisor tras publicar; ya corregidos) | Escrita en modo autónomo; usuario aún no la revisa |
 | 9 | | | | | | | | |
 
 Qué mirar al comparar: ¿bajó el uso o el tiempo respecto de la clase anterior?, ¿el revisor halló algo que el lint y los scripts no atraparon (si no halla nada de fondo, no vale su costo)?, ¿hubo que repetirle alguna regla a Claude (si sí, falta ponerla en este archivo)?

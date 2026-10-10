@@ -343,6 +343,19 @@ A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix},\qquad 2x^2 + 2xy + 2y^2 = \beg
 <div id="lem-ortogonales" class="theorem lemma">
 <p><span class="theorem-title"><strong>Lema 2 (Vectores propios de valores propios distintos son perpendiculares)</strong></span> Si <span class="math inline">\(A' = A\)</span>, <span class="math inline">\(Av = \lambda v\)</span>, <span class="math inline">\(Aw = \mu w\)</span> y <span class="math inline">\(\lambda\ne\mu\)</span>, entonces <span class="math inline">\(v\cdot w = 0\)</span>.</p>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Calculo <span class="math inline">\((Av)\cdot w\)</span> de dos maneras: usando <span class="math inline">\(Av = \lambda v\)</span> y pasando <span class="math inline">\(A\)</span> al otro vector con la simetría. Las dos expresiones difieren por el factor <span class="math inline">\(\lambda - \mu\ne0\)</span>.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Por una parte, <span class="math inline">\((Av)\cdot w = \lambda\,v\cdot w\)</span>. Por otra, <span class="math inline">\((Av)\cdot w = v'A'w = v'Aw = v\cdot(Aw) = \mu\,v\cdot w\)</span>. Restando, <span class="math inline">\((\lambda - \mu)\,v\cdot w = 0\)</span>, y como <span class="math inline">\(\lambda\ne\mu\)</span>, <span class="math inline">\(v\cdot w = 0\)</span>.</p>
 </div>
@@ -388,6 +401,19 @@ Q'AQ = \begin{pmatrix}1&amp;0\\0&amp;Q_2'\end{pmatrix}\begin{pmatrix}\lambda_1&a
 <li><span class="math inline">\(\operatorname{tr}A = \sum_i\lambda_i\)</span>, <span class="math inline">\(\det A = \prod_i\lambda_i\)</span>, y <span class="math inline">\(\operatorname{rango}A\)</span> es el número de valores propios no nulos.</li>
 </ol>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todo sale de <span class="math inline">\(A = Q\Lambda Q'\)</span> y de <span class="math inline">\(Q'Q = I\)</span>: (1) es el producto columna por fila, (2) se obtiene al cancelar <span class="math inline">\(Q'Q\)</span> en el medio, y (3) usa que <span class="math inline">\(Q\)</span> es invertible.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span></p>
 <ol type="1">
@@ -422,6 +448,19 @@ A = 4P_4 + 1\cdot P_1 = \tfrac43J + \left(I - \tfrac13J\right) = I + J\ \checkma
 <div id="prp-simetrizar" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposición 1 (La matriz de una forma cuadrática se toma simétrica)</strong></span> Para toda matriz cuadrada <span class="math inline">\(B\)</span>, <span class="math inline">\(x'Bx = x'Sx\)</span> con <span class="math inline">\(S = \tfrac12(B + B')\)</span> simétrica, y la matriz simétrica de una forma cuadrática es única.</p>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un escalar es igual a su transpuesta, así que <span class="math inline">\(x'Bx\)</span> es el promedio de <span class="math inline">\(x'Bx\)</span> y <span class="math inline">\(x'B'x\)</span>. Para la unicidad, evalúo una diferencia simétrica en <span class="math inline">\(e_i\)</span> y en <span class="math inline">\(e_i + e_j\)</span> para ver que todas sus entradas son cero.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(x'Bx\)</span> es un escalar, igual a su transpuesta <span class="math inline">\(x'B'x\)</span>; entonces <span class="math inline">\(x'Bx = \tfrac12(x'Bx + x'B'x) = x'Sx\)</span>. Unicidad: si <span class="math inline">\(S\)</span> y <span class="math inline">\(T\)</span> son simétricas con <span class="math inline">\(x'Sx = x'Tx\)</span> para todo <span class="math inline">\(x\)</span>, <span class="math inline">\(D = S - T\)</span> es simétrica con <span class="math inline">\(x'Dx = 0\)</span> siempre. Con <span class="math inline">\(x = e_i\)</span>: <span class="math inline">\(d_{ii} = 0\)</span>. Con <span class="math inline">\(x = e_i + e_j\)</span>: <span class="math inline">\(0 = d_{ii} + d_{jj} + 2d_{ij} = 2d_{ij}\)</span>. Luego <span class="math inline">\(D = 0\)</span>.</p>
 </div>
@@ -431,6 +470,19 @@ A = 4P_4 + 1\cdot P_1 = \tfrac43J + \left(I - \tfrac13J\right) = I + J\ \checkma
 x'Ax = \lambda_1y_1^2 + \dots + \lambda_ny_n^2,\qquad\text{con}\qquad \|y\| = \|x\|.
 \]</span></p>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sustituyo <span class="math inline">\(x = Qy\)</span> en <span class="math inline">\(x'Ax\)</span>: aparece <span class="math inline">\(Q'AQ = \Lambda\)</span>. La longitud se conserva porque <span class="math inline">\(Q\)</span> es ortogonal.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\(x = Qy\)</span> (porque <span class="math inline">\(QQ' = I\)</span>), así que <span class="math inline">\(x'Ax = y'Q'AQy = y'\Lambda y = \sum\lambda_iy_i^2\)</span>. Y <span class="math inline">\(\|y\|^2 = x'QQ'x = x'x = \|x\|^2\)</span>.</p>
 </div>
@@ -438,7 +490,7 @@ x'Ax = \lambda_1y_1^2 + \dots + \lambda_ny_n^2,\qquad\text{con}\qquad \|y\| = \|
 <ul>
 <li><strong>Todos los <span class="math inline">\(\lambda_i&gt;0\)</span>:</strong> una <strong>elipse</strong> (en <span class="math inline">\(\mathbb{R}^2\)</span>) o un <strong>elipsoide</strong> (en <span class="math inline">\(\mathbb{R}^3\)</span>) con semiejes <span class="math inline">\(1/\sqrt{\lambda_i}\)</span> a lo largo de <span class="math inline">\(q_i\)</span>. Cuanto <em>mayor</em> es el valor propio, <em>más corto</em> es el semieje.</li>
 <li><strong>Valores propios de ambos signos:</strong> una <strong>hipérbola</strong> o un <strong>hiperboloide</strong>.</li>
-<li><strong>Algún <span class="math inline">\(\lambda_i = 0\)</span>:</strong> la figura se estira sin límite en la dirección de <span class="math inline">\(q_i\)</span>: <strong>rectas paralelas</strong> en <span class="math inline">\(\mathbb{R}^2\)</span> (o un cilindro en <span class="math inline">\(\mathbb{R}^3\)</span>).</li>
+<li><strong>Algún <span class="math inline">\(\lambda_i = 0\)</span> (y los demás <span class="math inline">\(\lambda_j&gt;0\)</span>):</strong> la figura se estira sin límite en la dirección de <span class="math inline">\(q_i\)</span>: <strong>rectas paralelas</strong> en <span class="math inline">\(\mathbb{R}^2\)</span> (o un cilindro en <span class="math inline">\(\mathbb{R}^3\)</span>).</li>
 </ul>
 <div id="fig-cuadricas" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -503,7 +555,7 @@ Figura&nbsp;2: El elipsoide <span class="math inline">\(x'Ax = 1\)</span> para <
 <p><em>(c)<span class="math inline">\(\Rightarrow\)</span>(a).</em> <span class="math inline">\(x'Ax = x'R'Rx = \|Rx\|^2\ge0\)</span>, y vale <span class="math inline">\(0\)</span> solo si <span class="math inline">\(Rx = 0\)</span>, es decir, solo si <span class="math inline">\(x = 0\)</span> (porque <span class="math inline">\(R\)</span> es invertible).</p>
 <p><em>(a)<span class="math inline">\(\Rightarrow\)</span>(e).</em> Sea <span class="math inline">\(z\in\mathbb{R}^k\)</span> no nulo y <span class="math inline">\(x = (z,0)'\in\mathbb{R}^n\)</span>, no nulo. Entonces <span class="math inline">\(z'A_kz = x'Ax&gt;0\)</span>: <span class="math inline">\(A_k\)</span> es simétrica y definida positiva. Por (a)<span class="math inline">\(\Leftrightarrow\)</span>(b) aplicado a <span class="math inline">\(A_k\)</span>, todos sus valores propios son positivos, y su determinante (el producto, Clase 7) es positivo.</p>
 <p><em>(e)<span class="math inline">\(\Rightarrow\)</span>(d).</em> Si <span class="math inline">\(\det A_k&gt;0\)</span> para todo <span class="math inline">\(k\)</span>, todas las submatrices principales son invertibles y, por el teorema de la sección ★ de la Clase 2, <span class="math inline">\(A = LU\)</span> existe sin intercambio de filas, con <span class="math inline">\(L\)</span> unitriangular inferior. Al multiplicar por bloques, la esquina <span class="math inline">\(k\times k\)</span> de <span class="math inline">\(LU\)</span> es <span class="math inline">\(L_kU_k\)</span> (el producto de las esquinas, porque los bloques fuera de la esquina no aportan a ella: <span class="math inline">\(L\)</span> es triangular inferior y <span class="math inline">\(U\)</span>, triangular superior). Entonces <span class="math inline">\(\det A_k = \det L_k\det U_k = u_{11}\cdots u_{kk}\)</span>, y el <span class="math inline">\(k\)</span>-ésimo pivote es <span class="math inline">\(u_{kk} = \det A_k/\det A_{k-1}\)</span> (con <span class="math inline">\(\det A_0 = 1\)</span>), positivo.</p>
-<p><em>(d)<span class="math inline">\(\Rightarrow\)</span>(a).</em> Con pivotes <span class="math inline">\(d_1,\dots,d_n&gt;0\)</span> escribimos <span class="math inline">\(A = LU = LD\tilde U\)</span>, con <span class="math inline">\(D = \operatorname{diag}(d_i)\)</span> y <span class="math inline">\(\tilde U\)</span> unitriangular superior. Como <span class="math inline">\(A\)</span> es simétrica, <span class="math inline">\(A = A' = \tilde U'DL'\)</span> es otra factorización de la forma (unitriangular inferior)(diagonal)(unitriangular superior), y por la unicidad de la Clase 2, <span class="math inline">\(\tilde U' = L\)</span>. Así <span class="math inline">\(A = LDL'\)</span>. Para <span class="math inline">\(x\ne0\)</span>, sea <span class="math inline">\(z = L'x\ne0\)</span> (<span class="math inline">\(L'\)</span> es invertible); entonces <span class="math display">\[
+<p><em>(d)<span class="math inline">\(\Rightarrow\)</span>(a).</em> Con pivotes <span class="math inline">\(d_1,\dots,d_n&gt;0\)</span> escribimos <span class="math inline">\(A = LU = LD\tilde U\)</span>, con <span class="math inline">\(D = \operatorname{diag}(d_i)\)</span> y <span class="math inline">\(\tilde U\)</span> unitriangular superior. Como <span class="math inline">\(A\)</span> es simétrica, <span class="math inline">\(A = A' = \tilde U'DL' = \tilde U'(DL')\)</span>. Así <span class="math inline">\(A = L\,(D\tilde U)\)</span> y <span class="math inline">\(A = \tilde U'\,(DL')\)</span> son dos factorizaciones de la misma matriz, ambas de la forma (unitriangular inferior)(triangular superior), y <span class="math inline">\(A\)</span> es invertible (sus pivotes son no nulos). Por la unicidad de la LU (Clase 2), <span class="math inline">\(\tilde U' = L\)</span> y, de <span class="math inline">\(D\tilde U = DL'\)</span>, <span class="math inline">\(\tilde U = L'\)</span>. Así <span class="math inline">\(A = LDL'\)</span>. Para <span class="math inline">\(x\ne0\)</span>, sea <span class="math inline">\(z = L'x\ne0\)</span> (<span class="math inline">\(L'\)</span> es invertible); entonces <span class="math display">\[
 x'Ax = x'LDL'x = z'Dz = d_1z_1^2 + \dots + d_nz_n^2&gt;0.
 \]</span></p>
 </div>
@@ -521,13 +573,32 @@ K = LDL' = \begin{pmatrix}1&amp;0&amp;0\\-\tfrac12&amp;1&amp;0\\0&amp;-\tfrac23&
 <p><span class="theorem-title"><strong>Proposición 2 (Semidefinidas)</strong></span> Una matriz simétrica <span class="math inline">\(A\)</span> es semidefinida positiva si y solo si todos sus valores propios son <span class="math inline">\(\ge0\)</span>, si y solo si <span class="math inline">\(A = R'R\)</span> para alguna matriz <span class="math inline">\(R\)</span> (no necesariamente invertible).</p>
 </div>
 <p>La demostración es la misma que la de (a)<span class="math inline">\(\Leftrightarrow\)</span>(b)<span class="math inline">\(\Leftrightarrow\)</span>(c), cambiando <span class="math inline">\(&gt;\)</span> por <span class="math inline">\(\ge\)</span> (<span class="math inline">\(R = \Lambda^{1/2}Q'\)</span> sirve, y <span class="math inline">\(x'R'Rx = \|Rx\|^2\ge0\)</span> siempre). Ojo: para semidefinidas <strong>no</strong> basta que los menores <em>líderes</em> <span class="math inline">\(\det A_k\)</span> sean <span class="math inline">\(\ge0\)</span>. La matriz <span class="math inline">\(\begin{pmatrix}0&amp;0\\0&amp;-1\end{pmatrix}\)</span> tiene menores líderes <span class="math inline">\(0\)</span> y <span class="math inline">\(0\)</span>, pero <span class="math inline">\(x'Ax = -x_2^2\)</span> es negativa en <span class="math inline">\((0,1)\)</span>. (El criterio correcto para semidefinidas exige <strong>todos</strong> los menores principales, no solo los de la esquina.)</p>
+<p>En <span class="math inline">\(3\times3\)</span>, <span class="math inline">\(S = \begin{pmatrix}2&amp;1&amp;3\\1&amp;2&amp;3\\3&amp;3&amp;6\end{pmatrix}\)</span> (<span class="math inline">\(= B'B\)</span> de arriba) cumple <span class="math inline">\(S(1,-1,0)' = (1,-1,0)'\)</span>, <span class="math inline">\(S(1,1,2)' = (9,9,18)' = 9(1,1,2)'\)</span> y <span class="math inline">\(S(1,1,-1)' = 0\)</span>: valores propios <span class="math inline">\(1\)</span>, <span class="math inline">\(9\)</span> y <span class="math inline">\(0\)</span> (suman <span class="math inline">\(10 = \operatorname{tr}S\)</span>), todos <span class="math inline">\(\ge0\)</span> y uno nulo. Es semidefinida positiva y, con el valor propio <span class="math inline">\(0\)</span>, no definida. Sus menores líderes son <span class="math inline">\(2\)</span>, <span class="math inline">\(3\)</span> y <span class="math inline">\(\det S = 0\)</span>, consistentes.</p>
 <div id="prp-ata" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposición 3 (Matrices de la forma <span class="math inline">\(A'A\)</span>)</strong></span> Para cualquier matriz <span class="math inline">\(A\)</span> de <span class="math inline">\(m\times n\)</span>, <span class="math inline">\(A'A\)</span> es simétrica y semidefinida positiva. Es definida positiva si y solo si las columnas de <span class="math inline">\(A\)</span> son independientes.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La forma cuadrática de <span class="math inline">\(A'A\)</span> es <span class="math inline">\(\|Ax\|^2\)</span>, que es <span class="math inline">\(\ge0\)</span>. Se anula exactamente cuando <span class="math inline">\(Ax = 0\)</span>, y eso depende de si el espacio nulo de <span class="math inline">\(A\)</span> tiene solo el vector cero.</p>
+</div>
 </div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span><span class="math inline">\((A'A)' = A'A\)</span> y <span class="math inline">\(x'A'Ax = \|Ax\|^2\ge0\)</span>. Es <span class="math inline">\(0\)</span> solo si <span class="math inline">\(Ax = 0\)</span>; con columnas independientes, <span class="math inline">\(N(A) = \{0\}\)</span> (Clase 3) y eso obliga a <span class="math inline">\(x = 0\)</span>. Si las columnas son dependientes hay <span class="math inline">\(x\ne0\)</span> con <span class="math inline">\(Ax = 0\)</span> y <span class="math inline">\(x'A'Ax = 0\)</span>.</p>
 </div>
 <p>Esto explica por qué las ecuaciones normales de mínimos cuadrados (Clase 6) tienen solución única exactamente cuando las columnas son independientes: la matriz <span class="math inline">\(G = A'A\)</span> de ese sistema es definida positiva. Por ejemplo, <span class="math inline">\(A = \begin{pmatrix}1&amp;0\\1&amp;1\\0&amp;1\end{pmatrix}\)</span> (columnas independientes) da <span class="math inline">\(A'A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span>, la matriz definida positiva de arriba.</p>
+<p>En <span class="math inline">\(3\times3\)</span>: la matriz <span class="math inline">\(A = \begin{pmatrix}1&amp;0&amp;0\\1&amp;1&amp;0\\1&amp;1&amp;1\\1&amp;1&amp;1\end{pmatrix}\)</span> (<span class="math inline">\(4\times3\)</span>, columnas independientes) da <span class="math display">\[
+A'A = \begin{pmatrix}4&amp;3&amp;2\\3&amp;3&amp;2\\2&amp;2&amp;2\end{pmatrix},
+\]</span> con menores <span class="math inline">\(4\)</span>, <span class="math inline">\(4\cdot3 - 3\cdot3 = 3\)</span> y <span class="math inline">\(\det = 4(6 - 4) - 3(6 - 4) + 2(6 - 6) = 2\)</span>, todos positivos (pivotes <span class="math inline">\(4\)</span>, <span class="math inline">\(\tfrac34\)</span>, <span class="math inline">\(\tfrac23\)</span>): definida positiva. En cambio, <span class="math inline">\(B = \begin{pmatrix}1&amp;0&amp;1\\0&amp;1&amp;1\\1&amp;1&amp;2\end{pmatrix}\)</span> tiene la tercera columna igual a la suma de las dos primeras, así que <span class="math inline">\(B(1,1,-1)' = 0\)</span>, y <span class="math display">\[
+B'B = \begin{pmatrix}2&amp;1&amp;3\\1&amp;2&amp;3\\3&amp;3&amp;6\end{pmatrix}
+\]</span> cumple <span class="math inline">\(x'B'Bx = \|Bx\|^2 = 0\)</span> en <span class="math inline">\(x = (1,1,-1)'\)</span>: es semidefinida y <strong>no</strong> definida (sus valores propios son <span class="math inline">\(9\)</span>, <span class="math inline">\(1\)</span> y <span class="math inline">\(0\)</span>).</p>
 </section>
 <section id="la-factorización-de-cholesky" class="level1 page-columns page-full" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> La factorización de Cholesky</h1>
@@ -576,7 +647,7 @@ A = LL'.
 <li><span class="math inline">\(\quad\)</span> Para <span class="math inline">\(i = j + 1,\dots,n\)</span>: <span class="math inline">\(l_{ij} = \bigl(a_{ij} - \sum_{k&lt;j}l_{ik}l_{jk}\bigr)/l_{jj}\)</span>.</li>
 <li>Para resolver <span class="math inline">\(Ax = b\)</span>: resolver <span class="math inline">\(Ly = b\)</span> hacia adelante y <span class="math inline">\(L'x = y\)</span> hacia atrás (Clase 2).</li>
 </ol>
-<p><strong>Costo:</strong> unas <span class="math inline">\(n^3/3\)</span> multiplicaciones, <strong>la mitad</strong> que la LU, porque se aprovecha la simetría. No requiere pivoteo y es estable. <strong>Cuándo falla:</strong> si en el paso 2 el radicando es <span class="math inline">\(\le0\)</span>, <span class="math inline">\(A\)</span> <strong>no</strong> es definida positiva (por el teorema, si lo fuera la raíz existiría). Por eso Cholesky es la forma práctica de comprobar la definición positiva.</p>
+<p><strong>Costo:</strong> unos <span class="math inline">\(n^3/3\)</span> flops, <strong>la mitad</strong> de los <span class="math inline">\(2n^3/3\)</span> de la LU (Clase 2), porque se aprovecha la simetría. No requiere pivoteo y es estable. <strong>Cuándo falla:</strong> si en el paso 2 el radicando es <span class="math inline">\(\le0\)</span>, <span class="math inline">\(A\)</span> <strong>no</strong> es definida positiva (por el teorema, si lo fuera la raíz existiría). Por eso Cholesky es la forma práctica de comprobar la definición positiva.</p>
 </div>
 </div>
 <div id="exm-cholesky2" class="theorem example">
@@ -598,6 +669,19 @@ R(x) = \frac{x'Ax}{x'x},\qquad x\ne0.
 <p><span class="theorem-title"><strong>Teorema 5 (Los valores propios extremos son los extremos de <span class="math inline">\(R\)</span>)</strong></span> Sea <span class="math inline">\(A\)</span> simétrica con valores propios <span class="math inline">\(\lambda_1\le\lambda_2\le\dots\le\lambda_n\)</span> y vectores propios ortonormales <span class="math inline">\(q_1,\dots,q_n\)</span>. Entonces para todo <span class="math inline">\(x\ne0\)</span> <span class="math display">\[
 \lambda_1\le R(x)\le\lambda_n,
 \]</span> con <span class="math inline">\(R(q_1) = \lambda_1\)</span> y <span class="math inline">\(R(q_n) = \lambda_n\)</span>. En consecuencia, <span class="math inline">\(\lambda_n = \max_{\|x\| = 1}x'Ax\)</span> y <span class="math inline">\(\lambda_1 = \min_{\|x\| = 1}x'Ax\)</span>.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En las coordenadas <span class="math inline">\(y = Q'x\)</span>, el cociente es un promedio ponderado de los valores propios con pesos <span class="math inline">\(\ge0\)</span> que suman <span class="math inline">\(1\)</span>. Un promedio no sale del intervalo entre el menor y el mayor de sus datos.</p>
+</div>
 </div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Con <span class="math inline">\(y = Q'x\)</span> y el <a href="#thm-ejes" class="quarto-xref">Teorema&nbsp;2</a>, <span class="math inline">\(R(x) = \dfrac{\sum\lambda_iy_i^2}{\sum y_i^2} = \sum_iw_i\lambda_i\)</span> con <span class="math inline">\(w_i = y_i^2/\|y\|^2\ge0\)</span> y <span class="math inline">\(\sum w_i = 1\)</span>. Es un <strong>promedio ponderado</strong> de los valores propios, y un promedio ponderado está entre el menor y el mayor: <span class="math inline">\(\lambda_1 = \sum w_i\lambda_1\le\sum w_i\lambda_i\le\sum w_i\lambda_n = \lambda_n\)</span>. Para <span class="math inline">\(x = q_1\)</span>, <span class="math inline">\(y = e_1\)</span> y <span class="math inline">\(R = \lambda_1\)</span>; para <span class="math inline">\(x = q_n\)</span>, <span class="math inline">\(R = \lambda_n\)</span>.</p>
@@ -628,13 +712,26 @@ Figura&nbsp;3: <strong>Izquierda:</strong> el cociente de Rayleigh de <span clas
 f(x) = f(x^*) + \tfrac12(x - x^*)'A(x - x^*)\ \ge\ f(x^*).
 \]</span> Si <span class="math inline">\(A\)</span> tiene un valor propio negativo, <span class="math inline">\(f\)</span> no está acotada inferiormente.</p>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Escribo <span class="math inline">\(x = x^* + h\)</span> y expando: el término lineal en <span class="math inline">\(h\)</span> es <span class="math inline">\(h'(Ax^* - b)\)</span> y se anula en <span class="math inline">\(x^*\)</span>, así que queda <span class="math inline">\(f(x^*) + \tfrac12h'Ah\)</span>. Si <span class="math inline">\(A\)</span> es definida positiva, eso es <span class="math inline">\(&gt;f(x^*)\)</span> para <span class="math inline">\(h\ne0\)</span>. Si tiene un valor propio negativo, avanzo por ese vector propio.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(x = x^* + h\)</span> con <span class="math inline">\(Ax^* = b\)</span>. Expandiendo, <span class="math display">\[
 \begin{aligned}
 f(x^* + h) &amp;= \tfrac12x^{*\prime}Ax^* + \tfrac12\bigl(x^{*\prime}Ah + h'Ax^*\bigr) + \tfrac12h'Ah - b'x^* - b'h + c\\
 &amp;= f(x^*) + h'(Ax^* - b) + \tfrac12h'Ah,
 \end{aligned}
-\]</span> donde se usó <span class="math inline">\(x^{*\prime}Ah = h'Ax^*\)</span> (simetría). Como <span class="math inline">\(Ax^* = b\)</span>, el término lineal desaparece y <span class="math inline">\(f(x^* + h) = f(x^*) + \tfrac12h'Ah&gt;f(x^*)\)</span> para <span class="math inline">\(h\ne0\)</span>. Si <span class="math inline">\(Aq = \lambda q\)</span> con <span class="math inline">\(\lambda&lt;0\)</span> y <span class="math inline">\(\|q\| = 1\)</span>, entonces <span class="math inline">\(f(x^* + tq) = f(x^*) + \tfrac12\lambda t^2\to-\infty\)</span> cuando <span class="math inline">\(t\to\infty\)</span>.</p>
+\]</span> donde se usó <span class="math inline">\(x^{*\prime}Ah = h'Ax^*\)</span> (simetría). Como <span class="math inline">\(Ax^* = b\)</span>, el término lineal desaparece y <span class="math inline">\(f(x^* + h) = f(x^*) + \tfrac12h'Ah&gt;f(x^*)\)</span> para <span class="math inline">\(h\ne0\)</span>. Para la segunda afirmación no se necesita <span class="math inline">\(x^*\)</span> (con <span class="math inline">\(A\)</span> singular puede no existir): si <span class="math inline">\(Aq = \lambda q\)</span> con <span class="math inline">\(\lambda&lt;0\)</span> y <span class="math inline">\(\|q\| = 1\)</span>, entonces <span class="math inline">\(f(tq) = \tfrac12\lambda t^2 - (b'q)\,t + c\to-\infty\)</span> cuando <span class="math inline">\(t\to\infty\)</span>, porque el término cuadrático, negativo, domina al lineal.</p>
 </div>
 <p>Para una función general <span class="math inline">\(f\)</span> de clase <span class="math inline">\(C^2\)</span>, en un punto crítico <span class="math inline">\(x^*\)</span> (<span class="math inline">\(\nabla f(x^*) = 0\)</span>) el desarrollo de Taylor de segundo orden dice <span class="math inline">\(f(x^* + h) = f(x^*) + \tfrac12h'Hh + o(\|h\|^2)\)</span>, donde <span class="math inline">\(H\)</span> es el Hessiano en <span class="math inline">\(x^*\)</span> (esto se usa sin demostración, es cálculo). Con él se obtiene el criterio.</p>
 <div id="prp-hessiano" class="theorem proposition">
@@ -645,6 +742,19 @@ f(x^* + h) &amp;= \tfrac12x^{*\prime}Ax^* + \tfrac12\bigl(x^{*\prime}Ah + h'Ax^*
 <li>Si <span class="math inline">\(H\)</span> es indefinida (<span class="math inline">\(\lambda_1&lt;0&lt;\lambda_n\)</span>), <span class="math inline">\(x^*\)</span> es un <strong>punto silla</strong>.</li>
 </ol>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con <span class="math inline">\(\nabla f(x^*) = 0\)</span>, la función cerca de <span class="math inline">\(x^*\)</span> se parece a <span class="math inline">\(f(x^*) + \tfrac12h'Hh\)</span>. El cociente de Rayleigh acota <span class="math inline">\(h'Hh\)</span> por abajo con <span class="math inline">\(\lambda_1\|h\|^2\)</span> (caso 1); en el caso 3 miro la función a lo largo de dos vectores propios de signos opuestos.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span></p>
 <ol type="1">
@@ -654,7 +764,9 @@ f(x^* + h) &amp;= \tfrac12x^{*\prime}Ax^* + \tfrac12\bigl(x^{*\prime}Ah + h'Ax^*
 <p>Si <span class="math inline">\(H\)</span> es solo semidefinida, el criterio no decide (hay que mirar términos de orden superior). En econometría, la función de mínimos cuadrados <span class="math inline">\(S(\beta) = \|y - X\beta\|^2\)</span> tiene Hessiano <span class="math inline">\(2X'X\)</span>, definido positivo si y solo si las columnas de <span class="math inline">\(X\)</span> son independientes (<a href="#prp-ata" class="quarto-xref">Proposición&nbsp;3</a>): ese es el motivo por el que el mínimo es único (Clase 6).</p>
 <div id="exm-hessiano" class="theorem example">
 <p><span class="theorem-title"><strong>Ejemplo 10 (Un mínimo cuadrático, y un mínimo con una silla)</strong></span> <strong>Cuadrática.</strong> <span class="math inline">\(f(x,y) = x^2 + xy + y^2 - 3x - 3y = \tfrac12x'Ax - b'x\)</span> con <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span> y <span class="math inline">\(b = (3,3)'\)</span>. <span class="math inline">\(A\)</span> es definida positiva, y <span class="math inline">\(x^* = A^{-1}b\)</span> resuelve <span class="math inline">\(2x + y = 3\)</span>, <span class="math inline">\(x + 2y = 3\)</span>: <span class="math inline">\(x^* = (1,1)'\)</span>, con <span class="math inline">\(f(1,1) = 3 - 6 = -3\)</span>. Por el <a href="#thm-cuadratica" class="quarto-xref">Teorema&nbsp;6</a>, <span class="math inline">\(f(x) = -3 + \tfrac12(x - x^*)'A(x - x^*)\ge-3\)</span> ✓.</p>
+<p><strong>Cuadrática <span class="math inline">\(3\times3\)</span>.</strong> Sea <span class="math inline">\(f(x) = \tfrac12x'Kx - x_1\)</span>, con <span class="math inline">\(K\)</span> la matriz de la <a href="#exm-criterios" class="quarto-xref">Ejemplo&nbsp;5</a> (definida positiva) y <span class="math inline">\(b = (1,0,0)'\)</span>. La inversa es <span class="math inline">\(K^{-1} = \tfrac14\begin{pmatrix}3&amp;2&amp;1\\2&amp;4&amp;2\\1&amp;2&amp;3\end{pmatrix}\)</span> (se comprueba: la primera columna de <span class="math inline">\(K\cdot K^{-1}\)</span> es <span class="math inline">\(\tfrac14(6 - 2,\ -3 + 4 - 1,\ -2 + 2)' = (1,0,0)'\)</span>, y análogamente las otras), de modo que <span class="math inline">\(x^* = K^{-1}b = (\tfrac34,\tfrac12,\tfrac14)'\)</span> y <span class="math inline">\(f(x^*) = \tfrac12b'x^* - b'x^* = -\tfrac12b'x^* = -\tfrac38\)</span>. Para <span class="math inline">\(h = (0{,}1,\,-0{,}2,\,0{,}3)'\)</span>: <span class="math inline">\(\tfrac12h'Kh = \tfrac12(2\cdot0{,}01 + 2\cdot0{,}04 + 2\cdot0{,}09 + 2\cdot0{,}02 + 2\cdot0{,}06) = 0{,}22\)</span> y <span class="math inline">\(f(x^* + h) = -0{,}375 + 0{,}22 = -0{,}155\)</span>. Si en cambio <span class="math inline">\(A = \operatorname{diag}(1,1,-1)\)</span> y <span class="math inline">\(b = 0\)</span>, entonces <span class="math inline">\(f(te_3) = -\tfrac12t^2\to-\infty\)</span>: sin mínimo.</p>
 <p><strong>No cuadrática.</strong> <span class="math inline">\(f(x,y) = x^3 - 3x + y^2\)</span> tiene <span class="math inline">\(\nabla f = (3x^2 - 3,\ 2y)\)</span>, que se anula en <span class="math inline">\((1,0)\)</span> y <span class="math inline">\((-1,0)\)</span>. El Hessiano es <span class="math inline">\(H = \begin{pmatrix}6x&amp;0\\0&amp;2\end{pmatrix}\)</span>. En <span class="math inline">\((1,0)\)</span>: <span class="math inline">\(H = \operatorname{diag}(6,2)\)</span>, definido positivo, <strong>mínimo local</strong> con <span class="math inline">\(f = -2\)</span>. En <span class="math inline">\((-1,0)\)</span>: <span class="math inline">\(H = \operatorname{diag}(-6,2)\)</span>, indefinido, <strong>silla</strong> (<span class="math inline">\(f = 2\)</span>): a lo largo de <span class="math inline">\(x\)</span> la derivada segunda es <span class="math inline">\(-6&lt;0\)</span> (la función baja al alejarse del punto) y a lo largo de <span class="math inline">\(y\)</span> es <span class="math inline">\(2&gt;0\)</span> (sube) (<a href="#fig-hessiano" class="quarto-xref">Figura&nbsp;4</a>, izquierda).</p>
+<p><strong>No cuadrática <span class="math inline">\(3\times3\)</span>.</strong> <span class="math inline">\(f(x,y,z) = x^3 - 3x + y^2 + z^2 + yz\)</span> tiene <span class="math inline">\(\nabla f = (3x^2 - 3,\ 2y + z,\ y + 2z)\)</span>, que se anula solo en <span class="math inline">\((\pm1,0,0)\)</span> (el sistema <span class="math inline">\(2y + z = 0\)</span>, <span class="math inline">\(y + 2z = 0\)</span> tiene determinante <span class="math inline">\(3\ne0\)</span>, luego <span class="math inline">\(y = z = 0\)</span>). El Hessiano es <span class="math inline">\(H = \begin{pmatrix}6x&amp;0&amp;0\\0&amp;2&amp;1\\0&amp;1&amp;2\end{pmatrix}\)</span>, con valores propios <span class="math inline">\(6x\)</span>, <span class="math inline">\(1\)</span> y <span class="math inline">\(3\)</span> (los dos últimos, los del bloque <span class="math inline">\(\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span>). En <span class="math inline">\((1,0,0)\)</span>: <span class="math inline">\(6,1,3&gt;0\)</span>, <strong>mínimo local</strong> con <span class="math inline">\(f = -2\)</span>. En <span class="math inline">\((-1,0,0)\)</span>: <span class="math inline">\(-6,1,3\)</span>, <strong>silla</strong> con <span class="math inline">\(f = 2\)</span>.</p>
 </div>
 <div id="fig-hessiano" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -669,15 +781,15 @@ Figura&nbsp;4: Curvas de nivel de dos funciones con sus puntos críticos. <stron
 </section>
 <section id="modos-normales-de-vibración" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Modos normales de vibración</h1>
-<p>Tres masas iguales (de masa <span class="math inline">\(1\)</span>) se mueven sobre una recta, unidas entre sí y a dos paredes por resortes iguales de constante <span class="math inline">\(1\)</span>. Sea <span class="math inline">\(x_i\)</span> el desplazamiento de la masa <span class="math inline">\(i\)</span> desde su posición de reposo, con <span class="math inline">\(x_0 = x_{n+1} = 0\)</span> (las paredes). La ley de Hooke dice que cada resorte tira con fuerza igual a su estiramiento; sobre la masa <span class="math inline">\(i\)</span> actúan el resorte de la izquierda, que está estirado en <span class="math inline">\(x_i - x_{i-1}\)</span>, y el de la derecha, estirado en <span class="math inline">\(x_{i+1} - x_i\)</span>, así que la ley de Newton da <span class="math display">\[
+<p>Tres masas iguales (de masa <span class="math inline">\(1\)</span>) se mueven sobre una recta, unidas entre sí y a dos paredes por resortes iguales de constante <span class="math inline">\(1\)</span>. Sea <span class="math inline">\(x_i\)</span> el desplazamiento de la masa <span class="math inline">\(i\)</span> desde su posición de reposo, con <span class="math inline">\(x_0 = x_{n+1} = 0\)</span> (las paredes, que no se mueven). La ley de Hooke dice que cada resorte tira con fuerza igual a su estiramiento; sobre la masa <span class="math inline">\(i\)</span> actúan el resorte de la izquierda, que está estirado en <span class="math inline">\(x_i - x_{i-1}\)</span>, y el de la derecha, estirado en <span class="math inline">\(x_{i+1} - x_i\)</span>, así que la ley de Newton da <span class="math display">\[
 x_i'' = -(x_i - x_{i-1}) + (x_{i+1} - x_i) = x_{i-1} - 2x_i + x_{i+1},
 \]</span> es decir, <span class="math inline">\(x'' = -Kx\)</span>, con <span class="math inline">\(K = \begin{pmatrix}2&amp;-1&amp;0\\-1&amp;2&amp;-1\\0&amp;-1&amp;2\end{pmatrix}\)</span> para <span class="math inline">\(n = 3\)</span> y <span class="math inline">\(K = \begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix}\)</span> para <span class="math inline">\(n = 2\)</span>. Es simétrica. La <strong>energía potencial</strong> almacenada en los resortes es <span class="math inline">\(V = \tfrac12\bigl[x_1^2 + (x_2 - x_1)^2 + (x_3 - x_2)^2 + x_3^2\bigr]\)</span>, una suma de cuadrados; al expandir, <span class="math display">\[
 x'Kx = 2x_1^2 + 2x_2^2 + 2x_3^2 - 2x_1x_2 - 2x_2x_3 = x_1^2 + (x_2 - x_1)^2 + (x_3 - x_2)^2 + x_3^2,
 \]</span> así que <span class="math inline">\(V = \tfrac12x'Kx\)</span>. Esta suma es <span class="math inline">\(\ge0\)</span>, y es <span class="math inline">\(0\)</span> solo si <span class="math inline">\(x_1 = 0\)</span>, <span class="math inline">\(x_2 = x_1\)</span>, <span class="math inline">\(x_3 = x_2\)</span>, es decir, <span class="math inline">\(x = 0\)</span>. Luego <strong><span class="math inline">\(K\)</span> es definida positiva, sin calcular un solo valor propio</strong>: la positividad es la afirmación física “estirar un resorte cuesta energía”.</p>
 <div id="thm-modos" class="theorem">
-<p><span class="theorem-title"><strong>Teorema 7 (Modos normales)</strong></span> Sea <span class="math inline">\(K = Q\Lambda Q'\)</span> simétrica y definida positiva, <span class="math inline">\(\omega_i = \sqrt{\lambda_i}\)</span>. La solución de <span class="math inline">\(x'' = -Kx\)</span> con <span class="math inline">\(x(0) = x_0\)</span> y <span class="math inline">\(x'(0) = v_0\)</span> es <span class="math display">\[
-x(t) = \sum_{i=1}^nq_i\left(a_i\cos\omega_it + b_i\sin\omega_it\right),\qquad a_i = q_i'x_0,\quad b_i = \frac{q_i'v_0}{\omega_i}.
-\]</span> Cada <span class="math inline">\(q_i\)</span> es un <strong>modo normal</strong>: si el sistema parte de <span class="math inline">\(x_0 = q_i\)</span> (con <span class="math inline">\(v_0 = 0\)</span>), todas las masas oscilan en fase con la misma frecuencia <span class="math inline">\(\omega_i\)</span>.</p>
+<p><span class="theorem-title"><strong>Teorema 7 (Modos normales)</strong></span> Sea <span class="math inline">\(K = Q\Lambda Q'\)</span> simétrica y definida positiva, <span class="math inline">\(\omega_i = \sqrt{\lambda_i}\)</span>. La solución de <span class="math inline">\(x'' = -Kx\)</span> con <span class="math inline">\(x(0) = \xi\)</span> y <span class="math inline">\(x'(0) = \eta\)</span> es <span class="math display">\[
+x(t) = \sum_{i=1}^nq_i\left(a_i\cos\omega_it + b_i\sin\omega_it\right),\qquad a_i = q_i'\xi,\quad b_i = \frac{q_i'\eta}{\omega_i}.
+\]</span> Cada <span class="math inline">\(q_i\)</span> es un <strong>modo normal</strong>: si el sistema parte de <span class="math inline">\(\xi = q_i\)</span> (con <span class="math inline">\(\eta = 0\)</span>), todas las masas oscilan en fase con la misma frecuencia <span class="math inline">\(\omega_i\)</span>.</p>
 </div>
 <div class="callout callout-style-default callout-note callout-titled" title="Borrador">
 <div class="callout-header d-flex align-content-center">
@@ -693,11 +805,11 @@ x(t) = \sum_{i=1}^nq_i\left(a_i\cos\omega_it + b_i\sin\omega_it\right),\qquad a_
 </div>
 </div>
 <div class="proof">
-<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(y = Q'x\)</span>, con <span class="math inline">\(Q\)</span> constante. Entonces <span class="math inline">\(y'' = Q'x'' = -Q'Kx = -Q'KQy = -\Lambda y\)</span>, es decir, <span class="math inline">\(y_i'' = -\omega_i^2y_i\)</span> para cada <span class="math inline">\(i\)</span>, con <span class="math inline">\(y_i(0) = q_i'x_0 = a_i\)</span> y <span class="math inline">\(y_i'(0) = q_i'v_0\)</span>. La función <span class="math inline">\(y_i = a_i\cos\omega_it + (q_i'v_0/\omega_i)\sin\omega_it\)</span> cumple la ecuación (derivando dos veces cada término se obtiene <span class="math inline">\(-\omega_i^2\)</span> por el término) y las condiciones iniciales. Es la única: si <span class="math inline">\(z\)</span> es la diferencia de dos soluciones, <span class="math inline">\(z'' = -\omega^2z\)</span> con <span class="math inline">\(z(0) = z'(0) = 0\)</span>, y <span class="math inline">\(\frac{d}{dt}(z'^2 + \omega^2z^2) = 2z'(z'' + \omega^2z) = 0\)</span>, así que <span class="math inline">\(z'^2 + \omega^2z^2\)</span> es constante e igual a <span class="math inline">\(0\)</span> en <span class="math inline">\(t = 0\)</span>; luego <span class="math inline">\(z\equiv0\)</span>. Finalmente <span class="math inline">\(x = Qy = \sum_iy_iq_i\)</span>.</p>
+<p><span class="proof-title"><em>Demostración</em>. </span>Sea <span class="math inline">\(y = Q'x\)</span>, con <span class="math inline">\(Q\)</span> constante. Entonces <span class="math inline">\(y'' = Q'x'' = -Q'Kx = -Q'KQy = -\Lambda y\)</span>, es decir, <span class="math inline">\(y_i'' = -\omega_i^2y_i\)</span> para cada <span class="math inline">\(i\)</span>, con <span class="math inline">\(y_i(0) = q_i'\xi = a_i\)</span> y <span class="math inline">\(y_i'(0) = q_i'\eta\)</span>. La función <span class="math inline">\(y_i = a_i\cos\omega_it + (q_i'\eta/\omega_i)\sin\omega_it\)</span> cumple la ecuación (derivando dos veces cada término se obtiene <span class="math inline">\(-\omega_i^2\)</span> por el término) y las condiciones iniciales. Es la única: si <span class="math inline">\(z\)</span> es la diferencia de dos soluciones, <span class="math inline">\(z'' = -\omega^2z\)</span> con <span class="math inline">\(z(0) = z'(0) = 0\)</span>, y <span class="math inline">\(\frac{d}{dt}(z'^2 + \omega^2z^2) = 2z'(z'' + \omega^2z) = 0\)</span>, así que <span class="math inline">\(z'^2 + \omega^2z^2\)</span> es constante e igual a <span class="math inline">\(0\)</span> en <span class="math inline">\(t = 0\)</span>; luego <span class="math inline">\(z\equiv0\)</span>. Finalmente <span class="math inline">\(x = Qy = \sum_iy_iq_i\)</span>.</p>
 </div>
 <p>Si <span class="math inline">\(K\)</span> tuviera un valor propio negativo, <span class="math inline">\(\omega\)</span> sería imaginario y aparecerían exponenciales crecientes (Clase 7): un sistema inestable. La definición positiva de <span class="math inline">\(K\)</span> es lo que garantiza la oscilación.</p>
 <div id="exm-2masas" class="theorem example">
-<p><span class="theorem-title"><strong>Ejemplo 11 (Dos masas)</strong></span> <span class="math inline">\(K = \begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix}\)</span> tiene valores propios <span class="math inline">\(1\)</span> y <span class="math inline">\(3\)</span> (traza <span class="math inline">\(4\)</span>, determinante <span class="math inline">\(3\)</span>) y vectores propios <span class="math inline">\(q_1 = \tfrac1{\sqrt2}(1,1)'\)</span> (las masas se mueven <strong>juntas</strong>, con <span class="math inline">\(\omega_1 = 1\)</span>) y <span class="math inline">\(q_2 = \tfrac1{\sqrt2}(1,-1)'\)</span> (se mueven en <strong>sentidos opuestos</strong>, con <span class="math inline">\(\omega_2 = \sqrt3\)</span>; el resorte del medio se estira más, por eso la frecuencia es mayor). Si se tira de la masa 1 hasta <span class="math inline">\(x_0 = (1,0)'\)</span> y se suelta (<span class="math inline">\(v_0 = 0\)</span>): <span class="math inline">\(a_1 = q_1'x_0 = 1/\sqrt2\)</span> y <span class="math inline">\(a_2 = 1/\sqrt2\)</span>, así que <span class="math display">\[
+<p><span class="theorem-title"><strong>Ejemplo 11 (Dos masas)</strong></span> <span class="math inline">\(K = \begin{pmatrix}2&amp;-1\\-1&amp;2\end{pmatrix}\)</span> tiene valores propios <span class="math inline">\(1\)</span> y <span class="math inline">\(3\)</span> (traza <span class="math inline">\(4\)</span>, determinante <span class="math inline">\(3\)</span>) y vectores propios <span class="math inline">\(q_1 = \tfrac1{\sqrt2}(1,1)'\)</span> (las masas se mueven <strong>juntas</strong>, con <span class="math inline">\(\omega_1 = 1\)</span>) y <span class="math inline">\(q_2 = \tfrac1{\sqrt2}(1,-1)'\)</span> (se mueven en <strong>sentidos opuestos</strong>, con <span class="math inline">\(\omega_2 = \sqrt3\)</span>; el resorte del medio se estira más, por eso la frecuencia es mayor). Si se tira de la masa 1 hasta <span class="math inline">\(\xi = (1,0)'\)</span> y se suelta (<span class="math inline">\(\eta = 0\)</span>): <span class="math inline">\(a_1 = q_1'\xi = 1/\sqrt2\)</span> y <span class="math inline">\(a_2 = 1/\sqrt2\)</span>, así que <span class="math display">\[
 x(t) = \tfrac1{\sqrt2}\,q_1\cos t + \tfrac1{\sqrt2}\,q_2\cos\sqrt3t = \tfrac12\begin{pmatrix}1\\1\end{pmatrix}\cos t + \tfrac12\begin{pmatrix}1\\-1\end{pmatrix}\cos\sqrt3t,
 \]</span> o sea <span class="math inline">\(x_1 = \tfrac12(\cos t + \cos\sqrt3t)\)</span> y <span class="math inline">\(x_2 = \tfrac12(\cos t - \cos\sqrt3t)\)</span>. Verificación: <span class="math inline">\(x(0) = (1,0)'\)</span> ✓ y <span class="math inline">\(x''(0) = -\tfrac12(1,1)' - \tfrac32(1,-1)' = (-2,1)' = -Kx(0)\)</span> ✓. La energía pasa de una masa a la otra (<a href="#fig-modos" class="quarto-xref">Figura&nbsp;5</a>, izquierda).</p>
 </div>
@@ -705,7 +817,7 @@ x(t) = \tfrac1{\sqrt2}\,q_1\cos t + \tfrac1{\sqrt2}\,q_2\cos\sqrt3t = \tfrac12\b
 <p><span class="theorem-title"><strong>Ejemplo 12 (Tres masas)</strong></span> Los valores propios de <span class="math inline">\(K\)</span> (<a href="#exm-criterios" class="quarto-xref">Ejemplo&nbsp;5</a>) son <span class="math inline">\(2 - \sqrt2\)</span>, <span class="math inline">\(2\)</span> y <span class="math inline">\(2 + \sqrt2\)</span>, y los vectores propios son <span class="math display">\[
 v_1 = \begin{pmatrix}1\\\sqrt2\\1\end{pmatrix},\quad v_2 = \begin{pmatrix}1\\0\\-1\end{pmatrix},\quad v_3 = \begin{pmatrix}1\\-\sqrt2\\1\end{pmatrix}.
 \]</span> Verificación de <span class="math inline">\(v_2\)</span>: <span class="math inline">\(Kv_2 = (2\cdot1 - 0,\ -1 + 0 + 1,\ 0 - 2)' = (2,0,-2)' = 2v_2\)</span> ✓. De <span class="math inline">\(v_1\)</span>: <span class="math inline">\(Kv_1 = (2 - \sqrt2,\ -1 + 2\sqrt2 - 1,\ -\sqrt2 + 2)' = (2 - \sqrt2,\ 2\sqrt2 - 2,\ 2 - \sqrt2)' = (2 - \sqrt2)(1,\sqrt2,1)'\)</span> ✓ (porque <span class="math inline">\((2 - \sqrt2)\sqrt2 = 2\sqrt2 - 2\)</span>). Las frecuencias son <span class="math inline">\(\omega_1 = \sqrt{2 - \sqrt2}\approx0{,}765\)</span>, <span class="math inline">\(\omega_2 = \sqrt2\approx1{,}414\)</span> y <span class="math inline">\(\omega_3 = \sqrt{2 + \sqrt2}\approx1{,}848\)</span>. En el modo 1 las tres masas van juntas, con la del medio más lejos; en el modo 2 la del medio queda quieta y las de los extremos van en sentidos opuestos; en el modo 3 la del medio va contra las otras dos (<a href="#fig-modos" class="quarto-xref">Figura&nbsp;5</a>).</p>
-<p>Si solo se desplaza la masa 1 (<span class="math inline">\(x_0 = (1,0,0)'\)</span>, <span class="math inline">\(v_0 = 0\)</span>), los coeficientes son <span class="math inline">\(a_i = q_i'x_0\)</span> con <span class="math inline">\(q_1 = v_1/2\)</span>, <span class="math inline">\(q_2 = v_2/\sqrt2\)</span>, <span class="math inline">\(q_3 = v_3/2\)</span>: <span class="math inline">\(a_1 = \tfrac12\)</span>, <span class="math inline">\(a_2 = \tfrac1{\sqrt2}\)</span>, <span class="math inline">\(a_3 = \tfrac12\)</span>, y <span class="math display">\[
+<p>Si solo se desplaza la masa 1 (<span class="math inline">\(\xi = (1,0,0)'\)</span>, <span class="math inline">\(\eta = 0\)</span>), los coeficientes son <span class="math inline">\(a_i = q_i'\xi\)</span> con <span class="math inline">\(q_1 = v_1/2\)</span>, <span class="math inline">\(q_2 = v_2/\sqrt2\)</span>, <span class="math inline">\(q_3 = v_3/2\)</span>: <span class="math inline">\(a_1 = \tfrac12\)</span>, <span class="math inline">\(a_2 = \tfrac1{\sqrt2}\)</span>, <span class="math inline">\(a_3 = \tfrac12\)</span>, y <span class="math display">\[
 x(t) = \tfrac14v_1\cos\omega_1t + \tfrac12v_2\cos\omega_2t + \tfrac14v_3\cos\omega_3t.
 \]</span> En <span class="math inline">\(t = 0\)</span>: <span class="math inline">\(\tfrac14(1,\sqrt2,1) + \tfrac12(1,0,-1) + \tfrac14(1,-\sqrt2,1) = (1,0,0)\)</span> ✓.</p>
 </div>
@@ -724,12 +836,25 @@ Figura&nbsp;5: <strong>Izquierda:</strong> dos masas con <span class="math inlin
 <h1 data-number="9"><span class="header-section-number">9</span> El tensor de inercia</h1>
 <p>Un cuerpo rígido formado por masas puntuales <span class="math inline">\(m_i\)</span> en las posiciones <span class="math inline">\(r_i\in\mathbb{R}^3\)</span> gira alrededor del origen con velocidad angular <span class="math inline">\(\omega\in\mathbb{R}^3\)</span> (el vector <span class="math inline">\(\omega\)</span> apunta a lo largo del eje de giro y su largo es la velocidad de giro). Cada masa tiene velocidad <span class="math inline">\(v_i = \omega\times r_i\)</span> (producto cruz).</p>
 <div id="prp-inercia" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposición 5 (Energía y momento angular)</strong></span> Sea <span class="math inline">\(I = \sum_im_i\bigl(\|r_i\|^2\,\mathrm{Id} - r_ir_i'\bigr)\)</span> (el <strong>tensor de inercia</strong>, simétrico <span class="math inline">\(3\times3\)</span>, donde <span class="math inline">\(\mathrm{Id}\)</span> es la identidad). Entonces la energía cinética es <span class="math inline">\(T = \tfrac12\omega'I\omega\)</span> y el momento angular, <span class="math inline">\(L = \sum m_i\,r_i\times v_i = I\omega\)</span>. Además <span class="math inline">\(I\)</span> es semidefinida positiva, y definida positiva si y solo si las masas no están todas sobre una misma recta por el origen.</p>
+<p><span class="theorem-title"><strong>Proposición 5 (Energía y momento angular)</strong></span> Con masas <span class="math inline">\(m_i&gt;0\)</span>, sea <span class="math inline">\(I = \sum_im_i\bigl(\|r_i\|^2\,\mathrm{Id} - r_ir_i'\bigr)\)</span> (el <strong>tensor de inercia</strong>, simétrico <span class="math inline">\(3\times3\)</span>, donde <span class="math inline">\(\mathrm{Id}\)</span> es la identidad). Entonces la energía cinética es <span class="math inline">\(T = \tfrac12\omega'I\omega\)</span> y el momento angular, <span class="math inline">\(L = \sum m_i\,r_i\times v_i = I\omega\)</span>. Además <span class="math inline">\(I\)</span> es semidefinida positiva, y definida positiva si y solo si las masas no están todas sobre una misma recta por el origen.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La identidad de Lagrange convierte <span class="math inline">\(\|\omega\times r\|^2\)</span> en la forma cuadrática <span class="math inline">\(\omega'(\|r\|^2\mathrm{Id} - rr')\omega\)</span>, que da <span class="math inline">\(T\)</span> y la semidefinición. El momento angular sale del triple producto vectorial.</p>
+</div>
 </div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Por la identidad de Lagrange, <span class="math inline">\(\|\omega\times r\|^2 = \|\omega\|^2\|r\|^2 - (\omega\cdot r)^2 = \omega'(\|r\|^2\mathrm{Id} - rr')\omega\)</span>. Entonces <span class="math inline">\(T = \tfrac12\sum m_i\|v_i\|^2 = \tfrac12\omega'I\omega\)</span>. Para el momento angular, <span class="math inline">\(r\times(\omega\times r) = \omega\|r\|^2 - r(r\cdot\omega)\)</span> (identidad del triple producto vectorial), y sumando, <span class="math inline">\(L = \sum m_i(\|r_i\|^2\omega - r_i(r_i\cdot\omega)) = I\omega\)</span>. Como <span class="math inline">\(x'Ix = \sum m_i\|x\times r_i\|^2\ge0\)</span> (misma identidad), <span class="math inline">\(I\)</span> es semidefinida positiva; vale <span class="math inline">\(0\)</span> para <span class="math inline">\(x\ne0\)</span> si y solo si <span class="math inline">\(x\times r_i = 0\)</span> para todo <span class="math inline">\(i\)</span>, es decir, si todos los <span class="math inline">\(r_i\)</span> son paralelos a <span class="math inline">\(x\)</span>.</p>
 </div>
-<p>Los <strong>momentos de inercia</strong> son los valores propios de <span class="math inline">\(I\)</span> y los <strong>ejes principales</strong> son sus vectores propios. Si el cuerpo gira alrededor de un eje principal (<span class="math inline">\(\omega = \omega_0q\)</span>, <span class="math inline">\(Iq = \lambda q\)</span>), entonces <span class="math inline">\(L = \lambda\omega\)</span> es paralelo a <span class="math inline">\(\omega\)</span> y el giro es estable; alrededor de cualquier otro eje, <span class="math inline">\(L\)</span> <strong>no</strong> es paralelo a <span class="math inline">\(\omega\)</span>, y el eje de giro se bambolea. Por el <a href="#thm-rayleigh" class="quarto-xref">Teorema&nbsp;5</a>, la inercia alrededor de un eje unitario <span class="math inline">\(u\)</span> es <span class="math inline">\(u'Iu = R(u)\)</span>, con extremos <span class="math inline">\(\lambda_1\)</span> y <span class="math inline">\(\lambda_3\)</span>.</p>
+<p>Los <strong>momentos de inercia</strong> son los valores propios de <span class="math inline">\(I\)</span> y los <strong>ejes principales</strong> son sus vectores propios. Si el cuerpo gira alrededor de un eje principal (<span class="math inline">\(\omega = \omega_0q\)</span>, <span class="math inline">\(Iq = \lambda q\)</span>), entonces <span class="math inline">\(L = \lambda\omega\)</span> es paralelo a <span class="math inline">\(\omega\)</span> y el giro es estacionario (el eje no se bambolea; es además estable si el eje es el de mayor o el de menor inercia, pero no el de inercia intermedia, como muestra una raqueta de tenis lanzada al aire); alrededor de cualquier otro eje, <span class="math inline">\(L\)</span> <strong>no</strong> es paralelo a <span class="math inline">\(\omega\)</span>, y el eje de giro se bambolea. Por el <a href="#thm-rayleigh" class="quarto-xref">Teorema&nbsp;5</a>, la inercia alrededor de un eje unitario <span class="math inline">\(u\)</span> es <span class="math inline">\(u'Iu = R(u)\)</span>, con extremos <span class="math inline">\(\lambda_1\)</span> y <span class="math inline">\(\lambda_3\)</span>.</p>
 <div id="exm-inercia" class="theorem example">
 <p><span class="theorem-title"><strong>Ejemplo 13 (Una mancuerna)</strong></span> Dos masas de <span class="math inline">\(1\)</span> en <span class="math inline">\(r = (1,1,0)'\)</span> y <span class="math inline">\(-r\)</span>, con <span class="math inline">\(\|r\|^2 = 2\)</span> y <span class="math inline">\(rr' = \begin{pmatrix}1&amp;1&amp;0\\1&amp;1&amp;0\\0&amp;0&amp;0\end{pmatrix}\)</span> (igual para <span class="math inline">\(-r\)</span>). Entonces <span class="math display">\[
 I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;1&amp;0\\0&amp;0&amp;2\end{pmatrix} = \begin{pmatrix}2&amp;-2&amp;0\\-2&amp;2&amp;0\\0&amp;0&amp;4\end{pmatrix}.
@@ -777,6 +902,19 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 <div id="cor-monotonia" class="theorem corollary">
 <p><span class="theorem-title"><strong>Corolario 2 (Monotonía de los valores propios)</strong></span> Si <span class="math inline">\(A\)</span> es simétrica y <span class="math inline">\(B\)</span> es simétrica semidefinida positiva, entonces <span class="math inline">\(\lambda_k(A + B)\ge\lambda_k(A)\)</span> para todo <span class="math inline">\(k\)</span>.</p>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="Borrador">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Borrador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sumar <span class="math inline">\(B\)</span> semidefinida no puede bajar el cociente de Rayleigh en ningún vector. Esa desigualdad pasa al máximo sobre cada subespacio y luego al mínimo sobre los subespacios, que es <span class="math inline">\(\lambda_k\)</span> por Courant–Fischer.</p>
+</div>
+</div>
 <div class="proof">
 <p><span class="proof-title"><em>Demostración</em>. </span>Para todo <span class="math inline">\(x\ne0\)</span>, <span class="math inline">\(R_{A+B}(x) = R_A(x) + x'Bx/x'x\ge R_A(x)\)</span>. Por lo tanto <span class="math inline">\(\max_SR_{A+B}\ge\max_SR_A\)</span> para cada subespacio <span class="math inline">\(S\)</span>, y al tomar el mínimo sobre los <span class="math inline">\(S\)</span> de dimensión <span class="math inline">\(k\)</span> se conserva la desigualdad; por el <a href="#thm-courant" class="quarto-xref">Teorema&nbsp;8</a>, <span class="math inline">\(\lambda_k(A + B)\ge\lambda_k(A)\)</span>.</p>
 </div>
@@ -799,7 +937,7 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 <h1 data-number="11"><span class="header-section-number">11</span> Resumen</h1>
 <ul>
 <li><strong>Teorema espectral:</strong> una matriz real simétrica tiene valores propios <strong>reales</strong> y una base <strong>ortonormal</strong> de vectores propios: <span class="math inline">\(A = Q\Lambda Q' = \sum\lambda_iq_iq_i'\)</span> (<a href="#thm-espectral" class="quarto-xref">Teorema&nbsp;1</a>, <a href="#cor-espectral" class="quarto-xref">Corolario&nbsp;1</a>). Es simétrica si y solo si se diagonaliza con una base ortonormal.</li>
-<li><strong>Ejes principales:</strong> con <span class="math inline">\(y = Q'x\)</span>, <span class="math inline">\(x'Ax = \sum\lambda_iy_i^2\)</span> (<a href="#thm-ejes" class="quarto-xref">Teorema&nbsp;2</a>). El conjunto <span class="math inline">\(x'Ax = 1\)</span> es una elipse o un elipsoide de semiejes <span class="math inline">\(1/\sqrt{\lambda_i}\)</span> si todos los <span class="math inline">\(\lambda_i&gt;0\)</span>; hipérbola si hay signos mixtos; rectas o cilindro si hay un <span class="math inline">\(\lambda_i = 0\)</span>.</li>
+<li><strong>Ejes principales:</strong> con <span class="math inline">\(y = Q'x\)</span>, <span class="math inline">\(x'Ax = \sum\lambda_iy_i^2\)</span> (<a href="#thm-ejes" class="quarto-xref">Teorema&nbsp;2</a>). El conjunto <span class="math inline">\(x'Ax = 1\)</span> es una elipse o un elipsoide de semiejes <span class="math inline">\(1/\sqrt{\lambda_i}\)</span> si todos los <span class="math inline">\(\lambda_i&gt;0\)</span>; hipérbola si hay signos mixtos; rectas o cilindro si hay un <span class="math inline">\(\lambda_i = 0\)</span> y los demás son positivos.</li>
 <li><strong>Definida positiva</strong> (<a href="#thm-criterios" class="quarto-xref">Teorema&nbsp;3</a>): equivale a todos los <span class="math inline">\(\lambda_i&gt;0\)</span>, a <span class="math inline">\(A = R'R\)</span> con <span class="math inline">\(R\)</span> invertible, a todos los pivotes <span class="math inline">\(&gt;0\)</span> y a todos los menores principales <span class="math inline">\(&gt;0\)</span>. <span class="math inline">\(A'A\)</span> es definida positiva si y solo si las columnas de <span class="math inline">\(A\)</span> son independientes (<a href="#prp-ata" class="quarto-xref">Proposición&nbsp;3</a>).</li>
 <li><strong>Cholesky:</strong> <span class="math inline">\(A = LL'\)</span>, única con diagonal positiva (<a href="#thm-cholesky" class="quarto-xref">Teorema&nbsp;4</a>); cuesta <span class="math inline">\(n^3/3\)</span>, sin pivoteo, y falla exactamente cuando <span class="math inline">\(A\)</span> no es definida positiva.</li>
 <li><strong>Rayleigh:</strong> <span class="math inline">\(\lambda_1\le R(x)\le\lambda_n\)</span> y los extremos se alcanzan en los vectores propios (<a href="#thm-rayleigh" class="quarto-xref">Teorema&nbsp;5</a>).</li>
@@ -812,7 +950,7 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 <h1 data-number="12"><span class="header-section-number">12</span> Ejercicios</h1>
 <p><strong>Ejercicio 8.1.</strong> Sea <span class="math inline">\(A = \begin{pmatrix}5&amp;2\\2&amp;2\end{pmatrix}\)</span>. (a) Calcula los valores propios y un par de vectores propios unitarios perpendiculares. (b) Escribe <span class="math inline">\(A = 6P_1 + 1\cdot P_2\)</span> con las dos proyecciones. (c) Usa (b) para calcular <span class="math inline">\(A^5\)</span>. (d) Describe la curva <span class="math inline">\(5x^2 + 4xy + 2y^2 = 1\)</span> y calcula <span class="math inline">\(R(1,0)\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.1">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -821,7 +959,7 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
 <li><p><span class="math inline">\(\tau = 7\)</span>, <span class="math inline">\(\Delta = 10 - 4 = 6\)</span>, <span class="math inline">\(p(\lambda) = \lambda^2 - 7\lambda + 6 = (\lambda - 6)(\lambda - 1)\)</span>. Para <span class="math inline">\(\lambda = 6\)</span>: <span class="math inline">\(A - 6I = \begin{pmatrix}-1&amp;2\\2&amp;-4\end{pmatrix}\)</span>, <span class="math inline">\(x_1 = 2x_2\)</span>, <span class="math inline">\(v_1 = (2,1)'\)</span>. Para <span class="math inline">\(\lambda = 1\)</span>: <span class="math inline">\(A - I = \begin{pmatrix}4&amp;2\\2&amp;1\end{pmatrix}\)</span>, <span class="math inline">\(2x_1 + x_2 = 0\)</span>, <span class="math inline">\(v_2 = (1,-2)'\)</span>. Son perpendiculares (<span class="math inline">\(2 - 2 = 0\)</span>). Unitarios: <span class="math inline">\(q_1 = \tfrac1{\sqrt5}(2,1)'\)</span>, <span class="math inline">\(q_2 = \tfrac1{\sqrt5}(1,-2)'\)</span>.</p></li>
@@ -834,7 +972,7 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 </div>
 <p><strong>Ejercicio 8.2.</strong> Sea <span class="math inline">\(A = \begin{pmatrix}2&amp;0&amp;0\\0&amp;3&amp;1\\0&amp;1&amp;3\end{pmatrix}\)</span>. (a) Encuentra una base ortonormal de vectores propios y escribe <span class="math inline">\(A = 2P_2 + 4P_4\)</span> con <span class="math inline">\(P_2\)</span> la proyección sobre el espacio propio de <span class="math inline">\(\lambda = 2\)</span> y <span class="math inline">\(P_4\)</span> sobre el de <span class="math inline">\(\lambda = 4\)</span>. (b) Calcula la raíz cuadrada <span class="math inline">\(\sqrt A = \sqrt2\,P_2 + 2P_4\)</span> y verifica que <span class="math inline">\((\sqrt A)^2 = A\)</span>. (c) Calcula <span class="math inline">\(R(x)\)</span> para <span class="math inline">\(x = (1,1,0)'\)</span> y compara con los valores propios.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.2">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -843,7 +981,7 @@ I = 2\left(2\,\mathrm{Id} - rr'\right) = 2\begin{pmatrix}1&amp;-1&amp;0\\-1&amp;
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
 <li><p><span class="math inline">\(A\)</span> es diagonal por bloques: <span class="math inline">\(\lambda = 2\)</span> del primer bloque, y <span class="math inline">\(\begin{pmatrix}3&amp;1\\1&amp;3\end{pmatrix}\)</span> tiene <span class="math inline">\(\lambda^2 - 6\lambda + 8 = (\lambda - 2)(\lambda - 4)\)</span>. Valores propios <span class="math inline">\(2,2,4\)</span>. Para <span class="math inline">\(\lambda = 2\)</span>: <span class="math inline">\(A - 2I = \begin{pmatrix}0&amp;0&amp;0\\0&amp;1&amp;1\\0&amp;1&amp;1\end{pmatrix}\)</span> da <span class="math inline">\(x_2 + x_3 = 0\)</span>, un plano con base ortonormal <span class="math inline">\(q_1 = (1,0,0)'\)</span> y <span class="math inline">\(q_2 = \tfrac1{\sqrt2}(0,1,-1)'\)</span>. Para <span class="math inline">\(\lambda = 4\)</span>: <span class="math inline">\(A - 4I = \begin{pmatrix}-2&amp;0&amp;0\\0&amp;-1&amp;1\\0&amp;1&amp;-1\end{pmatrix}\)</span> da <span class="math inline">\(x_1 = 0\)</span>, <span class="math inline">\(x_2 = x_3\)</span>: <span class="math inline">\(q_3 = \tfrac1{\sqrt2}(0,1,1)'\)</span>. Las proyecciones son <span class="math display">\[
@@ -859,7 +997,7 @@ P_4 = q_3q_3' = \begin{pmatrix}0&amp;0&amp;0\\0&amp;\tfrac12&amp;\tfrac12\\0&amp
 </div>
 <p><strong>Ejercicio 8.3.</strong> Decide si cada matriz es definida positiva, semidefinida (no definida), o indefinida, y justifica con el criterio que prefieras: (a) <span class="math inline">\(\begin{pmatrix}2&amp;4\\4&amp;5\end{pmatrix}\)</span>; (b) <span class="math inline">\(\begin{pmatrix}1&amp;1&amp;1\\1&amp;2&amp;2\\1&amp;2&amp;3\end{pmatrix}\)</span>; (c) <span class="math inline">\(\begin{pmatrix}1&amp;2\\2&amp;4\end{pmatrix}\)</span>; (d) <span class="math inline">\(\begin{pmatrix}1&amp;a\\a&amp;4\end{pmatrix}\)</span>, según <span class="math inline">\(a\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.3">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -868,7 +1006,7 @@ P_4 = q_3q_3' = \begin{pmatrix}0&amp;0&amp;0\\0&amp;\tfrac12&amp;\tfrac12\\0&amp
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
 <li><p>Menores: <span class="math inline">\(2\)</span> y <span class="math inline">\(\det = 10 - 16 = -6&lt;0\)</span>. No es definida positiva y, como <span class="math inline">\(\det&lt;0\)</span>, los dos valores propios tienen signos opuestos: <strong>indefinida</strong>. Vectores que lo muestran: <span class="math inline">\(x = (1,0)'\)</span> da <span class="math inline">\(x'Ax = 2&gt;0\)</span> y <span class="math inline">\(x = (2,-1)'\)</span> da <span class="math inline">\(2\cdot4 + 8\cdot(2)(-1) + 5 = 8 - 16 + 5 = -3&lt;0\)</span>.</p></li>
@@ -881,7 +1019,7 @@ P_4 = q_3q_3' = \begin{pmatrix}0&amp;0&amp;0\\0&amp;\tfrac12&amp;\tfrac12\\0&amp
 </div>
 <p><strong>Ejercicio 8.4.</strong> Calcula la factorización de Cholesky de <span class="math inline">\(A = \begin{pmatrix}9&amp;3&amp;6\\3&amp;5&amp;4\\6&amp;4&amp;6\end{pmatrix}\)</span>, el determinante de <span class="math inline">\(A\)</span>, y resuelve <span class="math inline">\(Ax = b\)</span> con <span class="math inline">\(b = (18,6,14)'\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.4">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -890,7 +1028,7 @@ P_4 = q_3q_3' = \begin{pmatrix}0&amp;0&amp;0\\0&amp;\tfrac12&amp;\tfrac12\\0&amp
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Columna 1: <span class="math inline">\(l_{11} = \sqrt9 = 3\)</span>, <span class="math inline">\(l_{21} = 3/3 = 1\)</span>, <span class="math inline">\(l_{31} = 6/3 = 2\)</span>. Columna 2: <span class="math inline">\(l_{22} = \sqrt{5 - 1^2} = 2\)</span>, <span class="math inline">\(l_{32} = (4 - 2\cdot1)/2 = 1\)</span>. Columna 3: <span class="math inline">\(l_{33} = \sqrt{6 - 2^2 - 1^2} = 1\)</span>. Así <span class="math display">\[
 L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qquad LL' = \begin{pmatrix}9&amp;3&amp;6\\3&amp;1 + 4&amp;2 + 2\\6&amp;2 + 2&amp;4 + 1 + 1\end{pmatrix} = A\ \checkmark
@@ -900,7 +1038,7 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 <p><strong>Ejercicio 8.5.</strong> Sea <span class="math inline">\(g(x,y) = x^3 + y^3 - 3xy\)</span>. Encuentra sus puntos críticos y clasifícalos con el Hessiano. ¿Es el mínimo local un mínimo global?</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.5">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -909,7 +1047,7 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><span class="math inline">\(\nabla g = (3x^2 - 3y,\ 3y^2 - 3x)\)</span>. De <span class="math inline">\(y = x^2\)</span> y <span class="math inline">\(x = y^2\)</span> sale <span class="math inline">\(x = x^4\)</span>, es decir <span class="math inline">\(x(x^3 - 1) = 0\)</span>: <span class="math inline">\(x = 0\)</span> o <span class="math inline">\(x = 1\)</span>. Los puntos críticos son <span class="math inline">\((0,0)\)</span> y <span class="math inline">\((1,1)\)</span>. El Hessiano es <span class="math inline">\(H = \begin{pmatrix}6x&amp;-3\\-3&amp;6y\end{pmatrix}\)</span>.</p>
 <p>En <span class="math inline">\((0,0)\)</span>: <span class="math inline">\(H = \begin{pmatrix}0&amp;-3\\-3&amp;0\end{pmatrix}\)</span>, con <span class="math inline">\(\det = -9&lt;0\)</span> (valores propios <span class="math inline">\(\pm3\)</span>): <strong>indefinido, silla</strong>. Se comprueba: <span class="math inline">\(g(t,t) = 2t^3 - 3t^2&lt;0\)</span> para <span class="math inline">\(0&lt;t&lt;\tfrac32\)</span>, y <span class="math inline">\(g(t,-t) = 3t^2&gt;0\)</span>.</p>
@@ -918,9 +1056,9 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 </div>
 </div>
-<p><strong>Ejercicio 8.6.</strong> En el sistema de tres masas, tira de la masa 1 hasta <span class="math inline">\(x_0 = (1,0,0)'\)</span> y suéltala. (a) Calcula los coeficientes <span class="math inline">\(a_i = q_i'x_0\)</span>. (b) Escribe <span class="math inline">\(x(t)\)</span>. (c) Verifica la ecuación de movimiento en <span class="math inline">\(t = 0\)</span>: <span class="math inline">\(x''(0) = -Kx(0)\)</span>.</p>
+<p><strong>Ejercicio 8.6.</strong> En el sistema de tres masas, tira de la masa 1 hasta <span class="math inline">\(\xi = (1,0,0)'\)</span> y suéltala. (a) Calcula los coeficientes <span class="math inline">\(a_i = q_i'\xi\)</span>. (b) Escribe <span class="math inline">\(x(t)\)</span>. (c) Verifica la ecuación de movimiento en <span class="math inline">\(t = 0\)</span>: <span class="math inline">\(x''(0) = -Kx(0)\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.6">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -929,10 +1067,10 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
-<li><p>Los vectores propios unitarios son <span class="math inline">\(q_1 = \tfrac12(1,\sqrt2,1)'\)</span>, <span class="math inline">\(q_2 = \tfrac1{\sqrt2}(1,0,-1)'\)</span>, <span class="math inline">\(q_3 = \tfrac12(1,-\sqrt2,1)'\)</span>. Con <span class="math inline">\(x_0 = e_1\)</span>: <span class="math inline">\(a_1 = \tfrac12\)</span>, <span class="math inline">\(a_2 = \tfrac1{\sqrt2}\)</span>, <span class="math inline">\(a_3 = \tfrac12\)</span>. Como <span class="math inline">\(v_0 = 0\)</span>, todos los <span class="math inline">\(b_i = 0\)</span>.</p></li>
+<li><p>Los vectores propios unitarios son <span class="math inline">\(q_1 = \tfrac12(1,\sqrt2,1)'\)</span>, <span class="math inline">\(q_2 = \tfrac1{\sqrt2}(1,0,-1)'\)</span>, <span class="math inline">\(q_3 = \tfrac12(1,-\sqrt2,1)'\)</span>. Con <span class="math inline">\(\xi = e_1\)</span>: <span class="math inline">\(a_1 = \tfrac12\)</span>, <span class="math inline">\(a_2 = \tfrac1{\sqrt2}\)</span>, <span class="math inline">\(a_3 = \tfrac12\)</span>. Como <span class="math inline">\(\eta = 0\)</span>, todos los <span class="math inline">\(b_i = 0\)</span>.</p></li>
 <li><p><span class="math inline">\(x(t) = \tfrac14(1,\sqrt2,1)'\cos\omega_1t + \tfrac12(1,0,-1)'\cos\sqrt2\,t + \tfrac14(1,-\sqrt2,1)'\cos\omega_3t\)</span>, con <span class="math inline">\(\omega_1 = \sqrt{2 - \sqrt2}\)</span> y <span class="math inline">\(\omega_3 = \sqrt{2 + \sqrt2}\)</span> (se obtiene de <span class="math inline">\(a_iq_i\)</span> con los vectores sin normalizar).</p></li>
 <li><p>Derivando dos veces, <span class="math inline">\(x''(0) = -\tfrac14\lambda_1(1,\sqrt2,1)' - \tfrac12\cdot2\,(1,0,-1)' - \tfrac14\lambda_3(1,-\sqrt2,1)'\)</span> con <span class="math inline">\(\lambda_1 = 2 - \sqrt2\)</span> y <span class="math inline">\(\lambda_3 = 2 + \sqrt2\)</span>. Primera componente: <span class="math inline">\(-\tfrac14(\lambda_1 + \lambda_3) - 1 = -\tfrac14\cdot4 - 1 = -2\)</span>. Segunda: <span class="math inline">\(\tfrac{\sqrt2}4(\lambda_3 - \lambda_1) = \tfrac{\sqrt2}4\cdot2\sqrt2 = 1\)</span>. Tercera: <span class="math inline">\(-\tfrac14(\lambda_1 + \lambda_3) + 1 = 0\)</span>. Entonces <span class="math inline">\(x''(0) = (-2,1,0)'\)</span>, y <span class="math inline">\(-Kx(0) = -(2,-1,0)' = (-2,1,0)'\)</span> ✓.</p></li>
 </ol>
@@ -941,7 +1079,7 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 <p><strong>Ejercicio 8.7 ★.</strong> (a) Sea <span class="math inline">\(A\)</span> simétrica <span class="math inline">\(n\times n\)</span>, con valores propios <span class="math inline">\(\lambda_1\le\dots\le\lambda_n\)</span>, y sea <span class="math inline">\(B\)</span> la matriz <span class="math inline">\((n-1)\times(n-1)\)</span> que resulta de borrar la última fila y la última columna de <span class="math inline">\(A\)</span>, con valores propios <span class="math inline">\(\mu_1\le\dots\le\mu_{n-1}\)</span>. Demuestra el <strong>entrelazado</strong> <span class="math inline">\(\lambda_k\le\mu_k\le\lambda_{k+1}\)</span> para <span class="math inline">\(k = 1,\dots,n-1\)</span>. (b) Compruébalo con <span class="math inline">\(A = K = \begin{pmatrix}2&amp;-1&amp;0\\-1&amp;2&amp;-1\\0&amp;-1&amp;2\end{pmatrix}\)</span>. (c) Con <span class="math inline">\(A = \begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}\)</span> y <span class="math inline">\(P = \begin{pmatrix}1&amp;0\\0&amp;0\end{pmatrix}\)</span> (semidefinida positiva), verifica el <a href="#cor-monotonia" class="quarto-xref">Corolario&nbsp;2</a>.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Solución 8.7 ★">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -950,7 +1088,7 @@ L = \begin{pmatrix}3&amp;0&amp;0\\1&amp;2&amp;0\\2&amp;1&amp;1\end{pmatrix},\qqu
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ol type="a">
 <li>Para un vector <span class="math inline">\(z\in\mathbb{R}^{n-1}\)</span> sea <span class="math inline">\(\tilde z = (z,0)'\in\mathbb{R}^n\)</span>. Entonces <span class="math inline">\(\tilde z'A\tilde z = z'Bz\)</span> y <span class="math inline">\(\tilde z'\tilde z = z'z\)</span>: <span class="math inline">\(R_A(\tilde z) = R_B(z)\)</span>.</li>
