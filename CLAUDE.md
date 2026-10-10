@@ -7,7 +7,7 @@ URL: https://benjaminsoliso.github.io/econometria/. Idioma: español. Contenido 
 
 | Carpeta | Contenido | Estado |
 |---|---|---|
-| `algebra-matricial/` | Álgebra matricial aplicada, 15 clases (plan en `.claude/plan-algebra-matricial.md`) | Clases 1–7 publicadas; falta 8 a 15 |
+| `algebra-matricial/` | Álgebra matricial aplicada, 15 clases (plan en `.claude/plan-algebra-matricial.md`) | Clases 1–8 publicadas (la 8, simétricas y definidas positivas, fue la prueba del flujo nuevo, 2026-10-10); falta 9 a 15 |
 | `econometria-1/` | 10 clases (MCO, inferencia, MCG, VI) | Completo |
 | `econometria-2/` | 13 clases (M-estimadores, MV, GMM, elección discreta, panel, cuantílica) | Completo |
 | `econometria-3/` | 13 clases de series de tiempo | Completo |
@@ -21,7 +21,8 @@ Pendientes: Econometría 5 (financiera: valoración con GMM, factores, volatilid
 - R: `C:/Program Files/R/R-4.4.3/bin/Rscript.exe` (no está en PATH). `pdftools` y `magick` instalados.
 - **No hay Python ni `jq`.** Para editar usa Edit/Write; `sed` con patrones complejos o `&` falla en silencio (verifica con grep). `Rscript -e '...'` rompe con `>` en el código: usa un archivo `.R`.
 - Render de UNA clase: `quarto render <carpeta>/clase-NN.qmd` (~1 min, xelatex, Cambria). No renderices el sitio completo (~8 min). Nunca dos renders a la vez ni con un `http-server` sobre `docs/`.
-- Figuras de álgebra: `Rscript assets/figuras_algebra.R` desde la raíz → `assets/fig/am/`.
+- Figuras de álgebra: `Rscript assets/figuras_algebra.R` desde la raíz → `assets/fig/am/`. Para regenerar solo las de una clase: `SOLO=c09 Rscript assets/figuras_algebra.R` (las demás se dibujan en un dispositivo nulo, así no cambian los PNG ya publicados).
+- **Heredocs con apóstrofes (`x'Ax`) rompen la herramienta Bash** ("unexpected EOF"): escribir scripts R/qmd con Write y luego ejecutarlos.
 
 ## Flujo por clase (usar la skill `/clase-sitio`)
 

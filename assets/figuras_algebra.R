@@ -12,8 +12,11 @@ fondo  <- "#fbf8f1"
 
 dir.create("assets/fig/am", showWarnings = FALSE, recursive = TRUE)
 
+# SOLO=c08 Rscript assets/figuras_algebra.R regenera únicamente las figuras c08_* (las demás se dibujan en un dispositivo nulo)
+solo <- Sys.getenv("SOLO")
 abrir <- function(archivo, w = 7, h = 4.6) {
-  png(file.path("assets/fig/am", archivo), width = w, height = h, units = "in",
+  destino <- if (nzchar(solo) && !startsWith(archivo, solo)) nullfile() else file.path("assets/fig/am", archivo)
+  png(destino, width = w, height = h, units = "in",
       res = 200, bg = fondo)
   par(family = "serif", mar = c(4, 4, 1.5, 1), col.axis = tinta, col.lab = tinta,
       fg = gris)
@@ -692,4 +695,120 @@ for (cc in c(-2.2, -1.2, -0.5, 0.5, 1.2, 2.2)) for (c1 in c(0, 1.5, -1.5)) {
 }
 points(0, 0, pch = 21, bg = ocre, cex = 1.3)
 text(2.9, 0.2, "único vector propio (1, 0)", pos = 2, col = rojo, cex = 0.85)
+dev.off()
+
+# ---------------------------------------------------------------------------
+# Clase 8: matrices simétricas y definidas positivas
+# ---------------------------------------------------------------------------
+s2 <- sqrt(2)
+
+# 8a. Tres cónicas x'Ax = 1: elipse, hipérbola y rectas paralelas
+abrir("c08_cuadricas_2d.png", w = 9.8, h = 3.8)
+par(mfrow = c(1, 3), mar = c(4, 4, 2.6, 0.8))
+# (a) elipse A = [[2,1],[1,2]]
+ejes2d(c(-1.3, 1.3), c(-1.3, 1.3))
+title("Elipse: λ = 1, 3", col.main = tinta, font.main = 1, cex.main = 1.1)
+tt <- seq(0, 2 * pi, length.out = 300)
+Ee <- cbind(c(1, -1) / s2, c(1, 1) / s2) %*% rbind(1 * cos(tt), 1 / sqrt(3) * sin(tt))
+lines(Ee[1, ], Ee[2, ], col = teal, lwd = 2.4)
+abline(0, 1, col = adjustcolor(rojo, 0.5), lty = 2); abline(0, -1, col = adjustcolor(rojo, 0.5), lty = 2)
+flecha(0, 0, 1 / s2, -1 / s2, col = rojo, lwd = 2.4); flecha(0, 0, 1 / sqrt(3) / s2, 1 / sqrt(3) / s2, col = ocre, lwd = 2.4)
+text(0.75, -0.95, "semieje 1", col = rojo, cex = 0.9); text(0.55, 0.72, expression("semieje " * 1 / sqrt(3)), col = ocre, cex = 0.9)
+# (b) hipérbola A = [[1,2],[2,1]]: 3 y1^2 - y2^2 = 1
+ejes2d(c(-2.6, 2.6), c(-2.6, 2.6))
+title("Hipérbola: λ = −1, 3", col.main = tinta, font.main = 1, cex.main = 1.1)
+ss <- seq(-1.9, 1.9, length.out = 300)
+for (sg in c(-1, 1)) {
+  y1 <- sg * cosh(ss) / sqrt(3); y2 <- sinh(ss)
+  Hh <- cbind(c(1, 1) / s2, c(1, -1) / s2) %*% rbind(y1, y2)
+  lines(Hh[1, ], Hh[2, ], col = teal, lwd = 2.4)
+}
+for (m in c(-1, 1)) { as <- cbind(c(1, 1) / s2, c(1, -1) / s2) %*% rbind(c(-3, 3), m * sqrt(3) * c(-3, 3)); lines(as[1, ], as[2, ], col = adjustcolor(gris, 0.9), lty = 3) }
+# (c) rectas A = [[1,1],[1,1]]: (x+y)^2 = 1
+ejes2d(c(-1.6, 1.6), c(-1.6, 1.6))
+title("Rectas: λ = 0, 2", col.main = tinta, font.main = 1, cex.main = 1.1)
+abline(1, -1, col = teal, lwd = 2.4); abline(-1, -1, col = teal, lwd = 2.4)
+flecha(0, 0, 0.9, -0.9, col = rojo, lwd = 2.2)
+text(0.95, -0.62, "λ = 0", col = rojo, cex = 0.95, adj = 0)
+dev.off()
+
+# 8b. Elipsoide x'Ax = 1 para A = I + J (valores propios 4, 1, 1): esferoide con eje corto (1,1,1)
+ELIP_TH <- as.numeric(Sys.getenv("ELIP_TH", "-40")); ELIP_PH <- as.numeric(Sys.getenv("ELIP_PH", "35"))
+abrir("c08_elipsoide.png", w = 6.6, h = 5.4)
+q1 <- c(1, 1, 1) / sqrt(3); q2 <- c(1, -1, 0) / sqrt(2); q3 <- c(1, 1, -2) / sqrt(6)
+pm <- marco3d(c(-1.1, 1.1), c(-1.1, 1.1), c(-1.1, 1.1), theta = ELIP_TH, phi = ELIP_PH)
+punto_elip <- function(th, ph) { u <- c(sin(th) * cos(ph), sin(th) * sin(ph), cos(th)); 0.5 * u[1] * q1 + 1 * u[2] * q2 + 1 * u[3] * q3 }
+for (th in seq(0.35, pi - 0.35, length.out = 7)) {
+  P <- t(sapply(seq(0, 2 * pi, length.out = 90), function(ph) punto_elip(th, ph)))
+  lines(trans3d(P[, 1], P[, 2], P[, 3], pm), col = adjustcolor(teal, 0.55), lwd = 1)
+}
+for (ph in seq(0, pi, length.out = 9)[-9]) {
+  P <- t(sapply(seq(0, 2 * pi, length.out = 90), function(th) punto_elip(th, ph)))
+  lines(trans3d(P[, 1], P[, 2], P[, 3], pm), col = adjustcolor(teal, 0.55), lwd = 1)
+}
+flecha3(pm, c(0, 0, 0), 0.5 * q1, col = rojo, lwd = 3); flecha3(pm, c(0, 0, 0), q2, col = ocre, lwd = 2.4); flecha3(pm, c(0, 0, 0), q3, col = ocre, lwd = 2.4)
+seg3(pm, -0.5 * q1, 0.5 * q1, col = rojo, lwd = 1.4, lty = 2)
+text(p3(pm, 0.5 * q1[1] + 0.05, 0.5 * q1[2], 0.5 * q1[3] + 0.18), "semieje 1/2", col = rojo, cex = 0.9)
+text(p3(pm, 1.12 * q2[1], 1.12 * q2[2], 1.12 * q2[3]), "semieje 1", col = ocre, cex = 0.9, pos = 4)
+text(p3(pm, 1.3 * q3[1], 1.3 * q3[2], 1.3 * q3[3]), "semieje 1", col = ocre, cex = 0.9, pos = 1)
+dev.off()
+
+# 8c. Cociente de Rayleigh y la imagen del círculo unidad por A = [[2,1],[1,2]]
+abrir("c08_rayleigh.png", w = 9.4, h = 4.4)
+par(mfrow = c(1, 2), mar = c(4, 4.2, 2.4, 0.8))
+Ar <- matrix(c(2, 1, 1, 2), 2)
+th <- seq(0, pi, length.out = 300)
+plot(NA, xlim = c(0, 180), ylim = c(0.6, 3.4), xlab = "ángulo θ del vector unitario (grados)", ylab = "cociente de Rayleigh R(x)", las = 1)
+title("R(cos θ, sen θ) = 2 + sen 2θ", col.main = tinta, font.main = 1, cex.main = 1.1)
+abline(h = pretty(c(0.6, 3.4)), v = seq(0, 180, 45), col = adjustcolor(gris, 0.18))
+abline(h = c(1, 3), col = adjustcolor(rojo, 0.6), lty = 2)
+lines(th * 180 / pi, 2 + sin(2 * th), col = teal, lwd = 2.4)
+points(c(45, 135), c(3, 1), pch = 21, bg = c(rojo, ocre), cex = 1.5)
+text(45, 3.18, "máximo λ₂ = 3 en (1, 1)", cex = 0.85, col = rojo); text(135, 0.82, "mínimo λ₁ = 1 en (1, −1)", cex = 0.85, col = ocre)
+ejes2d(c(-3.6, 3.6), c(-3.6, 3.6))
+title("El círculo unidad y su imagen A x", col.main = tinta, font.main = 1, cex.main = 1.1)
+tt <- seq(0, 2 * pi, length.out = 300); U <- rbind(cos(tt), sin(tt)); W <- Ar %*% U
+lines(U[1, ], U[2, ], col = azul, lwd = 2); lines(W[1, ], W[2, ], col = teal, lwd = 2.4)
+for (a in seq(0.15, 2 * pi, length.out = 11)) { x <- c(cos(a), sin(a)); y <- Ar %*% x; segments(x[1], x[2], y[1], y[2], col = adjustcolor(gris, 0.7), lwd = 0.9) }
+flecha(0, 0, 3 / s2, 3 / s2, col = rojo, lwd = 2.6); flecha(0, 0, 1 / s2, -1 / s2, col = ocre, lwd = 2.6)
+text(2.4, 2.9, "A q = 3 q", col = rojo, cex = 0.9); text(1.5, -1.0, "A q = q", col = ocre, cex = 0.9)
+legend("bottomright", c("círculo unidad", "imagen: semiejes 3 y 1"), col = c(azul, teal), lwd = 2.4, bty = "n", cex = 0.85)
+dev.off()
+
+# 8d. Puntos críticos y Hessiano: f = x^3 - 3x + y^2 y g = x^3 + y^3 - 3xy
+abrir("c08_hessiano.png", w = 9.4, h = 4.4)
+par(mfrow = c(1, 2), mar = c(4, 4.2, 2.6, 0.8))
+xs <- seq(-2.4, 2.4, length.out = 220); ys <- seq(-2.2, 2.2, length.out = 220)
+Fz <- outer(xs, ys, function(x, y) x^3 - 3 * x + y^2)
+contour(xs, ys, Fz, levels = c(-2, -1.5, -1, -0.5, 0, 0.5, 1, 2, 3, 4, 6), col = adjustcolor(teal, 0.85), lwd = 1.2, labcex = 0.7, xlab = expression(x), ylab = expression(y), las = 1, drawlabels = TRUE)
+title("f = x³ − 3x + y²", col.main = tinta, font.main = 1, cex.main = 1.1)
+points(1, 0, pch = 24, bg = teal, cex = 1.7); points(-1, 0, pch = 21, bg = rojo, cex = 1.7)
+legend("topright", c("mínimo, H = diag(6, 2)", "silla, H = diag(−6, 2)"), pch = c(24, 21), pt.bg = c(teal, rojo), bty = "o", box.col = gris, bg = fondo, cex = 0.82)
+xs <- seq(-1.4, 2.0, length.out = 220); ys <- seq(-1.4, 2.0, length.out = 220)
+Gz <- outer(xs, ys, function(x, y) x^3 + y^3 - 3 * x * y)
+contour(xs, ys, Gz, levels = c(-1, -0.75, -0.5, -0.25, 0, 0.5, 1, 2, 4), col = adjustcolor(teal, 0.85), lwd = 1.2, labcex = 0.7, xlab = expression(x), ylab = expression(y), las = 1, drawlabels = TRUE)
+title("g = x³ + y³ − 3xy", col.main = tinta, font.main = 1, cex.main = 1.1)
+points(1, 1, pch = 24, bg = teal, cex = 1.7); points(0, 0, pch = 21, bg = rojo, cex = 1.7)
+legend("bottomright", c("mínimo, g = −1", "silla, g = 0"), pch = c(24, 21), pt.bg = c(teal, rojo), bty = "o", box.col = gris, bg = fondo, cex = 0.82)
+dev.off()
+
+# 8e. Modos normales: dos masas (evolución temporal) y los tres modos de tres masas
+abrir("c08_modos.png", w = 11.2, h = 3.7)
+par(mfrow = c(1, 4), mar = c(4, 4.6, 2.8, 0.8))
+tt <- seq(0, 22, length.out = 700)
+plot(NA, xlim = c(0, 22), ylim = c(-1.1, 1.1), xlab = "tiempo t", ylab = "desplazamiento", las = 1)
+title("Dos masas: x(0) = (1, 0)", col.main = tinta, font.main = 1, cex.main = 1.05)
+abline(h = 0, col = adjustcolor(tinta, 0.5)); abline(h = pretty(c(-1, 1)), col = adjustcolor(gris, 0.18))
+lines(tt, 0.5 * (cos(tt) + cos(sqrt(3) * tt)), col = teal, lwd = 1.8); lines(tt, 0.5 * (cos(tt) - cos(sqrt(3) * tt)), col = rojo, lwd = 1.8)
+legend("bottomright", c("masa 1", "masa 2"), col = c(teal, rojo), lwd = 2, bty = "n", cex = 0.8)
+modo <- function(a, titulo) {
+  plot(NA, xlim = c(0, 4), ylim = c(-1.9, 1.9), xlab = "posición de reposo", ylab = "desplazamiento", las = 1, xaxt = "n")
+  axis(1, at = 0:4, labels = c("pared", "1", "2", "3", "pared"))
+  title(titulo, col.main = tinta, font.main = 1, cex.main = 1.05)
+  abline(h = 0, col = adjustcolor(tinta, 0.4)); abline(h = pretty(c(-1.9, 1.9)), col = adjustcolor(gris, 0.15))
+  lines(0:4, c(0, a, 0), col = teal, lwd = 2); points(0:4, c(0, a, 0), pch = 21, bg = c(tinta, rep(ocre, 3), tinta), cex = c(1, rep(1.6, 3), 1))
+}
+modo(c(1, sqrt(2), 1), "Modo 1: ω ≈ 0,77")
+modo(c(1, 0, -1), "Modo 2: ω ≈ 1,41")
+modo(c(1, -sqrt(2), 1), "Modo 3: ω ≈ 1,85")
 dev.off()
