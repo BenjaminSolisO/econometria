@@ -15,7 +15,7 @@ Sirve para saber si el flujo (skill + lint + check + revisor) mejora costo, tiem
 | Clase | Uso al inicio | Uso al final | Tiempo total | Renders hasta `TODO OK` | Errores del lint / detector | Revisor (modelo): errores que halló | Errores hallados después de publicar | Notas |
 |---|---|---|---|---|---|---|---|---|
 | 8 (primera con el flujo; sin medir uso ni tiempo) | — | — | — | 4 (falló 3 veces) | 5 desbordes de ecuación; 2 refs a otra clase | Sonnet 5.5, 1 pasada (~90k tokens, ~3 min): 2 medios (unidades del costo de Cholesky, estabilidad del giro), 6 menores (cota con A singular, notación x_0, casos λ=0, unicidad LDU, m_i>0, faltaban 3×3 y Borradores); números todos OK | 8 (los halló el revisor tras publicar; ya corregidos) | Escrita en modo autónomo; usuario aún no la revisa |
-| 9 | | | | | | | | |
+| 9 (SVD) | no medido (`/usage` no consultado) | no medido | no medido | 4 (3 fallos por desbordes del PDF: 8 → 6 → 2 → 0 páginas) | lint: 1 ref a otra clase y 9 `%` dentro de math; detector: ~14 ecuaciones anchas; `\checkmark` salía como cuadro y ningún chequeo lo detectó | pendiente (no se lanzó) | — | Escrita en modo autónomo; 37 págs.; verificación numérica en R con 0 discrepancias (≈150 chequeos); usuario aún no la revisa |
 
 Qué mirar al comparar: ¿bajó el uso o el tiempo respecto de la clase anterior?, ¿el revisor halló algo que el lint y los scripts no atraparon (si no halla nada de fondo, no vale su costo)?, ¿hubo que repetirle alguna regla a Claude (si sí, falta ponerla en este archivo)?
 
@@ -26,7 +26,7 @@ URL: https://benjaminsoliso.github.io/econometria/. Idioma: español. Contenido 
 
 | Carpeta | Contenido | Estado |
 |---|---|---|
-| `algebra-matricial/` | Álgebra matricial aplicada, 15 clases (plan en `.claude/plan-algebra-matricial.md`) | Clases 1–8 publicadas (la 8, simétricas y definidas positivas, fue la prueba del flujo nuevo, 2026-10-10); falta 9 a 15 |
+| `algebra-matricial/` | Álgebra matricial aplicada, 15 clases (plan en `.claude/plan-algebra-matricial.md`) | Clases 1–9 publicadas (la 8, simétricas y definidas positivas, fue la prueba del flujo nuevo, 2026-10-10; la 9 es SVD, 2026-10-10, sin revisor aún); falta 10 a 15 |
 | `econometria-1/` | 10 clases (MCO, inferencia, MCG, VI) | Completo |
 | `econometria-2/` | 13 clases (M-estimadores, MV, GMM, elección discreta, panel, cuantílica) | Completo |
 | `econometria-3/` | 13 clases de series de tiempo | Completo |
@@ -71,6 +71,9 @@ Hook del proyecto (`.claude/settings.json`): al editar un `.qmd` corre `scripts/
 - Opciones del PDF van top-level en `<carpeta>/_metadata.yml`, y en cada clase `format: {html, pdf: include-in-header: ../assets/preambulo.tex}`.
 - Detector de desbordes del PDF: palabras de alto ≥ 9 con `x + width > 412` pt se salen (el cuerpo termina en ~408; las notas al margen miden 8). Partir ecuaciones anchas con `aligned` o varias líneas `$$`.
 - `qr()` de R con tol 1e-7 declara rango 1 el caso Läuchli: usar `tol = 1e-14` o `LAPACK = TRUE`.
+- `\checkmark` (en math o fuera) sale como cuadro en el PDF y el log no avisa: escribir el carácter ✓ fuera del math, o `\text{✓}` dentro de una ecuación.
+- Ecuaciones con 3 vectores/matrices en una línea (`A v_1 = …,\qquad A v_2 = …`) casi siempre desbordan: usar `aligned` con una fila por caso desde el principio.
+- En el scratchpad, `sed -E` con `\\ \\%` no reemplaza nada; para sustituciones con barras invertidas usar un `.R` con `gsub(fixed = TRUE)`. Un `cd` en Bash persiste: usar rutas absolutas.
 - Prohibido nombrar a Jay Cummings en cualquier parte del sitio (README incluido).
 - Si el push falla por red (github.com:443), reintentar con espera.
 

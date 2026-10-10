@@ -812,3 +812,145 @@ modo(c(1, sqrt(2), 1), "Modo 1: ω ≈ 0,77")
 modo(c(1, 0, -1), "Modo 2: ω ≈ 1,41")
 modo(c(1, -sqrt(2), 1), "Modo 3: ω ≈ 1,85")
 dev.off()
+
+# ---------------------------------------------------------------------------
+# Clase 9: descomposición en valores singulares
+# ---------------------------------------------------------------------------
+s3 <- sqrt(3); s5 <- sqrt(5); s6 <- sqrt(6); s10 <- sqrt(10)
+
+# 9a. El círculo unidad y su imagen por A = [[3,0],[4,5]]
+abrir("c09_circulo_elipse.png", w = 9.6, h = 4.5)
+par(mfrow = c(1, 2), mar = c(4, 4, 2.6, 0.8))
+A9 <- matrix(c(3, 0, 4, 5), 2, byrow = TRUE)
+v19 <- c(1, 1) / s2; v29 <- c(1, -1) / s2; u19 <- c(1, 3) / s10; u29 <- c(3, -1) / s10
+tt <- seq(0, 2 * pi, length.out = 400); Uc <- rbind(cos(tt), sin(tt)); Wc <- A9 %*% Uc
+ejes2d(c(-1.6, 1.6), c(-1.6, 1.6))
+title("Círculo unidad: |x| = 1", col.main = tinta, font.main = 1, cex.main = 1.1)
+lines(Uc[1, ], Uc[2, ], col = azul, lwd = 2.4)
+ang <- seq(0.3, 2 * pi, length.out = 9)[-9]
+points(cos(ang), sin(ang), pch = 21, bg = adjustcolor(gris, 0.9), cex = 0.9)
+flecha(0, 0, v19[1], v19[2], col = rojo, lwd = 2.8); flecha(0, 0, v29[1], v29[2], col = ocre, lwd = 2.8)
+text(0.95, 1.0, expression(v[1]), col = rojo, cex = 1.15); text(1.02, -1.0, expression(v[2]), col = ocre, cex = 1.15)
+ejes2d(c(-7.2, 7.2), c(-7.2, 7.2))
+title("Imagen: elipse de semiejes 3√5 y √5", col.main = tinta, font.main = 1, cex.main = 1.1)
+abline(0, 3, col = adjustcolor(rojo, 0.4), lty = 2); abline(0, -1 / 3, col = adjustcolor(ocre, 0.5), lty = 2)
+lines(Wc[1, ], Wc[2, ], col = teal, lwd = 2.4)
+Pa <- A9 %*% rbind(cos(ang), sin(ang)); points(Pa[1, ], Pa[2, ], pch = 21, bg = adjustcolor(gris, 0.9), cex = 0.9)
+flecha(0, 0, 3 * s5 * u19[1], 3 * s5 * u19[2], col = rojo, lwd = 2.8); flecha(0, 0, s5 * u29[1], s5 * u29[2], col = ocre, lwd = 2.8)
+text(-1.6, 6.7, expression(sigma[1] * u[1]), col = rojo, cex = 1.15); text(4.6, 0.5, expression(sigma[2] * u[2]), col = ocre, cex = 1.15)
+dev.off()
+
+# 9b. La esfera unidad y su imagen por A = [[2,3,3],[3,2,3],[2,2,0]]: un elipsoide
+Ai9 <- matrix(c(2, 3, 3, 3, 2, 3, 2, 2, 0), 3, byrow = TRUE)
+w19 <- c(1, 1, 1) / s3; w29 <- c(1, 1, -2) / s6; w39 <- c(1, -1, 0) / s2
+x19 <- c(2, 2, 1) / 3; x29 <- c(-1, -1, 4) / (3 * s2); x39 <- c(-1, 1, 0) / s2
+ESF_TH <- as.numeric(Sys.getenv("ESF_TH", "-35")); ESF_PH <- as.numeric(Sys.getenv("ESF_PH", "25"))
+abrir("c09_esfera_elipsoide.png", w = 9.8, h = 4.8)
+par(mfrow = c(1, 2))
+esfera <- function(pm, M) {
+  for (th in seq(0.4, pi - 0.4, length.out = 6)) {
+    P <- t(M %*% sapply(seq(0, 2 * pi, length.out = 90), function(ph) c(sin(th) * cos(ph), sin(th) * sin(ph), cos(th))))
+    lines(trans3d(P[, 1], P[, 2], P[, 3], pm), col = adjustcolor(teal, 0.5), lwd = 0.9)
+  }
+  for (ph in seq(0, pi, length.out = 9)[-9]) {
+    P <- t(M %*% sapply(seq(0, 2 * pi, length.out = 90), function(th) c(sin(th) * cos(ph), sin(th) * sin(ph), cos(th))))
+    lines(trans3d(P[, 1], P[, 2], P[, 3], pm), col = adjustcolor(teal, 0.5), lwd = 0.9)
+  }
+}
+pm <- marco3d(c(-1.2, 1.2), c(-1.2, 1.2), c(-1.2, 1.2), theta = ESF_TH, phi = ESF_PH)
+title("Esfera unidad y sus ejes v", col.main = tinta, font.main = 1, cex.main = 1.05, line = 0)
+esfera(pm, diag(3))
+flecha3(pm, c(0, 0, 0), w19, col = rojo, lwd = 3); flecha3(pm, c(0, 0, 0), w29, col = ocre, lwd = 3); flecha3(pm, c(0, 0, 0), w39, col = azul, lwd = 3)
+text(p3(pm, 1.2 * w19[1], 1.2 * w19[2], 1.2 * w19[3]), expression(v[1]), col = rojo, cex = 1.1)
+text(p3(pm, 1.25 * w29[1], 1.25 * w29[2], 1.25 * w29[3]), expression(v[2]), col = ocre, cex = 1.1)
+text(p3(pm, 1.25 * w39[1], 1.25 * w39[2], 1.25 * w39[3]), expression(v[3]), col = azul, cex = 1.1)
+pm <- marco3d(c(-5, 5), c(-5, 5), c(-5, 5), theta = ESF_TH, phi = ESF_PH)
+title("Elipsoide imagen y sus semiejes", col.main = tinta, font.main = 1, cex.main = 1.05, line = 0)
+esfera(pm, Ai9)
+s1 <- 4 * s3; flecha3(pm, c(0, 0, 0), s1 * x19, col = rojo, lwd = 3); flecha3(pm, c(0, 0, 0), s3 * x29, col = ocre, lwd = 3); flecha3(pm, c(0, 0, 0), 1 * x39, col = azul, lwd = 3)
+text(p3(pm, 1.12 * s1 * x19[1], 1.12 * s1 * x19[2], 1.12 * s1 * x19[3]), expression(sigma[1] * u[1]), col = rojo, cex = 1.05)
+text(p3(pm, 1.9 * s3 * x29[1], 1.9 * s3 * x29[2], 1.9 * s3 * x29[3]), expression(sigma[2] * u[2]), col = ocre, cex = 1.05)
+text(p3(pm, 3.2 * x39[1], 3.2 * x39[2], 3.2 * x39[3]), expression(sigma[3] * u[3]), col = azul, cex = 1.05)
+dev.off()
+
+# 9c. Pseudoinversa y norma mínima, M = [[1,1],[2,2]]
+abrir("c09_pseudoinversa.png", w = 9.6, h = 4.5)
+par(mfrow = c(1, 2), mar = c(4, 4, 2.8, 0.8))
+ejes2d(c(-0.9, 1.7), c(-0.9, 1.7))
+title("Mx = (1, 2): infinitas soluciones", col.main = tinta, font.main = 1, cex.main = 1.1)
+abline(1, -1, col = teal, lwd = 2.6)
+abline(0, 1, col = adjustcolor(rojo, 0.55), lty = 2, lwd = 1.6)
+tc <- seq(0, 2 * pi, length.out = 300)
+lines(sqrt(0.5) * cos(tc), sqrt(0.5) * sin(tc), col = adjustcolor(gris, 0.8), lty = 3)
+points(c(1, 0, 1.3), c(0, 1, -0.3), pch = 21, bg = adjustcolor(azul, 0.9), cex = 1.2)
+points(0.5, 0.5, pch = 21, bg = rojo, cex = 1.9)
+text(0.6, 0.36, expression(x^"+"), col = rojo, cex = 1.15, adj = 0)
+text(-0.85, 0.55, "soluciones: x₁ + x₂ = 1", col = teal, cex = 0.88, adj = 0)
+text(1.2, 1.55, "espacio fila", col = rojo, cex = 0.88, adj = 1)
+text(0.45, -0.62, "círculo de radio |x⁺|", col = gris, cex = 0.82, adj = 0)
+ejes2d(c(-0.5, 0.9), c(-0.5, 0.9))
+title("Mx = (1, 0): sin solución exacta", col.main = tinta, font.main = 1, cex.main = 1.1)
+niv <- c(0.8, 1, 1.5, 2.5)
+for (cc in niv) {
+  ss <- (2 + c(-1, 1) * sqrt(4 - 20 * (1 - cc))) / 10
+  for (s in unique(ss)) abline(s, -1, col = adjustcolor(if (cc == 0.8) teal else gris, 0.9), lwd = if (cc == 0.8) 2.8 else 1.2)
+}
+abline(0, 1, col = adjustcolor(rojo, 0.55), lty = 2, lwd = 1.6)
+points(0.1, 0.1, pch = 21, bg = rojo, cex = 1.9)
+text(0.16, 0.02, expression(x^"+"), col = rojo, cex = 1.15, adj = 0)
+legend("topright", c("mínimos cuadrados: x₁ + x₂ = 1/5 (residuo² = 0,8)", "otras rectas: residuo² = 1; 1,5; 2,5", "espacio fila"), col = c(teal, gris, adjustcolor(rojo, 0.7)), lwd = c(2.8, 1.2, 1.6), lty = c(1, 1, 2), bty = "o", box.col = gris, bg = fondo, cex = 0.75)
+dev.off()
+
+# 9d. Aproximación de rango bajo de una imagen de 3x3 y los valores singulares
+abrir("c09_imagen_rango.png", w = 10.4, h = 3.5)
+par(mfrow = c(1, 4), mar = c(1.2, 1, 2.6, 1))
+paleta <- colorRampPalette(c(tinta, "#6a7a80", "#f3ead5"))(101)
+pixel <- function(vals, etiquetas, titulo) {
+  plot(NA, xlim = c(0, 3), ylim = c(3, 0), asp = 1, axes = FALSE, xlab = "", ylab = "")
+  title(titulo, col.main = tinta, font.main = 1, cex.main = 1.1, line = 0.6)
+  for (i in 1:3) for (j in 1:3) {
+    v <- vals[i, j]; col <- paleta[1 + round(100 * v / 3)]
+    rect(j - 1, i - 1, j, i, col = col, border = fondo, lwd = 2)
+    text(j - 0.5, i - 0.5, etiquetas[i, j], col = if (v < 1.6) "#fbf8f1" else tinta, cex = 1.15)
+  }
+}
+P19 <- (4 / 3) * matrix(c(2, 2, 2, 2, 2, 2, 1, 1, 1), 3, byrow = TRUE)
+P29 <- matrix(c(2.5, 2.5, 3, 2.5, 2.5, 3, 2, 2, 0), 3, byrow = TRUE)
+pixel(Ai9, matrix(as.character(Ai9), 3), "Imagen original A (rango 3)")
+pixel(P19, matrix(c("8/3", "8/3", "8/3", "8/3", "8/3", "8/3", "4/3", "4/3", "4/3"), 3, byrow = TRUE), expression("Rango 1: " * A[1] * " (92 %)"))
+pixel(P29, matrix(c("5/2", "5/2", "3", "5/2", "5/2", "3", "2", "2", "0"), 3, byrow = TRUE), expression("Rango 2: " * A[2] * " (98 %)"))
+par(mar = c(3.4, 4.2, 2.6, 0.8))
+sg2 <- c(48, 3, 1)
+bp <- barplot(sg2, names.arg = c("σ₁²", "σ₂²", "σ₃²"), col = c(rojo, ocre, azul), border = NA, ylim = c(0, 58), las = 1, ylab = "")
+title("Valores singulares al cuadrado", col.main = tinta, font.main = 1, cex.main = 1.1, line = 0.6)
+text(bp, sg2 + 3.2, c("48", "3", "1"), col = tinta, cex = 1)
+text(bp[1], 40, "92,3 %", col = "#fbf8f1", cex = 0.9)
+dev.off()
+
+# 9e. Componentes principales: nube 2D (con la recta de MCO) y nube 3D
+abrir("c09_pca.png", w = 10.4, h = 4.9)
+par(mfrow = c(1, 2), mar = c(4, 4, 2.6, 0.8))
+P2 <- rbind(c(2, 1), c(1, 2), c(1, -1)); X2 <- rbind(P2, -P2, c(0, 0))
+ejes2d(c(-3.2, 3.2), c(-3.2, 3.2))
+title("Nube 2D: σ₁² = 18, σ₂² = 6", col.main = tinta, font.main = 1, cex.main = 1.1)
+abline(0, 1, col = adjustcolor(rojo, 0.45), lty = 2); abline(0, -1, col = adjustcolor(ocre, 0.55), lty = 2)
+abline(0, 0.5, col = azul, lwd = 2.2)
+for (i in 1:7) { d <- sum(X2[i, ] * c(1, 1)) / 2 * c(1, 1); segments(X2[i, 1], X2[i, 2], d[1], d[2], col = adjustcolor(gris, 0.8), lwd = 0.9) }
+points(X2[, 1], X2[, 2], pch = 21, bg = teal, cex = 1.5)
+flecha(0, 0, sqrt(3) * 1.5 / s2, sqrt(3) * 1.5 / s2, col = rojo, lwd = 3); flecha(0, 0, 1.5 / s2, -1.5 / s2, col = ocre, lwd = 3)
+text(2.05, 2.55, "1.ª componente", col = rojo, cex = 0.85); text(1.95, -1.9, "2.ª", col = ocre, cex = 0.85)
+text(3.0, 1.0, "MCO: y = x/2", col = azul, cex = 0.85)
+legend("bottomleft", c("distancias perpendiculares a la 1.ª componente", "recta de mínimos cuadrados"), col = c(adjustcolor(gris, 0.9), azul), lwd = c(1, 2.2), bty = "o", box.col = gris, bg = fondo, cex = 0.72)
+P3 <- rbind(c(1, -2, -2), c(2, 0, -2), c(2, 0, 0)); X3 <- rbind(P3, -P3, c(0, 0, 0))
+pc1 <- c(2, -1, -2) / 3; pc2 <- c(2, 2, 1) / 3; pc3 <- c(1, -2, 2) / 3
+PCA_TH <- as.numeric(Sys.getenv("PCA_TH", "-40")); PCA_PH <- as.numeric(Sys.getenv("PCA_PH", "22"))
+pm <- marco3d(c(-3.4, 3.4), c(-3.4, 3.4), c(-3.4, 3.4), theta = PCA_TH, phi = PCA_PH)
+title("Nube 3D: σ² = 32, 8, 2", col.main = tinta, font.main = 1, cex.main = 1.1, line = 0)
+L <- 2.5; poli3(pm, rbind(L * pc1 + L * pc2, L * pc1 - L * pc2, -L * pc1 - L * pc2, -L * pc1 + L * pc2), col = adjustcolor(teal, 0.13), border = adjustcolor(teal, 0.5))
+for (i in 1:7) { x <- X3[i, ]; f <- x - sum(x * pc3) * pc3; seg3(pm, x, f, col = adjustcolor(gris, 0.9), lwd = 0.9) }
+PP <- trans3d(X3[, 1], X3[, 2], X3[, 3], pm); points(PP, pch = 21, bg = teal, cex = 1.5)
+flecha3(pm, c(0, 0, 0), 3.4 * pc1, col = rojo, lwd = 3); flecha3(pm, c(0, 0, 0), 1.7 * pc2, col = ocre, lwd = 3); flecha3(pm, c(0, 0, 0), 1.7 * pc3, col = azul, lwd = 3)
+text(p3(pm, 3.7 * pc1[1], 3.7 * pc1[2], 3.7 * pc1[3]), "1.ª", col = rojo, cex = 0.95)
+text(p3(pm, 2.0 * pc2[1], 2.0 * pc2[2], 2.0 * pc2[3]), "2.ª", col = ocre, cex = 0.95)
+text(p3(pm, 2.0 * pc3[1], 2.0 * pc3[2], 2.0 * pc3[3] + 0.15), "3.ª", col = azul, cex = 0.95)
+dev.off()
