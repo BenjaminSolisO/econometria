@@ -1,5 +1,13 @@
 # Sitio "Econometría" (Quarto → GitHub Pages)
 
+## Inicio rápido: sesión nueva para hacer una clase
+
+1. **Abrir Claude dentro de esta carpeta**, no en `C:\Users\solis` (así cargan este archivo, la skill, el agente y el hook):
+   `cd "C:\Users\solis\OneDrive\Escritorio\Proyectos\econometria-cursos"` y luego `claude`. La primera vez, `/hooks` debe listar el lint de `.qmd`.
+2. **Una línea para partir:** `/clase-sitio algebra-matricial 9` (cambiar el número). Opcional antes: `/effort` alto para demostraciones pesadas, y bajarlo al terminar.
+3. **Al terminar, revisar:** que `check_clase.R` diga `TODO OK`, que haya hecho push y que `git status` quede limpio. Segunda mirada (gasta uso, solo en clases importantes): `Lanza el agente revisor-clase sobre algebra-matricial/clase-NN.qmd`.
+4. **Si se corta la sesión:** abrir otra en esta carpeta y decir `retoma la clase N`; el estado está en git y en la tabla de abajo.
+
 Repo público `BenjaminSolisO/econometria`, rama `main`, Pages desde `main:/docs`.
 URL: https://benjaminsoliso.github.io/econometria/. Idioma: español. Contenido teórico y matemático (pregrado + postgrado), demostraciones paso a paso, ejercicios resueltos.
 
@@ -34,7 +42,7 @@ Pendientes: Econometría 5 (financiera: valoración con GMM, factores, volatilid
 6. Actualizar estado (esta tabla, README, índice si cambia).
 7. **Commit y push después de CADA clase** (el usuario tiene límite de uso; nunca dejar commits solo locales). Mensaje: `Álgebra matricial: clase N (tema)`.
 
-Hook del proyecto (`.claude/settings.json`): al editar un `.qmd` corre `scripts/lint_qmd.R` y, si falla, me devuelve los errores. Si no dispara, abrir `/hooks` una vez para recargar.
+Hook del proyecto (`.claude/settings.json`): al editar un `.qmd` corre `scripts/lint_qmd.R` y, si falla, me devuelve los errores. Verificado el 2026-10-10 en una sesión nueva, con Write (limpio: silencio) y con Edit (error plantado: bloqueó). No lleva filtro `if` a propósito: `if: "Edit(**/*.qmd)"` solo aplica a la herramienta Edit y dejaba sin lint a Write; el propio script ignora lo que no es `.qmd`. Si un día no dispara, probar en modo headless con `claude -p ... --debug-file x.txt` y buscar `PostToolUse` en el log.
 
 ## Reglas de las clases de Álgebra matricial
 

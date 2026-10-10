@@ -6,7 +6,6 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Edit(**/*.qmd)",
             "command": "\"C:/Program Files/R/R-4.4.3/bin/Rscript.exe\" \"$CLAUDE_PROJECT_DIR/scripts/lint_qmd.R\"",
             "timeout": 30,
             "statusMessage": "Lint del .qmd..."
